@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Panel - Skills Fix</title>
+    <title>Chat Panel - CRM Context & Draggable</title>
     <style>
         /* --- Reset & Base --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -24,7 +24,8 @@
             width: 60px; 
             background-color: #3F4757; 
             flex-shrink: 0;
-            display: flex; flex-direction: column; align-items: center; padding-top: 15px; gap: 10px;
+            display: flex; flex-direction: column; align-items: center; padding-top: 15px; 
+            gap: 20px; 
             z-index: 30;
         }
 
@@ -56,18 +57,25 @@
             background: linear-gradient(270deg, #ECFEFF 0%, #F5F3FF 74.52%, #EDE9FE 100%);
             border-right: 1px solid rgba(0,0,0,0.05);
             display: flex; flex-direction: column; overflow: hidden;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            /* Transition added for smooth state changes, disabled via JS during drag */
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), height 0.4s ease, border-radius 0.4s ease, box-shadow 0.4s ease;
         }
 
-        .chat-sidebar.state-docked { width: 400px; height: 100%; border-radius: 0; transform: translateX(0); opacity: 1; }
+        .chat-sidebar.state-docked { width: 400px; height: 100%; border-radius: 0; transform: translateX(0); opacity: 1; left: 0 !important; }
+        
         .chat-sidebar.state-minimized {
-            height: 48px; width: 280px; left: 20px; bottom: 0; transform: translateX(0);
+            height: 48px; width: 280px; 
+            /* Initial Left Position is handled by CSS, JS overrides on drag */
+            left: 20px; 
+            bottom: 0; 
+            transform: translateX(0);
             background: linear-gradient(270deg, #ECFEFF 0%, #F5F3FF 74.52%, #EDE9FE 100%);
             border: 1px solid rgba(0,0,0,0.1); border-bottom: none; border-radius: 12px 12px 0 0;
             box-shadow: 0 -4px 12px rgba(0,0,0,0.08); opacity: 1;
         }
-        .chat-sidebar.state-fullscreen { width: 100%; height: 100%; border-radius: 0; z-index: 100; transform: translateX(0); opacity: 1; }
-        .chat-sidebar.state-closed { width: 400px; height: 100%; transform: translateX(-100%); pointer-events: none; opacity: 1; }
+        
+        .chat-sidebar.state-fullscreen { width: 100%; height: 100%; border-radius: 0; z-index: 100; transform: translateX(0); opacity: 1; left: 0 !important; }
+        .chat-sidebar.state-closed { width: 400px; height: 100%; transform: translateX(-100%); pointer-events: none; opacity: 1; left: 0 !important; }
 
         /* --- WRAPPERS --- */
         .main-view-wrapper {
@@ -79,11 +87,23 @@
 
         .minimized-view-wrapper {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; align-items: center; justify-content: space-between; padding: 0 16px;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 12px;
             opacity: 0; pointer-events: none; min-width: 280px;
             transition: opacity 0.2s ease;
+            cursor: default;
         }
         .chat-sidebar.state-minimized .minimized-view-wrapper { opacity: 1; pointer-events: auto; transition-delay: 0.2s; }
+
+        /* REQ 2: DRAG HANDLE ICON */
+        .drag-handle {
+            cursor: grab;
+            color: #94A3B8;
+            display: flex; align-items: center;
+            padding: 4px;
+            margin-right: 4px;
+        }
+        .drag-handle:active { cursor: grabbing; color: #475569; }
+        .drag-handle svg { width: 14px; height: 14px; stroke-width: 2px; }
 
         /* --- TOP BAR --- */
         .top-bar { display: flex; justify-content: space-between; align-items: center; height: 44px; flex-shrink: 0; padding: 0 8px 0 16px; margin-bottom: 0; }
@@ -111,7 +131,7 @@
         .action-btn svg { width: 18px; height: 18px; stroke-width: 2px; }
         .chat-title { font-size: 0.95rem; font-weight: 600; color: #222; text-align: center; flex: 1; }
 
-        .min-brand { display: flex; align-items: center; gap: 8px; font-weight: 600; color: #333; font-size: 0.95rem; }
+        .min-brand { display: flex; align-items: center; gap: 8px; font-weight: 600; color: #333; font-size: 0.95rem; pointer-events: none; /* Let drag pass through if needed, but handle is better */ }
         .min-controls { display: flex; gap: 4px; }
         .min-btn { background: none; border: none; cursor: pointer; color: #555; display: flex; align-items: center; padding: 6px; border-radius: 4px; }
         .min-btn:hover { color: #000; background-color: rgba(255,255,255,0.5); }
@@ -143,7 +163,6 @@
             padding-bottom: 20px;
         }
         
-        /* BUBBLE STYLING */
         .message-bubble {
             max-width: 85%;
             padding: 10px 14px; 
@@ -271,15 +290,51 @@
         .history-icon { color: #A0AEC0; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
         .history-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
 
-        .main-content { flex: 1; height: 100%; background-color: #fff; padding: 60px; text-align: center; transition: padding-left 0.4s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
-        .main-content.pushed-by-dock { padding-left: 460px; }
+        /* --- MAIN CONTENT & SKELETON --- */
+        .main-content { 
+            flex: 1; height: 100%; background-color: #fff; 
+            padding: 30px;
+            text-align: center; transition: padding-left 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            display: flex; flex-direction: column; cursor: pointer; 
+            overflow: hidden;
+        }
+        .main-content.pushed-by-dock { padding-left: 430px; }
         .main-content.full-hidden { opacity: 0; pointer-events: none; }
-        .dummy-app-view { display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%; max-width: 400px; }
-        .app-icon-placeholder { width: 64px; height: 64px; background-color: #3F4757; border-radius: 16px; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .app-icon-placeholder svg { width: 32px; height: 32px; stroke-width: 1.5; }
-        .page-text-lines { width: 100%; display: flex; flex-direction: column; gap: 12px; align-items: center; }
-        .line { height: 10px; background-color: #E2E8F0; border-radius: 5px; }
-        .hint-text { margin-top: 30px; font-size: 0.85rem; color: #94A3B8; }
+
+        .table-skeleton-container {
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            background: #fff;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .skeleton-row {
+            display: grid;
+            grid-template-columns: 2fr 3fr 2fr 2fr 2fr 1fr;
+            gap: 24px;
+            padding: 0 24px; 
+            border-bottom: 1px solid #F1F5F9;
+            align-items: center;
+            height: 50px; 
+        }
+        .skeleton-row:last-child { border-bottom: none; }
+        
+        .skeleton-row.header { 
+            background-color: #F8FAFC; 
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .skeleton-cell {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .skeleton-bar { height: 12px; background: #F1F5F9; border-radius: 6px; width: 100%; }
+        .header .skeleton-bar { background: #E2E8F0; }
+
     </style>
 </head>
 <body>
@@ -304,6 +359,9 @@
                 <aside class="chat-sidebar state-docked" id="chatPanel">
                     
                     <div class="minimized-view-wrapper">
+                        <div class="drag-handle" id="dragHandle">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>
+                        </div>
                         <div class="min-brand">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="color: #00BFA5;"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"></path></svg>
                             <span>AI Assistant</span>
@@ -339,23 +397,23 @@
                                 <div class="history-search-wrapper">
                                     <div class="history-search-box">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                                        <input type="text" placeholder="Search conversations...">
+                                        <input type="text" placeholder="Search leads & deals...">
                                     </div>
                                 </div>
                                 <div class="history-content">
                                     <div class="history-section-title" id="historyTodaySection">Today</div>
-                                    <div class="history-item" onclick="loadHistoryChat('Q3 Performance Analysis')">
+                                    <div class="history-item" onclick="loadHistoryChat('Tesla Fleet Inquiry')">
                                         <div class="history-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
-                                        <span class="history-text">Q3 Performance Analysis</span>
+                                        <span class="history-text">Tesla Fleet Inquiry</span>
                                     </div>
-                                    <div class="history-item" onclick="loadHistoryChat('Drafting Email')">
+                                    <div class="history-item" onclick="loadHistoryChat('Q3 SUV Sales Report')">
                                         <div class="history-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
-                                        <span class="history-text">Drafting Email</span>
+                                        <span class="history-text">Q3 SUV Sales Report</span>
                                     </div>
                                     <div class="history-section-title">Earlier</div>
-                                    <div class="history-item" onclick="loadHistoryChat('Project Brainstorming')">
+                                    <div class="history-item" onclick="loadHistoryChat('Ford F-150 Negotiation')">
                                         <div class="history-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
-                                        <span class="history-text">Project Brainstorming</span>
+                                        <span class="history-text">Ford F-150 Negotiation</span>
                                     </div>
                                 </div>
                             </div>
@@ -372,7 +430,7 @@
                                     <div class="empty-state-content">
                                         <div class="empty-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"></path></svg></div>
                                         <h2 class="greeting-title">Hi John,</h2>
-                                        <p class="greeting-subtitle">How can I help?</p>
+                                        <p class="greeting-subtitle">How can I help with your leads today?</p>
                                     </div>
                                 </div>
 
@@ -385,9 +443,9 @@
                                 <div class="input-group-container">
                                     
                                     <div class="suggestions-list" id="suggestionsList">
-                                        <div class="suggestion-item" onclick="startChat('Summarize the key points of this page')">Summarize the key points of this page</div>
-                                        <div class="suggestion-item" onclick="startChat('Draft a professional email reply')">Draft a professional email reply</div>
-                                        <div class="suggestion-item" onclick="startChat('Generate a list of action items')">Generate a list of action items</div>
+                                        <div class="suggestion-item" onclick="startChat('Summarize recent car leads')">Summarize recent car leads</div>
+                                        <div class="suggestion-item" onclick="startChat('Draft quote for Model X')">Draft quote for Model X</div>
+                                        <div class="suggestion-item" onclick="startChat('List high-priority test drives')">List high-priority test drives</div>
                                     </div>
 
                                     <div class="input-border-wrapper">
@@ -395,25 +453,25 @@
                                             
                                             <div class="skills-menu" id="skillsMenu">
                                                 <div class="skills-header">Skills</div>
-                                                <div class="skill-item" onclick="startChat('/next-move')">
-                                                    <div class="skill-name">/next-move</div>
-                                                    <div class="skill-desc">Tells exact next action to take</div>
+                                                <div class="skill-item" onclick="startChat('/inventory-check')">
+                                                    <div class="skill-name">/inventory-check</div>
+                                                    <div class="skill-desc">Check stock availability across lots</div>
                                                 </div>
-                                                <div class="skill-item" onclick="startChat('/deal-confidence')">
-                                                    <div class="skill-name">/deal-confidence</div>
-                                                    <div class="skill-desc">Shows likelihood of conversion success</div>
+                                                <div class="skill-item" onclick="startChat('/deal-probability')">
+                                                    <div class="skill-name">/deal-probability</div>
+                                                    <div class="skill-desc">Likelihood of closing current lead</div>
                                                 </div>
-                                                <div class="skill-item" onclick="startChat('/lead-priority')">
-                                                    <div class="skill-name">/lead-priority</div>
-                                                    <div class="skill-desc">Ranks leads by revenue potential</div>
+                                                <div class="skill-item" onclick="startChat('/credit-prequal')">
+                                                    <div class="skill-name">/credit-prequal</div>
+                                                    <div class="skill-desc">Quick credit estimation for buyer</div>
                                                 </div>
-                                                <div class="skill-item" onclick="startChat('/intent-breakdown')">
-                                                    <div class="skill-name">/intent-breakdown</div>
-                                                    <div class="skill-desc">Explains what buyer actually wants</div>
+                                                <div class="skill-item" onclick="startChat('/trade-in-val')">
+                                                    <div class="skill-name">/trade-in-val</div>
+                                                    <div class="skill-desc">Estimate trade-in value by VIN</div>
                                                 </div>
-                                                <div class="skill-item" onclick="startChat('/followup-history')">
-                                                    <div class="skill-name">/followup-history</div>
-                                                    <div class="skill-desc">Summarizes past contact quality</div>
+                                                <div class="skill-item" onclick="startChat('/schedule-drive')">
+                                                    <div class="skill-name">/schedule-drive</div>
+                                                    <div class="skill-desc">Book test drive slots</div>
                                                 </div>
                                             </div>
 
@@ -423,7 +481,7 @@
                                                     <span class="context-close" id="btnCloseContext">×</span>
                                                 </div>
                                             </div>
-                                            <input type="text" class="main-input" placeholder="Ask or assign task...">
+                                            <input type="text" class="main-input" placeholder="Ask about leads or inventory...">
                                             <div class="input-toolbar">
                                                 <div class="toolbar-left">
                                                     <button class="tool-icon-btn" id="btnSlashMenu" title="Slash Commands">
@@ -451,10 +509,26 @@
                 </aside>
 
                 <main class="main-content pushed-by-dock" id="mainContent">
-                    <div class="dummy-app-view">
-                        <div class="app-icon-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg></div>
-                        <div class="page-text-lines"><div class="line" style="width: 60%"></div><div class="line" style="width: 90%"></div><div class="line" style="width: 85%"></div><div class="line" style="width: 40%"></div></div>
-                        <div class="hint-text">(Click here to restore Context & Suggestions)</div>
+                    <div class="table-skeleton-container">
+                        <div class="skeleton-row header">
+                            <div class="skeleton-cell"><div class="skeleton-bar"></div></div>
+                            <div class="skeleton-cell"><div class="skeleton-bar"></div></div>
+                            <div class="skeleton-cell"><div class="skeleton-bar"></div></div>
+                            <div class="skeleton-cell"><div class="skeleton-bar"></div></div>
+                            <div class="skeleton-cell"><div class="skeleton-bar"></div></div>
+                            <div class="skeleton-cell"><div class="skeleton-bar"></div></div>
+                        </div>
+                        
+                        <script>
+                            for(let i = 0; i < 20; i++) {
+                                let cellsHtml = '';
+                                for(let j=0; j<6; j++) {
+                                     const width = 50 + Math.random() * 50;
+                                     cellsHtml += `<div class="skeleton-cell"><div class="skeleton-bar" style="width: ${width}%"></div></div>`;
+                                }
+                                document.write(`<div class="skeleton-row">${cellsHtml}</div>`);
+                            }
+                        </script>
                     </div>
                 </main>
 
@@ -491,8 +565,53 @@
 
         const btnSlashMenu = document.getElementById('btnSlashMenu');
         const skillsMenu = document.getElementById('skillsMenu');
+        const dragHandle = document.getElementById('dragHandle');
 
         let historyAdded = false;
+
+        // --- REQ 2: DRAG LOGIC ---
+        let isDragging = false;
+        let startX, startLeft;
+
+        dragHandle.onmousedown = function(e) {
+            if(!panel.classList.contains('state-minimized')) return;
+            
+            isDragging = true;
+            startX = e.clientX;
+            
+            // Get computed style for left because inline style might be empty initially
+            const style = window.getComputedStyle(panel);
+            startLeft = parseInt(style.left);
+            
+            // Disable transition during drag for smoothness
+            panel.style.transition = 'none';
+            document.body.style.cursor = 'grabbing';
+            e.preventDefault(); // Prevent text selection
+        };
+
+        document.onmousemove = function(e) {
+            if (!isDragging) return;
+            
+            const dx = e.clientX - startX;
+            let newLeft = startLeft + dx;
+            
+            // Constraints (Padding of 20px from edges)
+            const maxLeft = window.innerWidth - panel.offsetWidth - 20;
+            if (newLeft < 20) newLeft = 20;
+            if (newLeft > maxLeft) newLeft = maxLeft;
+            
+            panel.style.left = newLeft + 'px';
+        };
+
+        document.onmouseup = function() {
+            if (isDragging) {
+                isDragging = false;
+                // Re-enable transition for other interactions
+                panel.style.transition = ''; 
+                document.body.style.cursor = '';
+            }
+        };
+
 
         function scrollToBottom() {
             chatScrollArea.scrollTop = chatScrollArea.scrollHeight;
@@ -509,69 +628,57 @@
             }
         });
 
-        // 1. MAPPING FOR DISPLAY NAMES (Removing slash)
         const skillDisplayNames = {
-            '/next-move': 'Next move',
-            '/deal-confidence': 'Deal confidence',
-            '/lead-priority': 'Lead priority',
-            '/intent-breakdown': 'Intent breakdown',
-            '/followup-history': 'Follow-up history'
+            '/inventory-check': 'Inventory check',
+            '/deal-probability': 'Deal probability',
+            '/credit-prequal': 'Credit pre-qual',
+            '/trade-in-val': 'Trade-in value',
+            '/schedule-drive': 'Schedule test drive'
         };
 
-        // 2. LOAD HISTORY CHAT (No Animation, Instant State)
         window.loadHistoryChat = function(title) {
             emptyState.style.display = 'none';
             suggestionsList.style.display = 'none';
             activeChat.style.display = 'flex';
             skillsMenu.classList.remove('visible');
             
-            // Set Title to history item
             chatTitle.innerText = title;
-            
-            // Clear current chat
             activeChat.innerHTML = '';
 
-            // Simulate loading previous conversation (User + AI)
             const userBubble = document.createElement('div');
             userBubble.className = 'message-bubble user';
-            userBubble.innerText = title; // Simulating the prompt was the title
+            userBubble.innerText = title;
             activeChat.appendChild(userBubble);
 
             const aiBubble = document.createElement('div');
             aiBubble.className = 'message-bubble ai';
-            aiBubble.innerHTML = `<p>Here is the previous conversation data for <strong>${title}</strong>. This is a simulated history view.</p>`;
+            aiBubble.innerHTML = `<p>Loading deal details for <strong>${title}</strong>...</p>`;
             activeChat.appendChild(aiBubble);
 
-            // Hide sheet
             historySheet.classList.remove('open');
             scrollToBottom();
         }
 
-        // 3. START NEW CHAT (Animated)
         window.startChat = function(userText) {
             emptyState.style.display = 'none';
             suggestionsList.style.display = 'none';
             activeChat.style.display = 'flex';
             skillsMenu.classList.remove('visible'); 
             
-            // Determine Display Text (Remove Slash if skill)
             let displayText = userText;
             if (skillDisplayNames[userText]) {
                 displayText = skillDisplayNames[userText];
             }
 
-            // Title Logic: Only update if first chat in session
             if (!historyAdded) {
                 if (userText.includes("Summarize")) {
-                    chatTitle.innerText = "Page Summary - Page 1";
+                    chatTitle.innerText = "Lead Summary - Page 1";
                 } else {
                     chatTitle.innerText = displayText;
                 }
 
-                // Add to history sidebar (Visual only)
                 const newItem = document.createElement('div');
                 newItem.className = 'history-item';
-                // REQ 2: Use loadHistoryChat for history clicks
                 const historyTitle = chatTitle.innerText; 
                 newItem.onclick = () => window.loadHistoryChat(historyTitle); 
                 
@@ -581,10 +688,9 @@
                 historyAdded = true;
             }
 
-            // User Bubble
             const userBubble = document.createElement('div');
             userBubble.className = 'message-bubble user';
-            userBubble.innerText = displayText; // Use clean text
+            userBubble.innerText = displayText;
             activeChat.appendChild(userBubble);
             scrollToBottom();
 
@@ -594,56 +700,57 @@
                 
                 let responseHTML = "";
                 
-                // REQ 1: UNIQUE RESPONSES FOR SUGGESTIONS
+                // REQ 1: CRM Specific Responses
                 switch(userText) {
-                    case 'Summarize the key points of this page':
+                    case 'Summarize recent car leads':
                         responseHTML = `
-                            <p style="margin-bottom: 8px;">Here is a summary of the key points you requested. I've analyzed the page content and extracted the main action items:</p>
+                            <p style="margin-bottom: 8px;">Here is a summary of the active car leads from the current page view:</p>
                             <ul style="margin: 0; padding-left: 20px; list-style-type: disc;">
-                                <li>Review Q3 financial reports for discrepancies.</li>
-                                <li>Schedule the weekly team sync for Friday at 10 AM.</li>
-                                <li>Update the project documentation on Confluence.</li>
-                                <li>Finalize budget approval with the finance department.</li>
-                                <li>Send follow-up emails to the new client list.</li>
+                                <li><strong>John Doe:</strong> Interested in 2024 Honda CR-V. Financing pending.</li>
+                                <li><strong>Sarah Smith:</strong> Requesting test drive for Ford Explorer. Trade-in valuation needed.</li>
+                                <li><strong>Mike Johnson:</strong> Lease expiring soon. Looking at Toyota Camry options.</li>
+                                <li><strong>Corporate Fleet:</strong> Inquiry for 5 Chevy Silverados. Quote sent.</li>
+                                <li><strong>Pending Action:</strong> 3 unread messages from internet leads.</li>
                             </ul>
                         `;
                         break;
-                    case 'Draft a professional email reply':
+                    case 'Draft quote for Model X':
                         responseHTML = `
-                            <p><strong>Subject: Re: Update on Project Alpha</strong></p>
-                            <p>Hi Team,</p>
-                            <p>Thank you for the detailed update. I have reviewed the attached documents and everything appears to be in order. Please proceed with the next phase as planned.</p>
-                            <p>Best regards,<br>[Your Name]</p>
+                            <p><strong>Subject: Your Tesla Model X Quote</strong></p>
+                            <p>Hi [Customer Name],</p>
+                            <p>Great choice on the Model X. Based on your configuration (Long Range, Black Interior), here is the preliminary quote attached. This includes the federal tax incentive deduction.</p>
+                            <p>Let me know if you want to proceed with the credit application.</p>
+                            <p>Best,<br>[Your Name]</p>
                         `;
                         break;
-                    case 'Generate a list of action items':
+                    case 'List high-priority test drives':
                         responseHTML = `
-                            <p>Based on the current page context, here are the suggested action items:</p>
+                            <p><strong>Today's High Priority Test Drives:</strong></p>
                             <ul style="margin: 0; padding-left: 20px; list-style-type: disc;">
-                                <li>Verify user permissions for the new module.</li>
-                                <li>Run unit tests for the API integration.</li>
-                                <li>Update the release notes draft.</li>
-                                <li>Schedule a demo with the product owner.</li>
+                                <li>10:00 AM - BMW X5 (Client: A. Miller)</li>
+                                <li>1:30 PM - Audi Q7 (Client: B. Davis) - <em>Confirm trade-in arrival</em></li>
+                                <li>3:00 PM - Mercedes C-Class (Client: C. Wilson)</li>
+                                <li>4:30 PM - Porsche Macan (Client: D. Brown)</li>
                             </ul>
                         `;
                         break;
-                    case '/next-move':
-                        responseHTML = `<strong>Next Best Action:</strong> Schedule a follow-up call with the key stakeholder by Tuesday to discuss the contract terms.`;
+                    case '/inventory-check':
+                        responseHTML = `<strong>Stock Status:</strong><br>We have 3 units matching that description at the Main Lot, and 1 in transit (ETA: 5 days).`;
                         break;
-                    case '/deal-confidence':
-                        responseHTML = `<strong>Confidence Score: 85%</strong><br>Engagement is high. We have verified budget and authority. Close date is projected for end of quarter.`;
+                    case '/deal-probability':
+                        responseHTML = `<strong>Deal Probability: 75%</strong><br>Customer has high intent. Credit score is solid (720+). Pending spouse approval on color.`;
                         break;
-                    case '/lead-priority':
-                        responseHTML = `<strong>Priority: High (Tier 1)</strong><br>This lead matches our ICP perfectly with a potential revenue of $50k/year.`;
+                    case '/credit-prequal':
+                        responseHTML = `<strong>Soft Pull Result:</strong><br>Tier 1 Credit Qualified. Rate eligibility: 3.9% APR for 60 months.`;
                         break;
-                    case '/intent-breakdown':
-                        responseHTML = `<strong>Intent Analysis:</strong><br>The buyer is showing strong intent for the <em>Enterprise Plan</em>, focusing heavily on security features and SSO integration.`;
+                    case '/trade-in-val':
+                        responseHTML = `<strong>Estimated Value:</strong> $18,500 - $20,000<br>Based on 2018 model year with 45k miles and 'Good' condition.`;
                         break;
-                    case '/followup-history':
-                        responseHTML = `<strong>Last Contact:</strong> 2 days ago via Email.<br><strong>Status:</strong> Awaiting reply regarding technical requirements.`;
+                    case '/schedule-drive':
+                        responseHTML = `<strong>Slot Confirmed:</strong><br>Test drive scheduled for Saturday, Oct 24th at 11:00 AM. Confirmation SMS sent.`;
                         break;
                     default:
-                        responseHTML = "I'm processing your request. Please wait a moment.";
+                        responseHTML = "Analyzing CRM data...";
                 }
 
                 aiBubble.innerHTML = responseHTML;
@@ -714,15 +821,21 @@
             if (state === 'docked') {
                 panel.classList.add('state-docked');
                 mainContent.classList.add('pushed-by-dock');
+                // Reset left when docking to ensure it snaps back
+                panel.style.left = ''; 
             } else if (state === 'minimized') {
                 panel.classList.add('state-minimized');
+                // Ensure default position if not dragged yet
+                if(!panel.style.left) panel.style.left = '20px';
             } else if (state === 'fullscreen') {
                 panel.classList.add('state-fullscreen');
                 mainContent.classList.add('full-hidden');
                 btnFull.style.display = 'none';
                 btnDock.style.display = 'flex';
+                panel.style.left = '';
             } else if (state === 'closed') {
                 panel.classList.add('state-closed');
+                panel.style.left = '';
             }
         }
 
