@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Panel - Left Aligned Minimized</title>
+    <title>Chat Panel - Final Border Fix</title>
     <style>
         /* --- Reset & Base --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -80,9 +80,7 @@
 
         .minimized-view-wrapper {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; align-items: center; 
-            /* REQ 1: Removed justify-content: space-between to allow left alignment */
-            padding: 0 12px;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 16px;
             opacity: 0; pointer-events: none; min-width: 280px;
             transition: opacity 0.2s ease;
         }
@@ -99,14 +97,18 @@
         /* --- CARD CONTAINER --- */
         .chat-card-container {
             flex: 1; background-color: #fff; 
+            /* REQ 1: Fixed Border Radius */
             border-radius: 16px 16px 0 0;
+            
             display: flex; flex-direction: column; overflow: hidden;
             box-shadow: 0 -2px 10px rgba(0,0,0,0.03); 
             border: none;
             position: relative; 
         }
         .chat-sidebar.state-fullscreen .main-view-wrapper { width: 100%; min-width: 100%; padding: 0; }
-        .chat-sidebar.state-fullscreen .chat-card-container { border-radius: 0; }
+        
+        /* REQ 1: Ensure full screen maintains border radius on top */
+        .chat-sidebar.state-fullscreen .chat-card-container { border-radius: 16px 16px 0 0; }
 
         .nav-header { padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; background-color: #fff; border-bottom: 1px solid #f5f5f5; flex-shrink: 0; }
         .action-btn { background: transparent; border: none; cursor: pointer; padding: 8px; border-radius: 8px; color: #555; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
@@ -114,26 +116,16 @@
         .action-btn svg { width: 18px; height: 18px; stroke-width: 2px; }
         .chat-title { font-size: 0.95rem; font-weight: 600; color: #222; text-align: center; flex: 1; }
 
-        /* Minimized Header Items */
+        .min-brand { display: flex; align-items: center; gap: 8px; font-weight: 600; color: #333; font-size: 0.95rem; pointer-events: none; }
+        .min-controls { display: flex; gap: 4px; margin-left: auto; }
+        .min-btn { background: none; border: none; cursor: pointer; color: #555; display: flex; align-items: center; padding: 6px; border-radius: 4px; }
+        .min-btn:hover { color: #000; background-color: rgba(255,255,255,0.5); }
+
         .drag-handle {
             cursor: grab; color: #94A3B8; display: flex; align-items: center; padding: 4px; margin-right: 4px;
         }
         .drag-handle:active { cursor: grabbing; color: #475569; }
         .drag-handle svg { width: 14px; height: 14px; stroke-width: 2px; }
-
-        .min-brand { 
-            display: flex; align-items: center; gap: 8px; 
-            font-weight: 600; color: #333; font-size: 0.95rem; 
-            pointer-events: none; 
-        }
-        
-        .min-controls { 
-            display: flex; gap: 4px; 
-            /* REQ 1: Pushes controls to the far right */
-            margin-left: auto; 
-        }
-        .min-btn { background: none; border: none; cursor: pointer; color: #555; display: flex; align-items: center; padding: 6px; border-radius: 4px; }
-        .min-btn:hover { color: #000; background-color: rgba(255,255,255,0.5); }
 
         /* --- CONTENT AREAS --- */
         .chat-scroll-area { 
@@ -160,7 +152,9 @@
             flex-direction: column;
             gap: 16px;
             padding-bottom: 20px;
+            width: 100%;
         }
+        .chat-sidebar.state-fullscreen .active-chat-wrapper { width: 75%; max-width: 1000px; align-self: center; }
         
         .message-bubble {
             max-width: 85%;
@@ -260,6 +254,7 @@
         .history-sheet {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #fff; z-index: 50; display: flex; flex-direction: column; transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-right: 1px solid #f0f0f0;
         }
+        .chat-sidebar.state-fullscreen .history-sheet { width: 320px; border-right: 1px solid #E2E8F0; }
         .history-sheet.open { transform: translateX(0); }
 
         .history-header {
@@ -571,6 +566,7 @@
         let isDragging = false;
         let startX, startLeft;
 
+        // DRAG HANDLER
         dragHandle.onmousedown = function(e) {
             if(!panel.classList.contains('state-minimized')) return;
             isDragging = true;
@@ -794,6 +790,25 @@
 
         btnShowHistory.onclick = () => historySheet.classList.add('open');
         btnCloseHistory.onclick = () => historySheet.classList.remove('open');
+
+        // SHORTCUT LOGIC - SIMPLE
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return;
+            const key = e.key.toLowerCase();
+            
+            if (key === 't') {
+                // Shift + T (Windows preference, usually)
+                if (e.shiftKey) {
+                    e.preventDefault();
+                    navAiToggle.click();
+                }
+                // Alt/Option + T (Mac preference)
+                if (e.altKey) {
+                    e.preventDefault();
+                    navAiToggle.click();
+                }
+            }
+        });
 
         function setState(state) {
             panel.classList.remove('state-docked', 'state-minimized', 'state-fullscreen', 'state-closed');
