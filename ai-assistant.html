@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Panel - Final Font Fix</title>
+    <title>Chat Panel - Skills Fix</title>
     <style>
         /* --- Reset & Base --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body, html { 
             height: 100%; 
-            /* Global Sans-Serif Font */
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
             color: #333; 
             overflow: hidden; 
@@ -57,12 +56,7 @@
             background: linear-gradient(270deg, #ECFEFF 0%, #F5F3FF 74.52%, #EDE9FE 100%);
             border-right: 1px solid rgba(0,0,0,0.05);
             display: flex; flex-direction: column; overflow: hidden;
-            transition: 
-                transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                border-radius 0.4s ease,
-                opacity 0.3s ease;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .chat-sidebar.state-docked { width: 400px; height: 100%; border-radius: 0; transform: translateX(0); opacity: 1; }
@@ -73,7 +67,7 @@
             box-shadow: 0 -4px 12px rgba(0,0,0,0.08); opacity: 1;
         }
         .chat-sidebar.state-fullscreen { width: 100%; height: 100%; border-radius: 0; z-index: 100; transform: translateX(0); opacity: 1; }
-        .chat-sidebar.state-closed { width: 400px; height: 100%; transform: translateX(-100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease; pointer-events: none; opacity: 1; }
+        .chat-sidebar.state-closed { width: 400px; height: 100%; transform: translateX(-100%); pointer-events: none; opacity: 1; }
 
         /* --- WRAPPERS --- */
         .main-view-wrapper {
@@ -117,12 +111,7 @@
         .action-btn svg { width: 18px; height: 18px; stroke-width: 2px; }
         .chat-title { font-size: 0.95rem; font-weight: 600; color: #222; text-align: center; flex: 1; }
 
-        /* REQ: MINIMIZED BRAND FONT FIX */
-        .min-brand { 
-            display: flex; align-items: center; gap: 8px; 
-            font-weight: 600; color: #333; font-size: 0.95rem;
-            /* Removed "Georgia" serif font family here to inherit Sans-Serif */
-        }
+        .min-brand { display: flex; align-items: center; gap: 8px; font-weight: 600; color: #333; font-size: 0.95rem; }
         .min-controls { display: flex; gap: 4px; }
         .min-btn { background: none; border: none; cursor: pointer; color: #555; display: flex; align-items: center; padding: 6px; border-radius: 4px; }
         .min-btn:hover { color: #000; background-color: rgba(255,255,255,0.5); }
@@ -135,16 +124,10 @@
             background-color: #fff; 
             display: flex; 
             flex-direction: column; 
+            scroll-behavior: smooth;
         }
         
-        /* Empty State */
-        .empty-state-wrapper {
-            flex: 1;
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center;
-        }
+        .empty-state-wrapper { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .empty-state-content { text-align: left; width: 100%; padding: 0 10px; max-width: 400px; transition: width 0.3s; }
         .chat-sidebar.state-fullscreen .empty-state-content { width: 75%; max-width: 1000px; margin: 0 auto; }
 
@@ -154,37 +137,53 @@
 
         /* Active Chat State */
         .active-chat-wrapper {
-            display: none; /* Hidden by default */
+            display: none; 
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
             padding-bottom: 20px;
         }
+        
+        /* BUBBLE STYLING */
         .message-bubble {
             max-width: 85%;
-            padding: 12px 16px;
-            font-size: 0.95rem;
-            line-height: 1.5;
+            padding: 10px 14px; 
+            font-size: 0.9rem;
+            line-height: 1.45;
             position: relative;
         }
+        
         .message-bubble.user {
             align-self: flex-end;
-            background-color: #00BFA5;
-            color: #fff;
+            background-color: #EEF2F6;
+            color: #161616;
             border-radius: 12px 12px 0 12px;
         }
+        
         .message-bubble.ai {
             align-self: flex-start;
-            background-color: #F1F5F9;
-            color: #334155;
-            border-radius: 12px 12px 12px 0;
+            background-color: transparent;
+            color: #444F5C;
+            padding-left: 0;
+            padding-bottom: 4px;
         }
+
+        .message-bubble.ai ul { margin: 8px 0 0 0; padding-left: 20px; list-style-type: disc; }
+        .message-bubble.ai li { margin-bottom: 2px; }
+
+        .ai-actions-row { display: flex; align-self: flex-start; gap: 12px; margin-top: -8px; margin-bottom: 12px; padding-left: 0; }
+        .ai-action-btn { background: transparent; border: none; cursor: pointer; color: #64748B; padding: 4px; border-radius: 4px; display: flex; align-items: center; justify-content: center; transition: color 0.2s, background 0.2s; }
+        .ai-action-btn:hover { color: #1E293B; background-color: #F1F5F9; }
+        .ai-action-btn svg { width: 16px; height: 16px; stroke-width: 2px; }
 
 
         /* --- INPUT AREA --- */
-        .input-wrapper { padding: 16px 16px 8px 16px; background-color: #fff; width: 100%; flex-shrink: 0; }
+        .input-wrapper { 
+            padding: 16px 16px 8px 16px; 
+            background-color: #fff; width: 100%; flex-shrink: 0; position: relative; 
+        }
         .chat-sidebar.state-fullscreen .input-wrapper { display: flex; flex-direction: column; align-items: center; }
         .chat-sidebar.state-fullscreen .input-group-container { width: 75%; max-width: 1000px; }
-        .input-group-container { width: 100%; transition: width 0.3s; }
+        .input-group-container { width: 100%; transition: width 0.3s; position: relative; }
 
         .suggestions-list { display: flex; flex-direction: column; margin-bottom: 12px; border: none; background-color: transparent; }
         .suggestion-item { background-color: transparent; border: none; border-bottom: 1px solid #E2E8F0; padding: 10px 10px; font-size: 0.9rem; color: #64748B; cursor: pointer; text-align: left; transition: background-color 0.2s, color 0.2s; line-height: 1.4; }
@@ -192,9 +191,31 @@
         .suggestion-item:hover { background-color: #EEF2F6; color: #1E293B; border-radius: 6px; border-bottom-color: transparent; }
 
         .input-border-wrapper { background-color: #EEF2F6; border: 1px solid #E2E8F0; padding: 4px; border-radius: 16px; width: 100%; }
-        .enhanced-input-box { border: 1px solid #E2E8F0; border-radius: 12px; padding: 12px 14px; background-color: #fff; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.02); transition: border-color 0.2s; }
+        
+        .enhanced-input-box { 
+            border: 1px solid #E2E8F0; border-radius: 12px; padding: 12px 14px; background-color: #fff; 
+            display: flex; flex-direction: column; gap: 8px; 
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02); 
+            transition: border-color 0.2s; 
+            position: relative;
+        }
         .enhanced-input-box:focus-within { border-color: #CBD5E0; }
         
+        .skills-menu {
+            position: absolute; bottom: 60px; left: 10px; width: 280px;
+            background-color: #fff; border: 1px solid #E2E8F0; border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12); padding: 8px 0;
+            display: none; z-index: 100; animation: slideUp 0.15s ease-out;
+        }
+        .skills-menu.visible { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .skills-header { padding: 8px 16px 6px 16px; font-size: 0.75rem; font-weight: 700; color: #161616; text-transform: uppercase; letter-spacing: 0.05em; }
+        .skill-item { padding: 8px 16px; cursor: pointer; transition: background 0.2s; }
+        .skill-item:hover { background-color: #F7FAFC; }
+        .skill-name { font-size: 0.9rem; color: #161616; font-weight: 500; margin-bottom: 2px; }
+        .skill-desc { font-size: 0.8rem; color: #94A3B8; }
+
         .context-row { display: flex; }
         .context-pill { display: inline-flex; align-items: center; gap: 6px; background-color: #EDF2F7; color: #4A5568; font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: 12px; user-select: none; }
         .context-close { cursor: pointer; color: #718096; font-size: 14px; line-height: 1; }
@@ -212,7 +233,10 @@
         .send-btn-square:hover { background-color: #E2E8F0; color: #334155; }
         .send-btn-square svg { width: 16px; height: 16px; stroke-width: 2px; }
 
-        .disclaimer-text { text-align: center; font-size: 0.7rem; color: #94A3B8; padding-bottom: 12px; margin-top: 8px; }
+        .disclaimer-text { 
+            text-align: center; font-size: 0.7rem; color: #94A3B8; 
+            padding-bottom: 2px; margin-top: 6px; 
+        }
 
         /* --- HISTORY SIDE SHEET --- */
         .history-sheet {
@@ -242,20 +266,10 @@
         .history-section-title { font-size: 0.75rem; font-weight: 600; color: #94A3B8; margin: 16px 0 8px 0; text-transform: uppercase; letter-spacing: 0.05em; }
         .history-section-title:first-child { margin-top: 0; }
 
-        .history-item { 
-            display: flex; align-items: center; 
-            gap: 12px; padding: 10px 12px; border-radius: 8px; cursor: pointer; transition: background 0.2s; color: #4A5568; font-size: 0.9rem; 
-        }
+        .history-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; cursor: pointer; transition: background 0.2s; color: #4A5568; font-size: 0.9rem; }
         .history-item:hover { background-color: #F7FAFC; color: #1E293B; }
-        .history-icon { 
-            color: #A0AEC0; 
-            flex-shrink: 0; 
-            display: flex; align-items: center; justify-content: center;
-        }
-        .history-text { 
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
-            line-height: 1.2; 
-        }
+        .history-icon { color: #A0AEC0; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .history-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
 
         .main-content { flex: 1; height: 100%; background-color: #fff; padding: 60px; text-align: center; transition: padding-left 0.4s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
         .main-content.pushed-by-dock { padding-left: 460px; }
@@ -301,7 +315,6 @@
                     </div>
 
                     <div class="main-view-wrapper">
-                        
                         <div class="top-bar">
                             <div class="brand-text">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="color: #00BFA5;"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"></path></svg>
@@ -330,17 +343,17 @@
                                     </div>
                                 </div>
                                 <div class="history-content">
-                                    <div class="history-section-title">Today</div>
-                                    <div class="history-item" onclick="startChat('Q3 Performance Analysis')">
+                                    <div class="history-section-title" id="historyTodaySection">Today</div>
+                                    <div class="history-item" onclick="loadHistoryChat('Q3 Performance Analysis')">
                                         <div class="history-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
                                         <span class="history-text">Q3 Performance Analysis</span>
                                     </div>
-                                    <div class="history-item" onclick="startChat('Drafting Email')">
+                                    <div class="history-item" onclick="loadHistoryChat('Drafting Email')">
                                         <div class="history-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
                                         <span class="history-text">Drafting Email</span>
                                     </div>
                                     <div class="history-section-title">Earlier</div>
-                                    <div class="history-item" onclick="startChat('Project Brainstorming')">
+                                    <div class="history-item" onclick="loadHistoryChat('Project Brainstorming')">
                                         <div class="history-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
                                         <span class="history-text">Project Brainstorming</span>
                                     </div>
@@ -379,17 +392,49 @@
 
                                     <div class="input-border-wrapper">
                                         <div class="enhanced-input-box">
+                                            
+                                            <div class="skills-menu" id="skillsMenu">
+                                                <div class="skills-header">Skills</div>
+                                                <div class="skill-item" onclick="startChat('/next-move')">
+                                                    <div class="skill-name">/next-move</div>
+                                                    <div class="skill-desc">Tells exact next action to take</div>
+                                                </div>
+                                                <div class="skill-item" onclick="startChat('/deal-confidence')">
+                                                    <div class="skill-name">/deal-confidence</div>
+                                                    <div class="skill-desc">Shows likelihood of conversion success</div>
+                                                </div>
+                                                <div class="skill-item" onclick="startChat('/lead-priority')">
+                                                    <div class="skill-name">/lead-priority</div>
+                                                    <div class="skill-desc">Ranks leads by revenue potential</div>
+                                                </div>
+                                                <div class="skill-item" onclick="startChat('/intent-breakdown')">
+                                                    <div class="skill-name">/intent-breakdown</div>
+                                                    <div class="skill-desc">Explains what buyer actually wants</div>
+                                                </div>
+                                                <div class="skill-item" onclick="startChat('/followup-history')">
+                                                    <div class="skill-name">/followup-history</div>
+                                                    <div class="skill-desc">Summarizes past contact quality</div>
+                                                </div>
+                                            </div>
+
                                             <div class="context-row" id="contextRow">
                                                 <div class="context-pill">
-                                                    Page Context 
+                                                    Page 1 
                                                     <span class="context-close" id="btnCloseContext">×</span>
                                                 </div>
                                             </div>
                                             <input type="text" class="main-input" placeholder="Ask or assign task...">
                                             <div class="input-toolbar">
                                                 <div class="toolbar-left">
-                                                    <button class="tool-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg></button>
-                                                    <button class="tool-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg></button>
+                                                    <button class="tool-icon-btn" id="btnSlashMenu" title="Slash Commands">
+                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                                                            <rect x="3" y="3" width="18" height="18" rx="4" ry="4"></rect>
+                                                            <line x1="10" y1="16" x2="14" y2="8"></line>
+                                                        </svg>
+                                                    </button>
+                                                    <button class="tool-icon-btn" title="Attach">
+                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                                                    </button>
                                                 </div>
                                                 <div class="toolbar-right">
                                                     <button class="tool-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg></button>
@@ -440,23 +485,188 @@
         
         const emptyState = document.getElementById('emptyState');
         const activeChat = document.getElementById('activeChat');
+        const chatScrollArea = document.querySelector('.chat-scroll-area');
+        const chatTitle = document.querySelector('.chat-title');
+        const historyTodaySection = document.getElementById('historyTodaySection');
 
-        // CHAT LOGIC
+        const btnSlashMenu = document.getElementById('btnSlashMenu');
+        const skillsMenu = document.getElementById('skillsMenu');
+
+        let historyAdded = false;
+
+        function scrollToBottom() {
+            chatScrollArea.scrollTop = chatScrollArea.scrollHeight;
+        }
+
+        btnSlashMenu.onclick = (e) => {
+            e.stopPropagation();
+            skillsMenu.classList.toggle('visible');
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!skillsMenu.contains(e.target) && e.target !== btnSlashMenu) {
+                skillsMenu.classList.remove('visible');
+            }
+        });
+
+        // 1. MAPPING FOR DISPLAY NAMES (Removing slash)
+        const skillDisplayNames = {
+            '/next-move': 'Next move',
+            '/deal-confidence': 'Deal confidence',
+            '/lead-priority': 'Lead priority',
+            '/intent-breakdown': 'Intent breakdown',
+            '/followup-history': 'Follow-up history'
+        };
+
+        // 2. LOAD HISTORY CHAT (No Animation, Instant State)
+        window.loadHistoryChat = function(title) {
+            emptyState.style.display = 'none';
+            suggestionsList.style.display = 'none';
+            activeChat.style.display = 'flex';
+            skillsMenu.classList.remove('visible');
+            
+            // Set Title to history item
+            chatTitle.innerText = title;
+            
+            // Clear current chat
+            activeChat.innerHTML = '';
+
+            // Simulate loading previous conversation (User + AI)
+            const userBubble = document.createElement('div');
+            userBubble.className = 'message-bubble user';
+            userBubble.innerText = title; // Simulating the prompt was the title
+            activeChat.appendChild(userBubble);
+
+            const aiBubble = document.createElement('div');
+            aiBubble.className = 'message-bubble ai';
+            aiBubble.innerHTML = `<p>Here is the previous conversation data for <strong>${title}</strong>. This is a simulated history view.</p>`;
+            activeChat.appendChild(aiBubble);
+
+            // Hide sheet
+            historySheet.classList.remove('open');
+            scrollToBottom();
+        }
+
+        // 3. START NEW CHAT (Animated)
         window.startChat = function(userText) {
             emptyState.style.display = 'none';
             suggestionsList.style.display = 'none';
             activeChat.style.display = 'flex';
+            skillsMenu.classList.remove('visible'); 
             
+            // Determine Display Text (Remove Slash if skill)
+            let displayText = userText;
+            if (skillDisplayNames[userText]) {
+                displayText = skillDisplayNames[userText];
+            }
+
+            // Title Logic: Only update if first chat in session
+            if (!historyAdded) {
+                if (userText.includes("Summarize")) {
+                    chatTitle.innerText = "Page Summary - Page 1";
+                } else {
+                    chatTitle.innerText = displayText;
+                }
+
+                // Add to history sidebar (Visual only)
+                const newItem = document.createElement('div');
+                newItem.className = 'history-item';
+                // REQ 2: Use loadHistoryChat for history clicks
+                const historyTitle = chatTitle.innerText; 
+                newItem.onclick = () => window.loadHistoryChat(historyTitle); 
+                
+                newItem.innerHTML = `<div class="history-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div><span class="history-text">${historyTitle}</span>`;
+                historyTodaySection.insertAdjacentElement('afterend', newItem);
+                
+                historyAdded = true;
+            }
+
+            // User Bubble
             const userBubble = document.createElement('div');
             userBubble.className = 'message-bubble user';
-            userBubble.innerText = userText;
+            userBubble.innerText = displayText; // Use clean text
             activeChat.appendChild(userBubble);
+            scrollToBottom();
 
             setTimeout(() => {
                 const aiBubble = document.createElement('div');
                 aiBubble.className = 'message-bubble ai';
-                aiBubble.innerText = "Here is a summary of the key points you requested. I've analyzed the page content and extracted the main action items.";
+                
+                let responseHTML = "";
+                
+                // REQ 1: UNIQUE RESPONSES FOR SUGGESTIONS
+                switch(userText) {
+                    case 'Summarize the key points of this page':
+                        responseHTML = `
+                            <p style="margin-bottom: 8px;">Here is a summary of the key points you requested. I've analyzed the page content and extracted the main action items:</p>
+                            <ul style="margin: 0; padding-left: 20px; list-style-type: disc;">
+                                <li>Review Q3 financial reports for discrepancies.</li>
+                                <li>Schedule the weekly team sync for Friday at 10 AM.</li>
+                                <li>Update the project documentation on Confluence.</li>
+                                <li>Finalize budget approval with the finance department.</li>
+                                <li>Send follow-up emails to the new client list.</li>
+                            </ul>
+                        `;
+                        break;
+                    case 'Draft a professional email reply':
+                        responseHTML = `
+                            <p><strong>Subject: Re: Update on Project Alpha</strong></p>
+                            <p>Hi Team,</p>
+                            <p>Thank you for the detailed update. I have reviewed the attached documents and everything appears to be in order. Please proceed with the next phase as planned.</p>
+                            <p>Best regards,<br>[Your Name]</p>
+                        `;
+                        break;
+                    case 'Generate a list of action items':
+                        responseHTML = `
+                            <p>Based on the current page context, here are the suggested action items:</p>
+                            <ul style="margin: 0; padding-left: 20px; list-style-type: disc;">
+                                <li>Verify user permissions for the new module.</li>
+                                <li>Run unit tests for the API integration.</li>
+                                <li>Update the release notes draft.</li>
+                                <li>Schedule a demo with the product owner.</li>
+                            </ul>
+                        `;
+                        break;
+                    case '/next-move':
+                        responseHTML = `<strong>Next Best Action:</strong> Schedule a follow-up call with the key stakeholder by Tuesday to discuss the contract terms.`;
+                        break;
+                    case '/deal-confidence':
+                        responseHTML = `<strong>Confidence Score: 85%</strong><br>Engagement is high. We have verified budget and authority. Close date is projected for end of quarter.`;
+                        break;
+                    case '/lead-priority':
+                        responseHTML = `<strong>Priority: High (Tier 1)</strong><br>This lead matches our ICP perfectly with a potential revenue of $50k/year.`;
+                        break;
+                    case '/intent-breakdown':
+                        responseHTML = `<strong>Intent Analysis:</strong><br>The buyer is showing strong intent for the <em>Enterprise Plan</em>, focusing heavily on security features and SSO integration.`;
+                        break;
+                    case '/followup-history':
+                        responseHTML = `<strong>Last Contact:</strong> 2 days ago via Email.<br><strong>Status:</strong> Awaiting reply regarding technical requirements.`;
+                        break;
+                    default:
+                        responseHTML = "I'm processing your request. Please wait a moment.";
+                }
+
+                aiBubble.innerHTML = responseHTML;
                 activeChat.appendChild(aiBubble);
+
+                const actionRow = document.createElement('div');
+                actionRow.className = 'ai-actions-row';
+                const icons = [
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>',
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path></svg>',
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>',
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>',
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>'
+                ];
+                icons.forEach(svg => {
+                    const btn = document.createElement('button');
+                    btn.className = 'ai-action-btn';
+                    btn.innerHTML = svg;
+                    actionRow.appendChild(btn);
+                });
+                activeChat.appendChild(actionRow);
+                scrollToBottom();
+
             }, 400);
 
             historySheet.classList.remove('open');
@@ -469,9 +679,10 @@
             suggestionsList.style.display = 'flex';
             contextRow.style.display = 'flex';
             historySheet.classList.remove('open');
+            chatTitle.innerText = "New Conversation"; 
+            historyAdded = false; 
         }
 
-        // Listeners
         btnNewChat.onclick = resetChat;
         btnHistoryNewChat.onclick = resetChat;
 
