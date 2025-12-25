@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Panel - Functional Chat</title>
+    <style>
+        /* --- Reset & Base --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html { 
+            height: 100%; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            color: #333; 
+            overflow: hidden; 
+        }
+
+        /* --- LAYOUT WRAPPER --- */
+        .layout-wrapper { display: flex; flex-direction: column; height: 100vh; width: 100vw; }
+        .global-top-nav { height: 50px; background-color: #3F4757; flex-shrink: 0; }
+        .main-row-wrapper { flex: 1; display: flex; overflow: hidden; position: relative; }
+        
+        /* Side Nav Styling */
+        .global-side-nav { 
+            width: 60px; 
+            background-color: #3F4757; 
+            flex-shrink: 0;
+            display: flex; flex-direction: column; align-items: center; padding-top: 15px; gap: 10px;
+            z-index: 30;
+        }
+
+        .nav-toggle-btn {
+            width: 36px; height: 36px;
+            border: none; border-radius: 8px; cursor: pointer;
+            background-color: #6F7884; color: #FFFFFF; 
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s; font-weight: 600; font-size: 13px; font-family: inherit;
+        }
+        .nav-toggle-btn:hover { filter: brightness(1.1); }
+        
+        #navAiToggle {
+            background: linear-gradient(270deg, #ECFEFF 0%, #F5F3FF 74.52%, #EDE9FE 100%);
+            color: #00BFA5; 
+        }
+        #navAiToggle.active {
+            background: #00BFA5; color: #FFFFFF;
+            box-shadow: 0 2px 5px rgba(0, 191, 165, 0.4);
+        }
+        .nav-toggle-btn svg { width: 20px; height: 20px; }
+
+        .app-container { flex: 1; position: relative; background-color: #fff; overflow: hidden; display: flex; }
+
+        /* --- CHAT SIDEBAR --- */
+        .chat-sidebar {
+            position: absolute; bottom: 0; left: 0; z-index: 20;
+            width: 400px; height: 100%;
+            background: linear-gradient(270deg, #ECFEFF 0%, #F5F3FF 74.52%, #EDE9FE 100%);
+            border-right: 1px solid rgba(0,0,0,0.05);
+            display: flex; flex-direction: column; overflow: hidden;
+            transition: 
+                transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                border-radius 0.4s ease,
+                opacity 0.3s ease;
+        }
+
+        .chat-sidebar.state-docked { width: 400px; height: 100%; border-radius: 0; transform: translateX(0); opacity: 1; }
+        .chat-sidebar.state-minimized {
+            height: 48px; width: 280px; left: 20px; bottom: 0; transform: translateX(0);
+            background: linear-gradient(270deg, #ECFEFF 0%, #F5F3FF 74.52%, #EDE9FE 100%);
+            border: 1px solid rgba(0,0,0,0.1); border-bottom: none; border-radius: 12px 12px 0 0;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.08); opacity: 1;
+        }
+        .chat-sidebar.state-fullscreen { width: 100%; height: 100%; border-radius: 0; z-index: 100; transform: translateX(0); opacity: 1; }
+        .chat-sidebar.state-closed { width: 400px; height: 100%; transform: translateX(-100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease; pointer-events: none; opacity: 1; }
+
+        /* --- WRAPPERS --- */
+        .main-view-wrapper {
+            display: flex; flex-direction: column; height: 100%; 
+            min-width: 400px; width: 400px; padding: 0; 
+            opacity: 1; transition: opacity 0.2s ease;
+        }
+        .chat-sidebar.state-minimized .main-view-wrapper { opacity: 0; pointer-events: none; transition-duration: 0.1s; }
+
+        .minimized-view-wrapper {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 16px;
+            opacity: 0; pointer-events: none; min-width: 280px;
+            transition: opacity 0.2s ease;
+        }
+        .chat-sidebar.state-minimized .minimized-view-wrapper { opacity: 1; pointer-events: auto; transition-delay: 0.2s; }
+
+        /* --- TOP BAR --- */
+        .top-bar { display: flex; justify-content: space-between; align-items: center; height: 44px; flex-shrink: 0; padding: 0 8px 0 16px; margin-bottom: 0; }
+        .brand-text { font-size: 0.95rem; color: #444; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+        .window-controls { display: flex; gap: 6px; align-items: center; }
+        .win-btn { background: transparent; border: none; cursor: pointer; padding: 6px; border-radius: 6px; color: #555; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+        .win-btn:hover { background-color: rgba(0,0,0,0.05); color: #000; }
+        .win-btn svg { width: 16px; height: 16px; stroke-width: 2px; }
+
+        /* --- CARD CONTAINER --- */
+        .chat-card-container {
+            flex: 1; background-color: #fff; 
+            border-radius: 16px 16px 0 0;
+            display: flex; flex-direction: column; overflow: hidden;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.03); 
+            border: none;
+            position: relative; 
+        }
+        .chat-sidebar.state-fullscreen .main-view-wrapper { width: 100%; min-width: 100%; padding: 0; }
+        .chat-sidebar.state-fullscreen .chat-card-container { border-radius: 0; }
+
+        .nav-header { padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; background-color: #fff; border-bottom: 1px solid #f5f5f5; flex-shrink: 0; }
+        .action-btn { background: transparent; border: none; cursor: pointer; padding: 8px; border-radius: 8px; color: #555; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+        .action-btn:hover { background-color: #f5f5f5; color: #000; }
+        .action-btn svg { width: 18px; height: 18px; stroke-width: 2px; }
+        .chat-title { font-size: 0.95rem; font-weight: 600; color: #222; text-align: center; flex: 1; }
+
+        .min-brand { display: flex; align-items: center; gap: 8px; font-family: "Georgia", serif; font-weight: 600; color: #333; font-size: 0.95rem; }
+        .min-controls { display: flex; gap: 4px; }
+        .min-btn { background: none; border: none; cursor: pointer; color: #555; display: flex; align-items: center; padding: 6px; border-radius: 4px; }
+        .min-btn:hover { color: #000; background-color: rgba(255,255,255,0.5); }
+
+        /* --- CONTENT AREAS --- */
+        .chat-scroll-area { 
+            flex: 1; 
+            padding: 16px; 
+            overflow-y: auto; 
+            background-color: #fff; 
+            display: flex; 
+            flex-direction: column; 
+        }
+        
+        /* Empty State */
+        .empty-state-wrapper {
+            flex: 1;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+        }
+        .empty-state-content { text-align: left; width: 100%; padding: 0 10px; max-width: 400px; transition: width 0.3s; }
+        .chat-sidebar.state-fullscreen .empty-state-content { width: 75%; max-width: 1000px; margin: 0 auto; }
+
+        .empty-icon { width: 48px; height: 48px; margin-bottom: 16px; color: #00BFA5; background: rgba(0, 191, 165, 0.1); border-radius: 12px; padding: 10px; display: inline-block; }
+        .greeting-title { font-size: 1.75rem; color: #2D3748; margin-bottom: 8px; font-weight: 600; }
+        .greeting-subtitle { font-size: 1.1rem; color: #718096; margin: 0; display: flex; align-items: center; }
+
+        /* Active Chat State */
+        .active-chat-wrapper {
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            gap: 20px;
+            padding-bottom: 20px;
+        }
+        .message-bubble {
+            max-width: 85%;
+            padding: 12px 16px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            position: relative;
+        }
+        .message-bubble.user {
+            align-self: flex-end;
+            background-color: #00BFA5;
+            color: #fff;
+            border-radius: 12px 12px 0 12px;
+        }
+        .message-bubble.ai {
+            align-self: flex-start;
+            background-color: #F1F5F9;
+            color: #334155;
+            border-radius: 12px 12px 12px 0;
+        }
+
+
+        /* --- INPUT AREA --- */
+        .input-wrapper { padding: 16px 16px 8px 16px; background-color: #fff; width: 100%; flex-shrink: 0; }
+        .chat-sidebar.state-fullscreen .input-wrapper { display: flex; flex-direction: column; align-items: center; }
+        .chat-sidebar.state-fullscreen .input-group-container { width: 75%; max-width: 1000px; }
+        .input-group-container { width: 100%; transition: width 0.3s; }
+
+        .suggestions-list { display: flex; flex-direction: column; margin-bottom: 12px; border: none; background-color: transparent; }
+        .suggestion-item { background-color: transparent; border: none; border-bottom: 1px solid #E2E8F0; padding: 10px 10px; font-size: 0.9rem; color: #64748B; cursor: pointer; text-align: left; transition: background-color 0.2s, color 0.2s; line-height: 1.4; }
+        .suggestion-item:last-child { border-bottom: none; }
+        .suggestion-item:hover { background-color: #EEF2F6; color: #1E293B; border-radius: 6px; border-bottom-color: transparent; }
+
+        .input-border-wrapper { background-color: #EEF2F6; border: 1px solid #E2E8F0; padding: 4px; border-radius: 16px; width: 100%; }
+        .enhanced-input-box { border: 1px solid #E2E8F0; border-radius: 12px; padding: 12px 14px; background-color: #fff; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.02); transition: border-color 0.2s; }
+        .enhanced-input-box:focus-within { border-color: #CBD5E0; }
+        
+        .context-row { display: flex; }
+        .context-pill { display: inline-flex; align-items: center; gap: 6px; background-color: #EDF2F7; color: #4A5568; font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: 12px; user-select: none; }
+        .context-close { cursor: pointer; color: #718096; font-size: 14px; line-height: 1; }
+        .context-close:hover { color: #cf3a3a; }
+        
+        .main-input { border: none; outline: none; width: 100%; font-size: 0.95rem; color: #2D3748; font-family: inherit; resize: none; padding: 4px 0 8px 0; background: transparent; }
+        .main-input::placeholder { color: #A0AEC0; }
+        
+        .input-toolbar { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid transparent; }
+        .toolbar-left, .toolbar-right { display: flex; gap: 8px; align-items: center; }
+        .tool-icon-btn { background: transparent; border: none; cursor: pointer; padding: 6px; border-radius: 6px; color: #718096; display: flex; align-items: center; justify-content: center; transition: color 0.2s, background 0.2s; }
+        .tool-icon-btn:hover { background-color: #F7FAFC; color: #4A5568; }
+        .tool-icon-btn svg { width: 18px; height: 18px; stroke-width: 2px; }
+        .send-btn-square { width: 32px; height: 32px; background-color: #F1F5F9; border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #64748B; transition: all 0.2s; }
+        .send-btn-square:hover { background-color: #E2E8F0; color: #334155; }
+        .send-btn-square svg { width: 16px; height: 16px; stroke-width: 2px; }
+
+        .disclaimer-text { text-align: center; font-size: 0.7rem; color: #94A3B8; padding-bottom: 12px; margin-top: 8px; }
+
+        /* --- HISTORY SIDE SHEET --- */
+        .history-sheet {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #fff; z-index: 50; display: flex; flex-direction: column; transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-right: 1px solid #f0f0f0;
+        }
+        .history-sheet.open { transform: translateX(0); }
+
+        .history-header {
+            padding: 14px 16px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #f5f5f5; flex-shrink: 0;
+        }
+        .history-title { font-weight: 600; color: #333; font-size: 0.95rem; flex: 1; }
+        .history-back-btn, .history-new-chat-btn {
+            background: transparent; border: none; cursor: pointer; padding: 6px; border-radius: 6px; color: #555; display: flex; align-items: center; justify-content: center;
+        }
+        .history-back-btn:hover, .history-new-chat-btn:hover { background-color: #f5f5f5; }
+        .history-back-btn svg, .history-new-chat-btn svg { width: 20px; height: 20px; }
+
+        .history-search-wrapper { padding: 12px 16px 4px 16px; }
+        .history-search-box {
+            display: flex; align-items: center; gap: 8px; background-color: #F7FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 8px 12px;
+        }
+        .history-search-box:focus-within { border-color: #CBD5E0; }
+        .history-search-box input { border: none; background: transparent; outline: none; width: 100%; font-size: 0.85rem; color: #333; }
+        .history-search-box svg { width: 16px; height: 16px; color: #A0AEC0; }
+
+        .history-content { flex: 1; overflow-y: auto; padding: 16px; }
+        .history-section-title { font-size: 0.75rem; font-weight: 600; color: #94A3B8; margin: 16px 0 8px 0; text-transform: uppercase; letter-spacing: 0.05em; }
+        .history-section-title:first-child { margin-top: 0; }
+
+        /* REQ 1: HISTORY ALIGNMENT FIX */
+        .history-item { 
+            display: flex; align-items: center; /* Flex Center */
+            gap: 12px; padding: 10px 12px; border-radius: 8px; cursor: pointer; transition: background 0.2s; color: #4A5568; font-size: 0.9rem; 
+        }
+        .history-item:hover { background-color: #F7FAFC; color: #1E293B; }
+        .history-icon { 
+            color: #A0AEC0; 
+            flex-shrink: 0; 
+            display: flex; /* Flex Center for Icon */
+            align-items: center; justify-content: center;
+        }
+        .history-text { 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+            line-height: 1.2; /* Better baseline */
+        }
+
+        .main-content { flex: 1; height: 100%; background-color: #fff; padding: 60px; text-align: center; transition: padding-left 0.4s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
+        .main-content.pushed-by-dock { padding-left: 460px; }
+        .main-content.full-hidden { opacity: 0; pointer-events: none; }
+        .dummy-app-view { display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%; max-width: 400px; }
+        .app-icon-placeholder { width: 64px; height: 64px; background-color: #3F4757; border-radius: 16px; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .app-icon-placeholder svg { width: 32px; height: 32px; stroke-width: 1.5; }
+        .page-text-lines { width: 100%; display: flex; flex-direction: column; gap: 12px; align-items: center; }
+        .line { height: 10px; background-color: #E2E8F0; border-radius: 5px; }
+        .hint-text { margin-top: 30px; font-size: 0.85rem; color: #94A3B8; }
+    </style>
+</head>
+<body>
+
+    <div class="layout-wrapper">
+        <nav class="global-top-nav"></nav>
+        <div class="main-row-wrapper">
+            
+            <nav class="global-side-nav">
+                <button class="nav-toggle-btn active" id="navAiToggle" title="Toggle AI Assistant">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"></path></svg>
+                </button>
+                <button class="nav-toggle-btn">C</button>
+                <button class="nav-toggle-btn">L</button>
+                <button class="nav-toggle-btn">T</button>
+                <button class="nav-toggle-btn">CH</button>
+                <button class="nav-toggle-btn">D</button>
+            </nav>
+
+            <div class="app-container">
+                
+                <aside class="chat-sidebar state-docked" id="chatPanel">
+                    
+                    <div class="minimized-view-wrapper">
+                        <div class="min-brand">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="color: #00BFA5;"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"></path></svg>
+                            <span>AI Assistant</span>
+                        </div>
+                        <div class="min-controls">
+                            <button class="min-btn" id="btnRestoreMin" title="Restore"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg></button>
+                            <button class="min-btn" id="btnCloseMin" title="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+                        </div>
+                    </div>
+
+                    <div class="main-view-wrapper">
+                        <div class="top-bar">
+                            <div class="brand-text">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="color: #00BFA5;"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"></path></svg>
+                                AI Assistant
+                            </div>
+                            <div class="window-controls">
+                                <button class="win-btn" id="btnMinimize" title="Minimize"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
+                                <button class="win-btn" id="btnFull" title="Full Screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg></button>
+                                <button class="win-btn" id="btnDock" title="Dock" style="display:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg></button>
+                                <button class="win-btn" id="btnClose" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+                            </div>
+                        </div>
+
+                        <div class="chat-card-container">
+                            
+                            <div class="history-sheet" id="historySheet">
+                                <div class="history-header">
+                                    <button class="history-back-btn" id="btnCloseHistory" title="Back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></button>
+                                    <div class="history-title">My Conversations</div>
+                                    <button class="history-new-chat-btn" id="btnHistoryNewChat" title="New Chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M8 12h8"/><path d="M12 8v8"/></svg></button>
+                                </div>
+                                <div class="history-search-wrapper">
+                                    <div class="history-search-box">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                        <input type="text" placeholder="Search conversations...">
+                                    </div>
+                                </div>
+                                <div class="history-content">
+                                    <div class="history-section-title">Today</div>
+                                    <div class="history-item" onclick="startChat('Q3 Performance Analysis')">
+                                        <div class="history-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
+                                        <span class="history-text">Q3 Performance Analysis</span>
+                                    </div>
+                                    <div class="history-item" onclick="startChat('Drafting Email')">
+                                        <div class="history-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
+                                        <span class="history-text">Drafting Email</span>
+                                    </div>
+                                    <div class="history-section-title">Earlier</div>
+                                    <div class="history-item" onclick="startChat('Project Brainstorming')">
+                                        <div class="history-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
+                                        <span class="history-text">Project Brainstorming</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="nav-header">
+                                <button class="action-btn" id="btnShowHistory" title="History"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg></button>
+                                <div class="chat-title">New Conversation</div>
+                                <button class="action-btn" id="btnNewChat" title="New Chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M8 12h8"/><path d="M12 8v8"/></svg></button>
+                            </div>
+
+                            <div class="chat-scroll-area">
+                                
+                                <div class="empty-state-wrapper" id="emptyState">
+                                    <div class="empty-state-content">
+                                        <div class="empty-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"></path></svg></div>
+                                        <h2 class="greeting-title">Hi John,</h2>
+                                        <p class="greeting-subtitle">How can I help?</p>
+                                    </div>
+                                </div>
+
+                                <div class="active-chat-wrapper" id="activeChat">
+                                    </div>
+
+                            </div>
+
+                            <div class="input-wrapper">
+                                <div class="input-group-container">
+                                    
+                                    <div class="suggestions-list" id="suggestionsList">
+                                        <div class="suggestion-item" onclick="startChat('Summarize the key points of this page')">Summarize the key points of this page</div>
+                                        <div class="suggestion-item" onclick="startChat('Draft a professional email reply')">Draft a professional email reply</div>
+                                        <div class="suggestion-item" onclick="startChat('Generate a list of action items')">Generate a list of action items</div>
+                                    </div>
+
+                                    <div class="input-border-wrapper">
+                                        <div class="enhanced-input-box">
+                                            <div class="context-row" id="contextRow">
+                                                <div class="context-pill">
+                                                    Page Context 
+                                                    <span class="context-close" id="btnCloseContext">×</span>
+                                                </div>
+                                            </div>
+                                            <input type="text" class="main-input" placeholder="Ask or assign task...">
+                                            <div class="input-toolbar">
+                                                <div class="toolbar-left">
+                                                    <button class="tool-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg></button>
+                                                    <button class="tool-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg></button>
+                                                </div>
+                                                <div class="toolbar-right">
+                                                    <button class="tool-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg></button>
+                                                    <button class="send-btn-square"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="disclaimer-text">AI Assistant can make mistakes. Please check for accuracy.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
+                <main class="main-content pushed-by-dock" id="mainContent">
+                    <div class="dummy-app-view">
+                        <div class="app-icon-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg></div>
+                        <div class="page-text-lines"><div class="line" style="width: 60%"></div><div class="line" style="width: 90%"></div><div class="line" style="width: 85%"></div><div class="line" style="width: 40%"></div></div>
+                        <div class="hint-text">(Click here to restore Context & Suggestions)</div>
+                    </div>
+                </main>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const panel = document.getElementById('chatPanel');
+        const mainContent = document.getElementById('mainContent');
+        const btnShowHistory = document.getElementById('btnShowHistory');
+        const btnCloseHistory = document.getElementById('btnCloseHistory');
+        const historySheet = document.getElementById('historySheet');
+        const btnNewChat = document.getElementById('btnNewChat');
+        const btnHistoryNewChat = document.getElementById('btnHistoryNewChat');
+        
+        // Chat Content Areas
+        const emptyState = document.getElementById('emptyState');
+        const activeChat = document.getElementById('activeChat');
+        const suggestionsList = document.getElementById('suggestionsList');
+        const contextRow = document.getElementById('contextRow');
+        const btnCloseContext = document.getElementById('btnCloseContext');
+
+        // Layout Controls
+        const btnMinimize = document.getElementById('btnMinimize');
+        const btnRestoreMin = document.getElementById('btnRestoreMin');
+        const btnCloseMin = document.getElementById('btnCloseMin');
+        const btnFull = document.getElementById('btnFull');
+        const btnDock = document.getElementById('btnDock');
+        const btnClose = document.getElementById('btnClose');
+        const navAiToggle = document.getElementById('navAiToggle');
+
+        // --- CHAT INTERACTION LOGIC ---
+
+        // 1. Start Chat Function
+        window.startChat = function(userText) {
+            // Hide Empty State components
+            emptyState.style.display = 'none';
+            suggestionsList.style.display = 'none';
+            // Note: Context usually stays in the input area until closed, but prompts implies focus on chat. 
+            // We will keep context visible in input bar as context for the chat.
+
+            // Show Active Chat
+            activeChat.style.display = 'flex';
+            
+            // Add User Bubble
+            const userBubble = document.createElement('div');
+            userBubble.className = 'message-bubble user';
+            userBubble.innerText = userText;
+            activeChat.appendChild(userBubble);
+
+            // Simulate AI Delay then Add Bubble
+            setTimeout(() => {
+                const aiBubble = document.createElement('div');
+                aiBubble.className = 'message-bubble ai';
+                aiBubble.innerText = "Here is a summary of the key points you requested. I've analyzed the page content and extracted the main action items.";
+                activeChat.appendChild(aiBubble);
+            }, 400);
+
+            // Close History if open
+            historySheet.classList.remove('open');
+        }
+
+        // 2. Reset / New Chat Function
+        function resetChat() {
+            // Clear bubbles
+            activeChat.innerHTML = '';
+            activeChat.style.display = 'none';
+
+            // Show Empty State
+            emptyState.style.display = 'flex';
+            suggestionsList.style.display = 'flex';
+            
+            // Restore Context (if it was closed)
+            contextRow.style.display = 'flex';
+
+            // Close History if open
+            historySheet.classList.remove('open');
+        }
+
+        // --- EVENT LISTENERS ---
+
+        // New Chat Triggers
+        btnNewChat.onclick = resetChat;
+        btnHistoryNewChat.onclick = resetChat;
+
+        // Context Close
+        btnCloseContext.onclick = (e) => {
+            e.stopPropagation();
+            contextRow.style.display = 'none';
+            suggestionsList.style.display = 'none'; // Usually suggestions rely on context
+        };
+
+        // Main Content Click (Restore Context)
+        mainContent.onclick = () => {
+            if(emptyState.style.display !== 'none') {
+                contextRow.style.display = 'flex';
+                suggestionsList.style.display = 'flex';
+            }
+        };
+
+        // History Sheet Logic
+        btnShowHistory.onclick = () => historySheet.classList.add('open');
+        btnCloseHistory.onclick = () => historySheet.classList.remove('open');
+
+        // Layout State Logic (Standard)
+        function setState(state) {
+            panel.classList.remove('state-docked', 'state-minimized', 'state-fullscreen', 'state-closed');
+            mainContent.classList.remove('pushed-by-dock', 'full-hidden');
+            btnFull.style.display = 'flex';
+            btnDock.style.display = 'none';
+
+            if (state === 'closed') navAiToggle.classList.remove('active');
+            else navAiToggle.classList.add('active');
+
+            if (state === 'docked') {
+                panel.classList.add('state-docked');
+                mainContent.classList.add('pushed-by-dock');
+            } else if (state === 'minimized') {
+                panel.classList.add('state-minimized');
+            } else if (state === 'fullscreen') {
+                panel.classList.add('state-fullscreen');
+                mainContent.classList.add('full-hidden');
+                btnFull.style.display = 'none';
+                btnDock.style.display = 'flex';
+            } else if (state === 'closed') {
+                panel.classList.add('state-closed');
+            }
+        }
+
+        navAiToggle.onclick = () => {
+            if (panel.classList.contains('state-closed')) setState('docked');
+            else setState('closed');
+        };
+
+        btnMinimize.onclick = () => setState('minimized');
+        btnRestoreMin.onclick = () => setState('docked');
+        btnCloseMin.onclick = () => setState('closed');
+        btnFull.onclick = () => setState('fullscreen');
+        btnDock.onclick = () => setState('docked');
+        btnClose.onclick = () => setState('closed');
+    </script>
+</body>
+</html>
