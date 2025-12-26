@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Chat Panel - Clean Prompts</title>
+    <title>Chat Panel - Controls Fixed</title>
     <style>
         /* --- Reset & Base --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -57,16 +57,18 @@
             background: linear-gradient(270deg, #ECFEFF 0%, #F5F3FF 74.52%, #EDE9FE 100%);
             border-right: 1px solid rgba(0,0,0,0.05);
             display: flex; flex-direction: column; overflow: hidden;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s ease, height 0.3s ease;
         }
 
         .chat-sidebar.state-docked { width: 400px; height: 100%; border-radius: 0; transform: translateX(0); opacity: 1; }
+        
         .chat-sidebar.state-minimized {
             height: 48px; width: 280px; left: 20px; bottom: 0; transform: translateX(0);
             background: linear-gradient(270deg, #ECFEFF 0%, #F5F3FF 74.52%, #EDE9FE 100%);
             border: 1px solid rgba(0,0,0,0.1); border-bottom: none; border-radius: 12px 12px 0 0;
             box-shadow: 0 -4px 12px rgba(0,0,0,0.08); opacity: 1;
         }
+        
         .chat-sidebar.state-fullscreen { width: 100%; height: 100%; border-radius: 0; z-index: 100; transform: translateX(0); opacity: 1; }
         .chat-sidebar.state-closed { width: 400px; height: 100%; transform: translateX(-100%); pointer-events: none; opacity: 1; }
 
@@ -74,23 +76,34 @@
         .main-view-wrapper {
             display: flex; flex-direction: column; height: 100%; 
             min-width: 400px; width: 400px; padding: 0; 
-            opacity: 1; transition: opacity 0.2s ease;
+            opacity: 1; visibility: visible; 
+            transition: opacity 0.2s ease, visibility 0.2s;
+            position: relative; z-index: 2;
         }
-        .chat-sidebar.state-minimized .main-view-wrapper { opacity: 0; pointer-events: none; transition-duration: 0.1s; }
+        
+        /* HIDE Main View when minimized */
+        .chat-sidebar.state-minimized .main-view-wrapper { 
+            opacity: 0; visibility: hidden; pointer-events: none; z-index: 0;
+        }
 
         .minimized-view-wrapper {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; align-items: center; justify-content: space-between; padding: 0 16px;
-            opacity: 0; pointer-events: none; min-width: 280px;
-            transition: opacity 0.2s ease;
+            opacity: 0; visibility: hidden; pointer-events: none; min-width: 280px;
+            transition: opacity 0.2s ease, visibility 0.2s;
+            z-index: 1;
         }
-        .chat-sidebar.state-minimized .minimized-view-wrapper { opacity: 1; pointer-events: auto; transition-delay: 0.2s; }
+        
+        /* SHOW Minimized View when state matches */
+        .chat-sidebar.state-minimized .minimized-view-wrapper { 
+            opacity: 1; visibility: visible; pointer-events: auto; z-index: 10; transition-delay: 0.1s;
+        }
 
         /* --- TOP BAR --- */
         .top-bar { display: flex; justify-content: space-between; align-items: center; height: 44px; flex-shrink: 0; padding: 0 8px 0 16px; margin-bottom: 0; }
         .brand-text { font-size: 0.95rem; color: #444; font-weight: 600; display: flex; align-items: center; gap: 6px; }
-        .window-controls { display: flex; gap: 6px; align-items: center; }
-        .win-btn { background: transparent; border: none; cursor: pointer; padding: 6px; border-radius: 6px; color: #555; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+        .window-controls { display: flex; gap: 6px; align-items: center; z-index: 20; position: relative;}
+        .win-btn { background: transparent; border: none; cursor: pointer; padding: 6px; border-radius: 6px; color: #555; display: flex; align-items: center; justify-content: center; transition: background 0.2s; pointer-events: auto; }
         .win-btn:hover { background-color: rgba(0,0,0,0.05); color: #000; }
         .win-btn svg { width: 16px; height: 16px; stroke-width: 2px; }
 
@@ -113,12 +126,12 @@
         .chat-title { font-size: 0.95rem; font-weight: 600; color: #222; text-align: center; flex: 1; }
 
         .min-brand { display: flex; align-items: center; gap: 8px; font-weight: 600; color: #333; font-size: 0.95rem; pointer-events: none; }
-        .min-controls { display: flex; gap: 4px; margin-left: auto; }
-        .min-btn { background: none; border: none; cursor: pointer; color: #555; display: flex; align-items: center; padding: 6px; border-radius: 4px; }
+        .min-controls { display: flex; gap: 4px; margin-left: auto; z-index: 20; position: relative;}
+        .min-btn { background: none; border: none; cursor: pointer; color: #555; display: flex; align-items: center; padding: 6px; border-radius: 4px; pointer-events: auto; }
         .min-btn:hover { color: #000; background-color: rgba(255,255,255,0.5); }
 
         .drag-handle {
-            cursor: grab; color: #94A3B8; display: flex; align-items: center; padding: 4px; margin-right: 4px;
+            cursor: grab; color: #94A3B8; display: flex; align-items: center; padding: 4px; margin-right: 4px; pointer-events: auto;
         }
         .drag-handle:active { cursor: grabbing; color: #475569; }
         .drag-handle svg { width: 14px; height: 14px; stroke-width: 2px; }
@@ -291,7 +304,7 @@
         .skill-item { padding: 8px 16px; cursor: pointer; transition: background 0.2s; }
         .skill-item:hover { background-color: #F7FAFC; }
         
-        .skill-name { font-size: 0.9rem; color: #161616; font-weight: 400; margin-bottom: 2px; }
+        .skill-name { font-size: 0.9rem; color: #161616; font-weight: 500; margin-bottom: 2px; }
         .skill-desc { font-size: 0.8rem; color: #94A3B8; }
 
         .context-row { display: flex; }
@@ -984,6 +997,56 @@
         window.onload = function() {
             mainInput.focus();
         };
+
+        // Re-attach event listeners for window controls just in case
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('btnMinimize').onclick = () => setState('minimized');
+            document.getElementById('btnRestoreMin').onclick = () => setState('docked');
+            document.getElementById('btnCloseMin').onclick = () => setState('closed');
+            document.getElementById('btnFull').onclick = () => setState('fullscreen');
+            document.getElementById('btnDock').onclick = () => setState('docked');
+            document.getElementById('btnClose').onclick = () => setState('closed');
+        });
+
+        function setState(state) {
+            panel.classList.remove('state-docked', 'state-minimized', 'state-fullscreen', 'state-closed');
+            mainContent.classList.remove('pushed-by-dock', 'full-hidden');
+            btnFull.style.display = 'flex';
+            btnDock.style.display = 'none';
+
+            if (state === 'closed') navAiToggle.classList.remove('active');
+            else navAiToggle.classList.add('active');
+
+            if (state === 'docked') {
+                panel.classList.add('state-docked');
+                mainContent.classList.add('pushed-by-dock');
+                panel.style.left = ''; 
+            } else if (state === 'minimized') {
+                panel.classList.add('state-minimized');
+                if(!panel.style.left) panel.style.left = '20px';
+            } else if (state === 'fullscreen') {
+                panel.classList.add('state-fullscreen');
+                mainContent.classList.add('full-hidden');
+                btnFull.style.display = 'none';
+                btnDock.style.display = 'flex';
+                panel.style.left = '';
+            } else if (state === 'closed') {
+                panel.classList.add('state-closed');
+                panel.style.left = '';
+            }
+        }
+
+        navAiToggle.onclick = () => {
+            if (panel.classList.contains('state-closed')) setState('docked');
+            else setState('closed');
+        };
+
+        btnMinimize.onclick = () => setState('minimized');
+        btnRestoreMin.onclick = () => setState('docked');
+        btnCloseMin.onclick = () => setState('closed');
+        btnFull.onclick = () => setState('fullscreen');
+        btnDock.onclick = () => setState('docked');
+        btnClose.onclick = () => setState('closed');
 
     </script>
 </body>
