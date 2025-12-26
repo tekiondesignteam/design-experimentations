@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Chat Panel - Semi-Bold Fix</title>
+    <title>Chat Panel - Clean Prompts</title>
     <style>
         /* --- Reset & Base --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -199,14 +199,13 @@
         /* ---- FIXED STYLES ---- */
         .ai-content p { margin-bottom: 12px; margin-top: 0; }
         
-        /* FIX 1: BOLD TEXT (SEMI-BOLD) */
-        /* Changed to 600 (Semi-Bold) instead of 700 (Bold) */
+        /* FIX: BOLD TEXT (500) */
         .ai-content strong, .ai-content b {
-            font-weight: 600 !important; 
+            font-weight: 500 !important; 
             color: #1E293B; 
         }
 
-        /* FIX 2: LIST SPACING */
+        /* FIX: LIST SPACING */
         .ai-list-item {
             display: flex;
             align-items: flex-start;
@@ -291,7 +290,8 @@
         .skills-header { padding: 8px 16px 6px 16px; font-size: 0.75rem; font-weight: 700; color: #161616; text-transform: uppercase; letter-spacing: 0.05em; }
         .skill-item { padding: 8px 16px; cursor: pointer; transition: background 0.2s; }
         .skill-item:hover { background-color: #F7FAFC; }
-        .skill-name { font-size: 0.9rem; color: #161616; font-weight: 500; margin-bottom: 2px; }
+        
+        .skill-name { font-size: 0.9rem; color: #161616; font-weight: 400; margin-bottom: 2px; }
         .skill-desc { font-size: 0.8rem; color: #94A3B8; }
 
         .context-row { display: flex; }
@@ -307,8 +307,13 @@
         .tool-icon-btn { background: transparent; border: none; cursor: pointer; padding: 6px; border-radius: 6px; color: #718096; display: flex; align-items: center; justify-content: center; transition: color 0.2s, background 0.2s; }
         .tool-icon-btn:hover { background-color: #F7FAFC; color: #4A5568; }
         .tool-icon-btn svg { width: 18px; height: 18px; stroke-width: 2px; }
+        
         .send-btn-square { width: 32px; height: 32px; background-color: #F1F5F9; border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #64748B; transition: all 0.2s; }
         .send-btn-square:hover { background-color: #E2E8F0; color: #334155; }
+        
+        /* Active Send Button State */
+        .send-btn-square.active { background-color: rgba(0, 191, 165, 0.1); color: #00BFA5; }
+        
         .send-btn-square svg { width: 16px; height: 16px; stroke-width: 2px; }
 
         .disclaimer-text { 
@@ -503,23 +508,23 @@
                                             
                                             <div class="skills-menu" id="skillsMenu">
                                                 <div class="skills-header">Shortcuts</div>
-                                                <div class="skill-item" onclick="startChat('/inventory-check')">
+                                                <div class="skill-item" onclick="fillInput('Check stock availability for [Make] [Model] across all lots')">
                                                     <div class="skill-name">/inventory-check</div>
                                                     <div class="skill-desc">Check stock availability across lots</div>
                                                 </div>
-                                                <div class="skill-item" onclick="startChat('/deal-probability')">
+                                                <div class="skill-item" onclick="fillInput('Analyze the closing probability for the current lead')">
                                                     <div class="skill-name">/deal-probability</div>
                                                     <div class="skill-desc">Likelihood of closing current lead</div>
                                                 </div>
-                                                <div class="skill-item" onclick="startChat('/credit-prequal')">
+                                                <div class="skill-item" onclick="fillInput('Run a soft credit qualification check for customer [ID]')">
                                                     <div class="skill-name">/credit-prequal</div>
                                                     <div class="skill-desc">Quick credit estimation for buyer</div>
                                                 </div>
-                                                <div class="skill-item" onclick="startChat('/trade-in-val')">
+                                                <div class="skill-item" onclick="fillInput('Estimate trade-in value for VIN [Number]')">
                                                     <div class="skill-name">/trade-in-val</div>
                                                     <div class="skill-desc">Estimate trade-in value by VIN</div>
                                                 </div>
-                                                <div class="skill-item" onclick="startChat('/schedule-drive')">
+                                                <div class="skill-item" onclick="fillInput('Book a test drive appointment for [Vehicle] on [Date]')">
                                                     <div class="skill-name">/schedule-drive</div>
                                                     <div class="skill-desc">Book test drive slots</div>
                                                 </div>
@@ -531,7 +536,7 @@
                                                     <span class="context-close" id="btnCloseContext">×</span>
                                                 </div>
                                             </div>
-                                            <input type="text" class="main-input" placeholder="Ask or assign task...">
+                                            <input type="text" class="main-input" id="mainInput" placeholder="Ask or assign task...">
                                             <div class="input-toolbar">
                                                 <div class="toolbar-left">
                                                     <button class="tool-icon-btn" id="btnSlashMenu" title="Slash Commands">
@@ -546,7 +551,7 @@
                                                 </div>
                                                 <div class="toolbar-right">
                                                     <button class="tool-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg></button>
-                                                    <button class="send-btn-square"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg></button>
+                                                    <button class="send-btn-square" id="btnSend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg></button>
                                                 </div>
                                             </div>
                                         </div>
@@ -616,6 +621,9 @@
         const skillsMenu = document.getElementById('skillsMenu');
         const dragHandle = document.getElementById('dragHandle');
 
+        const mainInput = document.getElementById('mainInput');
+        const btnSend = document.getElementById('btnSend');
+
         let historyAdded = false;
 
         let isDragging = false;
@@ -660,56 +668,99 @@
             skillsMenu.classList.toggle('visible');
         }
 
+        window.fillInput = function(detailedPrompt) {
+            mainInput.value = detailedPrompt;
+            skillsMenu.classList.remove('visible');
+            mainInput.focus();
+            updateSendButton(); // Trigger update immediately
+        };
+
+        function updateSendButton() {
+            if (mainInput.value.trim().length > 0) {
+                btnSend.classList.add('active');
+            } else {
+                btnSend.classList.remove('active');
+            }
+        }
+
+        mainInput.addEventListener('input', (e) => {
+            // Slash logic
+            if (mainInput.value === '/') {
+                skillsMenu.classList.add('visible');
+            } else if (mainInput.value === '') {
+                skillsMenu.classList.remove('visible');
+            }
+            // Update button logic
+            updateSendButton();
+        });
+
+        mainInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && mainInput.value.trim() !== '') {
+                const text = mainInput.value;
+                mainInput.value = '';
+                updateSendButton();
+                handleSend(text);
+            }
+        });
+
+        btnSend.onclick = () => {
+            if (mainInput.value.trim() !== '') {
+                const text = mainInput.value;
+                mainInput.value = '';
+                updateSendButton();
+                handleSend(text);
+            }
+        };
+
+        function handleSend(text) {
+             // REQ: Match keywords in the natural language text to find logicKey
+            let logicKey = text;
+            const lower = text.toLowerCase();
+            
+            if(lower.includes('stock availability') || lower.includes('inventory')) logicKey = '/inventory-check';
+            else if(lower.includes('closing probability') || lower.includes('deal')) logicKey = '/deal-probability';
+            else if(lower.includes('soft credit') || lower.includes('credit')) logicKey = '/credit-prequal';
+            else if(lower.includes('trade-in') || lower.includes('estimate value')) logicKey = '/trade-in-val';
+            else if(lower.includes('test drive') || lower.includes('book')) logicKey = '/schedule-drive';
+            else if(text.includes('Summarize')) logicKey = 'Summarize recent car leads'; // Keep existing suggestions
+
+            startChat(text, logicKey);
+        }
+
         document.addEventListener('click', (e) => {
-            if (!skillsMenu.contains(e.target) && e.target !== btnSlashMenu) {
+            if (!skillsMenu.contains(e.target) && e.target !== btnSlashMenu && e.target !== mainInput) {
                 skillsMenu.classList.remove('visible');
             }
         });
 
-        const skillDisplayNames = {
-            '/inventory-check': 'Inventory check',
-            '/deal-probability': 'Deal probability',
-            '/credit-prequal': 'Credit pre-qual',
-            '/trade-in-val': 'Trade-in value',
-            '/schedule-drive': 'Schedule test drive'
-        };
-
-        // --- NEW: CORRECTED STREAMING LOGIC (Recursively types DOM nodes) ---
+        // --- STREAMING LOGIC ---
         async function typeWriter(container, htmlString) {
-            // 1. Create a temporary container to parse the HTML
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlString, 'text/html');
             const nodes = Array.from(doc.body.childNodes);
 
-            // 2. Clear target
             container.innerHTML = '';
 
-            // 3. Recursive function to type nodes
             async function typeNode(node, parent) {
                 if (node.nodeType === Node.TEXT_NODE) {
                     const text = node.textContent;
-                    // Create a text node in the live DOM
                     const textNode = document.createTextNode('');
                     parent.appendChild(textNode);
                     
-                    // Type char by char
                     for (let char of text) {
                         textNode.textContent += char;
-                        await new Promise(r => setTimeout(r, 5)); // Speed
+                        await new Promise(r => setTimeout(r, 5)); 
                         scrollToBottom();
                     }
                 } else if (node.nodeType === Node.ELEMENT_NODE) {
-                    // Create the element (e.g., <strong>, <div>)
                     const newElement = document.createElement(node.tagName);
                     
-                    // Copy attributes (class, style, etc.)
                     Array.from(node.attributes).forEach(attr => {
                         newElement.setAttribute(attr.name, attr.value);
                     });
                     
                     parent.appendChild(newElement);
 
-                    // Recurse for children
                     const children = Array.from(node.childNodes);
                     for (const child of children) {
                         await typeNode(child, newElement);
@@ -717,7 +768,6 @@
                 }
             }
 
-            // 4. Start typing top-level nodes
             for (const node of nodes) {
                 await typeNode(node, container);
             }
@@ -754,29 +804,25 @@
 
             historySheet.classList.remove('open');
             scrollToBottom();
+            mainInput.focus();
         }
 
-        window.startChat = function(userText) {
+        window.startChat = function(userText, logicKey) {
+            if(!logicKey) logicKey = userText;
+
             emptyState.style.display = 'none';
             suggestionsList.style.display = 'none';
             activeChat.style.display = 'flex';
             skillsMenu.classList.remove('visible'); 
             
-            let displayText = userText;
-            if (skillDisplayNames[userText]) {
-                displayText = skillDisplayNames[userText];
-            }
-
             if (!historyAdded) {
-                if (userText.includes("Summarize")) {
-                    chatTitle.innerText = "Lead Summary - Page 1";
-                } else {
-                    chatTitle.innerText = displayText;
-                }
+                let historyTitle = userText;
+                if (historyTitle.length > 25) historyTitle = historyTitle.substring(0, 25) + "...";
+                
+                chatTitle.innerText = historyTitle;
 
                 const newItem = document.createElement('div');
                 newItem.className = 'history-item';
-                const historyTitle = chatTitle.innerText; 
                 newItem.onclick = () => window.loadHistoryChat(historyTitle); 
                 
                 newItem.innerHTML = `<div class="history-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div><span class="history-text">${historyTitle}</span>`;
@@ -787,7 +833,7 @@
 
             const userBubble = document.createElement('div');
             userBubble.className = 'message-bubble user';
-            userBubble.innerText = displayText;
+            userBubble.innerText = userText; 
             activeChat.appendChild(userBubble);
             scrollToBottom();
 
@@ -828,7 +874,7 @@
                 
                 let responseHTML = "";
                 
-                switch(userText) {
+                switch(logicKey) {
                     case 'Summarize recent car leads':
                         responseHTML = `
                             <p>Here is a summary of the active car leads from the current page view:</p>
@@ -910,6 +956,9 @@
             historySheet.classList.remove('open');
             chatTitle.innerText = "New Conversation"; 
             historyAdded = false; 
+            mainInput.value = '';
+            updateSendButton();
+            mainInput.focus();
         }
 
         btnNewChat.onclick = resetChat;
@@ -931,58 +980,11 @@
         btnShowHistory.onclick = () => historySheet.classList.add('open');
         btnCloseHistory.onclick = () => historySheet.classList.remove('open');
 
-        // SHORTCUT LOGIC
-        document.addEventListener('keydown', (e) => {
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return;
-            const key = e.key.toLowerCase();
-            
-            if (key === 't') {
-                if (e.shiftKey || e.altKey) {
-                    e.preventDefault();
-                    navAiToggle.click();
-                }
-            }
-        });
-
-        function setState(state) {
-            panel.classList.remove('state-docked', 'state-minimized', 'state-fullscreen', 'state-closed');
-            mainContent.classList.remove('pushed-by-dock', 'full-hidden');
-            btnFull.style.display = 'flex';
-            btnDock.style.display = 'none';
-
-            if (state === 'closed') navAiToggle.classList.remove('active');
-            else navAiToggle.classList.add('active');
-
-            if (state === 'docked') {
-                panel.classList.add('state-docked');
-                mainContent.classList.add('pushed-by-dock');
-                panel.style.left = ''; 
-            } else if (state === 'minimized') {
-                panel.classList.add('state-minimized');
-                if(!panel.style.left) panel.style.left = '20px';
-            } else if (state === 'fullscreen') {
-                panel.classList.add('state-fullscreen');
-                mainContent.classList.add('full-hidden');
-                btnFull.style.display = 'none';
-                btnDock.style.display = 'flex';
-                panel.style.left = '';
-            } else if (state === 'closed') {
-                panel.classList.add('state-closed');
-                panel.style.left = '';
-            }
-        }
-
-        navAiToggle.onclick = () => {
-            if (panel.classList.contains('state-closed')) setState('docked');
-            else setState('closed');
+        // REQ 1: Focus on load
+        window.onload = function() {
+            mainInput.focus();
         };
 
-        btnMinimize.onclick = () => setState('minimized');
-        btnRestoreMin.onclick = () => setState('docked');
-        btnCloseMin.onclick = () => setState('closed');
-        btnFull.onclick = () => setState('fullscreen');
-        btnDock.onclick = () => setState('docked');
-        btnClose.onclick = () => setState('closed');
     </script>
 </body>
 </html>
