@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Panel - Final Border Fix</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chat Panel - Semi-Bold Fix</title>
     <style>
         /* --- Reset & Base --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -97,17 +97,13 @@
         /* --- CARD CONTAINER --- */
         .chat-card-container {
             flex: 1; background-color: #fff; 
-            /* REQ 1: Fixed Border Radius */
             border-radius: 16px 16px 0 0;
-            
             display: flex; flex-direction: column; overflow: hidden;
             box-shadow: 0 -2px 10px rgba(0,0,0,0.03); 
             border: none;
             position: relative; 
         }
         .chat-sidebar.state-fullscreen .main-view-wrapper { width: 100%; min-width: 100%; padding: 0; }
-        
-        /* REQ 1: Ensure full screen maintains border radius on top */
         .chat-sidebar.state-fullscreen .chat-card-container { border-radius: 16px 16px 0 0; }
 
         .nav-header { padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; background-color: #fff; border-bottom: 1px solid #f5f5f5; flex-shrink: 0; }
@@ -129,13 +125,8 @@
 
         /* --- CONTENT AREAS --- */
         .chat-scroll-area { 
-            flex: 1; 
-            padding: 16px; 
-            overflow-y: auto; 
-            background-color: #fff; 
-            display: flex; 
-            flex-direction: column; 
-            scroll-behavior: smooth;
+            flex: 1; padding: 16px; overflow-y: auto; background-color: #fff; 
+            display: flex; flex-direction: column; scroll-behavior: smooth;
         }
         
         .empty-state-wrapper { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
@@ -148,41 +139,119 @@
 
         /* Active Chat State */
         .active-chat-wrapper {
-            display: none; 
-            flex-direction: column;
-            gap: 16px;
-            padding-bottom: 20px;
-            width: 100%;
+            display: none; flex-direction: column; gap: 20px; padding-bottom: 20px; width: 100%;
         }
         .chat-sidebar.state-fullscreen .active-chat-wrapper { width: 75%; max-width: 1000px; align-self: center; }
         
-        .message-bubble {
+        /* Message Bubbles */
+        .message-bubble { 
+            max-width: 100%; 
+            font-size: 0.95rem; 
+            line-height: 1.6; 
+            position: relative; 
+        }
+        
+        /* USER BUBBLE */
+        .message-bubble.user { 
+            align-self: flex-end; 
             max-width: 85%;
             padding: 10px 14px; 
+            background-color: #EEF2F6; 
+            color: #161616; 
+            border-radius: 12px 12px 0 12px; 
+        }
+
+        /* AI RESPONSE ROW LAYOUT */
+        .ai-message-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            width: 100%;
+            /* Animation for entry */
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* AI AVATAR */
+        .ai-avatar {
+            width: 28px; height: 28px;
+            background-color: rgba(0, 191, 165, 0.1);
+            color: #00BFA5;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .ai-avatar svg { width: 16px; height: 16px; }
+
+        /* Thinking State (Spinning) */
+        .ai-avatar.thinking svg {
+            animation: spinPulse 3s ease-in-out infinite;
+        }
+
+        /* AI TEXT CONTENT */
+        .ai-content {
+            flex: 1;
+            color: #334155;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        /* ---- FIXED STYLES ---- */
+        .ai-content p { margin-bottom: 12px; margin-top: 0; }
+        
+        /* FIX 1: BOLD TEXT (SEMI-BOLD) */
+        /* Changed to 600 (Semi-Bold) instead of 700 (Bold) */
+        .ai-content strong, .ai-content b {
+            font-weight: 600 !important; 
+            color: #1E293B; 
+        }
+
+        /* FIX 2: LIST SPACING */
+        .ai-list-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 16px; 
+            line-height: 1.6;
+        }
+        .ai-list-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .ai-list-number {
+            color: #64748B;
             font-size: 0.9rem;
-            line-height: 1.45;
-            position: relative;
-        }
-        
-        .message-bubble.user {
-            align-self: flex-end;
-            background-color: #EEF2F6;
-            color: #161616;
-            border-radius: 12px 12px 0 12px;
-        }
-        
-        .message-bubble.ai {
-            align-self: flex-start;
-            background-color: transparent;
-            color: #444F5C;
-            padding-left: 0;
-            padding-bottom: 4px;
+            margin-top: 1px;
+            min-width: 16px;
+            font-weight: 600;
         }
 
-        .message-bubble.ai ul { margin: 8px 0 0 0; padding-left: 20px; list-style-type: disc; }
-        .message-bubble.ai li { margin-bottom: 2px; }
+        /* THINKING TEXT */
+        .thinking-text {
+            font-size: 0.85rem; color: #64748B; font-weight: 500;
+            margin-top: 4px;
+            animation: fadeText 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes spinPulse {
+            0% { transform: rotate(0deg) scale(1); opacity: 1; }
+            50% { transform: rotate(180deg) scale(0.8); opacity: 0.7; }
+            100% { transform: rotate(360deg) scale(1); opacity: 1; }
+        }
+        @keyframes fadeText {
+            0% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        .ai-actions-row { display: flex; align-self: flex-start; gap: 12px; margin-top: -8px; margin-bottom: 12px; padding-left: 0; }
+        /* ACTION BUTTONS BELOW TEXT */
+        .ai-actions-row { 
+            display: flex; align-self: flex-start; gap: 12px; 
+            margin-top: 8px; margin-bottom: 4px;
+            margin-left: 40px; 
+            opacity: 0; 
+            animation: fadeIn 0.3s ease-in forwards; 
+        }
         .ai-action-btn { background: transparent; border: none; cursor: pointer; color: #64748B; padding: 4px; border-radius: 4px; display: flex; align-items: center; justify-content: center; transition: color 0.2s, background 0.2s; }
         .ai-action-btn:hover { color: #1E293B; background-color: #F1F5F9; }
         .ai-action-btn svg { width: 16px; height: 16px; stroke-width: 2px; }
@@ -190,8 +259,7 @@
 
         /* --- INPUT AREA --- */
         .input-wrapper { 
-            padding: 16px 16px 8px 16px; 
-            background-color: #fff; width: 100%; flex-shrink: 0; position: relative; 
+            padding: 16px 16px 8px 16px; background-color: #fff; width: 100%; flex-shrink: 0; position: relative; 
         }
         .chat-sidebar.state-fullscreen .input-wrapper { display: flex; flex-direction: column; align-items: center; }
         .chat-sidebar.state-fullscreen .input-group-container { width: 75%; max-width: 1000px; }
@@ -207,9 +275,7 @@
         .enhanced-input-box { 
             border: 1px solid #E2E8F0; border-radius: 12px; padding: 12px 14px; background-color: #fff; 
             display: flex; flex-direction: column; gap: 8px; 
-            box-shadow: 0 1px 2px rgba(0,0,0,0.02); 
-            transition: border-color 0.2s; 
-            position: relative;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02); transition: border-color 0.2s; position: relative;
         }
         .enhanced-input-box:focus-within { border-color: #CBD5E0; }
         
@@ -257,20 +323,14 @@
         .chat-sidebar.state-fullscreen .history-sheet { width: 320px; border-right: 1px solid #E2E8F0; }
         .history-sheet.open { transform: translateX(0); }
 
-        .history-header {
-            padding: 14px 16px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #f5f5f5; flex-shrink: 0;
-        }
+        .history-header { padding: 14px 16px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #f5f5f5; flex-shrink: 0; }
         .history-title { font-weight: 600; color: #333; font-size: 0.95rem; flex: 1; }
-        .history-back-btn, .history-new-chat-btn {
-            background: transparent; border: none; cursor: pointer; padding: 6px; border-radius: 6px; color: #555; display: flex; align-items: center; justify-content: center;
-        }
+        .history-back-btn, .history-new-chat-btn { background: transparent; border: none; cursor: pointer; padding: 6px; border-radius: 6px; color: #555; display: flex; align-items: center; justify-content: center; }
         .history-back-btn:hover, .history-new-chat-btn:hover { background-color: #f5f5f5; }
         .history-back-btn svg, .history-new-chat-btn svg { width: 20px; height: 20px; }
 
         .history-search-wrapper { padding: 12px 16px 4px 16px; }
-        .history-search-box {
-            display: flex; align-items: center; gap: 8px; background-color: #F7FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 8px 12px;
-        }
+        .history-search-box { display: flex; align-items: center; gap: 8px; background-color: #F7FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 8px 12px; }
         .history-search-box:focus-within { border-color: #CBD5E0; }
         .history-search-box input { border: none; background: transparent; outline: none; width: 100%; font-size: 0.85rem; color: #333; }
         .history-search-box svg { width: 16px; height: 16px; color: #A0AEC0; }
@@ -287,47 +347,43 @@
         /* --- MAIN CONTENT & SKELETON --- */
         .main-content { 
             flex: 1; height: 100%; background-color: #fff; 
-            padding: 30px;
-            text-align: center; transition: padding-left 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
-            display: flex; flex-direction: column; cursor: pointer; 
-            overflow: hidden;
+            padding: 30px; text-align: center; transition: padding-left 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            display: flex; flex-direction: column; cursor: pointer; overflow: hidden;
         }
         .main-content.pushed-by-dock { padding-left: 430px; }
         .main-content.full-hidden { opacity: 0; pointer-events: none; }
 
-        .table-skeleton-container {
-            width: 100%; height: 100%;
-            display: flex; flex-direction: column;
-            background: #fff;
-            border: 1px solid #E2E8F0;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .skeleton-row {
-            display: grid;
-            grid-template-columns: 2fr 3fr 2fr 2fr 2fr 1fr;
-            gap: 24px;
-            padding: 0 24px; 
-            border-bottom: 1px solid #F1F5F9;
-            align-items: center;
-            height: 50px; 
-        }
+        .table-skeleton-container { width: 100%; height: 100%; display: flex; flex-direction: column; background: #fff; border: 1px solid #E2E8F0; border-radius: 8px; overflow: hidden; }
+        .skeleton-row { display: grid; grid-template-columns: 2fr 3fr 2fr 2fr 2fr 1fr; gap: 24px; padding: 0 24px; border-bottom: 1px solid #F1F5F9; align-items: center; height: 50px; }
         .skeleton-row:last-child { border-bottom: none; }
-        
-        .skeleton-row.header { 
-            background-color: #F8FAFC; 
-            border-bottom: 1px solid #E2E8F0;
-        }
-
-        .skeleton-cell {
-            display: flex;
-            align-items: center;
-            width: 100%;
-        }
-        
+        .skeleton-row.header { background-color: #F8FAFC; border-bottom: 1px solid #E2E8F0; }
+        .skeleton-cell { display: flex; align-items: center; width: 100%; }
         .skeleton-bar { height: 12px; background: #F1F5F9; border-radius: 6px; width: 100%; }
         .header .skeleton-bar { background: #E2E8F0; }
+
+        /* =========================================
+           MOBILE RESPONSIVE (MAX-WIDTH: 600px)
+           ========================================= */
+        @media (max-width: 600px) {
+            .global-top-nav, .global-side-nav, .main-content { display: none !important; }
+            .chat-sidebar {
+                width: 100% !important; height: 100% !important; 
+                left: 0 !important; bottom: 0 !important;
+                transform: translateX(0) !important; opacity: 1 !important; 
+                border-radius: 0 !important; border: none !important;
+            }
+            .main-view-wrapper { min-width: 100% !important; width: 100% !important; padding: 0 !important; }
+            .chat-card-container { border-radius: 0 !important; box-shadow: none !important; }
+            
+            .window-controls, .drag-handle { display: none !important; }
+            
+            .empty-state-content, .input-group-container { 
+                width: 100% !important; max-width: 100% !important; padding: 0 16px; 
+            }
+            .input-wrapper { padding: 16px 0; }
+            .active-chat-wrapper { width: 100% !important; max-width: 100% !important; }
+            .history-sheet { width: 100% !important; border-right: none !important; }
+        }
 
     </style>
 </head>
@@ -446,7 +502,7 @@
                                         <div class="enhanced-input-box">
                                             
                                             <div class="skills-menu" id="skillsMenu">
-                                                <div class="skills-header">Skills</div>
+                                                <div class="skills-header">Shortcuts</div>
                                                 <div class="skill-item" onclick="startChat('/inventory-check')">
                                                     <div class="skill-name">/inventory-check</div>
                                                     <div class="skill-desc">Check stock availability across lots</div>
@@ -495,7 +551,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="disclaimer-text">AI Assistant can make mistakes. Please check for accuracy.</div>
                                 </div>
                             </div>
                         </div>
@@ -619,6 +674,55 @@
             '/schedule-drive': 'Schedule test drive'
         };
 
+        // --- NEW: CORRECTED STREAMING LOGIC (Recursively types DOM nodes) ---
+        async function typeWriter(container, htmlString) {
+            // 1. Create a temporary container to parse the HTML
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlString, 'text/html');
+            const nodes = Array.from(doc.body.childNodes);
+
+            // 2. Clear target
+            container.innerHTML = '';
+
+            // 3. Recursive function to type nodes
+            async function typeNode(node, parent) {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    const text = node.textContent;
+                    // Create a text node in the live DOM
+                    const textNode = document.createTextNode('');
+                    parent.appendChild(textNode);
+                    
+                    // Type char by char
+                    for (let char of text) {
+                        textNode.textContent += char;
+                        await new Promise(r => setTimeout(r, 5)); // Speed
+                        scrollToBottom();
+                    }
+                } else if (node.nodeType === Node.ELEMENT_NODE) {
+                    // Create the element (e.g., <strong>, <div>)
+                    const newElement = document.createElement(node.tagName);
+                    
+                    // Copy attributes (class, style, etc.)
+                    Array.from(node.attributes).forEach(attr => {
+                        newElement.setAttribute(attr.name, attr.value);
+                    });
+                    
+                    parent.appendChild(newElement);
+
+                    // Recurse for children
+                    const children = Array.from(node.childNodes);
+                    for (const child of children) {
+                        await typeNode(child, newElement);
+                    }
+                }
+            }
+
+            // 4. Start typing top-level nodes
+            for (const node of nodes) {
+                await typeNode(node, container);
+            }
+        }
+
         window.loadHistoryChat = function(title) {
             emptyState.style.display = 'none';
             suggestionsList.style.display = 'none';
@@ -633,10 +737,20 @@
             userBubble.innerText = title;
             activeChat.appendChild(userBubble);
 
-            const aiBubble = document.createElement('div');
-            aiBubble.className = 'message-bubble ai';
-            aiBubble.innerHTML = `<p>Loading deal details for <strong>${title}</strong>...</p>`;
-            activeChat.appendChild(aiBubble);
+            const aiRow = document.createElement('div');
+            aiRow.className = 'ai-message-row';
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'ai-avatar';
+            avatar.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"></path></svg>';
+            aiRow.appendChild(avatar);
+
+            const aiContent = document.createElement('div');
+            aiContent.className = 'ai-content';
+            aiContent.innerHTML = `<p>Loading deal details for <strong>${title}</strong>...</p>`;
+            aiRow.appendChild(aiContent);
+
+            activeChat.appendChild(aiRow);
 
             historySheet.classList.remove('open');
             scrollToBottom();
@@ -677,43 +791,70 @@
             activeChat.appendChild(userBubble);
             scrollToBottom();
 
-            setTimeout(() => {
-                const aiBubble = document.createElement('div');
-                aiBubble.className = 'message-bubble ai';
+            // REQ 2: Thinking Row
+            const thinkingRow = document.createElement('div');
+            thinkingRow.className = 'ai-message-row';
+            
+            const thinkingAvatar = document.createElement('div');
+            thinkingAvatar.className = 'ai-avatar thinking';
+            thinkingAvatar.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"></path></svg>';
+            thinkingRow.appendChild(thinkingAvatar);
+
+            const thinkingContent = document.createElement('div');
+            thinkingContent.className = 'ai-content';
+            thinkingContent.innerHTML = `<div class="thinking-text">Thinking...</div>`;
+            thinkingRow.appendChild(thinkingContent);
+            
+            activeChat.appendChild(thinkingRow);
+            scrollToBottom();
+
+            // Simulate Delay then Stream
+            setTimeout(async () => {
+                activeChat.removeChild(thinkingRow);
+
+                const aiRow = document.createElement('div');
+                aiRow.className = 'ai-message-row';
+
+                const aiAvatar = document.createElement('div');
+                aiAvatar.className = 'ai-avatar';
+                aiAvatar.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"></path></svg>';
+                aiRow.appendChild(aiAvatar);
+
+                const aiContent = document.createElement('div');
+                aiContent.className = 'ai-content';
+                aiRow.appendChild(aiContent);
+                
+                activeChat.appendChild(aiRow);
                 
                 let responseHTML = "";
                 
                 switch(userText) {
                     case 'Summarize recent car leads':
                         responseHTML = `
-                            <p style="margin-bottom: 8px;">Here is a summary of the active car leads from the current page view:</p>
-                            <ul style="margin: 0; padding-left: 20px; list-style-type: disc;">
-                                <li><strong>John Doe:</strong> Interested in 2024 Honda CR-V. Financing pending.</li>
-                                <li><strong>Sarah Smith:</strong> Requesting test drive for Ford Explorer. Trade-in valuation needed.</li>
-                                <li><strong>Mike Johnson:</strong> Lease expiring soon. Looking at Toyota Camry options.</li>
-                                <li><strong>Corporate Fleet:</strong> Inquiry for 5 Chevy Silverados. Quote sent.</li>
-                                <li><strong>Pending Action:</strong> 3 unread messages from internet leads.</li>
-                            </ul>
+                            <p>Here is a summary of the active car leads from the current page view:</p>
+                            <div class="ai-list-item"><span class="ai-list-number">1.</span><span><strong>John Doe:</strong> Interested in 2024 Honda CR-V. Financing pending.</span></div>
+                            <div class="ai-list-item"><span class="ai-list-number">2.</span><span><strong>Sarah Smith:</strong> Requesting test drive for Ford Explorer. Trade-in valuation needed.</span></div>
+                            <div class="ai-list-item"><span class="ai-list-number">3.</span><span><strong>Mike Johnson:</strong> Lease expiring soon. Looking at Toyota Camry options.</span></div>
+                            <div class="ai-list-item"><span class="ai-list-number">4.</span><span><strong>Corporate Fleet:</strong> Inquiry for 5 Chevy Silverados. Quote sent.</span></div>
+                            <div class="ai-list-item"><span class="ai-list-number">5.</span><span><strong>Pending Action:</strong> 3 unread messages from internet leads.</span></div>
                         `;
                         break;
                     case 'Draft quote for Model X':
                         responseHTML = `
                             <p><strong>Subject: Your Tesla Model X Quote</strong></p>
-                            <p>Hi [Customer Name],</p>
-                            <p>Great choice on the Model X. Based on your configuration (Long Range, Black Interior), here is the preliminary quote attached. This includes the federal tax incentive deduction.</p>
+                            <p>Hi <strong>[Customer Name]</strong>,</p>
+                            <p>Great choice on the <strong>Model X</strong>. Based on your configuration (Long Range, Black Interior), here is the preliminary quote attached. This includes the federal tax incentive deduction.</p>
                             <p>Let me know if you want to proceed with the credit application.</p>
-                            <p>Best,<br>[Your Name]</p>
+                            <p>Best,<br><strong>[Your Name]</strong></p>
                         `;
                         break;
                     case 'List high-priority test drives':
                         responseHTML = `
                             <p><strong>Today's High Priority Test Drives:</strong></p>
-                            <ul style="margin: 0; padding-left: 20px; list-style-type: disc;">
-                                <li>10:00 AM - BMW X5 (Client: A. Miller)</li>
-                                <li>1:30 PM - Audi Q7 (Client: B. Davis) - <em>Confirm trade-in arrival</em></li>
-                                <li>3:00 PM - Mercedes C-Class (Client: C. Wilson)</li>
-                                <li>4:30 PM - Porsche Macan (Client: D. Brown)</li>
-                            </ul>
+                            <div class="ai-list-item"><span class="ai-list-number">1.</span><span><strong>10:00 AM - BMW X5</strong> (Client: A. Miller)</span></div>
+                            <div class="ai-list-item"><span class="ai-list-number">2.</span><span><strong>1:30 PM - Audi Q7</strong> (Client: B. Davis) - <em>Confirm trade-in arrival</em></span></div>
+                            <div class="ai-list-item"><span class="ai-list-number">3.</span><span><strong>3:00 PM - Mercedes C-Class</strong> (Client: C. Wilson)</span></div>
+                            <div class="ai-list-item"><span class="ai-list-number">4.</span><span><strong>4:30 PM - Porsche Macan</strong> (Client: D. Brown)</span></div>
                         `;
                         break;
                     case '/inventory-check':
@@ -735,8 +876,7 @@
                         responseHTML = "Analyzing CRM data...";
                 }
 
-                aiBubble.innerHTML = responseHTML;
-                activeChat.appendChild(aiBubble);
+                await typeWriter(aiContent, responseHTML);
 
                 const actionRow = document.createElement('div');
                 actionRow.className = 'ai-actions-row';
@@ -756,7 +896,7 @@
                 activeChat.appendChild(actionRow);
                 scrollToBottom();
 
-            }, 400);
+            }, 1200);
 
             historySheet.classList.remove('open');
         }
@@ -791,19 +931,13 @@
         btnShowHistory.onclick = () => historySheet.classList.add('open');
         btnCloseHistory.onclick = () => historySheet.classList.remove('open');
 
-        // SHORTCUT LOGIC - SIMPLE
+        // SHORTCUT LOGIC
         document.addEventListener('keydown', (e) => {
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return;
             const key = e.key.toLowerCase();
             
             if (key === 't') {
-                // Shift + T (Windows preference, usually)
-                if (e.shiftKey) {
-                    e.preventDefault();
-                    navAiToggle.click();
-                }
-                // Alt/Option + T (Mac preference)
-                if (e.altKey) {
+                if (e.shiftKey || e.altKey) {
                     e.preventDefault();
                     navAiToggle.click();
                 }
