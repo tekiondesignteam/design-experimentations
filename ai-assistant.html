@@ -319,6 +319,37 @@
         .ai-content p:last-child { margin-bottom: 4px; }
         .ai-content strong, .ai-content b { font-weight: 500 !important; color: #161616; }
         
+        /* Thoughts Header - FIX 1: GAP adjustment */
+        .ai-thought-line {
+            display: flex; align-items: center; justify-content: flex-start; /* Was space-between */
+            gap: 8px; /* Brings chevron closer */
+            color: #969AA3; font-size: 0.8rem; font-weight: 500;
+            margin-bottom: 8px;
+            padding-top: 8px; 
+            cursor: pointer;
+            user-select: none;
+        }
+        .ai-thought-line:hover { color: #444F5C; }
+        .ai-thought-line span { display: flex; align-items: center; }
+        
+        /* Chevron Animation */
+        .ai-thought-line .chevron { 
+            width: 14px; height: 14px; color: #969AA3; 
+            transition: transform 0.2s ease;
+        }
+        .ai-thought-line.expanded .chevron { transform: rotate(180deg); }
+
+        /* Reasoning Details */
+        .ai-thought-details {
+            background-color: #F8FAFC; border: 1px solid #F1F5F9; border-radius: 8px;
+            padding: 10px 12px; margin-bottom: 12px; 
+            display: none;
+            font-size: 0.8rem; color: #444F5C;
+            animation: fadeIn 0.2s ease;
+        }
+        .thought-step { margin-bottom: 4px; padding-left: 8px; border-left: 2px solid #E2E8F0; }
+        .thought-step:last-child { margin-bottom: 0; }
+
         /* AI List Item Spacing and Line Height */
         .ai-list-item { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; line-height: 1.5; }
         .ai-list-item:last-child { margin-bottom: 0; }
@@ -559,6 +590,31 @@
         .send-btn-square.active { background-color: rgba(0, 191, 165, 0.1); color: #00BFA5; }
         .send-btn-square svg { width: 16px; height: 16px; stroke-width: 2px; }
 
+        /* OPTIMIZE TOUCH TARGETS */
+        .action-btn, .tool-icon-btn, .send-btn-square, 
+        .history-back-btn, .history-new-chat-btn, 
+        .window-controls button {
+            min-width: 44px !important;
+            min-height: 44px !important;
+            padding: 10px !important;
+        }
+        
+        .suggestion-item, .popup-item, .history-item {
+            padding-top: 14px !important;
+            padding-bottom: 14px !important;
+            min-height: 48px !important; /* Material Design standard */
+        }
+        
+        .filter-pill {
+            padding: 8px 16px !important;
+            min-height: 36px !important;
+        }
+        
+        /* Prevent iOS zoom on inputs */
+        input, .main-input {
+            font-size: 16px !important; 
+        }
+
         @keyframes spinPulse { 0% { transform: rotate(0deg) scale(1); opacity: 1; } 50% { transform: rotate(180deg) scale(0.8); opacity: 0.7; } 100% { transform: rotate(360deg) scale(1); opacity: 1; } }
         @keyframes fadeText { 0% { opacity: 0.6; } 100% { opacity: 1; } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
@@ -589,18 +645,155 @@
         .skeleton-bar { height: 12px; background: #F1F5F9; border-radius: 6px; width: 100%; }
         .header .skeleton-bar { background: #E2E8F0; }
 
-        /* --- MEDIA QUERIES --- */
-        @media (max-width: 600px) {
-            .global-top-nav, .global-side-nav, .main-content { display: none !important; }
-            .chat-sidebar { width: 100% !important; height: 100% !important; left: 0 !important; bottom: 0 !important; transform: translateX(0) !important; opacity: 1 !important; border-radius: 0 !important; border: none !important; }
-            .main-view-wrapper { min-width: 100% !important; width: 100% !important; padding: 0 !important; }
-            .chat-card-container { border-radius: 0 !important; box-shadow: none !important; }
-            .window-controls, .drag-handle { display: none !important; }
-            .empty-state-content, .input-group-container { width: 100% !important; max-width: 100% !important; padding: 0 16px; }
-            .input-wrapper { padding: 16px 0; }
-            .active-chat-wrapper { width: 100% !important; max-width: 100% !important; }
-            .history-sheet { width: 100% !important; border-right: none !important; }
+        /* --- MOBILE FAB (New) --- */
+        .mobile-fab {
+            position: fixed; 
+            bottom: 24px; 
+            right: 24px;
+            width: 56px; 
+            height: 56px; 
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00BFA5 0%, #00a690 100%);
+            color: white;
+            display: none; /* Hidden by default */
+            align-items: center; 
+            justify-content: center;
+            box-shadow: 0 6px 16px rgba(0, 191, 165, 0.4);
+            z-index: 10001;
+            border: none; 
+            cursor: pointer;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s;
         }
+        .mobile-fab:active { transform: scale(0.92); }
+        .mobile-fab svg { width: 28px; height: 28px; }
+
+        /* --- MEDIA QUERIES (MOBILE) --- */
+        @media (max-width: 768px) {
+            /* HIDE TOP & LEFT NAV */
+            .global-top-nav, .global-side-nav, .main-content { display: none !important; }
+            
+            /* FORCE CHAT SIDEBAR FULLSCREEN */
+            .chat-sidebar {
+                width: 100% !important; 
+                height: 85% !important; /* Bottom Sheet Height */
+                position: fixed !important;
+                left: 0 !important; 
+                top: auto !important; /* Move to bottom */
+                bottom: 0 !important;
+                border-radius: 24px 24px 0 0 !important; /* Rounded Top Corners */
+                border: none !important; 
+                z-index: 9999;
+                display: flex !important;
+                flex-direction: column;
+                
+                /* ANIMATION PROPS */
+                transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, border-radius 0.3s ease !important;
+                transform-origin: bottom right !important;
+                transform: scale(1) translate(0, 0) !important;
+                opacity: 1 !important;
+                box-shadow: 0 -4px 20px rgba(0,0,0,0.15) !important;
+            }
+            
+            /* Closed State for Mobile - Animate out to FAB */
+            .chat-sidebar.state-closed {
+                display: flex !important; 
+                transform: scale(0) translate(20px, 20px) !important; 
+                opacity: 0 !important;
+                pointer-events: none !important;
+                border-radius: 100% !important;
+            }
+
+            /* Show FAB when visible class is added */
+            .mobile-fab.visible { display: flex; animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+            
+            /* FIX 1: Fix Input Padding */
+            .input-wrapper { 
+                padding: 8px 16px 12px 16px !important; /* Top padding reduced */
+                position: relative; 
+                bottom: auto;
+            }
+            
+            /* FIX 2: Suggestions List Closer */
+            .suggestions-list {
+                margin-bottom: 2px !important;
+                padding-bottom: 0 !important;
+            }
+
+            /* FIX: Hide Scroll Spacer on Mobile so list hits bottom */
+            .scroll-spacer {
+                height: 0px !important; 
+                display: none !important;
+            }
+
+            /* FIX: Nav Header Border Radius Override */
+            .nav-header {
+                border-radius: 0 !important; /* FIX 2: Mobile requirement */
+            }
+
+            /* FIX 3: HISTORY SHEET OVERRIDES FOR MOBILE */
+            /* Force history sheet to behave like a drawer on mobile, even if parent says fullscreen */
+            .chat-sidebar.state-fullscreen .history-sheet { 
+                transform: translateX(-100%) !important; /* Start closed */
+                width: 100% !important; 
+                border-right: none !important;
+                z-index: 50 !important;
+                border-radius: 24px 24px 0 0 !important; /* Match Parent */
+            }
+            .chat-sidebar.state-fullscreen .history-sheet.open {
+                transform: translateX(0) !important; /* Open when class added */
+            }
+            
+            /* Ensure Back Button is Visible on Mobile */
+            .chat-sidebar.state-fullscreen .history-back-btn { 
+                display: flex !important; 
+            }
+            .chat-sidebar.state-fullscreen #btnShowHistory { 
+                display: flex !important; 
+            }
+            
+            /* Reset Fullscreen Layout shifts */
+            .chat-sidebar.state-fullscreen .nav-header,
+            .chat-sidebar.state-fullscreen .chat-scroll-area,
+            .chat-sidebar.state-fullscreen .input-wrapper,
+            .chat-sidebar.state-fullscreen .prompt-sheet,
+            .chat-sidebar.state-fullscreen .disclaimer-text {
+                margin-left: 0 !important; 
+                width: 100% !important;
+                border-left: none !important;
+            }
+            
+            .main-view-wrapper { 
+                min-width: 100% !important; 
+                width: 100% !important; 
+                padding: 0 !important; 
+                opacity: 1 !important; 
+                visibility: visible !important; 
+                pointer-events: auto !important;
+            }
+            
+            .chat-card-container { 
+                border-radius: 0 !important; 
+                box-shadow: none !important; 
+                height: 100% !important;
+            }
+            
+            /* HIDE DRAG HANDLE ONLY */
+            .drag-handle { display: none !important; }
+
+            /* ADJUST WINDOW CONTROLS: Hide all except Close */
+            .window-controls { display: flex !important; }
+            #btnMinimize, #btnFull, #btnDock { display: none !important; }
+            #btnClose { display: flex !important; }
+            
+            /* Fix Widths */
+            .empty-state-content, .input-group-container { width: 100% !important; max-width: 100% !important; padding: 0 16px; }
+            .active-chat-wrapper { width: 100% !important; max-width: 100% !important; }
+            
+            /* Hide Minimized Wrapper elements */
+            .minimized-view-wrapper { display: none !important; }
+        }
+
+        @keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         /* --- MAIN CONTENT --- */
         .main-content { 
@@ -614,6 +807,10 @@
     </style>
 </head>
 <body>
+
+    <button id="mobileFab" class="mobile-fab" onclick="toggleMobileChat()">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"></path></svg>
+    </button>
 
     <div class="modal-overlay" id="renameModal">
         <div class="modal-box">
@@ -773,7 +970,7 @@
                                     </div>
                                 </div>
                                 <div class="history-footer">
-                                    <span>Prompt Presets</span>
+                                    <span>Prompt Templates</span>
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                                 </div>
                             </div>
@@ -783,7 +980,7 @@
                                     <div class="empty-state-content">
                                         <div class="empty-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"></path></svg></div>
                                         <h2 class="greeting-title">Hi John,</h2>
-                                        <p class="greeting-subtitle">How can I help with you today?</p>
+                                        <p class="greeting-subtitle">How can I help you today?</p>
                                     </div>
                                 </div>
                                 <div class="active-chat-wrapper" id="activeChat"></div>
@@ -838,7 +1035,15 @@
                                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#969AA3" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                                                 </button>
                                             </div>
+                                            
                                             <div class="popup-list" id="contextList"></div>
+
+                                            <div class="popup-search-container" id="contextSearchContainer" style="display:none;">
+                                                <div class="popup-search-input-wrapper" id="contextSearchWrapper">
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                                    <input type="text" id="contextSearchInput" placeholder="Search...">
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <div id="customerMenu" class="popup-menu">
@@ -917,7 +1122,7 @@
                                         </div>
                                         
                                         <div class="input-container">
-                                            <div id="mainInput" class="main-input" contenteditable="true" data-placeholder="Ask or assign task..."></div>
+                                            <div id="mainInput" class="main-input" contenteditable="true" data-placeholder="Ask anything...  |  Find, summarize, or act on ..."></div>
                                         </div>
                                         
                                         <div class="input-toolbar">
@@ -990,6 +1195,9 @@
         const btnClose = document.getElementById('btnClose');
         const navAiToggle = document.getElementById('navAiToggle');
         
+        // Mobile FAB
+        const mobileFab = document.getElementById('mobileFab');
+        
         // Context Elements
         const btnCloseContext = document.getElementById('btnCloseContext');
         const contextRow = document.getElementById('contextRow');
@@ -1001,6 +1209,8 @@
         const contextList = document.getElementById('contextList');
         const btnContextBack = document.getElementById('btnContextBack');
         const contextTitle = document.getElementById('contextTitle');
+        const contextSearchContainer = document.getElementById('contextSearchContainer');
+        const contextSearchInput = document.getElementById('contextSearchInput');
 
         const historySheet = document.getElementById('historySheet');
         const btnShowHistory = document.getElementById('btnShowHistory');
@@ -1066,12 +1276,18 @@
 
         let historyAdded = false;
         let currentItem = null; 
+        let currentContextCategory = null; // Track current category for search
 
         let isDragging = false;
         let startX, startLeft;
 
         let activePromptVar = null; // Track the span triggering the menu
         let currentActiveMenu = null;
+        
+        // Typing Controller
+        let typingController = null;
+        const btnSendIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>';
+        const btnStopIcon = '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="6" y="6" width="12" height="12" rx="2" ry="2"></rect></svg>';
 
         // Data Placeholders
         const customers = ["James T. Kirk", "Sarah Connor", "Marty McFly", "Ellen Ripley", "Tony Stark"];
@@ -1152,6 +1368,7 @@
         setupClearableInput('vehicleSearchWrapper');
         setupClearableInput('vinSearchWrapper');
         setupClearableInput('datetimeSearchWrapper');
+        setupClearableInput('contextSearchWrapper'); // Added for context search
 
 
         // --- FILTER LOGIC ---
@@ -1295,6 +1512,7 @@
         vinSearchInput.addEventListener('input', (e) => renderVinList(e.target.value));
         datetimeSearchInput.addEventListener('input', (e) => renderDateTimeList(e.target.value));
         promptSearchInput.addEventListener('input', (e) => renderPromptList(e.target.value));
+        contextSearchInput.addEventListener('input', (e) => renderContextLevel2(currentContextCategory, e.target.value));
 
         // --- HELPER: Find History Item by Title ---
         function getActiveHistoryItem() {
@@ -1397,6 +1615,8 @@
             contextList.innerHTML = '';
             contextTitle.innerText = "Add Context";
             btnContextBack.style.display = 'none';
+            contextSearchContainer.style.display = 'none'; // Hide search in Level 1
+            currentContextCategory = null;
             
             // 1. Current Page
             const cpDiv = document.createElement('div');
@@ -1422,20 +1642,28 @@
                 div.innerHTML = `${cat}`;
                 div.onclick = (e) => {
                     e.stopPropagation();
+                    contextSearchInput.value = ''; // Clear search when entering new cat
                     renderContextLevel2(cat);
                 };
                 contextList.appendChild(div);
             });
         }
 
-        function renderContextLevel2(category) {
+        function renderContextLevel2(category, filter = "") {
             contextList.innerHTML = '';
             contextTitle.innerText = category;
             btnContextBack.style.display = 'flex';
             
+            // Show search bar for Level 2
+            contextSearchContainer.style.display = 'block'; 
+            currentContextCategory = category; // Remember active category
+            
             const items = contextData[category] || [];
             
-            items.forEach(item => {
+            // Filter logic
+            const filteredItems = items.filter(i => i.toLowerCase().includes(filter.toLowerCase()));
+            
+            filteredItems.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'popup-item';
                 // Use generic icon for 2nd level items
@@ -1446,6 +1674,11 @@
                 };
                 contextList.appendChild(div);
             });
+            
+            // Auto focus search input if not already
+            if(document.activeElement !== contextSearchInput && filter === "") {
+                setTimeout(() => contextSearchInput.focus(), 50);
+            }
         }
         
         window.goBackContext = function() {
@@ -1626,10 +1859,13 @@
         };
 
         function updateSendButton() {
-            if (mainInput.innerText.trim().length > 0) {
-                btnSend.classList.add('active');
-            } else {
-                btnSend.classList.remove('active');
+            // Only update if not currently running a response
+            if (!typingController) {
+                if (mainInput.innerText.trim().length > 0) {
+                    btnSend.classList.add('active');
+                } else {
+                    btnSend.classList.remove('active');
+                }
             }
         }
 
@@ -1638,6 +1874,12 @@
             if (this.innerText === '/') {
                 showMenu(promptSheet, promptSearchInput, () => renderPromptList());
             }
+            
+            // FIX: Ensure :empty pseudo class works by clearing <br> tags left by browsers
+            if (this.textContent.trim() === '') {
+                this.innerHTML = '';
+            }
+            
             updateSendButton();
         });
 
@@ -1653,7 +1895,14 @@
             }
         });
 
+        // Combined Send/Stop Click Handler
         btnSend.onclick = () => {
+            if (typingController) {
+                // STOP LOGIC
+                typingController.stopped = true;
+                return;
+            }
+            
             if (mainInput.innerText.trim() !== '') {
                 const text = mainInput.innerText;
                 mainInput.innerHTML = '';
@@ -1662,11 +1911,21 @@
             }
         };
 
+        // --- THOUGHT TOGGLE ---
+        window.toggleThoughts = function(element) {
+            element.classList.toggle('expanded');
+            const details = element.nextElementSibling;
+            if(details.style.display === 'none' || details.style.display === '') {
+                details.style.display = 'block';
+            } else {
+                details.style.display = 'none';
+            }
+        }
+
         function handleSend(text) {
             let logicKey = text;
             const lower = text.toLowerCase();
             
-            // UPDATED: Corrected logic to match specific prompts
             if(lower.includes('stock availability') || lower.includes('inventory')) logicKey = '/inventory-check';
             else if(lower.includes('soft credit') || lower.includes('credit')) logicKey = '/credit-prequal';
             else if(lower.includes('trade-in') || lower.includes('estimate value')) logicKey = '/trade-in-val';
@@ -1696,11 +1955,9 @@
         };
 
         document.addEventListener('click', (e) => {
-            // Close logic for inline menus
             if (!enhancedInputBox.contains(e.target) && e.target !== btnSlashMenu) {
                 closeAllMenus();
             }
-            
             if(!globalContextMenu.contains(e.target)) {
                 globalContextMenu.classList.remove('visible');
             }
@@ -1711,17 +1968,31 @@
             if(e.target === deleteModal) closeModals();
         });
 
-        async function typeWriter(container, htmlString) {
+        async function typeWriter(container, htmlString, controller) {
+            // Check stop before starting typing
+            if(controller.stopped) {
+                container.innerHTML = '<br><em style="color:#969AA3">Response stopped by you</em>';
+                typingController = null;
+                btnSend.innerHTML = btnSendIcon;
+                updateSendButton();
+                return;
+            }
+
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlString, 'text/html');
             const nodes = Array.from(doc.body.childNodes);
             container.innerHTML = '';
+            
             async function typeNode(node, parent) {
+                // Check stop inside recursion
+                if(controller.stopped) return;
+
                 if (node.nodeType === Node.TEXT_NODE) {
                     const text = node.textContent;
                     const textNode = document.createTextNode('');
                     parent.appendChild(textNode);
                     for (let char of text) {
+                        if(controller.stopped) return; // Immediate break
                         textNode.textContent += char;
                         await new Promise(r => setTimeout(r, 5)); 
                         scrollToBottom();
@@ -1736,21 +2007,34 @@
                     }
                 }
             }
-            for (const node of nodes) await typeNode(node, container);
+            
+            for (const node of nodes) {
+                if(controller.stopped) break;
+                await typeNode(node, container);
+            }
+
+            // Cleanup if stopped or finished
+            if(controller.stopped) {
+                container.innerHTML += '<br><br><em style="color:#969AA3">Response stopped by you</em>';
+            }
+            
+            // Reset UI state
+            typingController = null;
+            btnSend.innerHTML = btnSendIcon;
+            updateSendButton();
+            scrollToBottom();
         }
 
         window.loadHistoryChat = function(title) {
             emptyState.style.display = 'none';
-            suggestionsList.style.display = 'none'; // HIDDEN
+            suggestionsList.style.display = 'none'; 
             activeChat.style.display = 'flex';
             closeAllMenus();
             
             chatTitle.innerText = title;
             activeChat.innerHTML = '';
             
-            // Enable Header New Chat
             btnHeaderNewChat.disabled = false;
-            // Enable Menu
             btnChatMenu.disabled = false;
             
             const userBubble = document.createElement('div');
@@ -1770,13 +2054,32 @@
             
             const aiContent = document.createElement('div');
             aiContent.className = 'ai-content';
-            aiContent.innerHTML = `<p>Loading deal details for <strong>${title}</strong>...</p>`;
+            
+            // Mock load logic (history doesn't re-animate)
+            const thoughtSeconds = (Math.random() * 2 + 1).toFixed(1);
+            const thoughtHeader = `
+                <div class="ai-thought-line" onclick="toggleThoughts(this)">
+                    <span>Thought for ${thoughtSeconds} seconds</span>
+                    <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+                <div class="ai-thought-details">
+                    <div class="thought-step">1. Analyzed request intent</div>
+                    <div class="thought-step">2. Retrieved conversation history</div>
+                    <div class="thought-step">3. Formatted final response</div>
+                </div>
+            `;
+            
+            const responseBody = document.createElement('div');
+            responseBody.innerHTML = `<p>Loading deal details for <strong>${title}</strong>...</p>`;
+            
+            aiContent.innerHTML = thoughtHeader;
+            aiContent.appendChild(responseBody);
             
             textWrapper.appendChild(aiContent);
             aiRow.appendChild(textWrapper);
             activeChat.appendChild(aiRow);
 
-            if(!panel.classList.contains('state-fullscreen')) {
+            if(!panel.classList.contains('state-fullscreen') || window.innerWidth <= 768) {
                 historySheet.classList.remove('open');
             }
             
@@ -1788,13 +2091,11 @@
             if(!logicKey) logicKey = userText;
 
             emptyState.style.display = 'none';
-            suggestionsList.style.display = 'none'; // HIDDEN
+            suggestionsList.style.display = 'none'; 
             activeChat.style.display = 'flex';
             closeAllMenus();
             
-            // Enable Header New Chat
             btnHeaderNewChat.disabled = false;
-            // Enable Menu
             btnChatMenu.disabled = false;
             
             if (!historyAdded) {
@@ -1828,7 +2129,13 @@
             activeChat.appendChild(userBubble);
             scrollToBottom();
 
+            // --- START STREAMING STATE ---
+            typingController = { stopped: false };
+            btnSend.innerHTML = btnStopIcon; // Change to Stop Icon
+            btnSend.classList.add('active'); // Keep it colored
+
             const delay = Math.floor(Math.random() * (8000 - 4000 + 1) + 4000); 
+            const delaySeconds = (delay / 1000).toFixed(1);
 
             const thinkingRow = document.createElement('div');
             thinkingRow.className = 'ai-message-row';
@@ -1850,6 +2157,25 @@
             scrollToBottom();
 
             setTimeout(async () => {
+                // If stopped during thinking phase
+                if(typingController.stopped) {
+                    activeChat.removeChild(thinkingRow);
+                    
+                    const stoppedRow = document.createElement('div');
+                    stoppedRow.className = 'ai-message-row';
+                    stoppedRow.innerHTML = `
+                        <div class="ai-avatar"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"></path></svg></div>
+                        <div class="ai-text-wrapper"><div class="ai-content"><em style="color:#969AA3">Response stopped by you</em></div></div>
+                    `;
+                    activeChat.appendChild(stoppedRow);
+                    
+                    // Reset UI
+                    typingController = null;
+                    btnSend.innerHTML = btnSendIcon;
+                    updateSendButton();
+                    return;
+                }
+
                 activeChat.removeChild(thinkingRow);
                 const aiRow = document.createElement('div');
                 aiRow.className = 'ai-message-row';
@@ -1864,6 +2190,32 @@
 
                 const aiContent = document.createElement('div');
                 aiContent.className = 'ai-content';
+                
+                // --- THOUGHT DROPDOWN STRUCTURE ---
+                const thoughtHeader = document.createElement('div');
+                thoughtHeader.className = 'ai-thought-line';
+                thoughtHeader.onclick = function() { toggleThoughts(this); };
+                thoughtHeader.innerHTML = `
+                    <span>Thought for ${delaySeconds} seconds</span>
+                    <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                `;
+                aiContent.appendChild(thoughtHeader);
+                
+                const thoughtDetails = document.createElement('div');
+                thoughtDetails.className = 'ai-thought-details';
+                // Placeholder Steps
+                thoughtDetails.innerHTML = `
+                    <div class="thought-step">1. Analyzing user input: "${userText}"</div>
+                    <div class="thought-step">2. Identifying context variables</div>
+                    <div class="thought-step">3. Retrieving CRM records</div>
+                    <div class="thought-step">4. Formatting response output</div>
+                `;
+                aiContent.appendChild(thoughtDetails);
+                
+                // Content Body for Typewriter
+                const contentBody = document.createElement('div');
+                aiContent.appendChild(contentBody);
+                
                 textWrapper.appendChild(aiContent);
                 aiRow.appendChild(textWrapper);
                 
@@ -1898,26 +2250,31 @@
                     default:
                         responseHTML = "Analyzing CRM data...";
                 }
-                await typeWriter(aiContent, responseHTML);
                 
-                const actionRow = document.createElement('div');
-                actionRow.className = 'ai-actions-row';
-                const icons = [
-                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>',
-                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path></svg>',
-                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>',
-                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>',
-                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>'
-                ];
-                icons.forEach(svg => {
-                    const btn = document.createElement('button');
-                    btn.className = 'ai-action-btn';
-                    btn.innerHTML = svg;
-                    actionRow.appendChild(btn);
-                });
-                textWrapper.appendChild(actionRow);
+                // Pass controller to typewriter
+                await typeWriter(contentBody, responseHTML, typingController);
                 
-                scrollToBottom();
+                // Actions (only if not stopped)
+                if(typingController === null) {
+                    const actionRow = document.createElement('div');
+                    actionRow.className = 'ai-actions-row';
+                    const icons = [
+                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>',
+                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path></svg>',
+                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>',
+                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>',
+                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>'
+                    ];
+                    icons.forEach(svg => {
+                        const btn = document.createElement('button');
+                        btn.className = 'ai-action-btn';
+                        btn.innerHTML = svg;
+                        actionRow.appendChild(btn);
+                    });
+                    textWrapper.appendChild(actionRow);
+                    scrollToBottom();
+                }
+                
             }, delay);
         }
 
@@ -1925,11 +2282,10 @@
             activeChat.innerHTML = '';
             activeChat.style.display = 'none';
             emptyState.style.display = 'flex';
-            suggestionsList.style.display = 'flex'; // VISIBLE
+            suggestionsList.style.display = 'flex'; 
             contextRow.style.display = 'flex';
             chatTitle.innerText = "New Chat"; 
             
-            // Disable Header New Chat & Menu
             btnHeaderNewChat.disabled = true;
             btnChatMenu.disabled = true;
 
@@ -1943,7 +2299,7 @@
         // Close history sheet on New Chat click from Side Sheet
         btnHistoryNewChat.onclick = () => {
             resetChat();
-            if(!panel.classList.contains('state-fullscreen')) {
+            if(!panel.classList.contains('state-fullscreen') || window.innerWidth <= 768) {
                 historySheet.classList.remove('open');
             }
         };
@@ -1972,13 +2328,25 @@
             btnFull.style.display = 'flex';
             btnDock.style.display = 'none';
 
-            if (state === 'closed') navAiToggle.classList.remove('active');
-            else navAiToggle.classList.add('active');
+            if (state === 'closed') {
+                navAiToggle.classList.remove('active');
+                panel.classList.add('state-closed');
+                panel.style.left = '';
+                
+                // Show FAB if on mobile
+                if (window.innerWidth <= 768) {
+                    mobileFab.classList.add('visible');
+                }
+            } else {
+                navAiToggle.classList.add('active');
+                mobileFab.classList.remove('visible'); // Hide FAB when chat opens
+            }
 
             if (state === 'docked') {
                 panel.classList.add('state-docked');
                 mainContent.classList.add('pushed-by-dock');
                 panel.style.left = ''; 
+                mainInput.focus();
             } else if (state === 'minimized') {
                 panel.classList.add('state-minimized');
                 if(!panel.style.left) panel.style.left = '20px';
@@ -1988,15 +2356,18 @@
                 btnFull.style.display = 'none';
                 btnDock.style.display = 'flex';
                 panel.style.left = '';
-            } else if (state === 'closed') {
-                panel.classList.add('state-closed');
-                panel.style.left = '';
+                mainInput.focus();
             }
         }
 
         navAiToggle.onclick = () => {
             if (panel.classList.contains('state-closed')) setState('docked');
             else setState('closed');
+        };
+
+        // Mobile FAB Toggle Function
+        window.toggleMobileChat = function() {
+            setState('fullscreen'); // Open as full screen on mobile
         };
 
         btnShowHistory.onclick = () => historySheet.classList.add('open');
