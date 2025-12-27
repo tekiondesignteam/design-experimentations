@@ -10,7 +10,7 @@
         body, html { 
             height: 100%; 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            color: #333; 
+            color: #444F5C; 
             overflow: hidden; 
         }
 
@@ -32,7 +32,8 @@
         .nav-toggle-btn {
             width: 36px; height: 36px;
             border: none; border-radius: 8px; cursor: pointer;
-            background-color: #6F7884; color: #FFFFFF; 
+            background-color: #969AA3; 
+            color: #FFFFFF; 
             display: flex; align-items: center; justify-content: center;
             transition: all 0.2s; font-weight: 600; font-size: 13px; font-family: inherit;
         }
@@ -100,14 +101,14 @@
         .min-left-group { display: flex; align-items: center; gap: 12px; }
         
         .drag-handle { 
-            cursor: grab; color: #94A3B8; display: flex; align-items: center; 
+            cursor: grab; color: #969AA3; display: flex; align-items: center; 
             padding: 4px; margin-left: -4px;
         }
         .drag-handle:active { cursor: grabbing; }
         .drag-handle svg { width: 16px; height: 16px; }
 
         .min-brand { 
-            font-weight: 600; color: #1E293B; font-size: 1rem;
+            font-weight: 600; color: #161616; font-size: 1rem;
             display: flex; align-items: center; gap: 8px; 
             user-select: none;
         }
@@ -115,20 +116,20 @@
         .min-controls { display: flex; align-items: center; gap: 4px; }
         .min-btn { 
             background: transparent; border: none; cursor: pointer; 
-            color: #475569; padding: 6px; 
+            color: #444F5C; padding: 6px; 
             display: flex; align-items: center; justify-content: center;
             border-radius: 6px;
             transition: background 0.2s, color 0.2s;
         }
-        .min-btn:hover { background-color: rgba(0,0,0,0.05); color: #1E293B; }
+        .min-btn:hover { background-color: rgba(0,0,0,0.05); color: #161616; }
         .min-btn svg { width: 20px; height: 20px; stroke-width: 2.5px; }
 
         /* --- TOP BAR --- */
         .top-bar { display: flex; justify-content: space-between; align-items: center; height: 44px; flex-shrink: 0; padding: 0 8px 0 16px; margin-bottom: 0; }
-        .brand-text { font-size: 0.95rem; color: #444; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+        .brand-text { font-size: 0.95rem; color: #444F5C; font-weight: 600; display: flex; align-items: center; gap: 6px; }
         .window-controls { display: flex; gap: 6px; align-items: center; z-index: 20; position: relative;}
-        .win-btn { background: transparent; border: none; cursor: pointer; padding: 6px; border-radius: 6px; color: #555; display: flex; align-items: center; justify-content: center; transition: background 0.2s; pointer-events: auto; }
-        .win-btn:hover { background-color: rgba(0,0,0,0.05); color: #000; }
+        .win-btn { background: transparent; border: none; cursor: pointer; padding: 6px; border-radius: 6px; color: #444F5C; display: flex; align-items: center; justify-content: center; transition: background 0.2s; pointer-events: auto; }
+        .win-btn:hover { background-color: rgba(0,0,0,0.05); color: #161616; }
         .win-btn svg { width: 16px; height: 16px; stroke-width: 2px; }
 
         /* --- CARD CONTAINER --- */
@@ -142,6 +143,36 @@
         }
         .chat-sidebar.state-fullscreen .main-view-wrapper { width: 100%; min-width: 100%; padding: 0; }
         .chat-sidebar.state-fullscreen .chat-card-container { border-radius: 16px 16px 0 0; }
+
+        /* --- NAV HEADER --- */
+        .nav-header { 
+            padding: 14px 16px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            background-color: #fff; border-bottom: 1px solid #f5f5f5; 
+            flex-shrink: 0; position: relative; z-index: 20; min-height: 60px;
+        }
+        .action-btn { background: transparent; border: none; cursor: pointer; padding: 8px; border-radius: 8px; color: #444F5C; display: flex; align-items: center; justify-content: center; transition: background 0.2s; width: 36px; height: 36px; }
+        .action-btn:hover { background-color: #f5f5f5; color: #161616; }
+        .action-btn svg { width: 20px; height: 20px; stroke-width: 2px; }
+        .action-btn:disabled { opacity: 0.3; cursor: default; }
+        .action-btn:disabled:hover { background: transparent; color: #D4D5D6; }
+        
+        .chat-title { 
+            font-size: 1rem; font-weight: 600; color: #161616; text-align: center; 
+            flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+            min-width: 0; margin: 0 10px; 
+        }
+
+        #chatMenuContainer { display: block; position: relative; } 
+        .menu-dropdown { position: absolute; top: 100%; right: 0; background: white; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: none; flex-direction: column; min-width: 130px; z-index: 100; margin-top: 4px; }
+        .menu-dropdown.visible { display: flex; }
+        .menu-item { padding: 10px 16px; font-size: 0.85rem; cursor: pointer; color: #444F5C; text-align: left; background: none; border: none; transition: background 0.2s; display: flex; align-items: center; gap: 8px; }
+        .menu-item:hover { background: #F7FAFC; color: #161616; }
+        .menu-item:first-child { border-radius: 8px 8px 0 0; }
+        .menu-item:last-child { border-radius: 0 0 8px 8px; }
+        .menu-item.danger { color: #E53E3E; }
+        .menu-item.danger:hover { background: #FFF5F5; }
+        .menu-item svg { width: 14px; height: 14px; stroke-width: 2px; }
 
         /* --- HISTORY SIDE SHEET --- */
         .history-sheet {
@@ -160,7 +191,8 @@
         .chat-sidebar.state-fullscreen .nav-header,
         .chat-sidebar.state-fullscreen .chat-scroll-area,
         .chat-sidebar.state-fullscreen .input-wrapper,
-        .chat-sidebar.state-fullscreen .prompt-sheet {
+        .chat-sidebar.state-fullscreen .prompt-sheet,
+        .chat-sidebar.state-fullscreen .disclaimer-text {
             margin-left: 320px; 
             width: calc(100% - 320px);
             border-left: 1px solid #E2E8F0;
@@ -168,34 +200,34 @@
         .chat-sidebar.state-fullscreen #btnShowHistory { display: none; }
 
         .history-header { padding: 14px 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #f5f5f5; flex-shrink: 0; position: relative; }
-        .history-title { font-weight: 600; color: #333; font-size: 0.95rem; flex: 1; margin-left: 4px; }
-        .history-back-btn, .history-new-chat-btn { background: transparent; border: none; cursor: pointer; padding: 6px; border-radius: 6px; color: #555; display: flex; align-items: center; justify-content: center; }
-        .history-back-btn:hover, .history-new-chat-btn:hover { background-color: #f5f5f5; }
+        .history-title { font-weight: 600; color: #161616; font-size: 0.95rem; flex: 1; margin-left: 4px; }
+        .history-back-btn, .history-new-chat-btn { background: transparent; border: none; cursor: pointer; padding: 6px; border-radius: 6px; color: #444F5C; display: flex; align-items: center; justify-content: center; }
+        .history-back-btn:hover, .history-new-chat-btn:hover { background-color: #f5f5f5; color: #161616; }
         .history-back-btn svg, .history-new-chat-btn svg { width: 20px; height: 20px; }
 
         .history-search-wrapper { padding: 12px 16px 4px 16px; }
-        .history-search-box { display: flex; align-items: center; gap: 8px; background-color: #F7FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 8px 12px; }
+        .history-search-box { display: flex; align-items: center; gap: 8px; background-color: #F7FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 8px 12px; position: relative; }
         .history-search-box:focus-within { border-color: #CBD5E0; }
-        .history-search-box input { border: none; background: transparent; outline: none; width: 100%; font-size: 0.85rem; color: #333; }
-        .history-search-box svg { width: 16px; height: 16px; color: #A0AEC0; }
+        .history-search-box input { border: none; background: transparent; outline: none; width: 100%; font-size: 0.85rem; color: #161616; padding-right: 20px; }
+        .history-search-box svg { width: 16px; height: 16px; color: #969AA3; flex-shrink: 0; }
 
         .history-content { flex: 1; overflow-y: auto; padding: 16px; padding-right: 8px; }
-        .history-section-title { font-size: 0.75rem; font-weight: 600; color: #94A3B8; margin: 16px 0 8px 0; text-transform: uppercase; letter-spacing: 0.05em; }
+        .history-section-title { font-size: 0.75rem; font-weight: 600; color: #969AA3; margin: 16px 0 8px 0; text-transform: uppercase; letter-spacing: 0.05em; }
         .history-section-title:first-child { margin-top: 0; }
-        .history-placeholder { padding: 20px; text-align: center; color: #94A3B8; font-size: 0.85rem; display: none; }
+        .history-placeholder { padding: 20px; text-align: center; color: #969AA3; font-size: 0.85rem; display: none; }
         .history-placeholder.visible { display: block; }
-        .history-footer { padding: 16px 20px; border-top: 1px solid #f5f5f5; display: flex; align-items: center; justify-content: space-between; cursor: pointer; color: #4A5568; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
-        .history-footer:hover { color: #4A5568; }
+        .history-footer { padding: 16px 20px; border-top: 1px solid #f5f5f5; display: flex; align-items: center; justify-content: space-between; cursor: pointer; color: #444F5C; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+        .history-footer:hover { color: #161616; }
         .history-footer:hover svg { color: #00BFA5; }
         .history-footer svg { width: 18px; height: 18px; stroke-width: 2px; transition: color 0.2s; }
 
-        .history-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 8px 8px 12px; border-radius: 8px; cursor: pointer; transition: background 0.2s; color: #4A5568; font-size: 0.9rem; position: relative; margin-bottom: 2px; }
-        .history-item:hover { background-color: #F7FAFC; color: #1E293B; }
+        .history-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 8px 8px 12px; border-radius: 8px; cursor: pointer; transition: background 0.2s; color: #444F5C; font-size: 0.9rem; position: relative; margin-bottom: 2px; }
+        .history-item:hover { background-color: #F7FAFC; color: #161616; }
         .history-item-left { display: flex; align-items: center; gap: 8px; overflow: hidden; flex: 1; }
         .history-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
-        .history-item-menu-btn { background: transparent; border: none; cursor: pointer; color: #A0AEC0; padding: 4px; border-radius: 4px; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s, background 0.2s; }
+        .history-item-menu-btn { background: transparent; border: none; cursor: pointer; color: #969AA3; padding: 4px; border-radius: 4px; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s, background 0.2s; }
         .history-item:hover .history-item-menu-btn { opacity: 1; }
-        .history-item-menu-btn:hover { background-color: #E2E8F0; color: #333; }
+        .history-item-menu-btn:hover { background-color: #E2E8F0; color: #161616; }
         .history-item-menu-btn svg { width: 16px; height: 16px; }
 
         /* GLOBAL CONTEXT MENU & MODALS */
@@ -205,105 +237,273 @@
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 10000; display: none; align-items: center; justify-content: center; }
         .modal-overlay.visible { display: flex; }
         .modal-box { background: white; width: 320px; border-radius: 12px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); animation: fadeIn 0.2s ease-out; }
-        .modal-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 12px; color: #1E293B; }
-        .modal-input { width: 100%; padding: 10px; border: 1px solid #E2E8F0; border-radius: 8px; font-size: 0.95rem; margin-bottom: 16px; outline: none; }
+        .modal-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 12px; color: #161616; }
+        .modal-input { width: 100%; padding: 10px; border: 1px solid #E2E8F0; border-radius: 8px; font-size: 0.95rem; margin-bottom: 16px; outline: none; color: #161616; }
         .modal-input:focus { border-color: #00BFA5; }
         .modal-actions { display: flex; justify-content: flex-end; gap: 8px; }
         .modal-btn { padding: 8px 16px; border-radius: 6px; font-size: 0.9rem; font-weight: 500; cursor: pointer; border: none; }
-        .modal-btn.secondary { background: #EDF2F7; color: #4A5568; }
+        .modal-btn.secondary { background: #EDF2F7; color: #444F5C; }
         .modal-btn.primary { background: #00BFA5; color: white; }
         .modal-btn.danger { background: #E53E3E; color: white; }
 
-        /* --- INPUT WRAPPER --- */
-        .input-wrapper { padding: 16px 16px 8px 16px; background-color: #fff; width: 100%; flex-shrink: 0; position: relative; }
+        /* CHAT CONTENT AREA */
+        .chat-scroll-area { 
+            flex: 1; 
+            padding: 0 16px; 
+            overflow-y: auto; background-color: #fff; 
+            display: flex; flex-direction: column; scroll-behavior: smooth; 
+        }
+        
+        .scroll-spacer { height: 160px; width: 100%; flex-shrink: 0; }
+        
+        /* Suggestions List */
+        .suggestions-list { 
+            display: flex; flex-direction: column; 
+            margin-top: auto; 
+            margin-bottom: 12px; 
+            border: none; background-color: transparent; 
+            padding: 0 4px;
+        }
+        .suggestion-item { background-color: transparent; border: none; border-bottom: 1px solid #E2E8F0; padding: 10px 10px; font-size: 0.9rem; color: #969AA3; cursor: pointer; text-align: left; transition: background-color 0.2s, color 0.2s; line-height: 1.4; }
+        .suggestion-item:last-child { border-bottom: none; }
+        .suggestion-item:hover { background-color: #EEF2F6; color: #161616; border-radius: 6px; border-bottom-color: transparent; }
+
+        .empty-state-wrapper { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .empty-state-content { text-align: left; width: 100%; padding: 0 10px; max-width: 400px; transition: width 0.3s; }
+        .chat-sidebar.state-fullscreen .empty-state-content { width: 75%; max-width: 1000px; margin: 0 auto; }
+        .empty-icon { width: 48px; height: 48px; margin-bottom: 16px; color: #00BFA5; background: rgba(0, 191, 165, 0.1); border-radius: 12px; padding: 10px; display: inline-block; }
+        .greeting-title { font-size: 1.75rem; color: #161616; margin-bottom: 8px; font-weight: 600; }
+        .greeting-subtitle { font-size: 1.1rem; color: #969AA3; margin: 0; display: flex; align-items: center; }
+        
+        .active-chat-wrapper { 
+            display: none; 
+            flex-direction: column; 
+            gap: 16px;
+            padding-bottom: 20px; 
+            padding-top: 20px;
+            width: 100%; 
+        }
+        
+        .chat-sidebar.state-fullscreen .active-chat-wrapper { width: 75%; max-width: 1000px; align-self: center; }
+        
+        /* Message Bubble Line Height */
+        .message-bubble { max-width: 100%; font-size: 0.875rem; line-height: 1.5; position: relative; }
+        .message-bubble.user {
+            margin-top: 12px;
+            align-self: flex-end;
+            max-width: 85%;
+            padding: 8px 12px;
+            background-color: #EEF2F6;
+            color: #161616;
+            border-radius: 12px 12px 0 12px;
+        }
+        
+        /* UPDATED: AI Message Row Padding Top 0px */
+        .ai-message-row { display: flex; align-items: flex-start; gap: 12px; width: 100%; padding-top: 0px; animation: fadeIn 0.3s ease-out; }
+        
+        .ai-avatar { width: 28px; height: 28px; background-color: rgba(0, 191, 165, 0.1); color: #00BFA5; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+        .ai-avatar svg { width: 16px; height: 16px; }
+        .ai-avatar.thinking svg { animation: spinPulse 3s ease-in-out infinite; }
+        
+        /* WRAPPER FOR VERTICAL ALIGNMENT */
+        .ai-text-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0; 
+        }
+
+        /* AI Content Font and Line Height */
+        .ai-content { color: #161616; font-size: 0.875rem; line-height: 1.5; }
+        .ai-content p { margin-bottom: 12px; margin-top: 0; }
+        .ai-content p:last-child { margin-bottom: 4px; }
+        .ai-content strong, .ai-content b { font-weight: 500 !important; color: #161616; }
+        
+        /* AI List Item Spacing and Line Height */
+        .ai-list-item { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; line-height: 1.5; }
+        .ai-list-item:last-child { margin-bottom: 0; }
+        
+        .ai-list-number { color: #969AA3; font-size: 0.9rem; margin-top: 1px; min-width: 16px; font-weight: 600; }
+        .thinking-text { font-size: 0.85rem; color: #969AA3; font-weight: 500; margin-top: 4px; animation: fadeText 2s ease-in-out infinite alternate; }
+        
+        /* AI Actions Row Padding */
+        .ai-actions-row { 
+            display: flex; align-self: flex-start; gap: 12px; 
+            margin-top: 0px; 
+            margin-bottom: 4px; 
+            margin-left: 0px; 
+            padding-top: 8px;
+            opacity: 0; animation: fadeIn 0.3s ease-in forwards; 
+        }
+        .ai-action-btn { background: transparent; border: none; cursor: pointer; color: #969AA3; padding: 4px; border-radius: 4px; display: flex; align-items: center; justify-content: center; transition: color 0.2s, background 0.2s; }
+        .ai-action-btn:hover { color: #161616; background-color: #F1F5F9; }
+        .ai-action-btn svg { width: 16px; height: 16px; stroke-width: 2px; }
+
+        /* INPUT WRAPPER HIERARCHY */
+        .input-wrapper { 
+            padding: 8px 16px 8px 16px; 
+            position: absolute; 
+            bottom: 0; 
+            left: 0;
+            width: 100%; 
+            background-color: #fff; 
+            flex-shrink: 0; 
+            z-index: 20;
+        }
         .chat-sidebar.state-fullscreen .input-wrapper { display: flex; flex-direction: column; align-items: center; }
         .chat-sidebar.state-fullscreen .input-group-container { width: 75%; max-width: 1000px; }
         .input-group-container { width: 100%; transition: width 0.3s; position: relative; }
         
-        .input-border-wrapper { background-color: #EEF2F6; border: 1px solid #E2E8F0; padding: 4px; border-radius: 16px; width: 100%; position: relative;}
+        .input-border-wrapper { 
+            background-color: #EEF2F6; 
+            border: 1px solid #E2E8F0; 
+            padding: 4px; 
+            border-radius: 16px; 
+            width: 100%; 
+            position: relative;
+        }
         
-        /* ENHANCED INPUT BOX & POPUP MENU STYLES */
+        /* ENHANCED INPUT BOX */
         .enhanced-input-box { 
             border: 1px solid #E2E8F0; 
             border-radius: 12px; 
             padding: 12px 14px; 
             background-color: #fff; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 8px; 
+            display: block; 
             box-shadow: 0 1px 2px rgba(0,0,0,0.02); 
-            transition: border-color 0.2s, border-radius 0.2s; 
+            transition: border-color 0.2s; 
             position: relative; 
         }
         .enhanced-input-box:focus-within { border-color: #CBD5E0; }
-        .enhanced-input-box.menu-open { border-top-left-radius: 0; border-top-right-radius: 0; border-top-color: transparent; }
 
-        /* POPUP MENU - INTERNAL EXTENSION */
-        .popup-menu {
-            position: absolute;
-            bottom: 100%; 
-            left: -1px;   
-            width: calc(100% + 2px); 
-            display: none;
+        /* POPUP MENU & PROMPT SHEET */
+        .popup-menu, .prompt-sheet-inline {
+            position: static; 
+            width: 100%; 
+            display: flex; 
             flex-direction: column;
-            background: white;
-            border: 1px solid #E2E8F0;
-            border-bottom: 1px solid #f0f0f0;
-            border-radius: 12px 12px 0 0;
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.08);
+            background: #fff;
+            
+            border-bottom: 0 solid #F1F5F9;
             z-index: 10;
             overflow: hidden;
-            max-height: 350px;
-            animation: slideUpFade 0.15s ease-out;
+            
+            /* Start Closed State */
+            max-height: 0; 
+            opacity: 0;
+            visibility: hidden;
+            margin-bottom: 0; 
+            
+            /* FIX: Removed padding in closed state to match open state */
+            padding: 0;
+
+            /* FIX: Targeted transition instead of 'all' to avoid padding animation artifacts */
+            transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, margin 0.3s ease-in-out, visibility 0.3s;
         }
-        .popup-menu.visible { display: flex; }
+        
+        /* Visible State */
+        .popup-menu.visible, .prompt-sheet-inline.visible { 
+            max-height: 380px; 
+            opacity: 1;
+            visibility: visible;
+            margin-bottom: 8px;
+            border-bottom-width: 1px;
+            padding: 0px; 
+        }
 
         .popup-header {
-            padding: 12px 16px 8px 16px;
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: #1E293B;
-            border-bottom: none;
+            padding: 4px 12px 12px 4px; 
+            font-size: 16px;
+            font-weight: 600; 
+            color: #161616;
+            letter-spacing: 0.01em; 
+            flex-shrink: 0;
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: none; 
+        }
+        /* UPDATED: Remove margin-right from buttons in popup header */
+        .popup-header button {
+            background: none; border: none; cursor: pointer; color: #444F5C; display: flex; align-items: center; margin-right: 0;
+        }
+        .popup-header button:hover { color: #161616; }
+        .popup-header-left { display: flex; align-items: center; gap: 8px; }
+
+        .popup-list { flex: 1; overflow-y: auto; padding: 0px; }
+        
+        .popup-item {
+            padding: 10px 12px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: #444F5C;
+            transition: background 0.1s;
+            display: flex; align-items: center; gap: 10px;
+            border-radius: 6px;
+        }
+        .popup-item:hover { background-color: #F8FAFC; color: #161616; }
+        .popup-item svg { width: 16px; height: 16px; min-width: 16px; min-height: 16px; color: #969AA3; flex-shrink: 0; }
+
+        /* NEW: Menu Divider */
+        .menu-divider {
+            height: 1px;
+            background-color: #F1F5F9;
+            margin: 6px 0;
             flex-shrink: 0;
         }
 
-        .popup-list { flex: 1; overflow-y: auto; padding: 0; }
-        
-        .popup-item {
-            padding: 10px 16px;
-            cursor: pointer;
-            font-size: 0.95rem;
-            color: #334155;
-            transition: background 0.1s;
-            display: flex; align-items: center; gap: 10px;
-            border-left: 3px solid transparent;
+        .prompt-item { 
+            padding: 8px;
+            cursor: pointer; transition: background 0.2s;
+            display: flex; flex-direction: column; gap: 2px;
+            border-radius: 6px;
         }
-        .popup-item:hover { background-color: #F1F5F9; border-left-color: #00BFA5; color: #0F172A; }
-        
-        /* FIX: Explicitly size SVGs to prevent giant icon bug */
-        .popup-item svg { width: 16px; height: 16px; min-width: 16px; min-height: 16px; color: #94A3B8; flex-shrink: 0; }
+        .prompt-item:hover { background-color: #F8FAFC; }
+        .prompt-item-name { 
+            font-size: 0.875rem;
+            font-weight: 500; 
+            color: #161616; 
+        }
+        .prompt-item-desc { font-size: 0.85rem; color: #969AA3; line-height: 1.4; }
+
+        .prompt-filters {
+            display: flex; gap: 8px; 
+            padding: 4px; 
+            overflow-x: auto;
+            scrollbar-width: none; 
+            -ms-overflow-style: none;
+            flex-shrink: 0;
+        }
+        .prompt-filters::-webkit-scrollbar { display: none; }
+        .filter-pill {
+            padding: 4px 10px; border-radius: 6px;
+            font-size: 0.75rem; font-weight: 500;
+            border: 1px solid #E2E8F0;
+            background: #fff; color: #969AA3;
+            cursor: pointer; white-space: nowrap; transition: all 0.2s;
+        }
+        .filter-pill:hover { background-color: #F8FAFC; color: #444F5C; }
+        .filter-pill.active { background-color: #EEF2F6; color: #161616; border-color: #CBD5E0; }
 
         .vin-item {
-            padding: 10px 16px;
+            padding: 8px 12px;
             cursor: pointer;
             transition: background 0.1s;
             display: flex; align-items: flex-start; gap: 12px;
-            border-left: 3px solid transparent;
+            border-radius: 6px;
         }
-        .vin-item:hover { background-color: #F1F5F9; border-left-color: #00BFA5; }
-        .vin-icon { margin-top: 2px; color: #94A3B8; }
+        .vin-item:hover { background-color: #F8FAFC; }
+        .vin-icon { margin-top: 2px; color: #969AA3; }
         .vin-icon svg { width: 16px; height: 16px; }
-        .vin-details { display: flex; flex-direction: column; gap: 2px; }
-        .vin-text { font-weight: 600; color: #1E293B; font-size: 0.95rem; }
-        .vin-desc { color: #64748B; font-size: 0.85rem; }
+        .vin-details { display: flex; flex-direction: column; gap: 1px; }
+        .vin-text { font-weight: 500; color: #444F5C; font-size: 0.9rem; }
+        .vin-desc { color: #969AA3; font-size: 0.8rem; }
 
         .popup-search-container {
-            padding: 10px 16px 14px 16px;
+            padding: 12px 0px; 
             background: #fff;
-            border-top: 1px solid #F1F5F9;
             flex-shrink: 0;
         }
         
+        /* UPDATED: Search Input Wrapper with Clear Button */
         .popup-search-input-wrapper {
             display: flex; align-items: center; gap: 8px;
             background: #fff;
@@ -311,161 +511,105 @@
             border-radius: 6px;
             padding: 8px 10px;
             transition: border-color 0.2s, box-shadow 0.2s;
+            position: relative; /* For clear btn */
         }
         .popup-search-input-wrapper:focus-within {
             border-color: #00BFA5;
             box-shadow: 0 0 0 3px rgba(0, 191, 165, 0.1);
         }
-        
-        /* FIX: Explicitly size SVGs to prevent giant icon bug */
-        .popup-search-input-wrapper svg { width: 16px; height: 16px; min-width: 16px; min-height: 16px; color: #64748B; }
+        .popup-search-input-wrapper svg { width: 16px; height: 16px; min-width: 16px; min-height: 16px; color: #969AA3; }
         .popup-search-input-wrapper input {
             border: none; outline: none; width: 100%; font-size: 0.9rem;
-            color: #333; background: transparent;
+            color: #161616; background: transparent; padding-right: 20px;
         }
-
-        @keyframes slideUpFade {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        
+        .search-clear-btn {
+            position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+            background: none; border: none; color: #969AA3; cursor: pointer;
+            display: none; padding: 4px; z-index: 5;
         }
-
-        /* --- CHAT HEADER --- */
-        .nav-header { padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; background-color: #fff; border-bottom: 1px solid #f5f5f5; flex-shrink: 0; position: relative; }
-        .action-btn { background: transparent; border: none; cursor: pointer; padding: 8px; border-radius: 8px; color: #555; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
-        .action-btn:hover { background-color: #f5f5f5; color: #000; }
-        .action-btn svg { width: 18px; height: 18px; stroke-width: 2px; }
-        .action-btn:disabled { opacity: 0.3; cursor: default; }
-        .action-btn:disabled:hover { background: transparent; color: #555; }
-        
-        .chat-title { font-size: 0.95rem; font-weight: 600; color: #222; text-align: center; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; margin: 0 10px; }
-
-        #chatMenuContainer { display: none; position: relative; } 
-        .menu-dropdown { position: absolute; top: 100%; right: 0; background: white; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: none; flex-direction: column; min-width: 130px; z-index: 100; margin-top: 4px; }
-        .menu-dropdown.visible { display: flex; }
-        .menu-item { padding: 10px 16px; font-size: 0.85rem; cursor: pointer; color: #333; text-align: left; background: none; border: none; transition: background 0.2s; display: flex; align-items: center; gap: 8px; }
-        .menu-item:hover { background: #F7FAFC; }
-        .menu-item:first-child { border-radius: 8px 8px 0 0; }
-        .menu-item:last-child { border-radius: 0 0 8px 8px; }
-        .menu-item.danger { color: #E53E3E; }
-        .menu-item.danger:hover { background: #FFF5F5; }
-        .menu-item svg { width: 14px; height: 14px; stroke-width: 2px; }
-
-        /* --- REUSED CONTENT STYLES --- */
-        .chat-scroll-area { flex: 1; padding: 16px; overflow-y: auto; background-color: #fff; display: flex; flex-direction: column; scroll-behavior: smooth; }
-        .empty-state-wrapper { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .empty-state-content { text-align: left; width: 100%; padding: 0 10px; max-width: 400px; transition: width 0.3s; }
-        .chat-sidebar.state-fullscreen .empty-state-content { width: 75%; max-width: 1000px; margin: 0 auto; }
-        .empty-icon { width: 48px; height: 48px; margin-bottom: 16px; color: #00BFA5; background: rgba(0, 191, 165, 0.1); border-radius: 12px; padding: 10px; display: inline-block; }
-        .greeting-title { font-size: 1.75rem; color: #2D3748; margin-bottom: 8px; font-weight: 600; }
-        .greeting-subtitle { font-size: 1.1rem; color: #718096; margin: 0; display: flex; align-items: center; }
-        .active-chat-wrapper { display: none; flex-direction: column; gap: 20px; padding-bottom: 20px; width: 100%; }
-        .chat-sidebar.state-fullscreen .active-chat-wrapper { width: 75%; max-width: 1000px; align-self: center; }
-        
-        .message-bubble { max-width: 100%; font-size: 0.95rem; line-height: 1.6; position: relative; }
-        .message-bubble.user { align-self: flex-end; max-width: 85%; padding: 10px 14px; background-color: #EEF2F6; color: #161616; border-radius: 12px 12px 0 12px; }
-        .ai-message-row { display: flex; align-items: flex-start; gap: 12px; width: 100%; animation: fadeIn 0.3s ease-out; }
-        .ai-avatar { width: 28px; height: 28px; background-color: rgba(0, 191, 165, 0.1); color: #00BFA5; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
-        .ai-avatar svg { width: 16px; height: 16px; }
-        .ai-avatar.thinking svg { animation: spinPulse 3s ease-in-out infinite; }
-        .ai-content { flex: 1; color: #334155; font-size: 0.95rem; line-height: 1.6; }
-        .ai-content p { margin-bottom: 12px; margin-top: 0; }
-        .ai-content strong, .ai-content b { font-weight: 500 !important; color: #1E293B; }
-        .ai-list-item { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 16px; line-height: 1.6; }
-        .ai-list-item:last-child { margin-bottom: 0; }
-        .ai-list-number { color: #64748B; font-size: 0.9rem; margin-top: 1px; min-width: 16px; font-weight: 600; }
-        .thinking-text { font-size: 0.85rem; color: #64748B; font-weight: 500; margin-top: 4px; animation: fadeText 2s ease-in-out infinite alternate; }
-        
-        .ai-actions-row { display: flex; align-self: flex-start; gap: 12px; margin-top: 8px; margin-bottom: 4px; margin-left: 40px; opacity: 0; animation: fadeIn 0.3s ease-in forwards; }
-        .ai-action-btn { background: transparent; border: none; cursor: pointer; color: #64748B; padding: 4px; border-radius: 4px; display: flex; align-items: center; justify-content: center; transition: color 0.2s, background 0.2s; }
-        .ai-action-btn:hover { color: #1E293B; background-color: #F1F5F9; }
-        .ai-action-btn svg { width: 16px; height: 16px; stroke-width: 2px; }
+        .search-clear-btn:hover { color: #444F5C; }
+        .search-clear-btn.visible { display: block; }
 
         /* Content Editable Div Input */
         .input-container {
             width: 100%; border: none; background: transparent; padding: 0;
+            margin-bottom: 8px; 
         }
         .main-input { 
             width: 100%; min-height: 24px; max-height: 120px; overflow-y: auto;
-            outline: none; font-size: 0.95rem; line-height: 1.5; color: #2D3748;
+            outline: none; font-size: 0.95rem; line-height: 1.5; color: #161616;
             font-family: inherit;
         }
-        .main-input:empty::before { content: attr(data-placeholder); color: #A0AEC0; pointer-events: none; display: block; }
+        .main-input:empty::before { content: attr(data-placeholder); color: #969AA3; pointer-events: none; display: block; }
         .prompt-var { color: #7C3AED; background: #F3E8FF; padding: 0 4px; border-radius: 4px; font-weight: 500; cursor: pointer; }
         .filled-var { color: #2563EB; font-weight: 500; }
         
         .input-toolbar { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid transparent; }
         .toolbar-left, .toolbar-right { display: flex; gap: 8px; align-items: center; }
-        .tool-icon-btn { background: transparent; border: none; cursor: pointer; padding: 6px; border-radius: 6px; color: #718096; display: flex; align-items: center; justify-content: center; transition: color 0.2s, background 0.2s; }
-        .tool-icon-btn:hover { background-color: #F7FAFC; color: #4A5568; }
+        
+        .tool-icon-btn { background: transparent; border: none; cursor: pointer; padding: 6px; border-radius: 6px; color: #969AA3; display: flex; align-items: center; justify-content: center; transition: color 0.2s, background 0.2s; }
+        .tool-icon-btn:hover { background-color: #F7FAFC; color: #444F5C; }
+        .tool-icon-btn:disabled { opacity: 0.3; cursor: default; }
+        .tool-icon-btn:disabled:hover { background: transparent; color: #D4D5D6; }
         .tool-icon-btn svg { width: 18px; height: 18px; stroke-width: 2px; }
-        .send-btn-square { width: 32px; height: 32px; background-color: #F1F5F9; border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #64748B; transition: all 0.2s; }
-        .send-btn-square:hover { background-color: #E2E8F0; color: #334155; }
+        
+        .send-btn-square { width: 32px; height: 32px; background-color: #F1F5F9; border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #969AA3; transition: all 0.2s; }
+        .send-btn-square:hover { background-color: #E2E8F0; color: #444F5C; }
         .send-btn-square.active { background-color: rgba(0, 191, 165, 0.1); color: #00BFA5; }
         .send-btn-square svg { width: 16px; height: 16px; stroke-width: 2px; }
-
-        .prompt-sheet { 
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 75%; 
-            background-color: #fff; border-radius: 20px 20px 0 0; 
-            box-shadow: 0 -4px 30px rgba(0,0,0,0.15); 
-            padding: 0; display: flex; flex-direction: column;
-            transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 100;
-        }
-        .prompt-sheet.visible { transform: translateY(0); }
-        
-        .prompt-header { padding: 20px; display: flex; align-items: center; justify-content: space-between; }
-        .prompt-title { font-weight: 600; font-size: 1rem; color: #111; letter-spacing: -0.02em; }
-        
-        .prompt-search-wrapper { 
-            padding: 12px 20px 20px 20px; 
-            border-top: 1px solid #f0f0f0; 
-            margin-top: auto; 
-            background: #fff;
-        }
-        .prompt-search-box { 
-            display: flex; align-items: center; gap: 10px; 
-            background-color: #fff; border: 1px solid #E2E8F0; 
-            border-radius: 8px; padding: 10px 12px; 
-            transition: border 0.2s;
-        }
-        .prompt-search-box:focus-within { border-color: #000; }
-        .prompt-search-box input { border: none; background: transparent; outline: none; width: 100%; font-size: 0.95rem; color: #333; }
-        /* FIX: Explicit size for search icon in sheet */
-        .prompt-search-box svg { width: 18px; height: 18px; color: #94A3B8; }
-        
-        .prompt-list { flex: 1; overflow-y: auto; padding: 0 0 0 0; }
-        
-        .prompt-item { 
-            padding: 16px 20px; 
-            border-bottom: 1px solid #f0f0f0; 
-            cursor: pointer; transition: background 0.2s;
-            display: flex; flex-direction: column; gap: 4px;
-        }
-        .prompt-item:last-child { border-bottom: none; }
-        .prompt-item:hover { background-color: #F7FAFC; }
-        .prompt-item-name { font-size: 0.95rem; font-weight: 600; color: #0F172A; margin-bottom: 2px; }
-        .prompt-item-desc { font-size: 0.9rem; color: #64748B; line-height: 1.5; display: block; }
 
         @keyframes spinPulse { 0% { transform: rotate(0deg) scale(1); opacity: 1; } 50% { transform: rotate(180deg) scale(0.8); opacity: 0.7; } 100% { transform: rotate(360deg) scale(1); opacity: 1; } }
         @keyframes fadeText { 0% { opacity: 0.6; } 100% { opacity: 1; } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Context styling helpers */
-        .context-row { display: flex; gap: 8px; flex-wrap: wrap; }
+        .context-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 8px; }
         .context-pill { 
             display: inline-flex; align-items: center; gap: 6px; 
             background-color: #EFF6FF; 
-            color: #1E293B; font-size: 0.85rem; font-weight: 500; 
+            color: #161616; font-size: 0.85rem; font-weight: 500; 
             padding: 6px 12px; border-radius: 20px; user-select: none; 
             border: 1px solid #DBEAFE;
             transition: all 0.2s;
         }
-        .context-close { cursor: pointer; color: #94A3B8; font-size: 18px; line-height: 1; display: flex; align-items: center; }
+        .context-close { cursor: pointer; color: #969AA3; font-size: 18px; line-height: 1; display: flex; align-items: center; }
         .context-close:hover { color: #cf3a3a; }
         .context-pill.add-context { 
             background: #EFF6FF; color: #2563EB; border: 1px dashed #BFDBFE; cursor: pointer; 
         }
         .context-pill.add-context:hover { background: #DBEAFE; }
+
+        /* --- SKELETON --- */
+        .table-skeleton-container { width: 100%; height: 100%; display: flex; flex-direction: column; background: #fff; border: 1px solid #E2E8F0; border-radius: 8px; overflow: hidden; }
+        .skeleton-row { display: grid; grid-template-columns: 2fr 3fr 2fr 2fr 2fr 1fr; gap: 24px; padding: 0 24px; border-bottom: 1px solid #F1F5F9; align-items: center; height: 50px; }
+        .skeleton-row:last-child { border-bottom: none; }
+        .skeleton-row.header { background-color: #F8FAFC; border-bottom: 1px solid #E2E8F0; }
+        .skeleton-cell { display: flex; align-items: center; width: 100%; }
+        .skeleton-bar { height: 12px; background: #F1F5F9; border-radius: 6px; width: 100%; }
+        .header .skeleton-bar { background: #E2E8F0; }
+
+        /* --- MEDIA QUERIES --- */
+        @media (max-width: 600px) {
+            .global-top-nav, .global-side-nav, .main-content { display: none !important; }
+            .chat-sidebar { width: 100% !important; height: 100% !important; left: 0 !important; bottom: 0 !important; transform: translateX(0) !important; opacity: 1 !important; border-radius: 0 !important; border: none !important; }
+            .main-view-wrapper { min-width: 100% !important; width: 100% !important; padding: 0 !important; }
+            .chat-card-container { border-radius: 0 !important; box-shadow: none !important; }
+            .window-controls, .drag-handle { display: none !important; }
+            .empty-state-content, .input-group-container { width: 100% !important; max-width: 100% !important; padding: 0 16px; }
+            .input-wrapper { padding: 16px 0; }
+            .active-chat-wrapper { width: 100% !important; max-width: 100% !important; }
+            .history-sheet { width: 100% !important; border-right: none !important; }
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-content { 
+            flex: 1; height: 100%; background-color: #fff; 
+            padding: 30px; text-align: center; transition: padding-left 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            display: flex; flex-direction: column; cursor: pointer; overflow: hidden;
+        }
+        .main-content.pushed-by-dock { padding-left: 430px; }
+        .main-content.full-hidden { opacity: 0; pointer-events: none; }
 
     </style>
 </head>
@@ -485,7 +629,7 @@
     <div class="modal-overlay" id="deleteModal">
         <div class="modal-box">
             <div class="modal-title">Delete Chat?</div>
-            <p style="margin-bottom:20px; color:#4A5568; font-size:0.9rem;">Are you sure you want to delete this conversation? This action cannot be undone.</p>
+            <p style="margin-bottom:20px; color:#444F5C; font-size:0.9rem;">Are you sure you want to delete this conversation? This action cannot be undone.</p>
             <div class="modal-actions">
                 <button class="modal-btn secondary" onclick="closeModals()">Cancel</button>
                 <button class="modal-btn danger" onclick="confirmDelete()">Delete</button>
@@ -560,6 +704,41 @@
 
                         <div class="chat-card-container">
                             
+                            <div class="nav-header">
+                                <button class="action-btn" id="btnShowHistory" title="History">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                                    </svg>
+                                </button>
+                                <div class="chat-title">New Chat</div>
+                                
+                                <button class="action-btn" id="btnHeaderNewChat" title="New Chat" disabled style="margin-right: 4px;">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
+                                </button>
+
+                                <div id="chatMenuContainer">
+                                    <button class="action-btn" id="btnChatMenu" title="Menu" disabled>
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                                    </button>
+                                    <div class="menu-dropdown" id="chatDropdown">
+                                        <button class="menu-item" onclick="togglePinFromHeader()">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path></svg>
+                                            <span id="headerPinText">Pin Chat</span>
+                                        </button>
+                                        <button class="menu-item" onclick="openRenameModalFromHeader()">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                                            Rename
+                                        </button>
+                                        <button class="menu-item danger" onclick="openDeleteModalFromHeader()">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <div class="history-sheet" id="historySheet">
                                 <div class="history-header">
                                     <button class="history-back-btn" id="btnCloseHistory"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></button>
@@ -567,10 +746,10 @@
                                     <button class="history-new-chat-btn" id="btnHistoryNewChat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M8 12h8"/><path d="M12 8v8"/></svg></button>
                                 </div>
                                 <div class="history-search-wrapper">
-                                    <div class="history-search-box">
+                                    <div class="history-search-box" id="historySearchWrapper">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                                        <input type="text" placeholder="Search chats...">
-                                    </div>
+                                        <input type="text" placeholder="Search chats..." id="historySearchInput">
+                                        </div>
                                 </div>
                                 <div class="history-content">
                                     <div class="history-section-title">Pinned</div>
@@ -599,163 +778,167 @@
                                 </div>
                             </div>
 
-                            <div class="nav-header">
-                                <button class="action-btn" id="btnShowHistory"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
-                                <div class="chat-title">New Chat</div>
-                                <div style="display:flex; gap:4px; align-items:center;">
-                                    <button class="action-btn" id="btnNewChat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M8 12h8"/><path d="M12 8v8"/></svg></button>
-                                    <div id="chatMenuContainer" style="display:none;">
-                                        <button class="action-btn" id="btnChatMenu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></button>
-                                        <div class="menu-dropdown" id="chatDropdown">
-                                            <button class="menu-item" onclick="togglePinFromHeader()"><span id="headerPinText">Pin Chat</span></button>
-                                            <button class="menu-item" onclick="openRenameModalFromHeader()">Rename</button>
-                                            <button class="menu-item danger" onclick="openDeleteModalFromHeader()">Delete</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="prompt-sheet" id="promptSheet">
-                                <div class="prompt-header">
-                                    <div class="prompt-title">Prompt Presets</div>
-                                    <button style="border:none; background:transparent; cursor:pointer; padding:4px;" onclick="closePromptSheet()">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                                    </button>
-                                </div>
-
-                                <div class="prompt-list">
-                                    <div class="prompt-item" onclick="startChat('Summarize recent car leads')">
-                                        <div class="prompt-item-name">Summarize Leads</div>
-                                        <div class="prompt-item-desc">Summarize recent car leads from the current page view.</div>
-                                    </div>
-                                    <div class="prompt-item" onclick="startChat('Draft quote for Model X')">
-                                        <div class="prompt-item-name">Draft Quote</div>
-                                        <div class="prompt-item-desc">Draft quote for Model X based on current configuration.</div>
-                                    </div>
-                                    <div class="prompt-item" onclick="startChat('List high-priority test drives')">
-                                        <div class="prompt-item-name">Priority Drives</div>
-                                        <div class="prompt-item-desc">List high-priority test drives scheduled for today.</div>
-                                    </div>
-                                    
-                                    <div class="prompt-item" onclick="fillInput('Check stock availability for [Vehicle] across all lots')">
-                                        <div class="prompt-item-name">Inventory Check</div>
-                                        <div class="prompt-item-desc">Check stock availability for [Vehicle] across all lots available in the region.</div>
-                                    </div>
-                                    <div class="prompt-item" onclick="fillInput('Analyze the closing probability for the current lead based on recent activity')">
-                                        <div class="prompt-item-name">Deal Probability</div>
-                                        <div class="prompt-item-desc">Analyze the closing probability for the current lead based on recent activity.</div>
-                                    </div>
-                                    <div class="prompt-item" onclick="fillInput('Run a soft credit qualification check for [Customer] to determine eligibility')">
-                                        <div class="prompt-item-name">Credit Pre-qual</div>
-                                        <div class="prompt-item-desc">Run a soft credit qualification check for [Customer] to determine eligibility.</div>
-                                    </div>
-                                    <div class="prompt-item" onclick="fillInput('Book a test drive appointment for [Vehicle] on [Date & Time]')">
-                                        <div class="prompt-item-name">Schedule Drive</div>
-                                        <div class="prompt-item-desc">Book a test drive appointment for [Vehicle] on [Date & Time].</div>
-                                    </div>
-                                </div>
-                                
-                                <div class="prompt-search-wrapper">
-                                    <div class="prompt-search-box">
-                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                                        <input type="text" placeholder="Search prompts..." id="promptSearchInput">
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="chat-scroll-area">
                                 <div class="empty-state-wrapper" id="emptyState">
                                     <div class="empty-state-content">
                                         <div class="empty-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"></path></svg></div>
                                         <h2 class="greeting-title">Hi John,</h2>
-                                        <p class="greeting-subtitle">How can I help with your leads today?</p>
+                                        <p class="greeting-subtitle">How can I help with you today?</p>
                                     </div>
                                 </div>
                                 <div class="active-chat-wrapper" id="activeChat"></div>
+                                
+                                <div class="suggestions-list" id="suggestionsList">
+                                    <div class="suggestion-item" onclick="startChat('Summarize recent car leads')">Summarize recent car leads</div>
+                                    <div class="suggestion-item" onclick="startChat('Draft quote for Model X')">Draft quote for Model X</div>
+                                    <div class="suggestion-item" onclick="startChat('List high-priority test drives')">List high-priority test drives for today</div>
+                                </div>
+                                <div class="scroll-spacer"></div>
                             </div>
 
                             <div class="input-wrapper">
-                                <div class="input-group-container">
-                                    <div class="input-border-wrapper">
-                                        <div class="enhanced-input-box" id="enhancedInputBox">
-                                            
-                                            <div id="customerMenu" class="popup-menu">
-                                                <div class="popup-header">Customers</div>
-                                                <div class="popup-list" id="customerList"></div>
-                                                <div class="popup-search-container">
-                                                    <div class="popup-search-input-wrapper">
-                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                                                        <input type="text" id="customerSearchInput" placeholder="Search Customers...">
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div id="vehicleMenu" class="popup-menu">
-                                                <div class="popup-header">Vehicles</div>
-                                                <div class="popup-list" id="vehicleList"></div>
-                                                <div class="popup-search-container">
-                                                    <div class="popup-search-input-wrapper">
-                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                                                        <input type="text" id="vehicleSearchInput" placeholder="Search Vehicles">
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div id="vinMenu" class="popup-menu">
-                                                <div class="popup-header">VIN Database</div>
-                                                <div class="popup-list" id="vinList"></div>
-                                                <div class="popup-search-container">
-                                                    <div class="popup-search-input-wrapper">
-                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                                                        <input type="text" id="vinSearchInput" placeholder="Search VIN...">
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div id="datetimeMenu" class="popup-menu">
-                                                <div class="popup-header">Available Slots</div>
-                                                <div class="popup-list" id="datetimeList"></div>
-                                                <div class="popup-search-container">
-                                                    <div class="popup-search-input-wrapper">
-                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                                                        <input type="text" id="datetimeSearchInput" placeholder="Search Date & Time...">
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="context-row" id="contextRow">
-                                                <div class="context-pill" id="activeContext">
-                                                    Page 1 
-                                                    <span class="context-close" id="btnCloseContext">×</span>
-                                                </div>
-                                                <div class="context-pill add-context" id="btnAddContext" style="display:none;">
-                                                    + Add current page as context
-                                                </div>
+                                <div class="input-border-wrapper">
+                                    <div class="enhanced-input-box" id="enhancedInputBox">
+                                        
+                                        <div id="promptSheet" class="prompt-sheet-inline">
+                                            <div class="popup-header">
+                                                <span>Prompt Templates</span>
+                                                <button style="border:none; background:transparent; cursor:pointer;" onclick="closePromptSheet()">
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#969AA3" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                                </button>
                                             </div>
                                             
-                                            <div class="input-container">
-                                                <div id="mainInput" class="main-input" contenteditable="true" data-placeholder="Ask or assign task..."></div>
+                                            <div class="prompt-filters">
+                                                <button class="filter-pill active" onclick="filterPrompts(this, 'CRM')">CRM</button>
+                                                <button class="filter-pill" onclick="filterPrompts(this, 'Sales')">Sales</button>
+                                                <button class="filter-pill" onclick="filterPrompts(this, 'Service')">Service</button>
+                                                <button class="filter-pill" onclick="filterPrompts(this, 'Parts')">Parts</button>
+                                                <button class="filter-pill" onclick="filterPrompts(this, 'Accounting')">Accounting</button>
                                             </div>
+
+                                            <div class="popup-list" id="promptList"></div>
                                             
-                                            <div class="input-toolbar">
-                                                <div class="toolbar-left">
-                                                    <button class="tool-icon-btn" id="btnSlashMenu" title="Open Presets">
-                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-                                                            <rect x="3" y="3" width="18" height="18" rx="4" ry="4"></rect>
-                                                            <line x1="10" y1="16" x2="14" y2="8"></line>
-                                                        </svg>
-                                                    </button>
-                                                    <button class="tool-icon-btn" title="Attach">
-                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
-                                                    </button>
-                                                </div>
-                                                <div class="toolbar-right">
-                                                    <button class="tool-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg></button>
-                                                    <button class="send-btn-square" id="btnSend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg></button>
+                                            <div class="popup-search-container">
+                                                <div class="popup-search-input-wrapper" id="promptSearchWrapper">
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                                    <input type="text" placeholder="Search prompts..." id="promptSearchInput">
                                                 </div>
                                             </div>
                                         </div>
+                                        
+                                        <div id="contextMenu" class="popup-menu">
+                                            <div class="popup-header">
+                                                <div class="popup-header-left">
+                                                    <button id="btnContextBack" style="display:none;" onclick="goBackContext()">
+                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                                                    </button>
+                                                    <span id="contextTitle">Add Context</span>
+                                                </div>
+                                                <button onclick="closeAllMenus()">
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#969AA3" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                                </button>
+                                            </div>
+                                            <div class="popup-list" id="contextList"></div>
+                                        </div>
+
+                                        <div id="customerMenu" class="popup-menu">
+                                            <div class="popup-header">
+                                                <span>Customers</span>
+                                                <button onclick="closeAllMenus()">
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#969AA3" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                                </button>
+                                            </div>
+                                            <div class="popup-list" id="customerList"></div>
+                                            <div class="popup-search-container">
+                                                <div class="popup-search-input-wrapper" id="customerSearchWrapper">
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                                    <input type="text" id="customerSearchInput" placeholder="Search Customers...">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div id="vehicleMenu" class="popup-menu">
+                                            <div class="popup-header">
+                                                <span>Vehicles</span>
+                                                <button onclick="closeAllMenus()">
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#969AA3" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                                </button>
+                                            </div>
+                                            <div class="popup-list" id="vehicleList"></div>
+                                            <div class="popup-search-container">
+                                                <div class="popup-search-input-wrapper" id="vehicleSearchWrapper">
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                                    <input type="text" id="vehicleSearchInput" placeholder="Search Vehicles">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div id="vinMenu" class="popup-menu">
+                                            <div class="popup-header">
+                                                <span>VIN</span>
+                                                <button onclick="closeAllMenus()">
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#969AA3" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                                </button>
+                                            </div>
+                                            <div class="popup-list" id="vinList"></div>
+                                            <div class="popup-search-container">
+                                                <div class="popup-search-input-wrapper" id="vinSearchWrapper">
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                                    <input type="text" id="vinSearchInput" placeholder="Search VIN...">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div id="datetimeMenu" class="popup-menu">
+                                            <div class="popup-header">
+                                                <span>Available Slots</span>
+                                                <button onclick="closeAllMenus()">
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#969AA3" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                                </button>
+                                            </div>
+                                            <div class="popup-list" id="datetimeList"></div>
+                                            <div class="popup-search-container">
+                                                <div class="popup-search-input-wrapper" id="datetimeSearchWrapper">
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                                    <input type="text" id="datetimeSearchInput" placeholder="Search Date & Time...">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="context-row" id="contextRow">
+                                            <div class="context-pill" id="activeContext">
+                                                Page 1 
+                                                <span class="context-close" id="btnCloseContext">×</span>
+                                            </div>
+                                            <div class="context-pill add-context" id="btnAddContext" style="display:none;">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> 
+                                                Add context
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="input-container">
+                                            <div id="mainInput" class="main-input" contenteditable="true" data-placeholder="Ask or assign task..."></div>
+                                        </div>
+                                        
+                                        <div class="input-toolbar">
+                                            <div class="toolbar-left">
+                                                <button class="tool-icon-btn" id="btnSlashMenu" title="Open Templates">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                                                        <rect x="3" y="3" width="18" height="18" rx="4" ry="4"></rect>
+                                                        <line x1="10" y1="16" x2="14" y2="8"></line>
+                                                    </svg>
+                                                </button>
+                                                <button class="tool-icon-btn" title="Attach">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                                                </button>
+                                            </div>
+                                            <div class="toolbar-right">
+                                                <button class="tool-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg></button>
+                                                <button class="send-btn-square" id="btnSend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg></button>
+                                            </div>
+                                        </div>
                                     </div>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -772,7 +955,13 @@
                             <div class="skeleton-cell"><div class="skeleton-bar"></div></div>
                             <div class="skeleton-cell"><div class="skeleton-bar"></div></div>
                         </div>
-                        
+                        <div class="top-bar" style="border:none; padding: 0 16px;">
+                            <div class="window-controls">
+                                <button class="win-btn" id="btnDock" style="display:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg></button>
+                                <button class="win-btn" id="btnFull" style="display:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg></button>
+                                <button class="win-btn" id="btnClose" style="display:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+                            </div>
+                        </div>
                         <script>
                             for(let i = 0; i < 20; i++) {
                                 let cellsHtml = '';
@@ -806,11 +995,16 @@
         const contextRow = document.getElementById('contextRow');
         const activeContext = document.getElementById('activeContext');
         const btnAddContext = document.getElementById('btnAddContext');
+        
+        // Context Menu Popups
+        const contextMenu = document.getElementById('contextMenu');
+        const contextList = document.getElementById('contextList');
+        const btnContextBack = document.getElementById('btnContextBack');
+        const contextTitle = document.getElementById('contextTitle');
 
         const historySheet = document.getElementById('historySheet');
         const btnShowHistory = document.getElementById('btnShowHistory');
         const btnCloseHistory = document.getElementById('btnCloseHistory');
-        const btnNewChat = document.getElementById('btnNewChat');
         const btnHistoryNewChat = document.getElementById('btnHistoryNewChat');
         const historyPlaceholder = document.getElementById('historyPlaceholder');
         
@@ -822,9 +1016,11 @@
         // Lists
         const pinnedList = document.getElementById('pinnedList');
         const todayList = document.getElementById('todayList');
+        const suggestionsList = document.getElementById('suggestionsList');
 
         const btnSlashMenu = document.getElementById('btnSlashMenu');
         const promptSheet = document.getElementById('promptSheet');
+        const promptList = document.getElementById('promptList');
         const dragHandle = document.getElementById('dragHandle');
 
         // Input
@@ -840,6 +1036,9 @@
         const chatDropdown = document.getElementById('chatDropdown');
         const chatMenuContainer = document.getElementById('chatMenuContainer');
         const headerPinText = document.getElementById('headerPinText');
+        
+        // Header New Chat Btn
+        const btnHeaderNewChat = document.getElementById('btnHeaderNewChat');
 
         // Modals
         const renameModal = document.getElementById('renameModal');
@@ -862,6 +1061,8 @@
         const datetimeMenu = document.getElementById('datetimeMenu');
         const datetimeList = document.getElementById('datetimeList');
         const datetimeSearchInput = document.getElementById('datetimeSearchInput');
+        
+        const promptSearchInput = document.getElementById('promptSearchInput');
 
         let historyAdded = false;
         let currentItem = null; 
@@ -875,12 +1076,14 @@
         // Data Placeholders
         const customers = ["James T. Kirk", "Sarah Connor", "Marty McFly", "Ellen Ripley", "Tony Stark"];
         const vehicles = ["2024 Toyota Camry SE", "2023 Ford F-150 XLT", "2024 Honda CR-V EX-L", "2023 Tesla Model Y Long Range", "2024 Chevrolet Silverado 1500 RST"];
+        
+        // Full VIN strings
         const vins = [
-            { vin: "1G1...5678", desc: "2020 Chevy Malibu LT" },
-            { vin: "5XY...1234", desc: "2021 Kia Telluride SX" },
-            { vin: "JTE...9876", desc: "2019 Toyota RAV4 LE" },
-            { vin: "1FT...4321", desc: "2022 Ford Explorer ST" },
-            { vin: "JN1...5555", desc: "2023 Nissan Altima SR" }
+            { vin: "1G1RC6E45LU125678", desc: "2020 Chevy Malibu LT" },
+            { vin: "5XYKTCA23MG112345", desc: "2021 Kia Telluride SX" },
+            { vin: "JTEZU5JR8K3098765", desc: "2019 Toyota RAV4 LE" },
+            { vin: "1FM5K8GC4LGB43210", desc: "2022 Ford Explorer ST" },
+            { vin: "1N4AL3AP0NC155555", desc: "2023 Nissan Altima SR" }
         ];
         const datetimes = [
             "Oct 24, 2025 at 10:00 AM",
@@ -889,6 +1092,93 @@
             "Oct 25, 2025 at 11:00 AM",
             "Oct 26, 2025 at 4:00 PM"
         ];
+        
+        // Prompts Data
+        const promptsData = [
+            { name: "Book Test Drive", desc: "Book a test drive appointment for [Vehicle] on [Date & Time].", text: "Book a test drive appointment for [Vehicle] on [Date & Time]" },
+            { name: "Credit Pre-qual", desc: "Run a soft credit qualification check for [Customer] to determine eligibility.", text: "Run a soft credit qualification check for [Customer] to determine eligibility" },
+            { name: "Inventory Check", desc: "Check stock availability for [Vehicle] across all lots available in the region.", text: "Check stock availability for [Vehicle] across all lots" },
+            { name: "Trade-in Value", desc: "Estimate trade-in value for [VIN] assuming good condition.", text: "Estimate trade-in value for [VIN] assuming good condition" }
+        ];
+
+        // Context Data
+        const contextData = {
+            "Apps": ["Calendar", "Email", "Slack", "Jira"],
+            "Contact": ["John Doe (CEO)", "Jane Smith (CTO)", "Support Team"],
+            "Customer": customers,
+            "Deals": ["Deal #1023 - Q4 Renewal", "Deal #4005 - New Fleet", "Acme Corp Renew"],
+            "Leads": ["Lead #99 - Hot", "Lead #100 - Warm", "Lead #101 - New"],
+            "Sales Person": ["Alice Johnson", "Bob Smith", "Charlie Brown"],
+            "Stock#": ["STK-001 (Camry)", "STK-002 (F-150)", "STK-003 (Model Y)"],
+            "Vehicles": vehicles,
+            // "Current Page" handled separately
+        };
+        // Sort keys A-Z for the rest
+        const contextCategories = Object.keys(contextData).sort();
+
+        // --- CLEAR INPUT HELPER ---
+        function setupClearableInput(wrapperId) {
+             const wrapper = document.getElementById(wrapperId);
+             const input = wrapper.querySelector('input');
+             
+             // Create button
+             const btn = document.createElement('button');
+             btn.className = 'search-clear-btn';
+             btn.innerHTML = '&times;'; // X char
+             wrapper.appendChild(btn);
+             
+             // Logic
+             const toggleBtn = () => {
+                 if(input.value.length > 0) btn.classList.add('visible');
+                 else btn.classList.remove('visible');
+             };
+             
+             input.addEventListener('input', toggleBtn);
+             
+             btn.onclick = (e) => {
+                 e.stopPropagation();
+                 input.value = '';
+                 toggleBtn();
+                 input.focus();
+                 // Trigger input event to refresh list
+                 input.dispatchEvent(new Event('input'));
+             };
+        }
+
+        // Initialize Clear Buttons
+        setupClearableInput('historySearchWrapper');
+        setupClearableInput('promptSearchWrapper');
+        setupClearableInput('customerSearchWrapper');
+        setupClearableInput('vehicleSearchWrapper');
+        setupClearableInput('vinSearchWrapper');
+        setupClearableInput('datetimeSearchWrapper');
+
+
+        // --- FILTER LOGIC ---
+        window.filterPrompts = function(btn, filterName) {
+             const pills = document.querySelectorAll('.filter-pill');
+             pills.forEach(p => p.classList.remove('active'));
+             btn.classList.add('active');
+             // In a real app, this would filter the list below
+        }
+        
+        // --- RENDER PROMPTS ---
+        function renderPromptList(filter = "") {
+            promptList.innerHTML = '';
+            promptsData.filter(p => p.name.toLowerCase().includes(filter.toLowerCase()) || p.desc.toLowerCase().includes(filter.toLowerCase())).forEach(p => {
+                const div = document.createElement('div');
+                div.className = 'prompt-item';
+                div.onclick = () => fillInput(p.text);
+                div.innerHTML = `
+                    <div class="prompt-item-name">${p.name}</div>
+                    <div class="prompt-item-desc">${p.desc}</div>
+                `;
+                promptList.appendChild(div);
+            });
+        }
+        // Initial Render
+        renderPromptList();
+
 
         // --- MENU LOGIC ---
         function renderCustomerList(filter = "") {
@@ -944,14 +1234,19 @@
         function showMenu(menu, input, renderFn, targetElement) {
             closeAllMenus();
             
-            input.value = '';
-            renderFn();
+            if(input) {
+                input.value = '';
+                // Ensure clear button is hidden on reset
+                const clearBtn = input.parentNode.querySelector('.search-clear-btn');
+                if(clearBtn) clearBtn.classList.remove('visible');
+            }
+            if(renderFn) renderFn();
             
             // Just reveal it (positioned via CSS)
             menu.classList.add('visible'); 
             enhancedInputBox.classList.add('menu-open');
             
-            setTimeout(() => input.focus(), 50);
+            if(input) setTimeout(() => input.focus(), 50);
             
             currentActiveMenu = menu;
         }
@@ -971,12 +1266,15 @@
                      if(nextVar) {
                          const txt = nextVar.innerText.toLowerCase();
                          activePromptVar = nextVar;
-                         if(txt === '[customer]') showMenu(customerMenu, customerSearchInput, () => renderCustomerList(), nextVar);
-                         else if(txt === '[vehicle]') showMenu(vehicleMenu, vehicleSearchInput, () => renderVehicleList(), nextVar);
-                         else if(txt === '[vin]') showMenu(vinMenu, vinSearchInput, () => renderVinList(), nextVar);
-                         else if(txt === '[date & time]') showMenu(datetimeMenu, datetimeSearchInput, () => renderDateTimeList(), nextVar);
-                     }
-                }, 150);
+
+                         setTimeout(() => {
+                            if(txt === '[customer]') showMenu(customerMenu, customerSearchInput, () => renderCustomerList(), nextVar);
+                            else if(txt === '[vehicle]') showMenu(vehicleMenu, vehicleSearchInput, () => renderVehicleList(), nextVar);
+                            else if(txt === '[vin]') showMenu(vinMenu, vinSearchInput, () => renderVinList(), nextVar);
+                            else if(txt === '[date & time]') showMenu(datetimeMenu, datetimeSearchInput, () => renderDateTimeList(), nextVar);
+                         }, 600); // 600ms
+                    }
+                }, 150); // 150ms
             }
         }
 
@@ -985,6 +1283,8 @@
             vehicleMenu.classList.remove('visible');
             vinMenu.classList.remove('visible');
             datetimeMenu.classList.remove('visible');
+            promptSheet.classList.remove('visible');
+            contextMenu.classList.remove('visible');
             enhancedInputBox.classList.remove('menu-open');
             currentActiveMenu = null;
         }
@@ -994,6 +1294,7 @@
         vehicleSearchInput.addEventListener('input', (e) => renderVehicleList(e.target.value));
         vinSearchInput.addEventListener('input', (e) => renderVinList(e.target.value));
         datetimeSearchInput.addEventListener('input', (e) => renderDateTimeList(e.target.value));
+        promptSearchInput.addEventListener('input', (e) => renderPromptList(e.target.value));
 
         // --- HELPER: Find History Item by Title ---
         function getActiveHistoryItem() {
@@ -1069,14 +1370,108 @@
             e.stopPropagation();
             activeContext.style.display = 'none';
             btnAddContext.style.display = 'inline-flex';
+            // Clear content
+            activeContext.innerHTML = 'Context <span class="context-close" id="btnCloseContext">×</span>';
+            // re-bind listener because innerHTML wiped it
+            document.getElementById('btnCloseContext').onclick = (ev) => {
+                 ev.stopPropagation();
+                 activeContext.style.display = 'none';
+                 btnAddContext.style.display = 'inline-flex';
+            };
         };
 
-        // Clicking Add button hides itself, shows active
+        // Clicking Add button -> Open Context Menu
         btnAddContext.onclick = (e) => {
-             e.stopPropagation(); // Explicitly handle click on div
-             btnAddContext.style.display = 'none';
-             activeContext.style.display = 'inline-flex';
+             e.stopPropagation();
+             showContextMenu();
         };
+
+        function showContextMenu() {
+            closeAllMenus();
+            renderContextLevel1();
+            contextMenu.classList.add('visible');
+            enhancedInputBox.classList.add('menu-open');
+        }
+
+        function renderContextLevel1() {
+            contextList.innerHTML = '';
+            contextTitle.innerText = "Add Context";
+            btnContextBack.style.display = 'none';
+            
+            // 1. Current Page
+            const cpDiv = document.createElement('div');
+            cpDiv.className = 'popup-item';
+            // No folder icon for top level
+            cpDiv.innerHTML = `Current Page`;
+            cpDiv.onclick = (e) => {
+                e.stopPropagation();
+                selectContext("Context", "Current Page");
+            };
+            contextList.appendChild(cpDiv);
+
+            // 2. Divider
+            const divider = document.createElement('div');
+            divider.className = 'menu-divider';
+            contextList.appendChild(divider);
+            
+            // 3. Sorted Categories
+            contextCategories.forEach(cat => {
+                const div = document.createElement('div');
+                div.className = 'popup-item';
+                // Removed folder icon
+                div.innerHTML = `${cat}`;
+                div.onclick = (e) => {
+                    e.stopPropagation();
+                    renderContextLevel2(cat);
+                };
+                contextList.appendChild(div);
+            });
+        }
+
+        function renderContextLevel2(category) {
+            contextList.innerHTML = '';
+            contextTitle.innerText = category;
+            btnContextBack.style.display = 'flex';
+            
+            const items = contextData[category] || [];
+            
+            items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'popup-item';
+                // Use generic icon for 2nd level items
+                div.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> ${item}`;
+                div.onclick = (e) => {
+                    e.stopPropagation();
+                    selectContext(category, item);
+                };
+                contextList.appendChild(div);
+            });
+        }
+        
+        window.goBackContext = function() {
+            renderContextLevel1();
+        }
+
+        function selectContext(cat, item) {
+            closeAllMenus();
+            btnAddContext.style.display = 'none';
+            activeContext.style.display = 'inline-flex';
+            // Truncate if long
+            let displayStr = item; 
+            if(displayStr.length > 20) displayStr = displayStr.substring(0,20) + '...';
+            
+            // Format: "Category: Item" or just "Item" if generic
+            let label = (cat === "Context") ? item : `${cat}: ${displayStr}`;
+            
+            activeContext.innerHTML = `${label} <span class="context-close" id="btnCloseContext">×</span>`;
+            
+            document.getElementById('btnCloseContext').onclick = (e) => {
+                e.stopPropagation();
+                activeContext.style.display = 'none';
+                btnAddContext.style.display = 'inline-flex';
+            };
+        }
+
 
         // --- MODAL LOGIC ---
         window.openRenameModal = function() {
@@ -1168,14 +1563,21 @@
             chatScrollArea.scrollTop = chatScrollArea.scrollHeight;
         }
 
-        // --- PROMPT SHEET LOGIC ---
+        // --- PROMPT SHEET LOGIC (UPDATED TOGGLE) ---
         btnSlashMenu.onclick = (e) => {
             e.stopPropagation();
-            promptSheet.classList.add('visible');
+            if (promptSheet.classList.contains('visible')) {
+                // If already visible, close it (toggle OFF)
+                closePromptSheet();
+            } else {
+                // If not visible, open it (toggle ON)
+                showMenu(promptSheet, promptSearchInput, () => renderPromptList());
+            }
         }
         
         window.closePromptSheet = function() {
             promptSheet.classList.remove('visible');
+            enhancedInputBox.classList.remove('menu-open');
         }
 
         // Fill Input with Variable Styling
@@ -1185,6 +1587,7 @@
             mainInput.innerHTML = formattedHTML;
             
             promptSheet.classList.remove('visible');
+            enhancedInputBox.classList.remove('menu-open');
             mainInput.focus();
             
             // Move cursor to end (contenteditable quirk)
@@ -1219,7 +1622,7 @@
                         break;
                     }
                 }
-            }, 50); 
+            }, 750); 
         };
 
         function updateSendButton() {
@@ -1233,7 +1636,7 @@
         // --- INPUT EVENT HANDLING (DIV) ---
         mainInput.addEventListener('input', function(e) {
             if (this.innerText === '/') {
-                promptSheet.classList.add('visible');
+                showMenu(promptSheet, promptSearchInput, () => renderPromptList());
             }
             updateSendButton();
         });
@@ -1263,15 +1666,21 @@
             let logicKey = text;
             const lower = text.toLowerCase();
             
+            // UPDATED: Corrected logic to match specific prompts
             if(lower.includes('stock availability') || lower.includes('inventory')) logicKey = '/inventory-check';
-            else if(lower.includes('closing probability') || lower.includes('deal')) logicKey = '/deal-probability';
             else if(lower.includes('soft credit') || lower.includes('credit')) logicKey = '/credit-prequal';
             else if(lower.includes('trade-in') || lower.includes('estimate value')) logicKey = '/trade-in-val';
+            else if(lower.includes('list') || lower.includes('high-priority')) logicKey = 'List high-priority test drives'; 
             else if(lower.includes('test drive') || lower.includes('book')) logicKey = '/schedule-drive';
             else if(text.includes('Summarize')) logicKey = 'Summarize recent car leads';
 
             startChat(text, logicKey);
         }
+        
+        // NEW CHAT BTN HANDLER
+        btnHeaderNewChat.onclick = () => {
+            resetChat();
+        };
 
         btnChatMenu.onclick = (e) => {
             e.stopPropagation();
@@ -1287,18 +1696,16 @@
         };
 
         document.addEventListener('click', (e) => {
-            if (!promptSheet.contains(e.target) && e.target !== btnSlashMenu && e.target !== mainInput) {
-                promptSheet.classList.remove('visible');
+            // Close logic for inline menus
+            if (!enhancedInputBox.contains(e.target) && e.target !== btnSlashMenu) {
+                closeAllMenus();
             }
+            
             if(!globalContextMenu.contains(e.target)) {
                 globalContextMenu.classList.remove('visible');
             }
             if(!chatDropdown.contains(e.target) && e.target !== btnChatMenu) {
                 chatDropdown.classList.remove('visible');
-            }
-            // Close active menu if clicking outside
-            if(currentActiveMenu && !currentActiveMenu.contains(e.target) && !e.target.classList.contains('prompt-var')) {
-                closeAllMenus();
             }
             if(e.target === renameModal) closeModals();
             if(e.target === deleteModal) closeModals();
@@ -1334,15 +1741,18 @@
 
         window.loadHistoryChat = function(title) {
             emptyState.style.display = 'none';
+            suggestionsList.style.display = 'none'; // HIDDEN
             activeChat.style.display = 'flex';
-            promptSheet.classList.remove('visible');
+            closeAllMenus();
             
             chatTitle.innerText = title;
             activeChat.innerHTML = '';
             
-            btnNewChat.disabled = false;
-            chatMenuContainer.style.display = 'block';
-
+            // Enable Header New Chat
+            btnHeaderNewChat.disabled = false;
+            // Enable Menu
+            btnChatMenu.disabled = false;
+            
             const userBubble = document.createElement('div');
             userBubble.className = 'message-bubble user';
             userBubble.innerText = title;
@@ -1354,10 +1764,16 @@
             avatar.className = 'ai-avatar';
             avatar.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"></path></svg>';
             aiRow.appendChild(avatar);
+    
+            const textWrapper = document.createElement('div');
+            textWrapper.className = 'ai-text-wrapper';
+            
             const aiContent = document.createElement('div');
             aiContent.className = 'ai-content';
             aiContent.innerHTML = `<p>Loading deal details for <strong>${title}</strong>...</p>`;
-            aiRow.appendChild(aiContent);
+            
+            textWrapper.appendChild(aiContent);
+            aiRow.appendChild(textWrapper);
             activeChat.appendChild(aiRow);
 
             if(!panel.classList.contains('state-fullscreen')) {
@@ -1372,8 +1788,14 @@
             if(!logicKey) logicKey = userText;
 
             emptyState.style.display = 'none';
+            suggestionsList.style.display = 'none'; // HIDDEN
             activeChat.style.display = 'flex';
-            promptSheet.classList.remove('visible'); 
+            closeAllMenus();
+            
+            // Enable Header New Chat
+            btnHeaderNewChat.disabled = false;
+            // Enable Menu
+            btnChatMenu.disabled = false;
             
             if (!historyAdded) {
                 let historyTitle = userText;
@@ -1381,9 +1803,6 @@
                 
                 chatTitle.innerText = historyTitle;
                 
-                btnNewChat.disabled = false;
-                chatMenuContainer.style.display = 'block';
-
                 const newItem = document.createElement('div');
                 newItem.className = 'history-item';
                 newItem.onclick = () => loadHistoryChat(historyTitle); 
@@ -1403,14 +1822,12 @@
 
             const userBubble = document.createElement('div');
             userBubble.className = 'message-bubble user';
-            // Render HTML if variables present, otherwise text
             if(userText.includes('<span')) userBubble.innerHTML = userText;
             else userBubble.innerText = userText;
 
             activeChat.appendChild(userBubble);
             scrollToBottom();
 
-            // REQ 1: Randomize Thinking Time (4-8s)
             const delay = Math.floor(Math.random() * (8000 - 4000 + 1) + 4000); 
 
             const thinkingRow = document.createElement('div');
@@ -1419,10 +1836,16 @@
             thinkingAvatar.className = 'ai-avatar thinking';
             thinkingAvatar.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"></path></svg>';
             thinkingRow.appendChild(thinkingAvatar);
-            const thinkingContent = document.createElement('div');
-            thinkingContent.className = 'ai-content';
-            thinkingContent.innerHTML = `<div class="thinking-text">Thinking...</div>`;
-            thinkingRow.appendChild(thinkingContent);
+            
+            const textWrapper = document.createElement('div');
+            textWrapper.className = 'ai-text-wrapper';
+
+            const aiContent = document.createElement('div');
+            aiContent.className = 'ai-content';
+            aiContent.innerHTML = `<div class="thinking-text">Thinking...</div>`;
+            textWrapper.appendChild(aiContent);
+            thinkingRow.appendChild(textWrapper);
+            
             activeChat.appendChild(thinkingRow);
             scrollToBottom();
 
@@ -1430,13 +1853,20 @@
                 activeChat.removeChild(thinkingRow);
                 const aiRow = document.createElement('div');
                 aiRow.className = 'ai-message-row';
+                
                 const aiAvatar = document.createElement('div');
                 aiAvatar.className = 'ai-avatar';
                 aiAvatar.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"></path></svg>';
                 aiRow.appendChild(aiAvatar);
+                
+                const textWrapper = document.createElement('div');
+                textWrapper.className = 'ai-text-wrapper';
+
                 const aiContent = document.createElement('div');
                 aiContent.className = 'ai-content';
-                aiRow.appendChild(aiContent);
+                textWrapper.appendChild(aiContent);
+                aiRow.appendChild(textWrapper);
+                
                 activeChat.appendChild(aiRow);
                 
                 let responseHTML = "";
@@ -1469,6 +1899,7 @@
                         responseHTML = "Analyzing CRM data...";
                 }
                 await typeWriter(aiContent, responseHTML);
+                
                 const actionRow = document.createElement('div');
                 actionRow.className = 'ai-actions-row';
                 const icons = [
@@ -1484,7 +1915,8 @@
                     btn.innerHTML = svg;
                     actionRow.appendChild(btn);
                 });
-                activeChat.appendChild(actionRow);
+                textWrapper.appendChild(actionRow);
+                
                 scrollToBottom();
             }, delay);
         }
@@ -1493,10 +1925,13 @@
             activeChat.innerHTML = '';
             activeChat.style.display = 'none';
             emptyState.style.display = 'flex';
+            suggestionsList.style.display = 'flex'; // VISIBLE
             contextRow.style.display = 'flex';
             chatTitle.innerText = "New Chat"; 
-            chatMenuContainer.style.display = 'none';
-            btnNewChat.disabled = true;
+            
+            // Disable Header New Chat & Menu
+            btnHeaderNewChat.disabled = true;
+            btnChatMenu.disabled = true;
 
             historyAdded = false; 
             mainInput.innerHTML = '';
@@ -1504,7 +1939,7 @@
             mainInput.focus();
         }
 
-        btnNewChat.onclick = resetChat;
+        // btnNewChat.onclick = resetChat;
         // Close history sheet on New Chat click from Side Sheet
         btnHistoryNewChat.onclick = () => {
             resetChat();
@@ -1516,6 +1951,7 @@
         mainContent.onclick = () => {
             if(emptyState.style.display !== 'none') {
                 contextRow.style.display = 'flex';
+                suggestionsList.style.display = 'flex';
             }
         };
 
