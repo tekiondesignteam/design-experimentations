@@ -850,8 +850,7 @@
             margin-left: 4px;
         }
 
-        .history-back-btn,
-        .history-new-chat-btn {
+        .history-back-btn {
             background: transparent;
             border: none;
             cursor: pointer;
@@ -866,14 +865,12 @@
             flex-shrink: 0;
         }
 
-        .history-back-btn:hover,
-        .history-new-chat-btn:hover {
+        .history-back-btn:hover {
             background-color: var(--color-bg-surface);
             color: var(--color-text-heading);
         }
 
-        .history-back-btn svg,
-        .history-new-chat-btn svg {
+        .history-back-btn svg {
             width: var(--icon-lg);
             height: var(--icon-lg);
         }
@@ -2995,18 +2992,21 @@
                                             <circle cx="11" cy="11" r="8"></circle>
                                             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                                         </svg>
-                                        <input type="text" placeholder="Search chats..." id="historySearchInput">
+                                        <input type="text" placeholder="Search chats..." id="historySearchInput"
+                                            style="line-height: 18px;">
                                     </div>
-                                    <button class="history-new-chat-btn" id="btnHistoryNewChat"><svg viewBox="0 0 24 24"
-                                            fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
-                                            <path d="M8 12h8" />
-                                            <path d="M12 8v8" />
-                                        </svg></button>
                                 </div>
                                 <div class="history-content">
                                     <div class="history-top-nav"
-                                        style="margin-bottom: var(--space-xl); display: flex; flex-direction: column; gap: var(--space-xs);">
+                                        style="margin-bottom: var(--space-md); display: flex; flex-direction: column; gap: var(--space-xs);">
+                                        <div class="history-footer-item" id="btnHistoryNewChat">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+                                                <path d="M8 12h8" />
+                                                <path d="M12 8v8" />
+                                            </svg>
+                                            <span>New Chat</span>
+                                        </div>
                                         <div class="history-footer-item">
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <path d="M9 11l3 3L22 4"></path>
@@ -3033,14 +3033,12 @@
                                             </svg>
                                             <span>Prompt Templates</span>
                                         </div>
+                                        <div class="menu-divider" style="margin: var(--space-xs) 0;"></div>
                                     </div>
 
-                                    <div class="history-section-title">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <polyline points="12 6 12 12 16 14"></polyline>
-                                        </svg>
-                                        Recent Chats
+                                    <div class="history-footer-item"
+                                        style="cursor: default; pointer-events: none; padding-left: 0;">
+                                        <span style="color: var(--color-text-muted);">My Chats</span>
                                     </div>
                                     <div id="historyPlaceholder" class="history-placeholder" style="display:none;">No
                                         active chats</div>
@@ -3255,11 +3253,10 @@
                                                     <circle cx="12" cy="19" r="1"></circle>
                                                 </svg></button>
                                         </div>
-
-                                        <div id="loadMoreHistory"
-                                            style="padding: 12px; text-align: center; color: var(--color-primary); cursor: pointer; font-size: 0.85rem; font-weight: 500;">
-                                            Load more
-                                        </div>
+                                    </div>
+                                    <div id="loadMoreHistory"
+                                        style="padding: 12px; text-align: center; color: var(--color-primary); cursor: pointer; font-size: 0.85rem; font-weight: 500;">
+                                        Load more
                                     </div>
                                 </div>
                                 <div class="history-footer">
@@ -4187,6 +4184,20 @@
             chatDropdown.classList.remove('visible');
         };
 
+        // --- HELPER: Sort History List (Pinned First) ---
+        function sortHistoryList() {
+            const items = Array.from(recentList.querySelectorAll('.history-item'));
+            const pinned = items.filter(item => item.classList.contains('is-pinned'));
+            const unpinned = items.filter(item => !item.classList.contains('is-pinned'));
+
+            // Clear the list
+            recentList.innerHTML = '';
+
+            // Add pinned items first, then unpinned
+            pinned.forEach(item => recentList.appendChild(item));
+            unpinned.forEach(item => recentList.appendChild(item));
+        }
+
         window.togglePin = function () {
             if (!currentItem) return;
             const isPinned = currentItem.classList.contains('is-pinned');
@@ -4195,6 +4206,9 @@
                 currentItem.classList.remove('is-pinned');
                 const pinIcon = currentItem.querySelector('.history-item-pin-btn');
                 if (pinIcon) pinIcon.remove();
+
+                // Re-sort to move unpinned item below pinned items
+                sortHistoryList();
             } else {
                 currentItem.classList.add('is-pinned');
                 // Ensure actions wrapper exists
@@ -4214,8 +4228,8 @@
                 pinBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path></svg>`;
                 actions.insertBefore(pinBtn, actions.firstChild);
 
-                // Move to top
-                recentList.prepend(currentItem);
+                // Sort to move pinned item to top
+                sortHistoryList();
             }
             globalContextMenu.classList.remove('visible');
             checkEmptyHistory();
@@ -5002,7 +5016,18 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
                     </button>
                 `;
-                recentList.insertAdjacentElement('afterbegin', newItem);
+
+                // Insert new item after pinned items
+                const pinnedItems = recentList.querySelectorAll('.history-item.is-pinned');
+                if (pinnedItems.length > 0) {
+                    // Insert after the last pinned item
+                    const lastPinned = pinnedItems[pinnedItems.length - 1];
+                    lastPinned.insertAdjacentElement('afterend', newItem);
+                } else {
+                    // No pinned items, add to the beginning
+                    recentList.insertAdjacentElement('afterbegin', newItem);
+                }
+
                 historyAdded = true;
                 checkEmptyHistory();
             }
@@ -5384,6 +5409,8 @@
         window.onload = function () {
             resetChat();
             startPlaceholderRotation();
+            // Ensure pinned items are at the top on page load
+            sortHistoryList();
         };
 
     </script>
