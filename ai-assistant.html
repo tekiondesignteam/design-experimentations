@@ -992,6 +992,26 @@
             line-height: 1.2;
         }
 
+        .history-item-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+
+        .history-item-pin-btn {
+            color: var(--color-primary);
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-xs);
+        }
+
+        .history-item-pin-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
         .history-item-menu-btn {
             background: transparent;
             border: none;
@@ -2953,29 +2973,36 @@
                                     </div>
                                 </div>
                                 <div class="history-content">
-                                    <div class="history-section-title">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                            <path
-                                                d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z">
-                                            </path>
-                                        </svg>
-                                        Pinned
-                                    </div>
-                                    <div id="pinnedList">
-                                        <div class="history-item" onclick="loadHistoryChat('Monthly Sales Review')">
-                                            <div class="history-item-left">
-                                                <span class="history-text">Monthly Sales Review</span>
-                                            </div>
-                                            <button class="history-item-menu-btn" onclick="showItemMenu(event)">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                    stroke-width="2">
-                                                    <circle cx="12" cy="12" r="1"></circle>
-                                                    <circle cx="12" cy="5" r="1"></circle>
-                                                    <circle cx="12" cy="19" r="1"></circle>
-                                                </svg>
-                                            </button>
+                                    <div class="history-top-nav"
+                                        style="margin-bottom: var(--space-xl); display: flex; flex-direction: column; gap: var(--space-xs);">
+                                        <div class="history-footer-item">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M9 11l3 3L22 4"></path>
+                                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11">
+                                                </path>
+                                            </svg>
+                                            <span>Agent Tasks</span>
+                                        </div>
+                                        <div class="history-footer-item">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path
+                                                    d="M12 3L14.5 10.5L22 13L14.5 15.5L12 23L9.5 15.5L2 13L9.5 10.5L12 3Z">
+                                                </path>
+                                                <path d="M19 1L20 4L23 5L20 6L19 9L18 6L15 5L18 4L19 1Z"></path>
+                                            </svg>
+                                            <span>Insights</span>
+                                        </div>
+                                        <div class="history-footer-item" onclick="openPromptSheet()">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                                                <rect x="3" y="3" width="18" height="18" rx="4" ry="4"></rect>
+                                                <line x1="10" y1="16" x2="14" y2="8"></line>
+                                            </svg>
+                                            <span>Prompt Templates</span>
                                         </div>
                                     </div>
+
                                     <div class="history-section-title">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                             <circle cx="12" cy="12" r="10"></circle>
@@ -2987,16 +3014,53 @@
                                         active chats</div>
                                     <div id="recentList">
                                         <!-- Items 1-10 (Visible) -->
-                                        <div class="history-item" onclick="loadHistoryChat('Tesla Fleet Inquiry')">
+                                        <div class="history-item is-pinned"
+                                            onclick="loadHistoryChat('Monthly Sales Review')">
+                                            <div class="history-item-left">
+                                                <span class="history-text">Monthly Sales Review</span>
+                                            </div>
+                                            <div class="history-item-actions">
+                                                <div class="history-item-pin-btn">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2">
+                                                        <line x1="12" y1="17" x2="12" y2="22"></line>
+                                                        <path
+                                                            d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z">
+                                                        </path>
+                                                    </svg>
+                                                </div>
+                                                <button class="history-item-menu-btn" onclick="showItemMenu(event)">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2">
+                                                        <circle cx="12" cy="12" r="1"></circle>
+                                                        <circle cx="12" cy="5" r="1"></circle>
+                                                        <circle cx="12" cy="19" r="1"></circle>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="history-item is-pinned"
+                                            onclick="loadHistoryChat('Tesla Fleet Inquiry')">
                                             <div class="history-item-left"><span class="history-text">Tesla Fleet
                                                     Inquiry</span></div>
-                                            <button class="history-item-menu-btn" onclick="showItemMenu(event)"><svg
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                    stroke-width="2">
-                                                    <circle cx="12" cy="12" r="1"></circle>
-                                                    <circle cx="12" cy="5" r="1"></circle>
-                                                    <circle cx="12" cy="19" r="1"></circle>
-                                                </svg></button>
+                                            <div class="history-item-actions">
+                                                <div class="history-item-pin-btn">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2">
+                                                        <line x1="12" y1="17" x2="12" y2="22"></line>
+                                                        <path
+                                                            d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z">
+                                                        </path>
+                                                    </svg>
+                                                </div>
+                                                <button class="history-item-menu-btn" onclick="showItemMenu(event)"><svg
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2">
+                                                        <circle cx="12" cy="12" r="1"></circle>
+                                                        <circle cx="12" cy="5" r="1"></circle>
+                                                        <circle cx="12" cy="19" r="1"></circle>
+                                                    </svg></button>
+                                            </div>
                                         </div>
                                         <div class="history-item" onclick="loadHistoryChat('Model 3 Pricing')">
                                             <div class="history-item-left"><span class="history-text">Model 3
@@ -3167,29 +3231,6 @@
                                     </div>
                                 </div>
                                 <div class="history-footer">
-                                    <div class="history-footer-item">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                                            <polyline points="15 3 21 3 21 9"></polyline>
-                                            <line x1="10" y1="14" x2="21" y2="3"></line>
-                                        </svg>
-                                        <span>Prompt Templates</span>
-                                    </div>
-                                    <div class="history-footer-item">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M9 11l3 3L22 4"></path>
-                                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
-                                        </svg>
-                                        <span>Agent Tasks</span>
-                                    </div>
-                                    <div class="history-footer-item">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76">
-                                            </polygon>
-                                        </svg>
-                                        <span>Explore</span>
-                                    </div>
                                     <div class="history-footer-item">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <circle cx="12" cy="12" r="3"></circle>
@@ -3650,7 +3691,6 @@
         const chatTitle = document.querySelector('.chat-title');
 
         // Lists
-        const pinnedList = document.getElementById('pinnedList');
         const recentList = document.getElementById('recentList');
         const suggestionsList = document.getElementById('suggestionsList');
 
@@ -4017,7 +4057,7 @@
             e.stopPropagation();
             currentItem = e.currentTarget.closest('.history-item');
 
-            const isPinned = currentItem.parentElement.id === 'pinnedList';
+            const isPinned = currentItem.classList.contains('is-pinned');
             pinText.innerText = isPinned ? 'Unpin Chat' : 'Pin Chat';
 
             const rect = e.currentTarget.getBoundingClientRect();
@@ -4046,12 +4086,33 @@
 
         window.togglePin = function () {
             if (!currentItem) return;
-            const isPinned = currentItem.parentElement.id === 'pinnedList';
+            const isPinned = currentItem.classList.contains('is-pinned');
 
             if (isPinned) {
-                recentList.prepend(currentItem);
+                currentItem.classList.remove('is-pinned');
+                const pinIcon = currentItem.querySelector('.history-item-pin-btn');
+                if (pinIcon) pinIcon.remove();
             } else {
-                pinnedList.appendChild(currentItem);
+                currentItem.classList.add('is-pinned');
+                // Ensure actions wrapper exists
+                let actions = currentItem.querySelector('.history-item-actions');
+                if (!actions) {
+                    // Wrap existing menu btn if needed
+                    const menuBtn = currentItem.querySelector('.history-item-menu-btn');
+                    actions = document.createElement('div');
+                    actions.className = 'history-item-actions';
+                    menuBtn.parentNode.insertBefore(actions, menuBtn);
+                    actions.appendChild(menuBtn);
+                }
+
+                // Add pin icon
+                const pinBtn = document.createElement('div');
+                pinBtn.className = 'history-item-pin-btn';
+                pinBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path></svg>`;
+                actions.insertBefore(pinBtn, actions.firstChild);
+
+                // Move to top
+                recentList.prepend(currentItem);
             }
             globalContextMenu.classList.remove('visible');
             checkEmptyHistory();
@@ -4652,7 +4713,7 @@
             e.stopPropagation();
             const item = getActiveHistoryItem();
             if (item) {
-                const isPinned = item.parentElement.id === 'pinnedList';
+                const isPinned = item.classList.contains('is-pinned');
                 headerPinText.innerText = isPinned ? 'Unpin Chat' : 'Pin Chat';
             } else {
                 headerPinText.innerText = 'Pin Chat';
