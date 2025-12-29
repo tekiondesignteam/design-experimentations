@@ -275,19 +275,51 @@
             .chat-sidebar.state-docked {
                 position: fixed;
                 width: var(--sidebar-width);
-                height: 85%;
+                height: 85% !important;
                 left: 96px;
-                bottom: 0;
-                top: auto;
+                bottom: 0 !important;
+                top: auto !important;
                 border-radius: var(--radius-lg) var(--radius-lg) 0 0;
                 box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
                 border: 1px solid rgba(0, 0, 0, 0.1);
                 border-bottom: none;
                 z-index: var(--z-top);
+                transform: translateY(0);
+                transform-origin: bottom center;
+            }
+
+            .chat-sidebar.state-minimized {
+                position: fixed !important;
+                width: var(--sidebar-min-width) !important;
+                height: var(--sidebar-min-height) !important;
+                left: 96px;
+                bottom: 0 !important;
+                top: auto !important;
+                border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important;
+                box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15) !important;
+                border: 1px solid rgba(0, 0, 0, 0.1) !important;
+                border-bottom: none !important;
+                z-index: var(--z-top) !important;
+                transform: translateY(0) !important;
+            }
+
+            .chat-sidebar.state-closed {
+                position: fixed !important;
+                width: var(--sidebar-width) !important;
+                height: 85% !important;
+                left: 96px !important;
+                bottom: 0 !important;
+                top: auto !important;
+                border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important;
+                z-index: var(--z-top) !important;
+                transform: translateY(100%) !important;
             }
 
             .main-content.pushed-by-dock {
-                padding-left: 24px !important;
+                padding-left: 30px !important;
+                padding-right: 30px !important;
+                padding-top: 30px !important;
+                padding-bottom: 30px !important;
             }
 
             /* Ensure app-container doesn't reserve space for floating sidebar */
@@ -2713,6 +2745,9 @@
 
         .main-content.pushed-by-dock {
             padding-left: 430px;
+            padding-right: 30px;
+            padding-top: 30px;
+            padding-bottom: 30px;
         }
 
         .main-content.full-hidden {
@@ -3639,30 +3674,6 @@
                             </div>
                             <div class="skeleton-cell">
                                 <div class="skeleton-bar"></div>
-                            </div>
-                        </div>
-                        <div class="top-bar" style="border:none; padding: 0 16px;">
-                            <div class="window-controls">
-                                <button class="win-btn" id="btnDock" style="display:none;"><svg viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                        <line x1="9" y1="3" x2="9" y2="21"></line>
-                                    </svg></button>
-                                <button class="win-btn" id="btnFull" style="display:none;"><svg viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <polyline points="15 3 21 3 21 9"></polyline>
-                                        <polyline points="9 21 3 21 3 15"></polyline>
-                                        <line x1="21" y1="3" x2="14" y2="10"></line>
-                                        <line x1="3" y1="21" x2="10" y2="14"></line>
-                                    </svg></button>
-                                <button class="win-btn" id="btnClose" style="display:none;"><svg viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                                    </svg></button>
                             </div>
                         </div>
                         <script>
@@ -5231,7 +5242,15 @@
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('btnMinimize').onclick = () => setState('minimized');
             document.getElementById('btnRestoreMin').onclick = () => setState('docked');
-            document.getElementById('btnCloseMin').onclick = () => setState('closed');
+            document.getElementById('btnCloseMin').onclick = () => {
+                // Disable transition for instant close from minimized state
+                panel.style.transition = 'none';
+                setState('closed');
+                // Re-enable transition after a brief delay
+                setTimeout(() => {
+                    panel.style.transition = '';
+                }, 50);
+            };
             document.getElementById('btnFull').onclick = () => setState('fullscreen');
             document.getElementById('btnDock').onclick = () => setState('docked');
             document.getElementById('btnClose').onclick = () => setState('closed');
@@ -5265,7 +5284,7 @@
                 mainInput.focus();
             } else if (state === 'minimized') {
                 panel.classList.add('state-minimized');
-                if (!panel.style.left) panel.style.left = '20px';
+                if (!panel.style.left) panel.style.left = '100px';
             } else if (state === 'fullscreen') {
                 panel.classList.add('state-fullscreen');
                 mainContent.classList.add('full-hidden');
