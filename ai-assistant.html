@@ -113,6 +113,12 @@
             --font-md: 1rem;
             --font-lg: 1.1rem;
             --font-xl: 1.6rem;
+
+            /* Aurora Glow Colors */
+            --aurora-color-1: rgba(0, 191, 165, 0.25);
+            --aurora-color-2: rgba(139, 92, 246, 0.25);
+            --aurora-color-3: rgba(59, 130, 246, 0.25);
+            --aurora-color-4: rgba(236, 72, 153, 0.25);
         }
 
         /* --- Reset & Base --- */
@@ -1100,7 +1106,8 @@
         }
 
         .scroll-spacer {
-            height: var(--spacer-height);
+            height: 0;
+            display: none;
             width: var(--w-full);
             flex-shrink: 0;
         }
@@ -1126,9 +1133,8 @@
         .suggestions-list {
             display: flex;
             flex-direction: column;
-            margin-top: auto;
-            margin-bottom: 0px;
-            /* Reduced to sit on top of input */
+            width: 100%;
+            margin-bottom: 8px;
             border: none;
             background-color: transparent;
         }
@@ -1416,9 +1422,9 @@
 
         /* --- FOOTER CONTAINER (New wrapper for input + disclaimer) --- */
         .footer-container {
-            position: absolute;
-            bottom: 0;
-            left: 0;
+            position: relative;
+            bottom: auto;
+            left: auto;
             width: var(--w-full);
             background-color: var(--color-bg-main);
             z-index: var(--z-nav);
@@ -1426,7 +1432,6 @@
             flex-direction: column;
             align-items: center;
             padding: var(--space-md) 0px;
-            /* Aligned with content-aligner horizontal padding */
         }
 
         /* INPUT WRAPPER HIERARCHY */
@@ -1570,7 +1575,7 @@
             flex-wrap: wrap;
             gap: var(--space-sm);
             width: var(--w-full);
-            padding-bottom: 4px;
+            padding-bottom: 8px;
             /* Space between attachments and text */
         }
 
@@ -1879,13 +1884,60 @@
             line-height: 1.5;
             color: #161616;
             font-family: inherit;
+            padding: 0;
         }
 
-        .main-input:empty::before {
-            content: attr(data-placeholder);
-            color: #969AA3;
+        /* New Sliding Placeholder Styles */
+        .input-container {
+            position: relative;
+        }
+
+        .placeholder-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 22px;
+            /* Matches one line height */
             pointer-events: none;
+            overflow: hidden;
+            display: none;
+        }
+
+        .main-input:empty+.placeholder-wrapper {
             display: block;
+        }
+
+        .placeholder-item {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: flex-start;
+            color: #969AA3;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            transition: transform 600ms ease-in-out, opacity 600ms ease-in-out;
+        }
+
+        .placeholder-item.hidden-up {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+
+        .placeholder-item.hidden-down {
+            transform: translateY(100%);
+            opacity: 0;
+        }
+
+        .placeholder-item.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .placeholder-item.no-placeholder-transition {
+            transition: none !important;
         }
 
         .prompt-var {
@@ -2552,6 +2604,57 @@
             opacity: 0;
             pointer-events: none;
         }
+
+        /* --- AURORA GLOW EFFECT ON TOP BAR --- */
+        .top-bar {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .top-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -100%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                    transparent 0%,
+                    var(--aurora-color-1) 30%,
+                    var(--aurora-color-2) 50%,
+                    var(--aurora-color-3) 70%,
+                    var(--aurora-color-4) 85%,
+                    transparent 100%);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s ease-in-out;
+            z-index: 0;
+        }
+
+        .top-bar.aurora-active::before {
+            opacity: 1;
+            animation: auroraSlide 6s ease-in-out infinite;
+        }
+
+        @keyframes auroraSlide {
+            0% {
+                right: -100%;
+            }
+
+            50% {
+                right: -50%;
+            }
+
+            100% {
+                right: -100%;
+            }
+        }
+
+        /* Ensure top-bar content stays above aurora */
+        .top-bar>* {
+            position: relative;
+            z-index: 1;
+        }
     </style>
 </head>
 
@@ -2667,7 +2770,7 @@
 
                     <div class="main-view-wrapper">
 
-                        <div class="top-bar">
+                        <div class="top-bar" id="chatTopBar">
                             <div class="brand-text">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"
                                     style="color: #00BFA5;">
@@ -2840,7 +2943,8 @@
                                     </div>
                                 </div>
                                 <div class="active-chat-wrapper content-aligner" id="activeChat"></div>
-
+                            </div>
+                            <div class="footer-container">
                                 <div class="suggestions-list content-aligner" id="suggestionsList">
                                     <div class="suggestion-item" onclick="startChat('Summarize recent hot leads')">
                                         Summarize recent hot leads</div>
@@ -2849,10 +2953,10 @@
                                     <div class="suggestion-item" onclick="startChat('List high-priority test drives')">
                                         List high-priority test drives for today</div>
                                 </div>
-                                <div class="scroll-spacer"></div>
-                            </div>
 
-                            <div class="footer-container">
+
+
+
                                 <div class="input-wrapper content-aligner">
                                     <div class="input-border-wrapper">
                                         <div class="enhanced-input-box" id="enhancedInputBox">
@@ -3105,8 +3209,14 @@
                                             <!-- Input Container (Middle Line) -->
                                             <div class="input-container">
                                                 <div id="attachmentArea" class="attachment-area"></div>
-                                                <div id="mainInput" class="main-input" contenteditable="true"
-                                                    data-placeholder="Ask • Find • Summarize"></div>
+                                                <div style="position: relative; width: 100%;">
+                                                    <div id="mainInput" class="main-input" contenteditable="true"></div>
+                                                    <div class="placeholder-wrapper" id="placeholderWrapper">
+                                                        <div class="placeholder-item visible" id="phItem1">Ask • Find •
+                                                            Summarize</div>
+                                                        <div class="placeholder-item hidden-down" id="phItem2"></div>
+                                                    </div>
+                                                </div>
                                             </div>
 
                                             <!-- Toolbar (Bottom Line) -->
@@ -3302,6 +3412,9 @@
 
         // Header New Chat Btn
         const btnHeaderNewChat = document.getElementById('btnHeaderNewChat');
+
+        // Top Bar for Aurora Effect
+        const chatTopBar = document.getElementById('chatTopBar');
 
         // Modals
         const renameModal = document.getElementById('renameModal');
@@ -4148,6 +4261,8 @@
                     const thinkingRow = activeChat.querySelector('.ai-message-row:last-child');
                     if (thinkingRow && thinkingRow.querySelector('.thinking')) {
                         activeChat.removeChild(thinkingRow);
+                        // Remove aurora effect
+                        chatTopBar.classList.remove('aurora-active');
                     }
 
                     // Render Stopped Row Immediately
@@ -4437,11 +4552,19 @@
             activeChat.appendChild(thinkingRow);
             scrollToBottom();
 
+            // --- AURORA GLOW EFFECT ---
+            // Activate aurora effect when AI starts thinking
+            chatTopBar.classList.add('aurora-active');
+
+
             // Store timerId to allow immediate cancellation
             typingController.timerId = setTimeout(async () => {
                 // If stopped during thinking phase
                 if (typingController.stopped) {
                     activeChat.removeChild(thinkingRow);
+
+                    // Remove aurora effect
+                    chatTopBar.classList.remove('aurora-active');
 
                     const stoppedRow = document.createElement('div');
                     stoppedRow.className = 'ai-message-row';
@@ -4462,6 +4585,9 @@
                 }
 
                 activeChat.removeChild(thinkingRow);
+
+                // Remove aurora effect when thinking completes
+                chatTopBar.classList.remove('aurora-active');
                 const aiRow = document.createElement('div');
                 aiRow.className = 'ai-message-row';
 
@@ -4550,7 +4676,7 @@
             activeChat.style.display = 'none';
             emptyState.style.display = 'flex';
             suggestionsList.style.display = 'flex';
-            contextRow.style.display = 'flex';
+            if (contextRow) contextRow.style.display = 'flex';
             chatTitle.innerText = "New Chat";
 
             btnHeaderNewChat.disabled = true;
@@ -4566,14 +4692,21 @@
         // Close history sheet on New Chat click from Side Sheet
         btnHistoryNewChat.onclick = () => {
             resetChat();
-            if (!panel.classList.contains('state-fullscreen') || window.innerWidth <= 768) {
-                historySheet.classList.remove('open');
+            // Force close history sheet (except in fullscreen mode where CSS keeps it open)
+            historySheet.classList.remove('open');
+            // Double-check by setting transform directly if not in fullscreen
+            if (!panel.classList.contains('state-fullscreen')) {
+                historySheet.style.transform = 'translateX(-100%)';
+                // Reset inline style after transition
+                setTimeout(() => {
+                    historySheet.style.transform = '';
+                }, 400);
             }
         };
 
         mainContent.onclick = () => {
             if (emptyState.style.display !== 'none') {
-                contextRow.style.display = 'flex';
+                if (contextRow) contextRow.style.display = 'flex';
                 suggestionsList.style.display = 'flex';
             }
         };
@@ -4640,9 +4773,68 @@
         btnShowHistory.onclick = () => historySheet.classList.add('open');
         btnCloseHistory.onclick = () => historySheet.classList.remove('open');
 
+        // Rotating Placeholder Logic
+        const placeholders = [
+            "Ask • Find • Summarize",
+            "Ask Anything...",
+            "Find this customer...",
+            "Summarize this page..."
+        ];
+        let placeholderIndex = 0;
+        let phCurrent, phNext;
+        let placeholderInterval;
+        let isInputFocused = false;
+
+        function rotatePlaceholder() {
+            if (!mainInput) return;
+            if (!phCurrent) {
+                phCurrent = document.getElementById('phItem1');
+                phNext = document.getElementById('phItem2');
+            }
+            // Only animate if input is empty
+            if (mainInput.textContent.trim() === "") {
+                placeholderIndex = (placeholderIndex + 1) % placeholders.length;
+
+                // 1. Move Next item to bottom instantly
+                phNext.classList.add('no-placeholder-transition');
+                phNext.innerText = placeholders[placeholderIndex];
+                phNext.className = 'placeholder-item hidden-down no-placeholder-transition';
+
+                // Force layout reflow
+                phNext.offsetHeight;
+
+                // 2. Perform synchronized scroll up
+                phNext.classList.remove('no-placeholder-transition');
+
+                // Current slides out to top
+                phCurrent.className = 'placeholder-item hidden-up';
+                // Next slides in from bottom to center
+                phNext.className = 'placeholder-item visible';
+
+                // 3. Swap roles for next rotation
+                let temp = phCurrent;
+                phCurrent = phNext;
+                phNext = temp;
+            }
+        }
+
+        function startPlaceholderRotation() {
+            if (placeholderInterval) clearInterval(placeholderInterval);
+            placeholderInterval = setInterval(rotatePlaceholder, 3000);
+        }
+
+        mainInput.addEventListener('focus', () => {
+            isInputFocused = true;
+        });
+
+        mainInput.addEventListener('blur', () => {
+            isInputFocused = false;
+        });
+
         // Load directly into a new conversation
         window.onload = function () {
             resetChat();
+            startPlaceholderRotation();
         };
 
     </script>
