@@ -752,6 +752,39 @@
             stroke-width: var(--stroke-normal);
         }
 
+        /* EMPTY STATE FOR SEARCHES */
+        .search-empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-3xl) var(--space-xl);
+            text-align: center;
+            color: var(--color-text-muted);
+            min-height: 200px;
+        }
+
+        .search-empty-state svg {
+            width: 48px;
+            height: 48px;
+            color: var(--color-border-hover);
+            margin-bottom: var(--space-lg);
+            opacity: 0.5;
+        }
+
+        .search-empty-state-title {
+            font-size: var(--font-base);
+            font-weight: 600;
+            color: var(--color-text-main);
+            margin-bottom: var(--space-xs);
+        }
+
+        .search-empty-state-desc {
+            font-size: var(--font-sm);
+            color: var(--color-text-muted);
+            max-width: 280px;
+        }
+
         /* --- HISTORY SIDE SHEET --- */
         .history-sheet {
             position: absolute;
@@ -830,6 +863,7 @@
             justify-content: center;
             width: var(--btn-size);
             height: var(--btn-size);
+            flex-shrink: 0;
         }
 
         .history-back-btn:hover,
@@ -857,6 +891,7 @@
             border-radius: var(--radius-md);
             padding: var(--space-sm) var(--space-md);
             position: relative;
+            flex: 1;
         }
 
         .history-search-box:focus-within {
@@ -2955,15 +2990,6 @@
                                             <line x1="19" y1="12" x2="5" y2="12"></line>
                                             <polyline points="12 19 5 12 12 5"></polyline>
                                         </svg></button>
-                                    <div class="history-title">My Chats</div>
-                                    <button class="history-new-chat-btn" id="btnHistoryNewChat"><svg viewBox="0 0 24 24"
-                                            fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
-                                            <path d="M8 12h8" />
-                                            <path d="M12 8v8" />
-                                        </svg></button>
-                                </div>
-                                <div class="history-search-wrapper">
                                     <div class="history-search-box" id="historySearchWrapper">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <circle cx="11" cy="11" r="8"></circle>
@@ -2971,6 +2997,12 @@
                                         </svg>
                                         <input type="text" placeholder="Search chats..." id="historySearchInput">
                                     </div>
+                                    <button class="history-new-chat-btn" id="btnHistoryNewChat"><svg viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+                                            <path d="M8 12h8" />
+                                            <path d="M12 8v8" />
+                                        </svg></button>
                                 </div>
                                 <div class="history-content">
                                     <div class="history-top-nav"
@@ -3860,9 +3892,33 @@
         }
 
         // --- RENDER PROMPTS ---
+        // Helper function to create empty state
+        function createEmptyState(title, description) {
+            return `
+                <div class="search-empty-state">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <div class="search-empty-state-title">${title}</div>
+                    <div class="search-empty-state-desc">${description}</div>
+                </div>
+            `;
+        }
+
         function renderPromptList(filter = "") {
             promptList.innerHTML = '';
-            promptsData.filter(p => p.name.toLowerCase().includes(filter.toLowerCase()) || p.desc.toLowerCase().includes(filter.toLowerCase())).forEach(p => {
+            const filtered = promptsData.filter(p => p.name.toLowerCase().includes(filter.toLowerCase()) || p.desc.toLowerCase().includes(filter.toLowerCase()));
+
+            if (filtered.length === 0) {
+                promptList.innerHTML = createEmptyState(
+                    'No templates found',
+                    filter ? `No templates match "${filter}"` : 'No prompt templates available'
+                );
+                return;
+            }
+
+            filtered.forEach(p => {
                 const div = document.createElement('div');
                 div.className = 'prompt-item';
                 div.onclick = () => fillInput(p.text);
@@ -3880,7 +3936,17 @@
         // --- MENU LOGIC ---
         function renderCustomerList(filter = "") {
             customerList.innerHTML = '';
-            customers.filter(c => c.toLowerCase().includes(filter.toLowerCase())).forEach(c => {
+            const filtered = customers.filter(c => c.toLowerCase().includes(filter.toLowerCase()));
+
+            if (filtered.length === 0) {
+                customerList.innerHTML = createEmptyState(
+                    'No customers found',
+                    filter ? `No customers match "${filter}"` : 'No customers available'
+                );
+                return;
+            }
+
+            filtered.forEach(c => {
                 const div = document.createElement('div');
                 div.className = 'popup-item';
                 div.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> ${c}`;
@@ -3891,7 +3957,17 @@
 
         function renderVehicleList(filter = "") {
             vehicleList.innerHTML = '';
-            vehicles.filter(v => v.toLowerCase().includes(filter.toLowerCase())).forEach(v => {
+            const filtered = vehicles.filter(v => v.toLowerCase().includes(filter.toLowerCase()));
+
+            if (filtered.length === 0) {
+                vehicleList.innerHTML = createEmptyState(
+                    'No vehicles found',
+                    filter ? `No vehicles match "${filter}"` : 'No vehicles available'
+                );
+                return;
+            }
+
+            filtered.forEach(v => {
                 const div = document.createElement('div');
                 div.className = 'popup-item';
                 div.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg> ${v}`;
@@ -3902,7 +3978,17 @@
 
         function renderVinList(filter = "") {
             vinList.innerHTML = '';
-            vins.filter(item => item.vin.toLowerCase().includes(filter.toLowerCase()) || item.desc.toLowerCase().includes(filter.toLowerCase())).forEach(item => {
+            const filtered = vins.filter(item => item.vin.toLowerCase().includes(filter.toLowerCase()) || item.desc.toLowerCase().includes(filter.toLowerCase()));
+
+            if (filtered.length === 0) {
+                vinList.innerHTML = createEmptyState(
+                    'No VINs found',
+                    filter ? `No VINs match "${filter}"` : 'No VINs available'
+                );
+                return;
+            }
+
+            filtered.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'vin-item';
                 div.innerHTML = `
@@ -3919,7 +4005,17 @@
 
         function renderDateTimeList(filter = "") {
             datetimeList.innerHTML = '';
-            datetimes.filter(d => d.toLowerCase().includes(filter.toLowerCase())).forEach(d => {
+            const filtered = datetimes.filter(d => d.toLowerCase().includes(filter.toLowerCase()));
+
+            if (filtered.length === 0) {
+                datetimeList.innerHTML = createEmptyState(
+                    'No dates found',
+                    filter ? `No dates match "${filter}"` : 'No dates available'
+                );
+                return;
+            }
+
+            filtered.forEach(d => {
                 const div = document.createElement('div');
                 div.className = 'popup-item';
                 div.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> ${d}`;
@@ -4010,24 +4106,31 @@
                 }
             });
 
-            // Handle section titles and placeholder
+            // Handle section titles, top nav, and placeholder
             const sectionTitles = document.querySelectorAll('.history-section-title');
+            const topNav = document.querySelector('.history-top-nav');
+
             if (q.length > 0) {
                 sectionTitles.forEach(t => t.style.display = 'none');
+                if (topNav) topNav.style.display = 'none';
                 if (loadMoreBtn) loadMoreBtn.style.display = 'none';
                 if (visibleCount === 0) {
                     historyPlaceholder.style.display = 'block';
-                    historyPlaceholder.innerText = "No chats found matching '" + query + "'";
+                    historyPlaceholder.innerHTML = createEmptyState(
+                        'No chats found',
+                        `No chats match "${query}"`
+                    );
                 } else {
                     historyPlaceholder.style.display = 'none';
                 }
             } else {
                 sectionTitles.forEach(t => t.style.display = 'block');
+                if (topNav) topNav.style.display = 'flex';
                 if (loadMoreBtn && document.querySelectorAll('.lazy-item').length > 0) {
                     loadMoreBtn.style.display = 'block';
                 }
                 checkEmptyHistory();
-                historyPlaceholder.innerText = "No active chats";
+                historyPlaceholder.innerHTML = 'No active chats';
             }
         }
 
@@ -4159,6 +4262,14 @@
             const allItems = [...dmsContextItems, leadsItem];
 
             const filteredItems = allItems.filter(item => item.label.toLowerCase().includes(filterText));
+
+            if (filteredItems.length === 0) {
+                contextList.innerHTML = createEmptyState(
+                    'No context found',
+                    filter ? `No context items match "${filter}"` : 'No context items available'
+                );
+                return;
+            }
 
             filteredItems.forEach(item => {
                 const isSelected = selectedContexts.has(item.id);
