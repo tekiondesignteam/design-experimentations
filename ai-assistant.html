@@ -3909,14 +3909,17 @@
 
         // --- BUTTON DISABLE LOGIC ---
         function updateSendButton() {
-            // STOP MODE: Always enabled
+            // STOP MODE: Always enabled with stop icon
             if (typingController) {
                 btnSend.disabled = false;
                 btnSend.classList.add('active');
+                btnSend.innerHTML = btnStopIcon;
                 return;
             }
 
-            // INPUT/LISTENING MODE
+            // INPUT/LISTENING MODE: Send icon
+            btnSend.innerHTML = btnSendIcon;
+
             const hasText = mainInput.innerText.trim().length > 0;
             const canSend = hasText && !isListening;
 
@@ -3927,6 +3930,7 @@
                 btnSend.classList.remove('active');
             }
         }
+
 
 
         // --- MODAL LOGIC ---
