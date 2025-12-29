@@ -1217,10 +1217,10 @@
             margin-top: var(--space-md);
             align-self: flex-end;
             max-width: var(--bubble-max-width);
-            padding: 8px 12px;
+            padding: var(--space-sm) var(--space-md);
             background-color: var(--color-bg-message);
             color: var(--color-text-heading);
-            border-radius: 12px 12px 0 12px;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 var(--radius-lg);
         }
 
         /* UPDATED: AI Message Row Padding Top 0px */
@@ -1314,8 +1314,8 @@
 
         /* Chevron Animation */
         .ai-thought-line .chevron {
-            width: 14px;
-            height: 14px;
+            width: var(--icon-sm);
+            height: var(--icon-sm);
             color: var(--color-text-muted);
             transition: transform 0.2s ease;
         }
@@ -1363,8 +1363,8 @@
         .ai-list-number {
             color: var(--color-text-main);
             font-size: var(--font-base);
-            margin-top: 0px;
-            min-width: 24px;
+            margin-top: 0;
+            min-width: var(--space-2xl);
             font-weight: 600;
             flex-shrink: 0;
         }
@@ -1395,7 +1395,7 @@
             border: none;
             cursor: pointer;
             color: #969AA3;
-            padding: 4px;
+            padding: var(--space-xs);
             border-radius: 4px;
             display: flex;
             align-items: center;
@@ -1546,7 +1546,7 @@
             align-items: center;
             justify-content: flex-start;
             /* Corrected from space-between */
-            gap: 10px;
+            gap: var(--space-10);
             border-radius: var(--radius-sm);
         }
 
@@ -1594,7 +1594,7 @@
             user-select: none;
             cursor: default;
             vertical-align: middle;
-            gap: 6px;
+            gap: var(--space-s);
             max-width: var(--w-full);
             /* Prevent overflow */
         }
@@ -1635,7 +1635,7 @@
         .popup-item-left-group {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: var(--space-10);
             flex: 1;
         }
 
@@ -1684,7 +1684,7 @@
         .menu-divider {
             height: 1px;
             background-color: var(--color-bg-surface);
-            margin: 6px 0;
+            margin: var(--space-s) 0;
             flex-shrink: 0;
         }
 
@@ -1729,7 +1729,7 @@
         }
 
         .filter-pill {
-            padding: 4px 10px;
+            padding: var(--space-xs) var(--space-10);
             border-radius: 6px;
             font-size: 0.75rem;
             font-weight: 500;
@@ -1753,12 +1753,12 @@
         }
 
         .vin-item {
-            padding: 8px 12px;
+            padding: var(--space-sm) var(--space-md);
             cursor: pointer;
             transition: background 0.1s;
             display: flex;
             align-items: flex-start;
-            gap: 12px;
+            gap: var(--space-md);
             border-radius: 6px;
         }
 
@@ -1772,8 +1772,8 @@
         }
 
         .vin-icon svg {
-            width: 16px;
-            height: 16px;
+            width: var(--icon-md);
+            height: var(--icon-md);
         }
 
         .vin-details {
@@ -1794,7 +1794,7 @@
         }
 
         .popup-search-container {
-            padding: 12px;
+            padding: var(--space-md);
             border-top: 1px solid #F1F5F9;
             background: #fff;
             flex-shrink: 0;
@@ -1804,11 +1804,11 @@
         .popup-search-input-wrapper {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: var(--space-sm);
             background: #fff;
             border: 1px solid #CBD5E0;
             border-radius: 6px;
-            padding: 8px 10px;
+            padding: var(--space-sm) var(--space-10);
             transition: border-color 0.2s, box-shadow 0.2s;
             position: relative;
             /* For clear btn */
@@ -1820,10 +1820,10 @@
         }
 
         .popup-search-input-wrapper svg {
-            width: 16px;
-            height: 16px;
-            min-width: 16px;
-            min-height: 16px;
+            width: var(--icon-md);
+            height: var(--icon-md);
+            min-width: var(--icon-md);
+            min-height: var(--icon-md);
             color: #969AA3;
         }
 
@@ -2021,7 +2021,7 @@
             background: transparent;
             border: none;
             cursor: pointer;
-            padding: 6px;
+            padding: var(--space-s);
             border-radius: 6px;
             color: #969AA3;
             display: flex;
@@ -2048,7 +2048,7 @@
         .tool-icon-btn svg {
             width: 18px;
             height: 18px;
-            stroke-width: 2px;
+            stroke-width: var(--stroke-normal);
         }
 
         /* New Disclaimer Style */
@@ -2093,8 +2093,8 @@
         }
 
         .send-btn-square svg {
-            width: 16px;
-            height: 16px;
+            width: var(--icon-md);
+            height: var(--icon-md);
             stroke-width: 2px;
         }
 
@@ -2140,7 +2140,7 @@
         /* --- UNIFIED CONTEXT PILL --- */
         .context-row {
             display: flex;
-            gap: 8px;
+            gap: var(--space-sm);
             align-items: center;
             margin-bottom: 0;
             min-height: auto;
@@ -2149,7 +2149,7 @@
         /* Context row at top of input */
         .context-row-top {
             display: flex;
-            gap: 8px;
+            gap: var(--space-sm);
             align-items: center;
             margin-bottom: 8px;
             padding-bottom: 8px;
@@ -2186,10 +2186,10 @@
         }
 
         .pill-part {
-            padding: 6px 10px;
+            padding: var(--space-s) var(--space-10);
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: var(--space-xs);
             cursor: pointer;
             transition: background 0.2s;
             height: 100%;
@@ -2206,7 +2206,7 @@
         }
 
         .unified-pill-compact .pill-part {
-            padding: 4px 8px;
+            padding: var(--space-xs) var(--space-sm);
             gap: 3px;
         }
 
@@ -2219,7 +2219,7 @@
 
         /* Add part specific - Icon Color Changed to #161616 */
         .pill-part.main {
-            padding: 6px 12px;
+            padding: var(--space-s) var(--space-md);
             font-weight: 500;
         }
 
@@ -2238,7 +2238,7 @@
 
         /* Close part specific */
         .pill-part.close {
-            padding: 6px 8px;
+            padding: var(--space-s) var(--space-sm);
             color: #969AA3;
         }
 
@@ -3106,8 +3106,7 @@
                                             <div class="input-container">
                                                 <div id="attachmentArea" class="attachment-area"></div>
                                                 <div id="mainInput" class="main-input" contenteditable="true"
-                                                    data-placeholder="Ask • Find • Summarize">
-                                                </div>
+                                                    data-placeholder="Ask • Find • Summarize"></div>
                                             </div>
 
                                             <!-- Toolbar (Bottom Line) -->
