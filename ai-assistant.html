@@ -892,8 +892,16 @@
             font-weight: 600;
             color: var(--color-text-muted);
             margin: var(--space-lg) 0 var(--space-sm) 0;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.02em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .history-section-title svg {
+            width: 12px;
+            height: 12px;
+            stroke-width: 2.5px;
         }
 
         .history-section-title:first-child {
@@ -913,31 +921,41 @@
         }
 
         .history-footer {
-            padding: var(--space-lg) var(--space-xl);
+            padding: var(--space-md) var(--space-lg);
             border-top: 1px solid var(--color-bg-surface);
             display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+        }
+
+        .history-footer-item {
+            display: flex;
             align-items: center;
-            justify-content: space-between;
+            gap: var(--space-md);
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
             cursor: pointer;
             color: var(--color-text-main);
             font-size: 0.9rem;
             font-weight: 500;
-            transition: color var(--transition-speed-normal);
+            transition: all var(--transition-speed-normal);
         }
 
-        .history-footer:hover {
-            color: #161616;
+        .history-footer-item:hover {
+            background-color: var(--color-bg-surface);
+            color: var(--color-text-heading);
         }
 
-        .history-footer:hover svg {
-            color: var(--color-primary);
-        }
-
-        .history-footer svg {
+        .history-footer-item svg {
             width: 18px;
             height: 18px;
             stroke-width: var(--stroke-normal);
+            color: var(--color-text-muted);
             transition: color var(--transition-speed-normal);
+        }
+
+        .history-footer-item:hover svg {
+            color: var(--color-primary);
         }
 
         .history-item {
@@ -2396,7 +2414,9 @@
             /* FORCE CHAT SIDEBAR FULLSCREEN */
             .chat-sidebar {
                 width: 100% !important;
-                height: 85% !important;
+                height: 70vh;
+                /* Changed from 85vh to allow more room for growth, removed !important */
+                min-height: 480px;
                 /* Bottom Sheet Height */
                 position: fixed !important;
                 left: 0 !important;
@@ -2416,6 +2436,31 @@
                 transform: scale(1) translate(0, 0) !important;
                 opacity: 1 !important;
                 box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15) !important;
+            }
+
+            .mobile-sheet-handle {
+                width: 100%;
+                height: 8px;
+                /* Slimmer handle area */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: grab;
+                flex-shrink: 0;
+                touch-action: none;
+                margin-top: 4px;
+            }
+
+            .mobile-sheet-handle::after {
+                content: '';
+                width: 40px;
+                height: 4px;
+                background-color: var(--color-border);
+                border-radius: 2px;
+            }
+
+            .chat-sidebar.resizing {
+                transition: none !important;
             }
 
             /* Closed State for Mobile - Animate out to FAB */
@@ -2515,8 +2560,26 @@
             }
 
             /* ADJUST WINDOW CONTROLS: Hide all except Close */
+            .top-bar {
+                height: 48px !important;
+                /* Standard height for better touch/centering */
+                padding: 0 16px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+            }
+
+            .brand-text {
+                font-size: 0.95rem !important;
+                display: flex !important;
+                align-items: center !important;
+                height: 100% !important;
+            }
+
             .window-controls {
                 display: flex !important;
+                align-items: center !important;
+                height: 100% !important;
             }
 
             #btnMinimize,
@@ -2734,6 +2797,7 @@
             <div class="app-container">
 
                 <aside class="chat-sidebar state-docked" id="chatPanel">
+                    <div class="mobile-sheet-handle" id="mobileSheetHandle"></div>
 
                     <div class="minimized-view-wrapper">
                         <div class="min-left-group">
@@ -2889,7 +2953,14 @@
                                     </div>
                                 </div>
                                 <div class="history-content">
-                                    <div class="history-section-title">Pinned</div>
+                                    <div class="history-section-title">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <path
+                                                d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z">
+                                            </path>
+                                        </svg>
+                                        Pinned
+                                    </div>
                                     <div id="pinnedList">
                                         <div class="history-item" onclick="loadHistoryChat('Monthly Sales Review')">
                                             <div class="history-item-left">
@@ -2905,9 +2976,17 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="history-section-title" id="historyTodaySection">Today</div>
-                                    <div id="historyPlaceholder" class="history-placeholder">No active chats</div>
-                                    <div id="todayList">
+                                    <div class="history-section-title">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <polyline points="12 6 12 12 16 14"></polyline>
+                                        </svg>
+                                        Recent Chats
+                                    </div>
+                                    <div id="historyPlaceholder" class="history-placeholder" style="display:none;">No
+                                        active chats</div>
+                                    <div id="recentList">
+                                        <!-- Items 1-10 (Visible) -->
                                         <div class="history-item" onclick="loadHistoryChat('Tesla Fleet Inquiry')">
                                             <div class="history-item-left"><span class="history-text">Tesla Fleet
                                                     Inquiry</span></div>
@@ -2919,15 +2998,207 @@
                                                     <circle cx="12" cy="19" r="1"></circle>
                                                 </svg></button>
                                         </div>
+                                        <div class="history-item" onclick="loadHistoryChat('Model 3 Pricing')">
+                                            <div class="history-item-left"><span class="history-text">Model 3
+                                                    Pricing</span></div>
+                                            <button class="history-item-menu-btn" onclick="showItemMenu(event)"><svg
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2">
+                                                    <circle cx="12" cy="12" r="1"></circle>
+                                                    <circle cx="12" cy="5" r="1"></circle>
+                                                    <circle cx="12" cy="19" r="1"></circle>
+                                                </svg></button>
+                                        </div>
+                                        <div class="history-item" onclick="loadHistoryChat('Product Specs - Model Y')">
+                                            <div class="history-item-left"><span class="history-text">Product Specs -
+                                                    Model Y</span></div>
+                                            <button class="history-item-menu-btn" onclick="showItemMenu(event)"><svg
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2">
+                                                    <circle cx="12" cy="12" r="1"></circle>
+                                                    <circle cx="12" cy="5" r="1"></circle>
+                                                    <circle cx="12" cy="19" r="1"></circle>
+                                                </svg></button>
+                                        </div>
+                                        <div class="history-item" onclick="loadHistoryChat('Sales Strategy Q4')">
+                                            <div class="history-item-left"><span class="history-text">Sales Strategy
+                                                    Q4</span></div>
+                                            <button class="history-item-menu-btn" onclick="showItemMenu(event)"><svg
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2">
+                                                    <circle cx="12" cy="12" r="1"></circle>
+                                                    <circle cx="12" cy="5" r="1"></circle>
+                                                    <circle cx="12" cy="19" r="1"></circle>
+                                                </svg></button>
+                                        </div>
+                                        <div class="history-item" onclick="loadHistoryChat('Customer Feedback Rev')">
+                                            <div class="history-item-left"><span class="history-text">Customer Feedback
+                                                    Rev</span></div>
+                                            <button class="history-item-menu-btn" onclick="showItemMenu(event)"><svg
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2">
+                                                    <circle cx="12" cy="12" r="1"></circle>
+                                                    <circle cx="12" cy="5" r="1"></circle>
+                                                    <circle cx="12" cy="19" r="1"></circle>
+                                                </svg></button>
+                                        </div>
+                                        <div class="history-item" onclick="loadHistoryChat('Inventory Check')">
+                                            <div class="history-item-left"><span class="history-text">Inventory
+                                                    Check</span></div>
+                                            <button class="history-item-menu-btn" onclick="showItemMenu(event)"><svg
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2">
+                                                    <circle cx="12" cy="12" r="1"></circle>
+                                                    <circle cx="12" cy="5" r="1"></circle>
+                                                    <circle cx="12" cy="19" r="1"></circle>
+                                                </svg></button>
+                                        </div>
+                                        <div class="history-item" onclick="loadHistoryChat('Service Appointment FAQ')">
+                                            <div class="history-item-left"><span class="history-text">Service
+                                                    Appointment FAQ</span></div>
+                                            <button class="history-item-menu-btn" onclick="showItemMenu(event)"><svg
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2">
+                                                    <circle cx="12" cy="12" r="1"></circle>
+                                                    <circle cx="12" cy="5" r="1"></circle>
+                                                    <circle cx="12" cy="19" r="1"></circle>
+                                                </svg></button>
+                                        </div>
+                                        <div class="history-item" onclick="loadHistoryChat('Warranty Terms Update')">
+                                            <div class="history-item-left"><span class="history-text">Warranty Terms
+                                                    Update</span></div>
+                                            <button class="history-item-menu-btn" onclick="showItemMenu(event)"><svg
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2">
+                                                    <circle cx="12" cy="12" r="1"></circle>
+                                                    <circle cx="12" cy="5" r="1"></circle>
+                                                    <circle cx="12" cy="19" r="1"></circle>
+                                                </svg></button>
+                                        </div>
+                                        <div class="history-item" onclick="loadHistoryChat('Lease Options 2024')">
+                                            <div class="history-item-left"><span class="history-text">Lease Options
+                                                    2024</span></div>
+                                            <button class="history-item-menu-btn" onclick="showItemMenu(event)"><svg
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2">
+                                                    <circle cx="12" cy="12" r="1"></circle>
+                                                    <circle cx="12" cy="5" r="1"></circle>
+                                                    <circle cx="12" cy="19" r="1"></circle>
+                                                </svg></button>
+                                        </div>
+                                        <div class="history-item" onclick="loadHistoryChat('Referral Program Details')">
+                                            <div class="history-item-left"><span class="history-text">Referral Program
+                                                    Details</span></div>
+                                            <button class="history-item-menu-btn" onclick="showItemMenu(event)"><svg
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2">
+                                                    <circle cx="12" cy="12" r="1"></circle>
+                                                    <circle cx="12" cy="5" r="1"></circle>
+                                                    <circle cx="12" cy="19" r="1"></circle>
+                                                </svg></button>
+                                        </div>
+
+                                        <!-- Items 11-15 (Lazy Loaded) -->
+                                        <div class="history-item lazy-item" style="display:none;"
+                                            onclick="loadHistoryChat('Insurance Partners')">
+                                            <div class="history-item-left"><span class="history-text">Insurance
+                                                    Partners</span></div>
+                                            <button class="history-item-menu-btn" onclick="showItemMenu(event)"><svg
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2">
+                                                    <circle cx="12" cy="12" r="1"></circle>
+                                                    <circle cx="12" cy="5" r="1"></circle>
+                                                    <circle cx="12" cy="19" r="1"></circle>
+                                                </svg></button>
+                                        </div>
+                                        <div class="history-item lazy-item" style="display:none;"
+                                            onclick="loadHistoryChat('Charging Station Map')">
+                                            <div class="history-item-left"><span class="history-text">Charging Station
+                                                    Map</span></div>
+                                            <button class="history-item-menu-btn" onclick="showItemMenu(event)"><svg
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2">
+                                                    <circle cx="12" cy="12" r="1"></circle>
+                                                    <circle cx="12" cy="5" r="1"></circle>
+                                                    <circle cx="12" cy="19" r="1"></circle>
+                                                </svg></button>
+                                        </div>
+                                        <div class="history-item lazy-item" style="display:none;"
+                                            onclick="loadHistoryChat('Mobile App Setup')">
+                                            <div class="history-item-left"><span class="history-text">Mobile App
+                                                    Setup</span></div>
+                                            <button class="history-item-menu-btn" onclick="showItemMenu(event)"><svg
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2">
+                                                    <circle cx="12" cy="12" r="1"></circle>
+                                                    <circle cx="12" cy="5" r="1"></circle>
+                                                    <circle cx="12" cy="19" r="1"></circle>
+                                                </svg></button>
+                                        </div>
+                                        <div class="history-item lazy-item" style="display:none;"
+                                            onclick="loadHistoryChat('Test Drive Protocol')">
+                                            <div class="history-item-left"><span class="history-text">Test Drive
+                                                    Protocol</span></div>
+                                            <button class="history-item-menu-btn" onclick="showItemMenu(event)"><svg
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2">
+                                                    <circle cx="12" cy="12" r="1"></circle>
+                                                    <circle cx="12" cy="5" r="1"></circle>
+                                                    <circle cx="12" cy="19" r="1"></circle>
+                                                </svg></button>
+                                        </div>
+                                        <div class="history-item lazy-item" style="display:none;"
+                                            onclick="loadHistoryChat('Model S Comparison')">
+                                            <div class="history-item-left"><span class="history-text">Model S
+                                                    Comparison</span></div>
+                                            <button class="history-item-menu-btn" onclick="showItemMenu(event)"><svg
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2">
+                                                    <circle cx="12" cy="12" r="1"></circle>
+                                                    <circle cx="12" cy="5" r="1"></circle>
+                                                    <circle cx="12" cy="19" r="1"></circle>
+                                                </svg></button>
+                                        </div>
+
+                                        <div id="loadMoreHistory"
+                                            style="padding: 12px; text-align: center; color: var(--color-primary); cursor: pointer; font-size: 0.85rem; font-weight: 500;">
+                                            Load more
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="history-footer">
-                                    <span>Prompt Templates</span>
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                                        <polyline points="15 3 21 3 21 9"></polyline>
-                                        <line x1="10" y1="14" x2="21" y2="3"></line>
-                                    </svg>
+                                    <div class="history-footer-item">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                            <polyline points="15 3 21 3 21 9"></polyline>
+                                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                                        </svg>
+                                        <span>Prompt Templates</span>
+                                    </div>
+                                    <div class="history-footer-item">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M9 11l3 3L22 4"></path>
+                                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                                        </svg>
+                                        <span>Agent Tasks</span>
+                                    </div>
+                                    <div class="history-footer-item">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76">
+                                            </polygon>
+                                        </svg>
+                                        <span>Explore</span>
+                                    </div>
+                                    <div class="history-footer-item">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="3"></circle>
+                                            <path
+                                                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                                            </path>
+                                        </svg>
+                                        <span>Settings</span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -3380,7 +3651,7 @@
 
         // Lists
         const pinnedList = document.getElementById('pinnedList');
-        const todayList = document.getElementById('todayList');
+        const recentList = document.getElementById('recentList');
         const suggestionsList = document.getElementById('suggestionsList');
 
         const btnSlashMenu = document.getElementById('btnSlashMenu');
@@ -3681,7 +3952,44 @@
         vinSearchInput.addEventListener('input', (e) => renderVinList(e.target.value));
         datetimeSearchInput.addEventListener('input', (e) => renderDateTimeList(e.target.value));
         promptSearchInput.addEventListener('input', (e) => renderPromptList(e.target.value));
+        historySearchInput.addEventListener('input', (e) => filterHistoryList(e.target.value));
         contextSearchInput.addEventListener('input', (e) => renderContextList(e.target.value));
+
+        function filterHistoryList(query) {
+            const q = query.toLowerCase().trim();
+            const items = document.querySelectorAll('.history-item');
+            let visibleCount = 0;
+
+            items.forEach(item => {
+                const text = item.querySelector('.history-text').innerText.toLowerCase();
+                if (text.includes(q)) {
+                    item.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            // Handle section titles and placeholder
+            const sectionTitles = document.querySelectorAll('.history-section-title');
+            if (q.length > 0) {
+                sectionTitles.forEach(t => t.style.display = 'none');
+                if (loadMoreBtn) loadMoreBtn.style.display = 'none';
+                if (visibleCount === 0) {
+                    historyPlaceholder.style.display = 'block';
+                    historyPlaceholder.innerText = "No chats found matching '" + query + "'";
+                } else {
+                    historyPlaceholder.style.display = 'none';
+                }
+            } else {
+                sectionTitles.forEach(t => t.style.display = 'block');
+                if (loadMoreBtn && document.querySelectorAll('.lazy-item').length > 0) {
+                    loadMoreBtn.style.display = 'block';
+                }
+                checkEmptyHistory();
+                historyPlaceholder.innerText = "No active chats";
+            }
+        }
 
         // --- HELPER: Find History Item by Title ---
         function getActiveHistoryItem() {
@@ -3697,12 +4005,10 @@
 
         // --- HELPER: Check Empty List ---
         function checkEmptyHistory() {
-            if (todayList.children.length === 0) {
+            if (recentList.children.length === 0) {
                 historyPlaceholder.classList.add('visible');
-                document.getElementById('historyTodaySection').style.display = 'none';
             } else {
                 historyPlaceholder.classList.remove('visible');
-                document.getElementById('historyTodaySection').style.display = 'block';
             }
         }
 
@@ -3743,7 +4049,7 @@
             const isPinned = currentItem.parentElement.id === 'pinnedList';
 
             if (isPinned) {
-                todayList.prepend(currentItem);
+                recentList.prepend(currentItem);
             } else {
                 pinnedList.appendChild(currentItem);
             }
@@ -4101,6 +4407,19 @@
             renameModal.classList.remove('visible');
             deleteModal.classList.remove('visible');
         };
+
+        // --- LAZY LOADING HISTORY ---
+        const loadMoreBtn = document.getElementById('loadMoreHistory');
+        if (loadMoreBtn) {
+            loadMoreBtn.onclick = function () {
+                const lazyItems = document.querySelectorAll('.lazy-item');
+                lazyItems.forEach(item => {
+                    item.style.display = 'flex';
+                    item.classList.remove('lazy-item'); // No longer lazy
+                });
+                loadMoreBtn.style.display = 'none'; // Hide button after loading all
+            };
+        }
 
         // --- DRAG HANDLER ---
         dragHandle.onmousedown = function (e) {
@@ -4511,7 +4830,7 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
                     </button>
                 `;
-                todayList.insertAdjacentElement('afterbegin', newItem);
+                recentList.insertAdjacentElement('afterbegin', newItem);
                 historyAdded = true;
                 checkEmptyHistory();
             }
@@ -4791,6 +5110,18 @@
                 phCurrent = document.getElementById('phItem1');
                 phNext = document.getElementById('phItem2');
             }
+
+            // Check if chat is active (emptyState is hidden)
+            const isChatActive = emptyState.style.display === 'none';
+
+            if (isChatActive) {
+                // Once initiated/active, show static placeholder
+                phCurrent.innerText = "Ask • Find • Summarize";
+                phCurrent.className = 'placeholder-item visible no-placeholder-transition';
+                phNext.className = 'placeholder-item hidden-down no-placeholder-transition';
+                return;
+            }
+
             // Only animate if input is empty
             if (mainInput.textContent.trim() === "") {
                 placeholderIndex = (placeholderIndex + 1) % placeholders.length;
@@ -4830,6 +5161,52 @@
         mainInput.addEventListener('blur', () => {
             isInputFocused = false;
         });
+
+        // Mobile Bottom Sheet Resize Logic
+        const mobileSheetHandle = document.getElementById('mobileSheetHandle');
+        let isResizingSheet = false;
+        let startY, startHeight;
+
+        mobileSheetHandle.addEventListener('mousedown', startResizing);
+        mobileSheetHandle.addEventListener('touchstart', startResizing, { passive: false });
+
+        function startResizing(e) {
+            if (window.innerWidth > 768) return;
+            isResizingSheet = true;
+            startY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+            startHeight = chatPanel.offsetHeight;
+            chatPanel.classList.add('resizing');
+
+            document.addEventListener('mousemove', handleResizing);
+            document.addEventListener('touchmove', handleResizing, { passive: false });
+            document.addEventListener('mouseup', stopResizing);
+            document.addEventListener('touchend', stopResizing);
+
+            if (e.cancelable) e.preventDefault();
+        }
+
+        function handleResizing(e) {
+            if (!isResizingSheet) return;
+            const currentY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+            const dy = startY - currentY;
+            const newHeight = startHeight + dy;
+
+            // Min height 480px, Max 95vh
+            if (newHeight >= 480 && newHeight <= window.innerHeight * 0.95) {
+                chatPanel.style.height = newHeight + 'px';
+            }
+
+            if (e.cancelable) e.preventDefault();
+        }
+
+        function stopResizing() {
+            isResizingSheet = false;
+            chatPanel.classList.remove('resizing');
+            document.removeEventListener('mousemove', handleResizing);
+            document.removeEventListener('touchmove', handleResizing);
+            document.removeEventListener('mouseup', stopResizing);
+            document.removeEventListener('touchend', stopResizing);
+        }
 
         // Load directly into a new conversation
         window.onload = function () {
