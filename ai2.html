@@ -2942,6 +2942,12 @@
             animation: auroraSlide 6s ease-in-out infinite;
         }
 
+        .mobile-sheet-handle.aurora-active::after {
+            background: linear-gradient(90deg, #4285f4, #9b72cb, #d96570, #4285f4);
+            background-size: 200% 100%;
+            animation: auroraSlide 3s linear infinite;
+        }
+
         @keyframes auroraSlide {
             0% {
                 right: -100%;
@@ -5444,8 +5450,8 @@
             else if (lower.includes('list') || lower.includes('high-priority')) logicKey = 'List high-priority test drives';
             else if (lower.includes('test drive') || lower.includes('book')) logicKey = '/schedule-drive';
             else if (text.includes('Summarize')) logicKey = 'Summarize recent hot leads';
+            else if (text.includes('Show open deals for Ryan')) logicKey = 'ryan_details';
             else if (lower.includes('ryan') && lower.includes('open deal')) logicKey = 'ryan_clarify';
-            else if (text.includes('Show details for Ryan')) logicKey = 'ryan_details';
 
             startChat(text, logicKey);
         }
@@ -5700,6 +5706,8 @@
             // --- AURORA GLOW EFFECT ---
             // Activate aurora effect when AI starts thinking
             panel.classList.add('aurora-active');
+            const mobileHandle = document.getElementById('mobileSheetHandle');
+            if (mobileHandle) mobileHandle.classList.add('aurora-active');
 
 
             // Store timerId to allow immediate cancellation
@@ -5710,6 +5718,7 @@
 
                     // Remove aurora effect
                     panel.classList.remove('aurora-active');
+                    if (mobileHandle) mobileHandle.classList.remove('aurora-active');
 
                     const stoppedRow = document.createElement('div');
                     stoppedRow.className = 'ai-message-row';
@@ -5733,6 +5742,7 @@
 
                 // Remove aurora effect when thinking completes
                 panel.classList.remove('aurora-active');
+                if (mobileHandle) mobileHandle.classList.remove('aurora-active');
                 const aiRow = document.createElement('div');
                 aiRow.className = 'ai-message-row';
 
@@ -5782,21 +5792,6 @@
                     case 'ryan_clarify':
                         responseHTML = `<p>I found multiple contacts matching "Ryan". Please select the correct one:</p>
                         <div class="compact-list-container">
-                            <div class="compact-list-item" onclick="selectRyan(1)">
-                                <div class="avatar-circle avatar-blue">RM</div>
-                                <div class="item-main-info">
-                                    <div class="item-name-row">
-                                        <span class="item-name">Ryan Miller</span>
-                                        <span class="item-id">#402</span>
-                                    </div>
-                                    <div class="item-sub-row">ryan.miller@gmail.com • (312) 555-0192</div>
-                                </div>
-                                <div class="item-meta-info">
-                                    <span class="meta-date">Oct 24</span>
-                                    <span class="deal-badge badge-grey">2 Deals</span>
-                                </div>
-                            </div>
-
                             <div class="compact-list-item" onclick="selectRyan(2)">
                                 <div class="avatar-circle avatar-pink">RC</div>
                                 <div class="item-main-info">
@@ -5804,26 +5799,11 @@
                                         <span class="item-name">Ryan Carter</span>
                                         <span class="item-id">#891</span>
                                     </div>
-                                    <div class="item-sub-row">r.carter@techstart.io • (512) 555-3421</div>
+                                    <div class="item-sub-row">(512) 555-3421 • r.carter@techstart.io</div>
                                 </div>
                                 <div class="item-meta-info">
                                     <span class="meta-date">12:30 PM</span>
                                     <span class="deal-badge badge-grey">2 Deals</span>
-                                </div>
-                            </div>
-
-                            <div class="compact-list-item" onclick="selectRyan(3)">
-                                <div class="avatar-circle avatar-grey">RO</div>
-                                <div class="item-main-info">
-                                    <div class="item-name-row">
-                                        <span class="item-name">Ryan O'Connell</span>
-                                        <span class="item-id">#112</span>
-                                    </div>
-                                    <div class="item-sub-row">ryan.oc@consulting.net • (617) 555-9982</div>
-                                </div>
-                                <div class="item-meta-info">
-                                    <span class="meta-date">Nov 12</span>
-                                    <span class="deal-badge badge-grey">1 Deal</span>
                                 </div>
                             </div>
                             
@@ -5834,11 +5814,41 @@
                                         <span class="item-name">Ryan Washington</span>
                                         <span class="item-id">#554</span>
                                     </div>
-                                    <div class="item-sub-row">rwashington@state.gov • (202) 555-7743</div>
+                                    <div class="item-sub-row">(202) 555-7743 • rwashington@state.gov</div>
                                 </div>
                                 <div class="item-meta-info">
                                     <span class="meta-date">Yesterday</span>
                                     <span class="deal-badge badge-grey">1 Deal</span>
+                                </div>
+                            </div>
+
+                            <div class="compact-list-item" onclick="selectRyan(3)">
+                                <div class="avatar-circle avatar-grey">RO</div>
+                                <div class="item-main-info">
+                                    <div class="item-name-row">
+                                        <span class="item-name">Ryan O'Connell</span>
+                                        <span class="item-id">#112</span>
+                                    </div>
+                                    <div class="item-sub-row">(617) 555-9982 • ryan.oc@consulting.net</div>
+                                </div>
+                                <div class="item-meta-info">
+                                    <span class="meta-date">Nov 12</span>
+                                    <span class="deal-badge badge-grey">1 Deal</span>
+                                </div>
+                            </div>
+
+                            <div class="compact-list-item" onclick="selectRyan(1)">
+                                <div class="avatar-circle avatar-blue">RM</div>
+                                <div class="item-main-info">
+                                    <div class="item-name-row">
+                                        <span class="item-name">Ryan Miller</span>
+                                        <span class="item-id">#402</span>
+                                    </div>
+                                    <div class="item-sub-row">(312) 555-0192 • ryan.miller@gmail.com</div>
+                                </div>
+                                <div class="item-meta-info">
+                                    <span class="meta-date">Oct 24</span>
+                                    <span class="deal-badge badge-grey">2 Deals</span>
                                 </div>
                             </div>
 
@@ -5849,7 +5859,7 @@
                                         <span class="item-name">Ryan Lee</span>
                                         <span class="item-id">#339</span>
                                     </div>
-                                    <div class="item-sub-row">ryan@leedesign.studio • (415) 555-6621</div>
+                                    <div class="item-sub-row">(415) 555-6621 • ryan@leedesign.studio</div>
                                 </div>
                                 <div class="item-meta-info">
                                     <span class="meta-date">Sep 28</span>
@@ -5872,7 +5882,7 @@
                                         <span class="item-id">#4521</span>
                                     </div>
                                     <div class="item-sub-row" style="display:flex; align-items:center; gap:6px;">
-                                        <span style="color:#2E7D32; font-weight:500;">Negotiation</span> • Sarah Jenkins
+                                        <span style="color:#F57C00; font-weight:500;">Quote</span> • Sarah Jenkins
                                     </div>
                                 </div>
                                 <div class="item-meta-info">
@@ -5891,11 +5901,11 @@
                                         <span class="item-id">#9920</span>
                                     </div>
                                     <div class="item-sub-row" style="display:flex; align-items:center; gap:6px;">
-                                        <span style="color:#F57C00; font-weight:500;">Qualifying</span> • Mike Ross
+                                        <span style="color:#2E7D32; font-weight:500;">Booked</span> • Mike Ross
                                     </div>
                                 </div>
                                 <div class="item-meta-info">
-                                    <span class="meta-date">Sep 14</span>
+                                    <span class="meta-date">Dec 21</span>
                                     <span class="deal-badge badge-grey">$32,500</span>
                                 </div>
                             </div>
@@ -5947,7 +5957,7 @@
                 5: "Ryan Lee (#339)"
             };
             const details = map[id] || "Ryan Carter (#891)";
-            const text = "Show details for " + details;
+            const text = "Show open deals for " + details;
             startChat(text, "ryan_details");
         };
 
