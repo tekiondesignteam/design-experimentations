@@ -1614,34 +1614,70 @@
             border-left: 2px solid var(--color-border);
         }
 
-        /* --- RESPONSE HEADER & BADGE --- */
-        .response-action-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--space-md);
-            flex-wrap: wrap;
-            gap: var(--space-sm);
-        }
-
-        .filter-applied-badge {
+        /* --- INLINE FILTER BADGE & POPOVER --- */
+        .inline-filter-badge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            background-color: var(--color-bg-surface);
-            color: var(--color-text-subtle);
-            padding: 4px 8px;
-            border-radius: var(--radius-md);
-            font-size: var(--font-xs);
-            font-weight: 500;
+            vertical-align: middle;
+            background-color: #E2E8F0;
+            color: #444F5C;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 6px;
             cursor: pointer;
-            border: 1px solid transparent;
-            transition: all 0.2s;
+            font-weight: 500;
+            transition: background 0.2s;
+            position: relative;
+            top: -1px;
         }
 
-        .filter-applied-badge:hover {
-            border-color: var(--color-border);
+        .inline-filter-badge:hover {
+            background-color: #CBD5E0;
+            color: #161616;
+        }
+
+        .filter-popover {
+            position: absolute;
+            background: white;
+            border: 1px solid var(--color-border);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            z-index: 100;
+            display: none;
+            min-width: 180px;
+            animation: fadeIn 0.15s ease-out;
+            margin-top: 4px;
+        }
+
+        .filter-popover.visible {
+            display: block;
+        }
+
+        .popover-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            margin-bottom: 6px;
             color: var(--color-text-main);
+        }
+
+        .popover-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .popover-label {
+            color: var(--color-text-subtle);
+        }
+
+        .popover-value {
+            font-weight: 500;
+            color: var(--color-text-heading);
+            background: var(--color-bg-surface);
+            padding: 1px 4px;
+            border-radius: 4px;
         }
 
         .thought-step:last-child {
@@ -5915,12 +5951,8 @@
                         break;
                     case 'ryan_details':
                         // Show 2 Compact Deal Cards
-                        responseHTML = `<div class="response-action-row">
-                            <p style="margin:0;">Here are the <strong>2 open deals</strong> for Ryan Carter:</p>
-                            <div class="filter-applied-badge">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                                2 filters applied
-                            </div>
+                        responseHTML = `<div style="margin-bottom:var(--space-md);">
+                            <p style="margin:0; line-height:1.6;">Here are the <strong>2 open deals</strong> for Ryan Carter <span class="inline-filter-badge" onclick="toggleFilterPopover(event, this)">2 filters applied</span></p>
                         </div>
                         <div class="compact-list-container">
                             <div class="compact-list-item">
@@ -6010,6 +6042,72 @@
             const details = map[id] || "Ryan Carter (#891)";
             const text = "Show open deals for " + details;
             startChat(text, "ryan_details");
+        };
+
+        // --- FILTER POPOVER LOGIC ---
+        window.toggleFilterPopover = function (event, element) {
+            event.stopPropagation();
+
+            // Remove existing popovers
+            const existing = document.getElementById('activeFilterPopover');
+            if (existing) existing.remove();
+
+            // Create Popover
+            const popover = document.createElement('div');
+            popover.id = 'activeFilterPopover';
+            popover.className = 'filter-popover visible';
+
+            // Content
+            popover.innerHTML = `
+                <div style="font-weight:600; font-size:0.75rem; margin-bottom:8px; display:flex; align-items:center; gap:4px;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                    Applied Filters
+                </div>
+                <div class="popover-item">
+                    <span class="popover-label">Status</span>
+                    <span class="popover-value">Open</span>
+                </div>
+                <div class="popover-item">
+                    <span class="popover-label">Customer ID</span>
+                    <span class="popover-value">#891</span>
+                </div>
+            `;
+
+            document.body.appendChild(popover);
+
+            // Positioning
+            // To ensure the popover moves with the scrolling content, we must append it 
+            // inside the scrolling container or position it relative to the parent.
+            // Since we can't easily change the DOM hierarchy of 'element' safely here,
+            // we will use a trick: Calculate position relative to the scrollable 'chat-scroll-area'.
+            // However, a simpler fix requested by the user is "tied to the element".
+            // We will append the popover DIRECTLY to the badge element and set the badge to relative.
+
+            // Remove from body first if we just added it (the line above was initial logic, replacing it now)
+            popover.remove();
+
+            element.style.position = 'relative';
+            element.appendChild(popover);
+
+            // Popover styling is absolute. 
+            // We want it below the badge.
+            popover.style.top = '100%';
+            popover.style.left = 'auto';
+            popover.style.right = '0';
+            popover.style.marginTop = '4px';
+            popover.style.position = 'absolute';
+
+            // Close on outside click
+            const closeHandler = function (e) {
+                if (!popover.contains(e.target) && e.target !== element) {
+                    popover.remove();
+                    document.removeEventListener('click', closeHandler);
+                }
+            };
+            // Add slight delay so this click doesn't trigger it immediately if event bubbling hits
+            setTimeout(() => {
+                document.addEventListener('click', closeHandler);
+            }, 0);
         };
 
         function resetChat() {
