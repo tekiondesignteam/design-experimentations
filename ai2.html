@@ -331,6 +331,21 @@
             .chat-card-container {
                 border-radius: 0 !important;
             }
+
+            /* Responsive Adjustment for Response Header */
+            .response-action-row {
+                flex-direction: column;
+                align-items: flex-start !important;
+                gap: var(--space-sm);
+            }
+
+            .response-action-row p {
+                width: 100%;
+            }
+
+            .filter-applied-badge {
+                align-self: flex-start;
+            }
         }
 
         /* --- LISTENING OVERLAY CSS --- */
@@ -1597,6 +1612,36 @@
             margin-bottom: 4px;
             padding-left: var(--space-sm);
             border-left: 2px solid var(--color-border);
+        }
+
+        /* --- RESPONSE HEADER & BADGE --- */
+        .response-action-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-md);
+            flex-wrap: wrap;
+            gap: var(--space-sm);
+        }
+
+        .filter-applied-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background-color: var(--color-bg-surface);
+            color: var(--color-text-subtle);
+            padding: 4px 8px;
+            border-radius: var(--radius-md);
+            font-size: var(--font-xs);
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .filter-applied-badge:hover {
+            border-color: var(--color-border);
+            color: var(--color-text-main);
         }
 
         .thought-step:last-child {
@@ -2942,7 +2987,7 @@
             animation: auroraSlide 6s ease-in-out infinite;
         }
 
-        .mobile-sheet-handle.aurora-active::after {
+        .mobile-sheet-handle.aurora-active {
             background: linear-gradient(90deg, #4285f4, #9b72cb, #d96570, #4285f4);
             background-size: 200% 100%;
             animation: auroraSlide 3s linear infinite;
@@ -5870,7 +5915,13 @@
                         break;
                     case 'ryan_details':
                         // Show 2 Compact Deal Cards
-                        responseHTML = `<p>Here are the <strong>2 open deals</strong> for Ryan Carter:</p>
+                        responseHTML = `<div class="response-action-row">
+                            <p style="margin:0;">Here are the <strong>2 open deals</strong> for Ryan Carter:</p>
+                            <div class="filter-applied-badge">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                2 filters applied
+                            </div>
+                        </div>
                         <div class="compact-list-container">
                             <div class="compact-list-item">
                                 <div class="avatar-circle avatar-blue">
