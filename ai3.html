@@ -1982,12 +1982,13 @@
         }
 
         .reasoning-header {
+            padding-top: 4px !important;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: var(--space-sm);
             cursor: pointer;
             user-select: none;
-            padding: 4px 0;
+            padding: var(--space-sm) 0px 0px 0px;
             color: var(--color-text-muted);
             transition: color var(--transition-speed-normal);
             width: fit-content;
@@ -2033,6 +2034,34 @@
             display: none;
         }
 
+        .status-text {
+            font-weight: 500;
+        }
+
+        .reasoning-container:not(.finished) .status-text {
+            background: var(--gradient-ai);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% 200%;
+            animation: gradient-shift 3s ease infinite;
+            font-weight: 600;
+        }
+
+        @keyframes gradient-shift {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
         .timer {
             font-family: var(--font-mono, monospace);
             opacity: 0.7;
@@ -2043,12 +2072,11 @@
             display: none;
             align-items: flex-start;
             gap: 10px;
-            margin-top: 4px;
             cursor: pointer;
             padding: 4px 0;
         }
 
-        .reasoning-container.finished .reasoning-summary-wrapper {
+        a .reasoning-container.finished .reasoning-summary-wrapper {
             display: flex;
         }
 
@@ -2063,7 +2091,7 @@
         .reasoning-summary {
             flex: 1;
             font-size: 0.85rem;
-            color: var(--color-text-subtle);
+            color: var(--color-text-muted);
             line-height: 1.4;
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -2089,7 +2117,7 @@
             height: 16px;
         }
 
-        .reasoning-container.expanded .reasoning-header .chevron {
+        .reasoning-container.expanded .chevron {
             transform: rotate(180deg);
         }
 
@@ -2138,10 +2166,10 @@
         }
 
         .step.active::before {
-            background: var(--gradient-ai);
+            background-color: var(--color-primary);
             height: 16px;
             margin-top: 3px;
-            box-shadow: 0 0 8px rgba(33, 87, 245, 0.3);
+            box-shadow: 0 0 8px rgba(66, 133, 244, 0.2);
         }
 
         .step.completed::before {
@@ -2153,13 +2181,14 @@
             flex: 1;
             opacity: 0;
             animation: fadeIn 0.2s forwards;
+            padding-top: 1px;
         }
 
         .cursor {
             display: inline-block;
             width: 4px;
             height: 12px;
-            background: var(--gradient-ai);
+            background-color: var(--color-text-main);
             animation: blink 1s step-end infinite;
             vertical-align: middle;
             margin-left: 4px;
@@ -3844,6 +3873,29 @@
             flex-direction: column;
         }
 
+        .premium-deals-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: var(--space-sm);
+        }
+
+        .premium-deals-grid .premium-deal-card {
+            margin: 0;
+        }
+
+        .chat-sidebar.state-fullscreen .premium-deals-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-lg);
+        }
+
+        @media (max-width: 768px) {
+            .chat-sidebar.state-fullscreen .premium-deals-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .compact-list-item {
             display: flex;
             align-items: center;
@@ -4090,6 +4142,25 @@
             background: none !important;
         }
 
+        .open-btn-compact {
+            margin-top: 6px;
+            padding: 4px 10px;
+            border: 1px solid var(--color-border-muted);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-primary);
+            background: #fff;
+            cursor: pointer;
+            transition: all var(--transition-speed-fast);
+        }
+
+        .open-btn-compact:hover {
+            background: var(--color-bg-hover);
+            border-color: var(--color-primary);
+            box-shadow: var(--shadow-sm);
+        }
+
         .badge-blue {
             color: #1976D2;
         }
@@ -4100,6 +4171,155 @@
 
         .badge-grey {
             color: #9E9E9E;
+        }
+
+        /* --- PREMIUM DEAL CARD --- */
+        .premium-deal-card {
+            background: #fff;
+            border: 1px solid var(--color-border-muted);
+            border-radius: 12px;
+            margin: 0;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .premium-deal-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+            border-color: var(--color-primary);
+        }
+
+        .deal-card-main {
+            padding: 20px;
+            flex: 1;
+        }
+
+        .deal-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .vehicle-identity {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .vehicle-icon-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .deal-price {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-text-heading);
+            letter-spacing: -0.01em;
+        }
+
+        .deal-vehicle-name {
+            font-weight: 700;
+            color: var(--color-text-heading);
+            font-size: 1rem;
+            line-height: 1.2;
+            margin-bottom: 2px;
+        }
+
+        .deal-id-tag {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            background: var(--color-bg-surface);
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .deal-details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--color-border-muted);
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .detail-label {
+            font-size: 0.7rem;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            font-weight: 700;
+        }
+
+        .detail-value {
+            font-size: 0.85rem;
+            color: var(--color-text-main);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Status Pills */
+        .status-pill {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: capitalize;
+        }
+
+        .status-pill.quote {
+            background: #FFF4E5;
+            color: #B76E00;
+        }
+
+        .status-pill.booked {
+            background: #E6F4EA;
+            color: #1E7E34;
+        }
+
+        .deal-card-action {
+            padding: 12px 20px;
+            background: #FAFBFC;
+            border-top: 1px solid var(--color-border-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .deal-action-link:hover {
+            color: #1A56DB;
+        }
+
+        .open-btn-compact {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .open-btn-compact:hover {
+            filter: brightness(1.05);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 191, 165, 0.2);
         }
     </style>
 </head>
@@ -6977,13 +7197,25 @@
                     for (let char of text) {
                         if (controller.stopped) return; // Immediate break
                         textNode.textContent += char;
-                        await new Promise(r => setTimeout(r, 5));
+                        await new Promise(r => setTimeout(r, 1));
                         scrollToBottom();
                     }
                 } else if (node.nodeType === Node.ELEMENT_NODE) {
                     const newElement = document.createElement(node.tagName);
                     Array.from(node.attributes).forEach(attr => newElement.setAttribute(attr.name, attr.value));
                     parent.appendChild(newElement);
+
+                    // Speed Up for Cards: If it's a complex card container, just inject full HTML
+                    if (node.classList.contains('compact-list-container') ||
+                        node.classList.contains('compact-list-item') ||
+                        node.classList.contains('premium-deals-grid') ||
+                        node.classList.contains('premium-deal-card')) {
+                        await new Promise(r => setTimeout(r, 250)); // Artificial delay for better feel
+                        newElement.innerHTML = node.innerHTML;
+                        scrollToBottom();
+                        return;
+                    }
+
                     const children = Array.from(node.childNodes);
                     for (const child of children) {
                         await typeNode(child, newElement);
@@ -7166,7 +7398,7 @@
                 btnSendEl.classList.add('stop'); // Add Stop Style
             }
 
-            const delay = 500; // Snappy transition after thinking
+            const delay = 300; // Natural transition after thinking
 
             const thinkingRow = document.createElement('div');
             thinkingRow.className = 'ai-message-row';
@@ -7186,7 +7418,7 @@
             reasoningHeader.className = 'reasoning-header';
             reasoningHeader.onclick = () => window.toggleThoughts(reasoningHeader);
             reasoningHeader.innerHTML = `
-                <span class="status-text" style="font-weight:500">Thinking</span>
+                <span class="status-text" style="font-weight:500">Thinking...</span>
                 <span class="timer">0.0s</span>
                 <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
             `;
@@ -7240,7 +7472,7 @@
                     "Looking up Ryan Carter's (customerID: 891) profile...",
                     "Checking the system for active deals...",
                     "Found 2 open deals for this contact.",
-                    "Pulling vehicle details and pricing...",
+                    "Pulling deal details...",
                     "Formatting the deal summary for you."
                 ];
             }
@@ -7269,14 +7501,14 @@
                     for (let j = 0; j < txt.length; j++) {
                         if (typingController.stopped) break;
                         stepTextSpan.insertBefore(document.createTextNode(txt[j]), cursor);
-                        await new Promise(r => setTimeout(r, 30));
+                        await new Promise(r => setTimeout(r, 20));
                     }
                     cursor.remove();
                     stepRow.classList.remove('active');
                     stepRow.classList.add('completed');
 
                     if (i < thinkingSteps.length - 1) {
-                        await new Promise(r => setTimeout(r, 800));
+                        await new Promise(r => setTimeout(r, 600));
                     }
                 }
             };
@@ -7293,7 +7525,7 @@
                 // Once steps complete, or if stopped
                 clearInterval(timerInterval);
                 const finalTime = ((Date.now() - startTime) / 1000).toFixed(1);
-                timerEl.textContent = `(${finalTime}s)`;
+                timerEl.textContent = `${finalTime}s`;
                 const statusText = reasoningHeader.querySelector('.status-text');
                 if (statusText) statusText.textContent = 'Thought for';
 
@@ -7311,7 +7543,7 @@
                 // Collapse after a slightly longer delay for readability
                 setTimeout(() => {
                     reasoningContainer.classList.remove('expanded');
-                }, 1500);
+                }, 500);
 
                 // Now proceed to the AI message
                 setTimeout(async () => {
@@ -7457,65 +7689,91 @@
                             break;
                         case 'ryan_details':
                             // Show 2 Compact Deal Cards
-                            responseHTML = `<p>I've found 2 open deals for Ryan Carter. Here are the details:</p>
-                        <div class="compact-list-container">
-                            <!-- Header -->
-                            <div style="padding:16px 16px 0px 16px; font-weight:600; font-size:1rem; color:var(--color-text-heading);">
-                                Deals
-                            </div>
-                            <!-- Filter Bar -->
-                            <div style="padding:8px 16px 12px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px; background:#fff;">
-                                <div style="display:flex; gap:8px; overflow:hidden; white-space:nowrap; align-items:center; flex:1;">
+                            responseHTML = `<p style="margin-bottom: 16px; font-size: 0.875rem; color: var(--color-text-main);">I've found 2 open deals for <strong>Ryan Carter</strong>:</p>
+                        <div class="premium-deals-grid">
+                            <!-- Card 1 -->
+                            <div class="premium-deal-card" style="border: 1px solid var(--color-border-muted); border-radius: 4px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                                <div style="padding: 12px;">
+                                    <!-- Row 1: Vehicle Info -->
+                                    <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 8px;">
+                                        <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(0, 191, 165, 0.08); color: var(--color-primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17h12"></path></svg>
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 700; color: var(--color-text-heading); font-size: 0.85rem; line-height: 1.2; padding-bottom:4px;">#DEAL-4521</div>
+                                            <div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">2024 Tesla Model Y</div>
+                                        </div>
+                                    </div>
                                     
-                                    <div style="display:inline-flex; align-items:center; padding:4px 8px; border-radius:4px; font-size:0.75rem; background:var(--color-bg-surface); color:var(--color-text-subtle); border:1px solid #E0E0E0; font-weight:500; flex-shrink:0;">
-                                        Contact = Ryan Carter #891
+                                    <!-- Row 2: Salesperson, Type, Status -->
+                                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); margin-bottom: 4px; padding: 8px 0; border-bottom: 1px solid #f1f3f4;">
+                                        <div>
+                                            <div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Salesperson</div>
+                                            <div style="font-size: 0.8rem; font-weight: 600; color: var(--color-text-main);">Sarah Jenkins</div>
+                                        </div>
+                                        <div>
+                                            <div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Type</div>
+                                            <div style="font-size: 0.8rem; font-weight: 600; color: var(--color-text-main);">Finance</div>
+                                        </div>
+                                        <div>
+                                            <div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Status</div>
+                                            <div style="font-size: 0.8rem; font-weight: 600; color: var(--color-text-main);">Quote</div>
+                                        </div>
                                     </div>
-                                    <div style="display:inline-flex; align-items:center; padding:4px 8px; border-radius:4px; font-size:0.75rem; background:var(--color-bg-surface); color:var(--color-text-subtle); border:1px solid #E0E0E0; font-weight:500; flex-shrink:0;">
-                                        Deal Status != Closed, Cancelled
+
+                                    <!-- Row 3: Last Updated, View CTA -->
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <div>
+                                            <div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500; padding-top:4px;">Last Updated</div>
+                                            <div style="font-size: 0.8rem; font-weight: 600; color: var(--color-text-main);">Dec 21, 2025</div>
+                                        </div>
+                                        <button class="open-btn-compact" style="font-size: 14px; padding: 0 20px; border-radius: 8px; font-weight: 600; height: 32px;">View</button>
                                     </div>
-                                </div>
-                                <div style="font-size:0.75rem; font-weight:600; color:var(--color-primary); cursor:pointer; flex-shrink:0;">
-                                    Edit
-                                </div>
-                            </div>
-                            <div class="compact-list-item">
-                                <div class="avatar-circle avatar-blue">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px;"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17h12"></path></svg>
-                                </div>
-                                <div class="item-main-info">
-                                    <div class="item-name-row">
-                                        <span class="item-name">2024 Tesla Model Y</span>
-                                        <span class="item-id">#4521</span>
-                                    </div>
-                                    <div class="item-sub-row" style="display:flex; align-items:center; gap:6px;">
-                                        <span style="color:#F57C00; font-weight:500;">Quote</span> • Sarah Jenkins
-                                    </div>
-                                </div>
-                                <div class="item-meta-info">
-                                    <span class="meta-date">Today</span>
-                                    <span class="deal-badge badge-grey">$54,000</span>
                                 </div>
                             </div>
 
-                             <div class="compact-list-item">
-                                <div class="avatar-circle avatar-purple">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px;"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17h12"></path></svg>
-                                </div>
-                                <div class="item-main-info">
-                                    <div class="item-name-row">
-                                        <span class="item-name">2021 Ford F-150</span>
-                                        <span class="item-id">#9920</span>
+                            <!-- Card 2 -->
+                            <div class="premium-deal-card" style="border: 1px solid var(--color-border-muted); border-radius: 4px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                                <div style="padding: 12px;">
+                                    <!-- Row 1: Vehicle Info -->
+                                    <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 8px;">
+                                        <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(0, 0, 0, 0.04); color: #5f6368; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17h12"></path></svg>
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 700; color: var(--color-text-heading); font-size: 0.85rem; line-height: 1.2; padding-bottom:4px;">#DEAL-9920</div>
+                                            <div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">2021 Ford F-150</div>
+                                        </div>
                                     </div>
-                                    <div class="item-sub-row" style="display:flex; align-items:center; gap:6px;">
-                                        <span style="color:#2E7D32; font-weight:500;">Booked</span> • Mike Ross
+                                    
+                                    <!-- Row 2: Salesperson, Type, Status -->
+                                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); margin-bottom: 4px; padding: 8px 0; border-bottom: 1px solid #f1f3f4;">
+                                        <div>
+                                            <div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Salesperson</div>
+                                            <div style="font-size: 0.8rem; font-weight: 600; color: var(--color-text-main);">Mike Ross</div>
+                                        </div>
+                                        <div>
+                                            <div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Type</div>
+                                            <div style="font-size: 0.8rem; font-weight: 600; color: var(--color-text-main);">Lease</div>
+                                        </div>
+                                        <div>
+                                            <div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Status</div>
+                                            <div style="font-size: 0.8rem; font-weight: 600; color: var(--color-text-main);">Booked</div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="item-meta-info">
-                                    <span class="meta-date">Dec 21</span>
-                                    <span class="deal-badge badge-grey">$32,500</span>
+
+                                    <!-- Row 3: Last Updated, View CTA -->
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <div>
+                                            <div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500; padding-top:4px;">Last Updated</div>
+                                            <div style="font-size: 0.8rem; font-weight: 600; color: var(--color-text-main);">Dec 12, 2025</div>
+                                        </div>
+                                        <button class="open-btn-compact" style="font-size: 14px; padding: 0 20px; border-radius: 8px; font-weight: 600; height: 32px;">View</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>`;
+
                             break;
                         case 'Summarize recent hot leads':
                             responseHTML = `<p>Here is a summary of the active car leads from the current page view:</p><div class="ai-list-item"><span class="ai-list-number">1.</span><span><strong>John Doe:</strong> Interested in 2024 Honda CR-V. Financing pending.</span></div><div class="ai-list-item"><span class="ai-list-number">2.</span><span><strong>Sarah Smith:</strong> Requesting test drive for Ford Explorer. Trade-in valuation needed.</span></div><div class="ai-list-item"><span class="ai-list-number">3.</span><span><strong>Mike Johnson:</strong> Lease expiring soon. Looking at Toyota Camry options.</span></div>`;
@@ -8520,8 +8778,8 @@
                     </div>`;
                 });
                 html += `</div>`;
-                x
             }
+
 
             if ((!data.contextItems || data.contextItems.length === 0) && (!data.attachmentItems || data.attachmentItems.length === 0)) {
                 html += `<div style="color:var(--color-text-muted); font-size:0.75rem;">No sources found.</div>`;
