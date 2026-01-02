@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -29,8 +29,9 @@
             --color-border-muted: #E8E9EB;
             --color-border-hover: #969AA3;
 
-            --gradient-primary: linear-gradient(94deg, rgba(147, 124, 249, 0.25) 1.61%, rgba(123, 235, 236, 0.25) 107.91%), #FFFFFF;
+            --gradient-primary: linear-gradient(94deg, rgba(147, 124, 249, 0.2) 1.61%, rgba(123, 235, 236, 0.2) 107.91%), #FFFFFF;
             --gradient-surface: linear-gradient(94deg, rgba(123, 235, 236, 0.40) 0%, rgba(147, 124, 249, 0.40) 98.94%), #FFFFFF;
+            --gradient-ai: linear-gradient(320deg, #2157F5 8.61%, #258DFF 39.1%, #86FFBB 92.21%), #FFFFFF;
 
             /* Dimensions */
             --header-height: 48px;
@@ -1764,7 +1765,7 @@
             padding: 0;
             /* Padding handled by content-aligner */
             overflow-y: auto;
-            background-color: #fff;
+            background-color: #f9f9f9;
             display: flex;
             flex-direction: column;
             scroll-behavior: smooth;
@@ -1843,14 +1844,29 @@
         }
 
         .empty-icon {
-            width: 48px;
-            height: 48px;
-            margin-bottom: var(--space-lg);
-            color: var(--color-primary);
-            background: var(--gradient-primary);
-            border-radius: var(--radius-lg);
-            padding: var(--space-10);
+            width: 80px;
+            height: 80px;
+            margin-bottom: var(--space-2xl);
             display: inline-block;
+        }
+
+        .empty-icon img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        @keyframes emptyFloating {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+            }
+
+            50% {
+                transform: translateY(-10px) scale(1.05);
+            }
         }
 
         .greeting-title {
@@ -1889,7 +1905,7 @@
             align-self: flex-end;
             max-width: var(--bubble-max-width);
             padding: var(--space-sm) var(--space-md);
-            background-color: var(--color-bg-message);
+            background-color: var(--color-border-muted);
             color: var(--color-text-heading);
             border-radius: var(--radius-lg) var(--radius-lg) 0 var(--radius-lg);
         }
@@ -1958,66 +1974,151 @@
             color: var(--color-text-heading);
         }
 
-        /* Thoughts Header */
-        .ai-thought-line {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            /* Was space-between */
-            gap: var(--space-sm);
-            /* Brings chevron closer */
-            color: var(--color-text-muted);
+        /* --- REASONING COMPONENT (Bars Style) --- */
+        .reasoning-container {
+            width: 100%;
+            margin-bottom: var(--space-md);
             font-size: 0.8rem;
-            font-weight: 500;
-            margin-bottom: var(--space-sm);
-            padding-top: 4px;
-            cursor: pointer;
-            user-select: none;
-            transition: color var(--transition-speed-fast);
         }
 
-        .ai-thought-line:hover {
+        .reasoning-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            user-select: none;
+            padding: 4px 0;
+            color: var(--color-text-muted);
+            transition: color var(--transition-speed-normal);
+            width: fit-content;
+        }
+
+        .reasoning-header:hover {
             color: var(--color-text-main);
         }
 
-        .ai-thought-line span {
+        .status-icon-wrapper {
+            width: 20px;
+            height: 20px;
             display: flex;
             align-items: center;
+            justify-content: center;
         }
 
-        /* Chevron Animation */
-        .ai-thought-line .chevron {
-            width: var(--icon-sm);
-            height: var(--icon-sm);
-            color: var(--color-text-muted);
-            transition: transform 0.2s ease;
+        .spinner {
+            width: 12px;
+            height: 12px;
+            border: 2px solid var(--color-primary);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
 
-        .ai-thought-line.expanded .chevron {
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .check-icon {
+            display: none;
+            color: #10b981;
+        }
+
+        .reasoning-container.finished .status-icon-wrapper {
+            display: none;
+        }
+
+        .timer {
+            font-family: var(--font-mono, monospace);
+            opacity: 0.7;
+            font-size: 0.75rem;
+        }
+
+        .chevron {
+            width: 16px;
+            height: 16px;
+        }
+
+        .reasoning-header .chevron {
+            transition: transform 0.3s ease;
+            opacity: 0.5;
+            width: 16px;
+            height: 16px;
+        }
+
+        .reasoning-container.expanded .reasoning-header .chevron {
             transform: rotate(180deg);
         }
 
-        /* Reasoning Details */
-        .ai-thought-details {
-            background-color: var(--color-bg-hover);
-            border: 1px solid var(--color-bg-surface);
-            border-radius: var(--radius-md);
-            padding: var(--space-10) var(--space-md);
-            margin-bottom: var(--space-md);
-            display: none;
+        .reasoning-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+            margin-left: 2px;
+            padding-left: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .reasoning-container.expanded .reasoning-content {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 8px;
+            padding-bottom: 8px;
+        }
+
+        .step {
+            display: flex;
+            position: relative;
+            padding-left: 18px;
+            color: var(--color-text-muted);
             font-size: 0.8rem;
+            line-height: 1.5;
+            transition: color 0.3s;
+        }
+
+        .step::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 4px;
+            height: 14px;
+            width: 3px;
+            border-radius: 4px;
+            background-color: var(--color-border);
+            transition: all 0.3s ease;
+        }
+
+        .step.active {
             color: var(--color-text-main);
-            animation: fadeIn 0.2s ease;
         }
 
-        .ai-thought-details.expanded {
-            display: block;
+        .step.active::before {
+            background: var(--gradient-ai);
+            height: 16px;
+            box-shadow: 0 0 8px rgba(33, 87, 245, 0.3);
         }
 
-        .thought-step {
-            margin-bottom: 4px;
-            padding-left: var(--space-sm);
-            border-left: 2px solid var(--color-border);
+        .step.completed::before {
+            background-color: var(--color-border-muted);
+            opacity: 1;
+        }
+
+        .step-text {
+            opacity: 0;
+            animation: fadeIn 0.2s forwards;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 4px;
+            height: 12px;
+            background: var(--gradient-ai);
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+            margin-left: 4px;
         }
 
         /* --- INLINE FILTER BADGE & POPOVER --- */
@@ -2166,7 +2267,7 @@
             bottom: auto;
             left: auto;
             width: var(--w-full);
-            background-color: var(--color-bg-main);
+            background-color: #f9f9f9;
             z-index: var(--z-nav);
             display: flex;
             flex-direction: column;
@@ -2191,7 +2292,7 @@
 
         /* ENHANCED INPUT BOX */
         .enhanced-input-box {
-            border: 1px solid transparent;
+            border: 2px solid transparent;
             border-radius: var(--radius-lg);
             padding: var(--space-md) 14px;
             background-color: var(--color-bg-main);
@@ -2896,19 +2997,24 @@
         }
 
         .send-btn-square.active:hover {
-            background-color: var(--color-bg-message);
-            color: var(--color-primary);
+            background: var(--gradient-ai);
+            filter: brightness(0.9);
+            color: #fff;
         }
 
         .send-btn-square.active {
-            background-color: var(--color-bg-surface);
-            color: var(--color-primary);
+            background: var(--gradient-ai);
+            color: #fff;
         }
 
 
         .send-btn-square.stop {
-            background-color: rgba(33, 87, 245, 0.1);
-            color: var(--color-primary);
+            background: var(--gradient-surface);
+        }
+
+        .send-btn-square.stop:hover {
+            background: var(--gradient-surface);
+            filter: brightness(0.9);
         }
 
         /* Disabled State */
@@ -3489,7 +3595,7 @@
         /* Active state - triggered when parent panel has .aurora-active */
         .aurora-active .top-bar::before,
         .aurora-active .minimized-view-wrapper::before {
-            opacity: 1;
+            opacity: 0.6;
             animation: auroraSlide 6s ease-in-out infinite;
         }
 
@@ -3510,7 +3616,7 @@
                     var(--aurora-color-4) 85%,
                     transparent 100%);
             background-size: 200% 100%;
-            opacity: 1;
+            opacity: 0.6;
             z-index: 0;
             /* Behind the pill */
             /* We need to animate background-position if we aren't using the 'right' property trick, 
@@ -3605,7 +3711,7 @@
 
             .chat-sidebar.state-fullscreen .footer-container {
                 grid-area: footer;
-                max-width: 900px;
+                max-width: 100%;
                 width: 100%;
                 margin: 0 auto;
                 /* Center input */
@@ -5164,171 +5270,9 @@
                             <div class="chat-scroll-area">
                                 <div class="empty-state-wrapper" id="emptyState">
                                     <div class="empty-state-content content-aligner">
-                                        <div class="empty-icon"><svg width="28" height="28" viewBox="0 0 16 16"
-                                                fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path
-                                                    d="M7.94922 14.2996C8.41854 14.2998 8.79948 14.6805 8.79948 15.1498C8.79934 15.619 8.41845 15.9999 7.94922 16C7.47986 16 7.0991 15.6191 7.09896 15.1498C7.09896 14.6804 7.47978 14.2996 7.94922 14.2996Z"
-                                                    fill="url(#paint0_linear_2796_76820)" />
-                                                <path
-                                                    d="M12.1497 13.3973C12.5086 13.3973 12.7993 13.6882 12.7995 14.047C12.7995 14.406 12.5087 14.6967 12.1497 14.6967C11.7909 14.6966 11.5 14.4059 11.5 14.047C11.5001 13.6883 11.791 13.3975 12.1497 13.3973Z"
-                                                    fill="url(#paint1_linear_2796_76820)" />
-                                                <path
-                                                    d="M3.45052 12.7997C3.86473 12.7997 4.20052 13.1355 4.20052 13.5497C4.20052 13.9639 3.86473 14.2996 3.45052 14.2996C3.03631 14.2996 2.70052 13.9639 2.70052 13.5497C2.70052 13.1355 3.03631 12.7997 3.45052 12.7997Z"
-                                                    fill="url(#paint2_linear_2796_76820)" />
-                                                <path
-                                                    d="M6.25 10.3976C6.94036 10.3976 7.5 10.9572 7.5 11.6475C7.5 12.3378 6.94036 12.8974 6.25 12.8974C5.55964 12.8974 5 12.3378 5 11.6475C5 10.9572 5.55964 10.3976 6.25 10.3976Z"
-                                                    fill="url(#paint3_linear_2796_76820)" />
-                                                <path
-                                                    d="M10.3503 10.3976C10.9853 10.3976 11.4999 10.9123 11.5 11.5472C11.5 12.1823 10.9854 12.6969 10.3503 12.6969C9.71525 12.6967 9.20052 12.1822 9.20052 11.5472C9.20066 10.9124 9.71534 10.3977 10.3503 10.3976Z"
-                                                    fill="url(#paint4_linear_2796_76820)" />
-                                                <path
-                                                    d="M13.6497 10.1984C14.1191 10.1985 14.5 10.5793 14.5 11.0486C14.4999 11.5178 14.119 11.8986 13.6497 11.8988C13.1804 11.8988 12.7996 11.5179 12.7995 11.0486C12.7995 10.5792 13.1803 10.1984 13.6497 10.1984Z"
-                                                    fill="url(#paint5_linear_2796_76820)" />
-                                                <path
-                                                    d="M3.41667 6.86923C3.73903 6.32538 4.45228 6.13871 5.01042 6.4526C5.56871 6.7668 5.75983 7.46295 5.4375 8.00716C5.36588 8.12803 5.27483 8.23174 5.17057 8.31573C4.68818 8.70417 3.97429 8.90987 3.66146 9.43803L3.625 9.49923C3.39616 9.88587 3.47637 10.4224 3.2474 10.809C3.0482 11.1453 2.60674 11.2609 2.26172 11.0668C1.91679 10.8727 1.79845 10.4422 1.9974 10.1059C2.23484 9.70506 2.78461 9.50557 3.02214 9.10473L3.04948 9.05656C3.35255 8.54486 3.18708 7.86584 3.27083 7.28066C3.291 7.13974 3.3392 7.00003 3.41667 6.86923Z"
-                                                    fill="url(#paint6_linear_2796_76820)" />
-                                                <path
-                                                    d="M8.2487 6.60103C9.15988 6.60103 9.8983 7.33955 9.89844 8.25063C9.89844 9.16183 9.15997 9.90024 8.2487 9.90024C7.33755 9.9001 6.59896 9.16174 6.59896 8.25063C6.5991 7.33964 7.33763 6.60117 8.2487 6.60103Z"
-                                                    fill="url(#paint7_linear_2796_76820)" />
-                                                <path
-                                                    d="M9.68229 3.55049C10.2406 3.23631 10.955 3.42298 11.2773 3.96713C11.3936 4.16346 11.4428 4.38 11.4323 4.59077C11.4095 5.04569 11.3042 5.54911 11.5378 5.94353C11.7715 6.33786 12.272 6.50082 12.6875 6.70909C12.8796 6.8055 13.0466 6.95463 13.1628 7.15046C13.4851 7.69466 13.294 8.39082 12.7357 8.70502C12.1774 9.01922 11.4643 8.8326 11.1419 8.28839C11.0257 8.09219 10.9752 7.87667 10.9857 7.66604C11.0084 7.21104 11.1152 6.7065 10.8815 6.31199C10.6478 5.91782 10.1472 5.75593 9.73177 5.54773C9.53925 5.45123 9.3715 5.30139 9.25521 5.10505C8.93305 4.56095 9.12424 3.86473 9.68229 3.55049Z"
-                                                    fill="url(#paint8_linear_2796_76820)" />
-                                                <path
-                                                    d="M0.75 7.30019C1.16421 7.30019 1.5 7.63595 1.5 8.05013C1.5 8.46431 1.16421 8.80007 0.75 8.80007C0.335786 8.80007 0 8.46431 0 8.05013C0 7.63595 0.335786 7.30019 0.75 7.30019Z"
-                                                    fill="url(#paint9_linear_2796_76820)" />
-                                                <path
-                                                    d="M15.25 7.30019C15.6642 7.30019 16 7.63595 16 8.05013C16 8.46431 15.6642 8.80007 15.25 8.80007C14.8358 8.80007 14.5 8.46431 14.5 8.05013C14.5 7.63595 14.8358 7.30019 15.25 7.30019Z"
-                                                    fill="url(#paint10_linear_2796_76820)" />
-                                                <path
-                                                    d="M2.04948 3.49972C2.6292 3.49972 3.09998 3.9695 3.10026 4.54911C3.10026 5.12896 2.62938 5.5998 2.04948 5.5998C1.46982 5.59952 1 5.12879 1 4.54911C1.00028 3.96967 1.46999 3.5 2.04948 3.49972Z"
-                                                    fill="url(#paint11_linear_2796_76820)" />
-                                                <path
-                                                    d="M6.54948 2.8982C7.23984 2.8982 7.79948 3.4578 7.79948 4.1481C7.79948 4.8384 7.23984 5.398 6.54948 5.398C5.85912 5.398 5.29948 4.8384 5.29948 4.1481C5.29948 3.4578 5.85912 2.8982 6.54948 2.8982Z"
-                                                    fill="url(#paint12_linear_2796_76820)" />
-                                                <path
-                                                    d="M13.2005 2.4998C13.7528 2.4998 14.2005 2.94748 14.2005 3.49972C14.2005 4.05196 13.7528 4.49963 13.2005 4.49963C12.6482 4.49963 12.2005 4.05196 12.2005 3.49972C12.2005 2.94748 12.6482 2.4998 13.2005 2.4998Z"
-                                                    fill="url(#paint13_linear_2796_76820)" />
-                                                <path
-                                                    d="M4.55078 0.800716C4.90968 0.800716 5.20038 1.09157 5.20052 1.4504C5.20052 1.80936 4.90977 2.10009 4.55078 2.10009C4.19192 2.09995 3.90104 1.80927 3.90104 1.4504C3.90118 1.09165 4.192 0.800857 4.55078 0.800716Z"
-                                                    fill="url(#paint14_linear_2796_76820)" />
-                                                <path
-                                                    d="M8.75 0C9.16421 0 9.5 0.335759 9.5 0.749939C9.5 1.16412 9.16421 1.49988 8.75 1.49988C8.33579 1.49988 8 1.16412 8 0.749939C8 0.335759 8.33579 0 8.75 0Z"
-                                                    fill="url(#paint15_linear_2796_76820)" />
-                                                <defs>
-                                                    <linearGradient id="paint0_linear_2796_76820" x1="13.2581"
-                                                        y1="15.9664" x2="1.15922" y2="1.34955"
-                                                        gradientUnits="userSpaceOnUse">
-                                                        <stop offset="0.01" stop-color="#2157F5" />
-                                                        <stop offset="0.371064" stop-color="#258DFF" />
-                                                        <stop offset="1" stop-color="#86FFBB" />
-                                                    </linearGradient>
-                                                    <linearGradient id="paint1_linear_2796_76820" x1="13.2581"
-                                                        y1="15.9664" x2="1.15922" y2="1.34955"
-                                                        gradientUnits="userSpaceOnUse">
-                                                        <stop offset="0.01" stop-color="#2157F5" />
-                                                        <stop offset="0.371064" stop-color="#258DFF" />
-                                                        <stop offset="1" stop-color="#86FFBB" />
-                                                    </linearGradient>
-                                                    <linearGradient id="paint2_linear_2796_76820" x1="13.2581"
-                                                        y1="15.9664" x2="1.15922" y2="1.34955"
-                                                        gradientUnits="userSpaceOnUse">
-                                                        <stop offset="0.01" stop-color="#2157F5" />
-                                                        <stop offset="0.371064" stop-color="#258DFF" />
-                                                        <stop offset="1" stop-color="#86FFBB" />
-                                                    </linearGradient>
-                                                    <linearGradient id="paint3_linear_2796_76820" x1="13.2581"
-                                                        y1="15.9664" x2="1.15922" y2="1.34955"
-                                                        gradientUnits="userSpaceOnUse">
-                                                        <stop offset="0.01" stop-color="#2157F5" />
-                                                        <stop offset="0.371064" stop-color="#258DFF" />
-                                                        <stop offset="1" stop-color="#86FFBB" />
-                                                    </linearGradient>
-                                                    <linearGradient id="paint4_linear_2796_76820" x1="13.2581"
-                                                        y1="15.9664" x2="1.15922" y2="1.34955"
-                                                        gradientUnits="userSpaceOnUse">
-                                                        <stop offset="0.01" stop-color="#2157F5" />
-                                                        <stop offset="0.371064" stop-color="#258DFF" />
-                                                        <stop offset="1" stop-color="#86FFBB" />
-                                                    </linearGradient>
-                                                    <linearGradient id="paint5_linear_2796_76820" x1="13.2581"
-                                                        y1="15.9664" x2="1.15922" y2="1.34955"
-                                                        gradientUnits="userSpaceOnUse">
-                                                        <stop offset="0.01" stop-color="#2157F5" />
-                                                        <stop offset="0.371064" stop-color="#258DFF" />
-                                                        <stop offset="1" stop-color="#86FFBB" />
-                                                    </linearGradient>
-                                                    <linearGradient id="paint6_linear_2796_76820" x1="13.2581"
-                                                        y1="15.9664" x2="1.15922" y2="1.34955"
-                                                        gradientUnits="userSpaceOnUse">
-                                                        <stop offset="0.01" stop-color="#2157F5" />
-                                                        <stop offset="0.371064" stop-color="#258DFF" />
-                                                        <stop offset="1" stop-color="#86FFBB" />
-                                                    </linearGradient>
-                                                    <linearGradient id="paint7_linear_2796_76820" x1="13.2581"
-                                                        y1="15.9664" x2="1.15922" y2="1.34955"
-                                                        gradientUnits="userSpaceOnUse">
-                                                        <stop offset="0.01" stop-color="#2157F5" />
-                                                        <stop offset="0.371064" stop-color="#258DFF" />
-                                                        <stop offset="1" stop-color="#86FFBB" />
-                                                    </linearGradient>
-                                                    <linearGradient id="paint8_linear_2796_76820" x1="13.2581"
-                                                        y1="15.9664" x2="1.15922" y2="1.34955"
-                                                        gradientUnits="userSpaceOnUse">
-                                                        <stop offset="0.01" stop-color="#2157F5" />
-                                                        <stop offset="0.371064" stop-color="#258DFF" />
-                                                        <stop offset="1" stop-color="#86FFBB" />
-                                                    </linearGradient>
-                                                    <linearGradient id="paint9_linear_2796_76820" x1="13.2581"
-                                                        y1="15.9664" x2="1.15922" y2="1.34955"
-                                                        gradientUnits="userSpaceOnUse">
-                                                        <stop offset="0.01" stop-color="#2157F5" />
-                                                        <stop offset="0.371064" stop-color="#258DFF" />
-                                                        <stop offset="1" stop-color="#86FFBB" />
-                                                    </linearGradient>
-                                                    <linearGradient id="paint10_linear_2796_76820" x1="13.2581"
-                                                        y1="15.9664" x2="1.15922" y2="1.34955"
-                                                        gradientUnits="userSpaceOnUse">
-                                                        <stop offset="0.01" stop-color="#2157F5" />
-                                                        <stop offset="0.371064" stop-color="#258DFF" />
-                                                        <stop offset="1" stop-color="#86FFBB" />
-                                                    </linearGradient>
-                                                    <linearGradient id="paint11_linear_2796_76820" x1="13.2581"
-                                                        y1="15.9664" x2="1.15922" y2="1.34955"
-                                                        gradientUnits="userSpaceOnUse">
-                                                        <stop offset="0.01" stop-color="#2157F5" />
-                                                        <stop offset="0.371064" stop-color="#258DFF" />
-                                                        <stop offset="1" stop-color="#86FFBB" />
-                                                    </linearGradient>
-                                                    <linearGradient id="paint12_linear_2796_76820" x1="13.2581"
-                                                        y1="15.9664" x2="1.15922" y2="1.34955"
-                                                        gradientUnits="userSpaceOnUse">
-                                                        <stop offset="0.01" stop-color="#2157F5" />
-                                                        <stop offset="0.371064" stop-color="#258DFF" />
-                                                        <stop offset="1" stop-color="#86FFBB" />
-                                                    </linearGradient>
-                                                    <linearGradient id="paint13_linear_2796_76820" x1="13.2581"
-                                                        y1="15.9664" x2="1.15922" y2="1.34955"
-                                                        gradientUnits="userSpaceOnUse">
-                                                        <stop offset="0.01" stop-color="#2157F5" />
-                                                        <stop offset="0.371064" stop-color="#258DFF" />
-                                                        <stop offset="1" stop-color="#86FFBB" />
-                                                    </linearGradient>
-                                                    <linearGradient id="paint14_linear_2796_76820" x1="13.2581"
-                                                        y1="15.9664" x2="1.15922" y2="1.34955"
-                                                        gradientUnits="userSpaceOnUse">
-                                                        <stop offset="0.01" stop-color="#2157F5" />
-                                                        <stop offset="0.371064" stop-color="#258DFF" />
-                                                        <stop offset="1" stop-color="#86FFBB" />
-                                                    </linearGradient>
-                                                    <linearGradient id="paint15_linear_2796_76820" x1="13.2581"
-                                                        y1="15.9664" x2="1.15922" y2="1.34955"
-                                                        gradientUnits="userSpaceOnUse">
-                                                        <stop offset="0.01" stop-color="#2157F5" />
-                                                        <stop offset="0.371064" stop-color="#258DFF" />
-                                                        <stop offset="1" stop-color="#86FFBB" />
-                                                    </linearGradient>
-                                                </defs>
-                                            </svg></div>
+                                        <div class="empty-icon">
+                                            <img src="ai-logo.gif" alt="AI Assistant Logo">
+                                        </div>
                                         <h2 class="greeting-title">Hi John,</h2>
                                         <p class="greeting-subtitle">How can I help you today?</p>
                                     </div>
@@ -6009,7 +5953,7 @@
         // Typing Controller
         let typingController = null;
         const btnSendIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>';
-        const btnStopIcon = '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="6" y="6" width="12" height="12" rx="2" ry="2"></rect></svg>';
+        const btnStopIcon = '<svg viewBox="0 0 24 24" fill="url(#aiLogoGradient)" stroke="none"><rect x="6" y="6" width="12" height="12" rx="2" ry="2"></rect></svg>';
         const HEADER_NEW_CHAT_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" /><path d="M8 12h8" /><path d="M12 8v8" /></svg>';
         const HEADER_ADD_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>';
         const AI_LOGO_SVG = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.94922 14.2996C8.41854 14.2998 8.79948 14.6805 8.79948 15.1498C8.79934 15.619 8.41845 15.9999 7.94922 16C7.47986 16 7.0991 15.6191 7.09896 15.1498C7.09896 14.6804 7.47978 14.2996 7.94922 14.2996Z" fill="url(#aiLogoGradient)"/><path d="M12.1497 13.3973C12.5086 13.3973 12.7993 13.6882 12.7995 14.047C12.7995 14.406 12.5087 14.6967 12.1497 14.6967C11.7909 14.6966 11.5 14.4059 11.5 14.047C11.5001 13.6883 11.791 13.3975 12.1497 13.3973Z" fill="url(#aiLogoGradient)"/><path d="M3.45052 12.7997C3.86473 12.7997 4.20052 13.1355 4.20052 13.5497C4.20052 13.9639 3.86473 14.2996 3.45052 14.2996C3.03631 14.2996 2.70052 13.9639 2.70052 13.5497C2.70052 13.1355 3.03631 12.7997 3.45052 12.7997Z" fill="url(#aiLogoGradient)"/><path d="M6.25 10.3976C6.94036 10.3976 7.5 10.9572 7.5 11.6475C7.5 12.3378 6.94036 12.8974 6.25 12.8974C5.55964 12.8974 5 12.3378 5 11.6475C5 10.9572 5.55964 10.3976 6.25 10.3976Z" fill="url(#aiLogoGradient)"/><path d="M10.3503 10.3976C10.9853 10.3976 11.4999 10.9123 11.5 11.5472C11.5 12.1823 10.9854 12.6969 10.3503 12.6969C9.71525 12.6967 9.20052 12.1822 9.20052 11.5472C9.20066 10.9124 9.71534 10.3977 10.3503 10.3976Z" fill="url(#aiLogoGradient)"/><path d="M13.6497 10.1984C14.1191 10.1985 14.5 10.5793 14.5 11.0486C14.4999 11.5178 14.119 11.8986 13.6497 11.8988C13.1804 11.8988 12.7996 11.5179 12.7995 11.0486C12.7995 10.5792 13.1803 10.1984 13.6497 10.1984Z" fill="url(#aiLogoGradient)"/><path d="M3.41667 6.86923C3.73903 6.32538 4.45228 6.13871 5.01042 6.4526C5.56871 6.7668 5.75983 7.46295 5.4375 8.00716C5.36588 8.12803 5.27483 8.23174 5.17057 8.31573C4.68818 8.70417 3.97429 8.90987 3.66146 9.43803L3.625 9.49923C3.39616 9.88587 3.47637 10.4224 3.2474 10.809C3.0482 11.1453 2.60674 11.2609 2.26172 11.0668C1.91679 10.8727 1.79845 10.4422 1.9974 10.1059C2.23484 9.70506 2.78461 9.50557 3.02214 9.10473L3.04948 9.05656C3.35255 8.54486 3.18708 7.86584 3.27083 7.28066C3.291 7.13974 3.3392 7.00003 3.41667 6.86923Z" fill="url(#aiLogoGradient)"/><path d="M8.2487 6.60103C9.15988 6.60103 9.8983 7.33955 9.89844 8.25063C9.89844 9.16183 9.15997 9.90024 8.2487 9.90024C7.33755 9.9001 6.59896 9.16174 6.59896 8.25063C6.5991 7.33964 7.33763 6.60117 8.2487 6.60103Z" fill="url(#aiLogoGradient)"/><path d="M9.68229 3.55049C10.2406 3.23631 10.955 3.42298 11.2773 3.96713C11.3936 4.16346 11.4428 4.38 11.4323 4.59077C11.4095 5.04569 11.3042 5.54911 11.5378 5.94353C11.7715 6.33786 12.272 6.50082 12.6875 6.70909C12.8796 6.8055 13.0466 6.95463 13.1628 7.15046C13.4851 7.69466 13.294 8.39082 12.7357 8.70502C12.1774 9.01922 11.4643 8.8326 11.1419 8.28839C11.0257 8.09219 10.9752 7.87667 10.9857 7.66604C11.0084 7.21104 11.1152 6.7065 10.8815 6.31199C10.6478 5.91782 10.1472 5.75593 9.73177 5.54773C9.53925 5.45123 9.3715 5.30139 9.25521 5.10505C8.93305 4.56095 9.12424 3.86473 9.68229 3.55049Z" fill="url(#aiLogoGradient)"/><path d="M0.75 7.30019C1.16421 7.30019 1.5 7.63595 1.5 8.05013C1.5 8.46431 1.16421 8.80007 0.75 8.80007C0.335786 8.80007 0 8.46431 0 8.05013C0 7.63595 0.335786 7.30019 0.75 7.30019Z" fill="url(#aiLogoGradient)"/><path d="M15.25 7.30019C15.6642 7.30019 16 7.63595 16 8.05013C16 8.46431 15.6642 8.80007 15.25 8.80007C14.8358 8.80007 14.5 8.46431 14.5 8.05013C14.5 7.63595 14.8358 7.30019 15.25 7.30019Z" fill="url(#aiLogoGradient)"/><path d="M2.04948 3.49972C2.6292 3.49972 3.09998 3.9695 3.10026 4.54911C3.10026 5.12896 2.62938 5.5998 2.04948 5.5998C1.46982 5.59952 1 5.12879 1 4.54911C1.00028 3.96967 1.46999 3.5 2.04948 3.49972Z" fill="url(#aiLogoGradient)"/><path d="M6.54948 2.8982C7.23984 2.8982 7.79948 3.4578 7.79948 4.1481C7.79948 4.8384 7.23984 5.398 6.54948 5.398C5.85912 5.398 5.29948 4.8384 5.29948 4.1481C5.29948 3.4578 5.85912 2.8982 6.54948 2.8982Z" fill="url(#aiLogoGradient)"/><path d="M13.2005 2.4998C13.7528 2.4998 14.2005 2.94748 14.2005 3.49972C14.2005 4.05196 13.7528 4.49963 13.2005 4.49963C12.6482 4.49963 12.2005 4.05196 12.2005 3.49972C12.2005 2.94748 12.6482 2.4998 13.2005 2.4998Z" fill="url(#aiLogoGradient)"/><path d="M4.55078 0.800716C4.90968 0.800716 5.20038 1.09157 5.20052 1.4504C5.20052 1.80936 4.90977 2.10009 4.55078 2.10009C4.19192 2.09995 3.90104 1.80927 3.90104 1.4504C3.90118 1.09165 4.192 0.800857 4.55078 0.800716Z" fill="url(#aiLogoGradient)"/><path d="M8.75 0C9.16421 0 9.5 0.335759 9.5 0.749939C9.5 1.16412 9.16421 1.49988 8.75 1.49988C8.33579 1.49988 8 1.16412 8 0.749939C8 0.335759 8.33579 0 8.75 0Z" fill="url(#aiLogoGradient)"/></svg>';
@@ -6685,10 +6629,9 @@
         }
 
         window.toggleThoughts = function (el) {
-            const details = el.nextElementSibling;
-            if (details) {
-                el.classList.toggle('expanded');
-                details.classList.toggle('expanded');
+            const container = el.closest('.reasoning-container');
+            if (container) {
+                container.classList.toggle('expanded');
             }
         };
 
@@ -6876,13 +6819,11 @@
 
                     // Add Action Icons
                     renderActionIcons(stoppedRow.querySelector('.ai-text-wrapper'));
-
-                    // Reset UI
-                    typingController = null;
                 }
 
-                // Immediate Feedback
-                btnSend.innerHTML = btnSendIcon;
+                // Reset UI for all stop scenarios
+                typingController = null;
+                btnSend.classList.remove('stop');
                 updateSendButton();
                 return;
             }
@@ -6894,7 +6835,7 @@
                 updateSendButton();
                 handleSend(text);
             }
-        }
+        };
 
         function handleSend(text) {
             // Capture Attachments
@@ -7069,14 +7010,18 @@
             // Mock load logic (history doesn't re-animate)
             const thoughtSeconds = (Math.random() * 2 + 1).toFixed(1);
             const thoughtHeader = `
-                <div class="ai-thought-line" onclick="toggleThoughts(this)">
-                    <span>Thought for ${thoughtSeconds} seconds</span>
-                    <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                </div>
-                <div class="ai-thought-details">
-                    <div class="thought-step">1. Analyzed request intent</div>
-                    <div class="thought-step">2. Retrieved conversation history</div>
-                    <div class="thought-step">3. Formatted final response</div>
+                <div class="reasoning-container finished">
+                    <div class="reasoning-header" onclick="toggleThoughts(this)">
+                        <div class="status-icon-wrapper" style="display:none"></div>
+                        <span style="font-weight:500">Thought for</span>
+                        <span class="timer">(${thoughtSeconds}s)</span>
+                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+                    <div class="reasoning-content">
+                        <div class="step completed">Analyzed request intent</div>
+                        <div class="step completed">Retrieved conversation history</div>
+                        <div class="step completed">Formatted final response</div>
+                    </div>
                 </div>
             `;
 
@@ -7175,8 +7120,7 @@
                 btnSendEl.classList.add('stop'); // Add Stop Style
             }
 
-            const delay = Math.floor(Math.random() * (8000 - 4000 + 1) + 4000);
-            const delaySeconds = (delay / 1000).toFixed(1);
+            const delay = 500; // Snappy transition after thinking
 
             const thinkingRow = document.createElement('div');
             thinkingRow.className = 'ai-message-row';
@@ -7188,14 +7132,101 @@
             const textWrapper = document.createElement('div');
             textWrapper.className = 'ai-text-wrapper';
 
-            const aiContent = document.createElement('div');
-            aiContent.className = 'ai-content';
-            aiContent.innerHTML = `<div class="thinking-text">Thinking...</div>`;
-            textWrapper.appendChild(aiContent);
+            // --- REASONING COMPONENT ---
+            const reasoningContainer = document.createElement('div');
+            reasoningContainer.className = 'reasoning-container expanded';
+
+            const reasoningHeader = document.createElement('div');
+            reasoningHeader.className = 'reasoning-header';
+            reasoningHeader.onclick = () => window.toggleThoughts(reasoningHeader);
+            reasoningHeader.innerHTML = `
+                <div class="status-icon-wrapper">
+                    <div class="spinner"></div>
+                </div>
+                <span class="status-text" style="font-weight:500">Thinking</span>
+                <span class="timer">0.0s</span>
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            `;
+
+            const reasoningContent = document.createElement('div');
+            reasoningContent.className = 'reasoning-content';
+
+            reasoningContainer.appendChild(reasoningHeader);
+            reasoningContainer.appendChild(reasoningContent);
+            textWrapper.appendChild(reasoningContainer);
             thinkingRow.appendChild(textWrapper);
 
             if (activeChatEl) activeChatEl.appendChild(thinkingRow);
             scrollToBottom();
+
+            // Timer Logic
+            const timerEl = reasoningHeader.querySelector('.timer');
+            const startTime = Date.now();
+            const timerInterval = setInterval(() => {
+                timerEl.textContent = ((Date.now() - startTime) / 1000).toFixed(1) + 's';
+            }, 100);
+
+            let thinkingSteps = [
+                "Analyzing user inquiry...",
+                "Identifying CRM action items...",
+                "Querying customer and vehicle records...",
+                "Validating inventory and deal status...",
+                "Synthesizing optimal response..."
+            ];
+
+            if (logicKey === 'ryan_clarify') {
+                thinkingSteps = [
+                    "Reading your request...",
+                    "Searching contact list for 'Ryan'...",
+                    "Found 5 people with that name.",
+                    "Checking who has been active recently...",
+                    "I need to check which Ryan you are referring to."
+                ];
+            } else if (logicKey === 'ryan_details') {
+                thinkingSteps = [
+                    "Looking up Ryan Carter's (customerID: 891) profile...",
+                    "Checking the system for active deals...",
+                    "Found 2 open deals for this contact.",
+                    "Pulling vehicle details and pricing...",
+                    "Formatting the deal summary for you."
+                ];
+            }
+
+            const runSteps = async () => {
+                for (let i = 0; i < thinkingSteps.length; i++) {
+                    if (typingController.stopped) break;
+
+                    const stepRow = document.createElement('div');
+                    stepRow.className = 'step active';
+
+                    const stepTextSpan = document.createElement('span');
+                    stepTextSpan.className = 'step-text';
+
+                    const cursor = document.createElement('span');
+                    cursor.className = 'cursor';
+
+                    stepRow.appendChild(stepTextSpan);
+                    stepTextSpan.appendChild(cursor);
+                    reasoningContent.appendChild(stepRow);
+
+                    reasoningContent.scrollTop = reasoningContent.scrollHeight;
+                    scrollToBottom();
+
+                    const txt = thinkingSteps[i];
+                    for (let j = 0; j < txt.length; j++) {
+                        if (typingController.stopped) break;
+                        stepTextSpan.insertBefore(document.createTextNode(txt[j]), cursor);
+                        await new Promise(r => setTimeout(r, 30));
+                    }
+                    cursor.remove();
+                    stepRow.classList.remove('active');
+                    stepRow.classList.add('completed');
+
+                    if (i < thinkingSteps.length - 1) {
+                        await new Promise(r => setTimeout(r, 800));
+                    }
+                }
+            };
 
             // --- AURORA GLOW EFFECT ---
             // Activate aurora effect when AI starts thinking
@@ -7204,106 +7235,70 @@
             if (mobileHandle) mobileHandle.classList.add('aurora-active');
 
 
-            // Store timerId to allow immediate cancellation
-            typingController.timerId = setTimeout(async () => {
-                // If stopped during thinking phase
-                if (typingController.stopped) {
-                    if (activeChatEl) activeChatEl.removeChild(thinkingRow);
+            // Start the sequence
+            runSteps().then(() => {
+                // Once steps complete, or if stopped
+                clearInterval(timerInterval);
+                const finalTime = ((Date.now() - startTime) / 1000).toFixed(1);
+                timerEl.textContent = `(${finalTime}s)`;
+                const statusText = reasoningHeader.querySelector('.status-text');
+                if (statusText) statusText.textContent = 'Thought for';
+                reasoningContainer.classList.add('finished');
 
-                    // Remove aurora effect
+                // Collapse after a small delay
+                setTimeout(() => {
+                    reasoningContainer.classList.remove('expanded');
+                }, 800);
+
+                // Now proceed to the AI message
+                setTimeout(async () => {
+                    // Remove aurora effect when thinking completes
                     if (panel) panel.classList.remove('aurora-active');
                     if (mobileHandle) mobileHandle.classList.remove('aurora-active');
 
-                    const stoppedRow = document.createElement('div');
-                    stoppedRow.className = 'ai-message-row';
-                    stoppedRow.innerHTML = `
-                        <div class="ai-avatar">${AI_LOGO_SVG}</div>
-                        <div class="ai-text-wrapper"><div class="ai-content"><div style="color:var(--color-text-muted)">Response stopped by you</div></div></div>
-                    `;
-                    if (activeChatEl) activeChatEl.appendChild(stoppedRow);
+                    // If stopped during thinking phase
+                    if (typingController.stopped) {
+                        // Just stop here, maybe add a note
+                        const stopNote = document.createElement('div');
+                        stopNote.innerHTML = '<div style="color:var(--color-text-muted); font-style:italic; margin-top:8px;">Response stopped by you</div>';
+                        textWrapper.appendChild(stopNote);
 
-                    // Add Icons
-                    renderActionIcons(stoppedRow.querySelector('.ai-text-wrapper'));
-
-                    // Reset UI
-                    typingController = null;
-                    if (btnSendEl) {
-                        btnSendEl.innerHTML = btnSendIcon;
-                        btnSendEl.classList.remove('stop');
+                        // Reset UI
+                        typingController = null;
+                        if (btnSendEl) {
+                            btnSendEl.innerHTML = btnSendIcon;
+                            btnSendEl.classList.remove('stop');
+                        }
+                        updateSendButton();
+                        return;
                     }
-                    updateSendButton();
-                    return;
-                }
 
-                activeChat.removeChild(thinkingRow);
+                    // Remove 'thinking' class from avatar to stop blinking
+                    thinkingAvatar.classList.remove('thinking');
 
-                // Remove aurora effect when thinking completes
-                if (panel) panel.classList.remove('aurora-active');
-                if (mobileHandle) mobileHandle.classList.remove('aurora-active');
-                const aiRow = document.createElement('div');
-                aiRow.className = 'ai-message-row';
+                    const aiContent = document.createElement('div');
+                    aiContent.className = 'ai-content';
 
-                const aiAvatar = document.createElement('div');
-                aiAvatar.className = 'ai-avatar';
-                aiAvatar.innerHTML = AI_LOGO_SVG;
-                aiRow.appendChild(aiAvatar);
+                    // Calculate Sources (Attachments only)
+                    let attachmentItems = [];
+                    if (attachmentHTML) {
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = attachmentHTML;
+                        tempDiv.querySelectorAll('.attachment-pill span').forEach(span => {
+                            attachmentItems.push(span.innerText);
+                        });
+                    }
+                    const sourcesData = { count: attachmentItems.length, contextItems: [], attachmentItems: attachmentItems };
 
-                const textWrapper = document.createElement('div');
-                textWrapper.className = 'ai-text-wrapper';
+                    // Content Body for Typewriter
+                    const contentBody = document.createElement('div');
+                    aiContent.appendChild(contentBody);
+                    textWrapper.appendChild(aiContent);
 
-                const aiContent = document.createElement('div');
-                aiContent.className = 'ai-content';
-
-                // Calculate Sources (Attachments only)
-                const contextItems = [];
-
-                // Parse attachment names
-                let attachmentItems = [];
-                if (attachmentHTML) {
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = attachmentHTML;
-                    tempDiv.querySelectorAll('.attachment-pill span').forEach(span => {
-                        attachmentItems.push(span.innerText);
-                    });
-                }
-
-                const totalSources = attachmentItems.length;
-                const sourcesData = { count: totalSources, contextItems: [], attachmentItems: attachmentItems };
-
-                // --- THOUGHT TOGGLE ---
-                const thoughtHeader = document.createElement('div');
-                thoughtHeader.className = 'ai-thought-line';
-                thoughtHeader.onclick = function () { toggleThoughts(this); };
-                thoughtHeader.innerHTML = `
-                    <span>Thought for ${delaySeconds} seconds</span>
-                    <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                `;
-                aiContent.appendChild(thoughtHeader);
-
-                const thoughtDetails = document.createElement('div');
-                thoughtDetails.className = 'ai-thought-details';
-                // Placeholder Steps
-                thoughtDetails.innerHTML = `
-                    <div class="thought-step">1. Analyzing user input: "${userText}"</div>
-                    <div class="thought-step">2. Identifying context variables</div>
-                    <div class="thought-step">3. Retrieving CRM records</div>
-                    <div class="thought-step">4. Formatting response output</div>
-                `;
-                aiContent.appendChild(thoughtDetails);
-
-                // Content Body for Typewriter
-                const contentBody = document.createElement('div');
-                aiContent.appendChild(contentBody);
-
-                textWrapper.appendChild(aiContent);
-                aiRow.appendChild(textWrapper);
-
-                activeChat.appendChild(aiRow);
-
-                let responseHTML = "";
-                switch (logicKey) {
-                    case 'ryan_clarify':
-                        responseHTML = `<p>I found multiple contacts matching "Ryan". Please select the correct one:</p>
+                    let responseHTML = "";
+                    switch (logicKey) {
+                        case 'ryan_clarify':
+                            responseHTML = `<p>I found multiple contacts matching "Ryan". Please select the correct one:</p>
                         <div class="compact-list-container">
                             <!-- Header -->
                             <div style="padding:12px 16px 0px 16px; font-weight:600; font-size:1rem; color:var(--color-text-heading);">
@@ -7312,21 +7307,12 @@
                             <!-- Filters -->
                             <div style="padding:8px 16px 12px 16px; display:flex; align-items:center; justify-content:space-between; gap:16px; background:#fff;">
                                 <div style="display:flex; gap:8px; overflow:hidden; white-space:nowrap; align-items:center; flex:1;">
-                                    <!-- Filter Icon + Count -->
-                                    <div style="display:flex; align-items:center; gap:6px; color:#444746;">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#444746" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
-                                        <span style="font-weight:600; font-size:0.8rem;">1</span>
-                                    </div>
-                                    <!-- Separator -->
-                                    <div style="width:1px; height:14px; background:#E0E0E0; margin:0 4px;"></div>
                                     
                                     <div style="display:inline-flex; align-items:center; padding:4px 8px; border-radius:4px; font-size:0.75rem; background:var(--color-bg-surface); color:var(--color-text-subtle); border:1px solid #E0E0E0; font-weight:500; flex-shrink:0;">
                                         Contact = Ryan
                                     </div>
-                                    <!-- Example of overflow indicator (hidden for now) -->
-                                    <!-- <div style="font-size:0.75rem; color:var(--color-text-muted); font-weight:500;">+2</div> -->
                                 </div>
-                                <div style="font-size:0.75rem; font-weight:600; color:var(--color-primary; cursor:pointer; flex-shrink:0;">
+                                <div style="font-size:0.75rem; font-weight:600; color:var(--color-primary); cursor:pointer; flex-shrink:0;">
                                     Edit
                                 </div>
                             </div>
@@ -7405,13 +7391,29 @@
                                 </div>
                             </div>
                         </div>`;
-                        break;
-                    case 'ryan_details':
-                        // Show 2 Compact Deal Cards
-                        responseHTML = `<div style="margin-bottom:var(--space-md);">
-                            <p style="margin:0; line-height:1.6;">Here are the <strong>2 open deals</strong> for Ryan Carter <span class="inline-filter-badge" onclick="toggleFilterPopover(event, this)">2 filters applied</span></p>
-                        </div>
-                        <div class="compact-list-container">
+                            break;
+                        case 'ryan_details':
+                            // Show 2 Compact Deal Cards
+                            responseHTML = `<div class="compact-list-container">
+                            <!-- Header -->
+                            <div style="padding:16px 16px 0px 16px; font-weight:600; font-size:1rem; color:var(--color-text-heading);">
+                                Deals
+                            </div>
+                            <!-- Filter Bar -->
+                            <div style="padding:8px 16px 12px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px; background:#fff;">
+                                <div style="display:flex; gap:8px; overflow:hidden; white-space:nowrap; align-items:center; flex:1;">
+                                    
+                                    <div style="display:inline-flex; align-items:center; padding:4px 8px; border-radius:4px; font-size:0.75rem; background:var(--color-bg-surface); color:var(--color-text-subtle); border:1px solid #E0E0E0; font-weight:500; flex-shrink:0;">
+                                        Contact = Ryan Carter #891
+                                    </div>
+                                    <div style="display:inline-flex; align-items:center; padding:4px 8px; border-radius:4px; font-size:0.75rem; background:var(--color-bg-surface); color:var(--color-text-subtle); border:1px solid #E0E0E0; font-weight:500; flex-shrink:0;">
+                                        Deal Status != Closed, Cancelled
+                                    </div>
+                                </div>
+                                <div style="font-size:0.75rem; font-weight:600; color:var(--color-primary); cursor:pointer; flex-shrink:0;">
+                                    Edit
+                                </div>
+                            </div>
                             <div class="compact-list-item">
                                 <div class="avatar-circle avatar-blue">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px;"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17h12"></path></svg>
@@ -7450,43 +7452,44 @@
                                 </div>
                             </div>
                         </div>`;
-                        break;
-                    case 'Summarize recent hot leads':
-                        responseHTML = `<p>Here is a summary of the active car leads from the current page view:</p><div class="ai-list-item"><span class="ai-list-number">1.</span><span><strong>John Doe:</strong> Interested in 2024 Honda CR-V. Financing pending.</span></div><div class="ai-list-item"><span class="ai-list-number">2.</span><span><strong>Sarah Smith:</strong> Requesting test drive for Ford Explorer. Trade-in valuation needed.</span></div><div class="ai-list-item"><span class="ai-list-number">3.</span><span><strong>Mike Johnson:</strong> Lease expiring soon. Looking at Toyota Camry options.</span></div>`;
-                        break;
-                    case 'Draft quote for Model X':
-                        responseHTML = `<p><strong>Subject: Your Tesla Model X Quote</strong></p><p>Hi <strong>[Customer Name]</strong>,</p><p>Great choice on the <strong>Model X</strong>. Based on your configuration (Long Range, Black Interior), here is the preliminary quote attached. This includes the federal tax incentive deduction.</p>`;
-                        break;
-                    case 'List high-priority test drives':
-                        responseHTML = `<p><strong>Today's High Priority Test Drives:</strong></p><div class="ai-list-item"><span class="ai-list-number">1.</span><span><strong>10:00 AM - BMW X5</strong> (Client: A. Miller)</span></div><div class="ai-list-item"><span class="ai-list-number">2.</span><span><strong>1:30 PM - Audi Q7</strong> (Client: B. Davis) - <em>Confirm trade-in arrival</em></span></div>`;
-                        break;
-                    case '/inventory-check':
-                        responseHTML = `<strong>Stock Status:</strong><br>We have 3 units matching that description at the Main Lot, and 1 in transit (ETA: 5 days).`;
-                        break;
-                    case '/deal-probability':
-                        responseHTML = `<strong>Deal Probability: 75%</strong><br>Customer has high intent. Credit score is solid (720+). Pending spouse approval on color.`;
-                        break;
-                    case '/credit-prequal':
-                        responseHTML = `<strong>Soft Pull Result:</strong><br>Tier 1 Credit Qualified. Rate eligibility: 3.9% APR for 60 months.`;
-                        break;
-                    case '/trade-in-val':
-                        responseHTML = `<strong>Estimated Value:</strong> $18,500 - $20,000<br>Based on 2018 model year with 45k miles and 'Good' condition.`;
-                        break;
-                    case '/schedule-drive':
-                        responseHTML = `<strong>Slot Confirmed:</strong><br>Test drive scheduled for Saturday, Oct 24th at 11:00 AM. Confirmation SMS sent.`;
-                        break;
-                    case 'Summarize recent car leads':
-                        responseHTML = `<p>Here is a summary of the active car leads from the current page view:</p><div class="ai-list-item"><span class="ai-list-number">1.</span><span><strong>John Doe:</strong> Interested in 2024 Honda CR-V. Financing pending.</span></div><div class="ai-list-item"><span class="ai-list-number">2.</span><span><strong>Sarah Smith:</strong> Requesting test drive for Ford Explorer. Trade-in valuation needed.</span></div><div class="ai-list-item"><span class="ai-list-number">3.</span><span><strong>Mike Johnson:</strong> Lease expiring soon. Looking at Toyota Camry options.</span></div>`;
-                        break;
-                    default:
-                        responseHTML = "Analyzing CRM data...";
-                }
+                            break;
+                        case 'Summarize recent hot leads':
+                            responseHTML = `<p>Here is a summary of the active car leads from the current page view:</p><div class="ai-list-item"><span class="ai-list-number">1.</span><span><strong>John Doe:</strong> Interested in 2024 Honda CR-V. Financing pending.</span></div><div class="ai-list-item"><span class="ai-list-number">2.</span><span><strong>Sarah Smith:</strong> Requesting test drive for Ford Explorer. Trade-in valuation needed.</span></div><div class="ai-list-item"><span class="ai-list-number">3.</span><span><strong>Mike Johnson:</strong> Lease expiring soon. Looking at Toyota Camry options.</span></div>`;
+                            break;
+                        case 'Draft quote for Model X':
+                            responseHTML = `<p><strong>Subject: Your Tesla Model X Quote</strong></p><p>Hi <strong>[Customer Name]</strong>,</p><p>Great choice on the <strong>Model X</strong>. Based on your configuration (Long Range, Black Interior), here is the preliminary quote attached. This includes the federal tax incentive deduction.</p>`;
+                            break;
+                        case 'List high-priority test drives':
+                            responseHTML = `<p><strong>Today's High Priority Test Drives:</strong></p><div class="ai-list-item"><span class="ai-list-number">1.</span><span><strong>10:00 AM - BMW X5</strong> (Client: A. Miller)</span></div><div class="ai-list-item"><span class="ai-list-number">2.</span><span><strong>1:30 PM - Audi Q7</strong> (Client: B. Davis) - <em>Confirm trade-in arrival</em></span></div>`;
+                            break;
+                        case '/inventory-check':
+                            responseHTML = `<strong>Stock Status:</strong><br>We have 3 units matching that description at the Main Lot, and 1 in transit (ETA: 5 days).`;
+                            break;
+                        case '/deal-probability':
+                            responseHTML = `<strong>Deal Probability: 75%</strong><br>Customer has high intent. Credit score is solid (720+). Pending spouse approval on color.`;
+                            break;
+                        case '/credit-prequal':
+                            responseHTML = `<strong>Soft Pull Result:</strong><br>Tier 1 Credit Qualified. Rate eligibility: 3.9% APR for 60 months.`;
+                            break;
+                        case '/trade-in-val':
+                            responseHTML = `<strong>Estimated Value:</strong> $18,500 - $20,000<br>Based on 2018 model year with 45k miles and 'Good' condition.`;
+                            break;
+                        case '/schedule-drive':
+                            responseHTML = `<strong>Slot Confirmed:</strong><br>Test drive scheduled for Saturday, Oct 24th at 11:00 AM. Confirmation SMS sent.`;
+                            break;
+                        case 'Summarize recent car leads':
+                            responseHTML = `<p>Here is a summary of the active car leads from the current page view:</p><div class="ai-list-item"><span class="ai-list-number">1.</span><span><strong>John Doe:</strong> Interested in 2024 Honda CR-V. Financing pending.</span></div><div class="ai-list-item"><span class="ai-list-number">2.</span><span><strong>Sarah Smith:</strong> Requesting test drive for Ford Explorer. Trade-in valuation needed.</span></div><div class="ai-list-item"><span class="ai-list-number">3.</span><span><strong>Mike Johnson:</strong> Lease expiring soon. Looking at Toyota Camry options.</span></div>`;
+                            break;
+                        default:
+                            responseHTML = "Analyzing CRM data...";
+                    }
 
-                // Pass controller to typewriter
-                await typeWriter(contentBody, responseHTML, typingController, sourcesData);
+                    // Pass controller to typewriter
+                    await typeWriter(contentBody, responseHTML, typingController, sourcesData);
 
-            }, delay);
-        }
+                }, delay);
+            });
+        };
 
         window.selectRyan = function (id) {
             const map = {
@@ -8654,8 +8657,4 @@
     </script>
 </body>
 
-</html><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-    <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path>
-    <path d="M8 12h8"></path>
-    <path d="M12 8v8"></path>
-</svg>
+</html>
