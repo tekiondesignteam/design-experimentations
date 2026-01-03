@@ -2068,16 +2068,22 @@
             font-size: 0.75rem;
         }
 
+        .reasoning-container.finished .reasoning-summary-wrapper {
+            max-height: 100px;
+            opacity: 1;
+            margin-top: 4px;
+        }
+
         .reasoning-summary-wrapper {
-            display: none;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            display: flex;
             align-items: flex-start;
             gap: 10px;
             cursor: pointer;
-            padding: 4px 0;
-        }
-
-        a .reasoning-container.finished .reasoning-summary-wrapper {
-            display: flex;
+            padding: 0;
+            transition: max-height 0.5s ease, opacity 0.5s ease, margin 0.5s ease;
         }
 
         .reasoning-summary-wrapper:hover .reasoning-summary {
@@ -4146,7 +4152,7 @@
             margin-top: 6px;
             padding: 4px 10px;
             border: 1px solid var(--color-border-muted);
-            border-radius: var(--radius-sm);
+            border-radius: 2px;
             font-size: 14px;
             font-weight: 600;
             color: var(--color-primary);
@@ -4156,7 +4162,7 @@
         }
 
         .open-btn-compact:hover {
-            background: var(--color-bg-hover);
+            background: #f1f3f4;
             border-color: var(--color-primary);
             box-shadow: var(--shadow-sm);
         }
@@ -4311,15 +4317,16 @@
             background: var(--color-primary);
             color: white;
             border: none;
+            border-radius: 2px;
             cursor: pointer;
             transition: all 0.2s ease;
             font-family: inherit;
         }
 
         .open-btn-compact:hover {
-            filter: brightness(1.05);
+            background: #3367D6;
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 191, 165, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
@@ -7538,62 +7545,62 @@
                 }
                 reasoningSummary.textContent = summaryText;
 
-                reasoningContainer.classList.add('finished');
+                // Step 1: Collapse steps first
+                reasoningContainer.classList.remove('expanded');
 
-                // Collapse after a slightly longer delay for readability
-                setTimeout(() => {
-                    reasoningContainer.classList.remove('expanded');
-                }, 500);
-
-                // Now proceed to the AI message
+                // Step 2: After collapse, show summary and start typing AI response
                 setTimeout(async () => {
-                    // Remove aurora effect when thinking completes
-                    if (panel) panel.classList.remove('aurora-active');
-                    if (mobileHandle) mobileHandle.classList.remove('aurora-active');
+                    reasoningContainer.classList.add('finished');
 
-                    // If stopped during thinking phase
-                    if (typingController.stopped) {
-                        // Just stop here, maybe add a note
-                        const stopNote = document.createElement('div');
-                        stopNote.innerHTML = '<div style="color:var(--color-text-muted); font-style:italic; margin-top:8px;">Response stopped by you</div>';
-                        textWrapper.appendChild(stopNote);
+                    // Small delay before starting the main response
+                    setTimeout(async () => {
+                        // Remove aurora effect when thinking completes
+                        if (panel) panel.classList.remove('aurora-active');
+                        if (mobileHandle) mobileHandle.classList.remove('aurora-active');
 
-                        // Reset UI
-                        typingController = null;
-                        if (btnSendEl) {
-                            btnSendEl.innerHTML = btnSendIcon;
-                            btnSendEl.classList.remove('stop');
+                        // If stopped during thinking phase
+                        if (typingController.stopped) {
+                            // Just stop here, maybe add a note
+                            const stopNote = document.createElement('div');
+                            stopNote.innerHTML = '<div style="color:var(--color-text-muted); font-style:italic; margin-top:8px;">Response stopped by you</div>';
+                            textWrapper.appendChild(stopNote);
+
+                            // Reset UI
+                            typingController = null;
+                            if (btnSendEl) {
+                                btnSendEl.innerHTML = btnSendIcon;
+                                btnSendEl.classList.remove('stop');
+                            }
+                            updateSendButton();
+                            return;
                         }
-                        updateSendButton();
-                        return;
-                    }
 
-                    // Remove 'thinking' class from avatar to stop blinking
-                    thinkingAvatar.classList.remove('thinking');
+                        // Remove 'thinking' class from avatar to stop blinking
+                        thinkingAvatar.classList.remove('thinking');
 
-                    const aiContent = document.createElement('div');
-                    aiContent.className = 'ai-content';
+                        const aiContent = document.createElement('div');
+                        aiContent.className = 'ai-content';
 
-                    // Calculate Sources (Attachments only)
-                    let attachmentItems = [];
-                    if (attachmentHTML) {
-                        const tempDiv = document.createElement('div');
-                        tempDiv.innerHTML = attachmentHTML;
-                        tempDiv.querySelectorAll('.attachment-pill span').forEach(span => {
-                            attachmentItems.push(span.innerText);
-                        });
-                    }
-                    const sourcesData = { count: attachmentItems.length, contextItems: [], attachmentItems: attachmentItems };
+                        // Calculate Sources (Attachments only)
+                        let attachmentItems = [];
+                        if (attachmentHTML) {
+                            const tempDiv = document.createElement('div');
+                            tempDiv.innerHTML = attachmentHTML;
+                            tempDiv.querySelectorAll('.attachment-pill span').forEach(span => {
+                                attachmentItems.push(span.innerText);
+                            });
+                        }
+                        const sourcesData = { count: attachmentItems.length, contextItems: [], attachmentItems: attachmentItems };
 
-                    // Content Body for Typewriter
-                    const contentBody = document.createElement('div');
-                    aiContent.appendChild(contentBody);
-                    textWrapper.appendChild(aiContent);
+                        // Content Body for Typewriter
+                        const contentBody = document.createElement('div');
+                        aiContent.appendChild(contentBody);
+                        textWrapper.appendChild(aiContent);
 
-                    let responseHTML = "";
-                    switch (logicKey) {
-                        case 'ryan_clarify':
-                            responseHTML = `<p>Please select the correct Ryan to proceed:</p>
+                        let responseHTML = "";
+                        switch (logicKey) {
+                            case 'ryan_clarify':
+                                responseHTML = `<p>Please select the correct Ryan to proceed:</p>
                         <div class="compact-list-container">
                             <!-- Header -->
                             <div style="padding:12px 16px 0px 16px; font-weight:600; font-size:1rem; color:var(--color-text-heading);">
@@ -7686,10 +7693,10 @@
                                 </div>
                             </div>
                         </div>`;
-                            break;
-                        case 'ryan_details':
-                            // Show 2 Compact Deal Cards
-                            responseHTML = `<p style="margin-bottom: 16px; font-size: 0.875rem; color: var(--color-text-main);">I've found 2 open deals for <strong>Ryan Carter</strong>:</p>
+                                break;
+                            case 'ryan_details':
+                                // Show 2 Compact Deal Cards
+                                responseHTML = `<p style="margin-bottom: 16px; font-size: 0.875rem; color: var(--color-text-main);">I've found 2 open deals for <strong>Ryan Carter</strong>:</p>
                         <div class="premium-deals-grid">
                             <!-- Card 1 -->
                             <div class="premium-deal-card" style="border: 1px solid var(--color-border-muted); border-radius: 4px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
@@ -7727,7 +7734,7 @@
                                             <div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500; padding-top:4px;">Last Updated</div>
                                             <div style="font-size: 0.8rem; font-weight: 600; color: var(--color-text-main);">Dec 21, 2025</div>
                                         </div>
-                                        <button class="open-btn-compact" style="font-size: 14px; padding: 0 20px; border-radius: 8px; font-weight: 600; height: 32px;">View</button>
+                                        <button class="open-btn-compact" style="font-size: 14px; padding: 0 20px; border-radius: 2px; font-weight: 600; height: 32px;">View</button>
                                     </div>
                                 </div>
                             </div>
@@ -7768,48 +7775,48 @@
                                             <div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500; padding-top:4px;">Last Updated</div>
                                             <div style="font-size: 0.8rem; font-weight: 600; color: var(--color-text-main);">Dec 12, 2025</div>
                                         </div>
-                                        <button class="open-btn-compact" style="font-size: 14px; padding: 0 20px; border-radius: 8px; font-weight: 600; height: 32px;">View</button>
+                                        <button class="open-btn-compact" style="font-size: 14px; padding: 0 20px; border-radius: 2px; font-weight: 600; height: 32px;">View</button>
                                     </div>
                                 </div>
                             </div>
                         </div>`;
 
-                            break;
-                        case 'Summarize recent hot leads':
-                            responseHTML = `<p>Here is a summary of the active car leads from the current page view:</p><div class="ai-list-item"><span class="ai-list-number">1.</span><span><strong>John Doe:</strong> Interested in 2024 Honda CR-V. Financing pending.</span></div><div class="ai-list-item"><span class="ai-list-number">2.</span><span><strong>Sarah Smith:</strong> Requesting test drive for Ford Explorer. Trade-in valuation needed.</span></div><div class="ai-list-item"><span class="ai-list-number">3.</span><span><strong>Mike Johnson:</strong> Lease expiring soon. Looking at Toyota Camry options.</span></div>`;
-                            break;
-                        case 'Draft quote for Model X':
-                            responseHTML = `<p><strong>Subject: Your Tesla Model X Quote</strong></p><p>Hi <strong>[Customer Name]</strong>,</p><p>Great choice on the <strong>Model X</strong>. Based on your configuration (Long Range, Black Interior), here is the preliminary quote attached. This includes the federal tax incentive deduction.</p>`;
-                            break;
-                        case 'List high-priority test drives':
-                            responseHTML = `<p><strong>Today's High Priority Test Drives:</strong></p><div class="ai-list-item"><span class="ai-list-number">1.</span><span><strong>10:00 AM - BMW X5</strong> (Client: A. Miller)</span></div><div class="ai-list-item"><span class="ai-list-number">2.</span><span><strong>1:30 PM - Audi Q7</strong> (Client: B. Davis) - <em>Confirm trade-in arrival</em></span></div>`;
-                            break;
-                        case '/inventory-check':
-                            responseHTML = `<strong>Stock Status:</strong><br>We have 3 units matching that description at the Main Lot, and 1 in transit (ETA: 5 days).`;
-                            break;
-                        case '/deal-probability':
-                            responseHTML = `<strong>Deal Probability: 75%</strong><br>Customer has high intent. Credit score is solid (720+). Pending spouse approval on color.`;
-                            break;
-                        case '/credit-prequal':
-                            responseHTML = `<strong>Soft Pull Result:</strong><br>Tier 1 Credit Qualified. Rate eligibility: 3.9% APR for 60 months.`;
-                            break;
-                        case '/trade-in-val':
-                            responseHTML = `<strong>Estimated Value:</strong> $18,500 - $20,000<br>Based on 2018 model year with 45k miles and 'Good' condition.`;
-                            break;
-                        case '/schedule-drive':
-                            responseHTML = `<strong>Slot Confirmed:</strong><br>Test drive scheduled for Saturday, Oct 24th at 11:00 AM. Confirmation SMS sent.`;
-                            break;
-                        case 'Summarize recent car leads':
-                            responseHTML = `<p>Here is a summary of the active car leads from the current page view:</p><div class="ai-list-item"><span class="ai-list-number">1.</span><span><strong>John Doe:</strong> Interested in 2024 Honda CR-V. Financing pending.</span></div><div class="ai-list-item"><span class="ai-list-number">2.</span><span><strong>Sarah Smith:</strong> Requesting test drive for Ford Explorer. Trade-in valuation needed.</span></div><div class="ai-list-item"><span class="ai-list-number">3.</span><span><strong>Mike Johnson:</strong> Lease expiring soon. Looking at Toyota Camry options.</span></div>`;
-                            break;
-                        default:
-                            responseHTML = "Analyzing CRM data...";
-                    }
+                                break;
+                            case 'Summarize recent hot leads':
+                                responseHTML = `<p>Here is a summary of the active car leads from the current page view:</p><div class="ai-list-item"><span class="ai-list-number">1.</span><span><strong>John Doe:</strong> Interested in 2024 Honda CR-V. Financing pending.</span></div><div class="ai-list-item"><span class="ai-list-number">2.</span><span><strong>Sarah Smith:</strong> Requesting test drive for Ford Explorer. Trade-in valuation needed.</span></div><div class="ai-list-item"><span class="ai-list-number">3.</span><span><strong>Mike Johnson:</strong> Lease expiring soon. Looking at Toyota Camry options.</span></div>`;
+                                break;
+                            case 'Draft quote for Model X':
+                                responseHTML = `<p><strong>Subject: Your Tesla Model X Quote</strong></p><p>Hi <strong>[Customer Name]</strong>,</p><p>Great choice on the <strong>Model X</strong>. Based on your configuration (Long Range, Black Interior), here is the preliminary quote attached. This includes the federal tax incentive deduction.</p>`;
+                                break;
+                            case 'List high-priority test drives':
+                                responseHTML = `<p><strong>Today's High Priority Test Drives:</strong></p><div class="ai-list-item"><span class="ai-list-number">1.</span><span><strong>10:00 AM - BMW X5</strong> (Client: A. Miller)</span></div><div class="ai-list-item"><span class="ai-list-number">2.</span><span><strong>1:30 PM - Audi Q7</strong> (Client: B. Davis) - <em>Confirm trade-in arrival</em></span></div>`;
+                                break;
+                            case '/inventory-check':
+                                responseHTML = `<strong>Stock Status:</strong><br>We have 3 units matching that description at the Main Lot, and 1 in transit (ETA: 5 days).`;
+                                break;
+                            case '/deal-probability':
+                                responseHTML = `<strong>Deal Probability: 75%</strong><br>Customer has high intent. Credit score is solid (720+). Pending spouse approval on color.`;
+                                break;
+                            case '/credit-prequal':
+                                responseHTML = `<strong>Soft Pull Result:</strong><br>Tier 1 Credit Qualified. Rate eligibility: 3.9% APR for 60 months.`;
+                                break;
+                            case '/trade-in-val':
+                                responseHTML = `<strong>Estimated Value:</strong> $18,500 - $20,000<br>Based on 2018 model year with 45k miles and 'Good' condition.`;
+                                break;
+                            case '/schedule-drive':
+                                responseHTML = `<strong>Slot Confirmed:</strong><br>Test drive scheduled for Saturday, Oct 24th at 11:00 AM. Confirmation SMS sent.`;
+                                break;
+                            case 'Summarize recent car leads':
+                                responseHTML = `<p>Here is a summary of the active car leads from the current page view:</p><div class="ai-list-item"><span class="ai-list-number">1.</span><span><strong>John Doe:</strong> Interested in 2024 Honda CR-V. Financing pending.</span></div><div class="ai-list-item"><span class="ai-list-number">2.</span><span><strong>Sarah Smith:</strong> Requesting test drive for Ford Explorer. Trade-in valuation needed.</span></div><div class="ai-list-item"><span class="ai-list-number">3.</span><span><strong>Mike Johnson:</strong> Lease expiring soon. Looking at Toyota Camry options.</span></div>`;
+                                break;
+                            default:
+                                responseHTML = "Analyzing CRM data...";
+                        }
 
-                    // Pass controller to typewriter
-                    await typeWriter(contentBody, responseHTML, typingController, sourcesData);
+                        await typeWriter(contentBody, responseHTML, typingController, sourcesData);
 
-                }, delay);
+                    }, 300); // Step 3: Response delay after summary appears
+                }, 600); // Timing for step 2 (summary reveal) after step 1 (collapse) completes
             });
         };
 
