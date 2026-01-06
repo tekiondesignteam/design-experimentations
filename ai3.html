@@ -607,6 +607,11 @@
             flex-shrink: 0;
             padding: 0 var(--space-sm) 0 var(--space-lg);
             margin-bottom: 0;
+            position: relative;
+        }
+
+        .mobile-sheet-handle {
+            display: none;
         }
 
         .brand-text {
@@ -1585,16 +1590,17 @@
         }
 
         .modal-overlay {
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
             background: rgba(0, 0, 0, 0.4);
-            z-index: var(--z-maximum);
+            z-index: var(--z-max);
             display: none;
             align-items: center;
             justify-content: center;
+            border-radius: inherit;
         }
 
         .modal-overlay.visible {
@@ -1766,13 +1772,19 @@
         /* CHAT CONTENT AREA */
         .chat-scroll-area {
             flex: 1;
+            min-height: 0;
             padding: 0;
-            /* Padding handled by content-aligner */
             overflow-y: auto;
             background-color: #f9f9f9;
             display: flex;
             flex-direction: column;
             scroll-behavior: smooth;
+        }
+
+        .chat-content-spacer {
+            flex: 1;
+            min-height: 0;
+            pointer-events: none;
         }
 
         .scroll-spacer {
@@ -1813,13 +1825,31 @@
             background-color: transparent;
             border: none;
             border-bottom: 1px solid var(--color-border-muted);
-            padding: var(--space-10) var(--space-10);
+            padding: var(--space-m) var(--space-m);
             font-size: 0.9rem;
             color: var(--color-text-main);
             cursor: pointer;
             text-align: left;
             transition: background-color var(--transition-speed-normal), color var(--transition-speed-normal);
             line-height: 1.4;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .suggestion-item svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            margin-top: 2px;
+            color: var(--color-text-muted);
+            opacity: 0.7;
+            transition: color 0.2s, opacity 0.2s;
+        }
+
+        .suggestion-item:hover svg {
+            color: var(--color-primary);
+            opacity: 1;
         }
 
         .suggestion-item:last-child {
@@ -1834,12 +1864,13 @@
         }
 
         .empty-state-wrapper {
-            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             width: var(--w-full);
+            flex-shrink: 0;
+            /* NO SQUASH */
         }
 
         .empty-state-content {
@@ -1850,7 +1881,7 @@
         .empty-icon {
             width: 80px;
             height: 80px;
-            margin-bottom: var(--space-2xl);
+            margin-bottom: var(--space-sm);
             display: inline-block;
         }
 
@@ -1859,6 +1890,31 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
+        }
+
+        .view-empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px;
+            text-align: center;
+            color: var(--color-text-muted);
+        }
+
+        .view-empty-icon {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+            color: var(--color-text-muted);
+        }
+
+        .view-empty-text {
+            font-size: 0.95rem;
+            font-weight: 500;
+            max-width: 240px;
+            line-height: 1.5;
         }
 
         @keyframes emptyFloating {
@@ -1982,7 +2038,7 @@
         /* --- REASONING COMPONENT (Bars Style) --- */
         .reasoning-container {
             width: 100%;
-            margin-bottom: var(--space-md);
+            margin-bottom: 2px;
             font-size: 0.8rem;
         }
 
@@ -2122,10 +2178,55 @@
         }
 
         .reasoning-header .chevron {
-            transition: transform 0.3s ease;
-            opacity: 0.5;
-            width: 16px;
-            height: 16px;
+            opacity: 0.7;
+        }
+
+        .reasoning-pills {
+            display: flex;
+            gap: 8px;
+            margin-top: 6px;
+            padding: 2px;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease;
+        }
+
+        .reasoning-container.finished .reasoning-pills {
+            max-height: 100px;
+            opacity: 1;
+            margin-bottom: 4px;
+            overflow: visible;
+        }
+
+        .reasoning-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 100px;
+            background: #fff;
+            color: var(--color-text-muted);
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid var(--color-border-muted);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+        }
+
+        .reasoning-pill:hover {
+            background: var(--color-bg-subtle, #f9f9f9);
+            color: var(--color-text-main);
+            border-color: rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .reasoning-pill svg {
+            width: 14px;
+            height: 14px;
+            opacity: 0.8;
         }
 
         .reasoning-container.expanded .chevron {
@@ -2263,6 +2364,125 @@
             color: var(--color-text-subtle);
         }
 
+        /* Filter/Sources Modal Styles */
+        .detail-modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: var(--z-max);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border-radius: inherit;
+        }
+
+        .detail-modal-overlay.visible {
+            display: flex;
+        }
+
+        .detail-modal-box {
+            background: white;
+            width: 90%;
+            max-width: 400px;
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            box-shadow: var(--shadow-lg);
+            animation: fadeIn 0.2s ease-out;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .detail-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-lg);
+        }
+
+        .detail-modal-title {
+            font-size: var(--font-lg);
+            font-weight: 600;
+            color: var(--color-text-heading);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-modal-title svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .detail-modal-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            color: var(--color-text-muted);
+            transition: color 0.2s;
+        }
+
+        .detail-modal-close:hover {
+            color: var(--color-text-heading);
+        }
+
+        .detail-modal-content {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-m);
+            background: var(--color-bg-surface);
+            border-radius: var(--radius-sm);
+        }
+
+        .detail-item-label {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            font-weight: 500;
+        }
+
+        .detail-item-value {
+            font-size: 0.9rem;
+            color: var(--color-text-heading);
+            font-weight: 600;
+        }
+
+        .source-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: var(--space-m);
+            background: var(--color-bg-surface);
+            border-radius: var(--radius-sm);
+            margin-bottom: 8px;
+        }
+
+        .source-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .source-item svg {
+            width: 18px;
+            height: 18px;
+            color: var(--color-text-muted);
+            flex-shrink: 0;
+        }
+
+        .source-item-text {
+            font-size: 0.9rem;
+            color: var(--color-text-heading);
+            font-weight: 500;
+        }
+
         .popover-value {
             font-weight: 500;
             color: var(--color-text-heading);
@@ -2315,7 +2535,7 @@
             margin-top: 0px;
             margin-bottom: 4px;
             margin-left: 0px;
-            padding-top: var(--space-sm);
+            padding-top: var(--space-md);
             opacity: 0;
             animation: fadeIn var(--transition-speed-slow) ease-in forwards;
         }
@@ -2344,24 +2564,34 @@
             stroke-width: var(--stroke-normal);
         }
 
-        /* --- FOOTER CONTAINER (New wrapper for input + disclaimer) --- */
         .footer-container {
-            position: relative;
-            bottom: auto;
-            left: auto;
+            flex-shrink: 0;
+            margin-top: auto;
+            /* Prevents footer from shrinking */
             width: var(--w-full);
             background-color: #f9f9f9;
             z-index: var(--z-nav);
             display: flex;
             flex-direction: column;
+            /* NORMAL ORDER */
             align-items: center;
-            padding: var(--space-md) 0px;
+            padding: var(--space-md) 0px 8px 0px;
+            /* Reduced bottom padding */
+        }
+
+        .initial-view-container {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4xl);
+            flex: 1;
+            /* FILL SCROLL AREA */
+            width: 100%;
         }
 
         /* INPUT WRAPPER HIERARCHY */
         .input-wrapper {
             padding: 0 var(--space-lg);
-            /* Width controlled by content-aligner */
+            width: 100%;
         }
 
         .input-border-wrapper {
@@ -2379,9 +2609,10 @@
             border-radius: var(--radius-lg);
             padding: var(--space-md) 14px;
             background-color: var(--color-bg-main);
-            display: block;
+            display: flex;
+            flex-direction: column-reverse;
             box-shadow: var(--shadow-sm);
-            transition: all var(--transition-speed-normal);
+            transition: border-color var(--transition-speed-normal);
             position: relative;
         }
 
@@ -2396,26 +2627,34 @@
         /* POPUP MENU & PROMPT SHEET */
         .popup-menu,
         .prompt-sheet-inline {
-            position: static;
-            width: var(--w-full);
+            position: absolute;
+            bottom: calc(100% + 8px);
+            /* Float above the input box with a gap */
+            left: 4px;
+            right: 4px;
             display: flex;
             flex-direction: column;
             background: var(--color-bg-main);
-            border-bottom: 0 solid var(--color-bg-surface);
-            z-index: var(--z-overlay);
+            z-index: var(--z-top);
+            /* Ensure it's above everything else */
             overflow: hidden;
 
             /* Start Closed State */
             max-height: 0;
             opacity: 0;
             visibility: hidden;
-            margin-bottom: 0;
+            padding: var(--space-md);
 
-            /* FIX: Removed padding in closed state to match open state */
-            padding: 0;
+            /* Visual definition for popover state */
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.18);
 
-            /* FIX: Targeted transition instead of 'all' to avoid padding animation artifacts */
-            transition: max-height var(--transition-speed-slow) ease-in-out, opacity var(--transition-speed-slow) ease-in-out, margin var(--transition-speed-slow) ease-in-out, visibility var(--transition-speed-slow);
+            /* Match ai2.html smooth transition style */
+            transition:
+                max-height 0.4s ease-in-out,
+                opacity 0.4s ease-in-out,
+                visibility 0.4s;
         }
 
         /* Visible State */
@@ -2424,9 +2663,6 @@
             max-height: var(--popup-max-height);
             opacity: 1;
             visibility: visible;
-            margin-bottom: 8px;
-            border-bottom-width: 1px;
-            padding: 0px;
         }
 
         .popup-header {
@@ -2850,7 +3086,7 @@
         }
 
         .main-input:empty+.placeholder-wrapper {
-            display: block;
+            display: block !important;
         }
 
         .placeholder-item {
@@ -3408,25 +3644,30 @@
             }
 
             .mobile-sheet-handle {
-                width: 100%;
-                height: 8px;
-                /* Slimmer handle area */
+                position: absolute;
+                top: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 80px;
+                /* Large hit area */
+                height: 24px;
+                /* Large hit area */
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 cursor: grab;
                 flex-shrink: 0;
                 touch-action: none;
-                margin-top: 4px;
-                border-radius: inherit;
-                overflow: hidden;
+                z-index: 1000;
+                background-color: transparent;
             }
 
             .mobile-sheet-handle::after {
+                display: block;
                 content: '';
-                width: 40px;
+                width: 48px;
                 height: 4px;
-                background-color: var(--color-border);
+                background-color: var(--color-bg-dark);
                 border-radius: 2px;
             }
 
@@ -3455,6 +3696,9 @@
                 position: relative;
                 bottom: auto;
                 left: auto;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
             }
 
 
@@ -3532,25 +3776,38 @@
 
             /* ADJUST WINDOW CONTROLS: Hide all except Close */
             .top-bar {
-                height: 48px !important;
-                /* Standard height for better touch/centering */
-                padding: 0 16px !important;
+                height: 56px !important;
+                padding: 0 20px !important;
+                /* Fixed padding to allow space for content and handle */
                 display: flex !important;
                 align-items: center !important;
-                justify-content: space-between !important;
+                justify-content: flex-start !important;
+                position: relative !important;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             }
 
             .brand-text {
-                font-size: 0.95rem !important;
+                font-size: 1rem !important;
+                /* Slightly smaller to fit 56px height */
+                font-weight: 600 !important;
                 display: flex !important;
                 align-items: center !important;
-                height: 100% !important;
+                gap: 8px !important;
+                color: var(--color-text-heading) !important;
+                margin: 0 !important;
+            }
+
+            .brand-text svg {
+                width: 22px !important;
+                height: 22px !important;
             }
 
             .window-controls {
                 display: flex !important;
                 align-items: center !important;
                 height: 100% !important;
+                margin-left: auto !important;
+                /* This PUSHES everything else to the left */
             }
 
             #btnMinimize,
@@ -3561,6 +3818,19 @@
 
             #btnClose {
                 display: flex !important;
+                width: 36px !important;
+                /* Reduced to fit 56px bar */
+                height: 36px !important;
+                align-items: center !important;
+                justify-content: center !important;
+                margin-right: -4px !important;
+                color: var(--color-text-subtle) !important;
+            }
+
+            #btnClose svg {
+                width: 24px !important;
+                height: 24px !important;
+                stroke-width: 2px !important;
             }
 
             /* Fix Widths */
@@ -3592,9 +3862,11 @@
 
             .footer-container {
                 position: relative;
-                /* Stack normally */
                 bottom: auto;
                 left: auto;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
             }
 
             .scroll-spacer {
@@ -3684,45 +3956,8 @@
             animation: auroraSlide 6s ease-in-out infinite;
         }
 
-        /* Use a pseudo-element for the aurora effect to match top-bar implementation */
-        .mobile-sheet-handle.aurora-active::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            /* Same gradient as top-bar */
-            background: linear-gradient(90deg,
-                    transparent 0%,
-                    var(--aurora-color-1) 30%,
-                    var(--aurora-color-2) 50%,
-                    var(--aurora-color-3) 70%,
-                    var(--aurora-color-4) 85%,
-                    transparent 100%);
-            background-size: 200% 100%;
-            opacity: 0.6;
-            z-index: 0;
-            /* Behind the pill */
-            /* We need to animate background-position if we aren't using the 'right' property trick, 
-               OR we can use the same trick if we make this pseudo wider than container */
-            width: 200%;
-            right: -100%;
-            left: auto;
-            /* Override left */
-            animation: auroraSlide 6s ease-in-out infinite;
-            border-radius: inherit;
-            /* If handle has radius */
-        }
+        /* Aurora effect removed from handle as it is now inside top-bar which has its own aurora */
 
-        .mobile-sheet-handle.aurora-active {
-            /* Remove direct background */
-            background: none;
-            overflow: hidden;
-            /* contain the wide pseudo */
-            position: relative;
-            /* Ensure it is a positioning context */
-        }
 
         /* Ensure the pill (::after) is on top */
         .mobile-sheet-handle::after {
@@ -3747,7 +3982,6 @@
         /* Ensure content stays above aurora */
         .top-bar>*,
         .minimized-view-wrapper>* {
-            position: relative;
             z-index: 1;
         }
 
@@ -3798,8 +4032,7 @@
                 grid-area: footer;
                 max-width: 100%;
                 width: 100%;
-                margin: 0 auto;
-                /* Center input */
+                /* Center input handled by flex/width */
             }
         }
 
@@ -3877,9 +4110,9 @@
         .compact-list-container {
             background-color: #ffffff;
             border: 1px solid #E0E0E0;
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius-md);
             overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
             margin-top: var(--space-sm);
             display: flex;
             flex-direction: column;
@@ -3927,11 +4160,11 @@
             background-color: #F8F9FA;
         }
 
-        .avatar-circle {
+        .compact-list-item .avatar-circle {
+            display: none;
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 600;
@@ -3939,6 +4172,10 @@
             margin-right: 14px;
             flex-shrink: 0;
             text-transform: uppercase;
+        }
+
+        .chat-sidebar.state-fullscreen .compact-list-item .avatar-circle {
+            display: flex;
         }
 
         /* Avatar Colors */
@@ -3985,7 +4222,7 @@
         }
 
         .item-name {
-            font-weight: 600;
+            font-weight: 500;
             color: #202124;
             font-size: 14px;
             margin-right: 6px;
@@ -4037,38 +4274,7 @@
             color: #9E9E9E;
         }
 
-        .compact-list-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 16px;
-            border-bottom: 1px solid #F0F0F0;
-            cursor: pointer;
-            transition: background-color 0.1s;
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .compact-list-item:last-child {
-            border-bottom: none;
-        }
-
-        .compact-list-item:hover {
-            background-color: #F8F9FA;
-        }
-
-        .avatar-circle {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 14px;
-            margin-right: 14px;
-            flex-shrink: 0;
-            text-transform: uppercase;
-        }
+        /* Removed duplicate .compact-list-item and .avatar-circle styles - consolidated above */
 
         /* Avatar Colors */
         .avatar-blue {
@@ -4114,7 +4320,7 @@
         }
 
         .item-name {
-            font-weight: 600;
+            font-weight: 500;
             color: #202124;
             font-size: 14px;
             margin-right: 6px;
@@ -4281,7 +4487,7 @@
         .detail-value {
             font-size: 0.85rem;
             color: var(--color-text-main);
-            font-weight: 600;
+            font-weight: 500;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -4404,28 +4610,6 @@
         </svg>
     </button>
 
-    <div class="modal-overlay" id="renameModal">
-        <div class="modal-box">
-            <div class="modal-title">Rename Chat</div>
-            <input type="text" class="modal-input" id="renameInput" placeholder="Enter new name...">
-            <div class="modal-actions">
-                <button class="modal-btn secondary" onclick="closeModals()">Cancel</button>
-                <button class="modal-btn primary" onclick="saveRename()">Save</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="deleteModal">
-        <div class="modal-box">
-            <div class="modal-title">Delete Chat?</div>
-            <p style="margin-bottom:20px; color:#444F5C; font-size:0.9rem;">Are you sure you want to delete this
-                conversation? This action cannot be undone.</p>
-            <div class="modal-actions">
-                <button class="modal-btn secondary" onclick="closeModals()">Cancel</button>
-                <button class="modal-btn danger" onclick="confirmDelete()">Delete</button>
-            </div>
-        </div>
-    </div>
 
     <div id="globalContextMenu">
         <button class="menu-item" id="btnPinItem" onclick="togglePin()">
@@ -5193,7 +5377,6 @@
             <div class="app-container">
 
                 <aside class="chat-sidebar state-docked" id="chatPanel">
-                    <div class="mobile-sheet-handle" id="mobileSheetHandle"></div>
 
                     <div class="minimized-view-wrapper">
                         <div class="min-left-group">
@@ -5231,6 +5414,7 @@
                     <div class="main-view-wrapper">
 
                         <div class="top-bar" id="chatTopBar">
+                            <div class="mobile-sheet-handle" id="mobileSheetHandle"></div>
                             <div class="brand-text">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -5594,223 +5778,365 @@
                             </div>
 
                             <div class="chat-scroll-area">
-                                <div class="empty-state-wrapper" id="emptyState">
-                                    <div class="empty-state-content content-aligner">
-                                        <div class="empty-icon">
-                                            <img src="ai-logo.gif" alt="AI Assistant Logo">
+                                <div class="initial-view-container" id="initialView">
+                                    <div class="chat-content-spacer"></div>
+                                    <div class="empty-state-wrapper" id="emptyState">
+                                        <div class="empty-state-content content-aligner">
+                                            <div class="empty-icon">
+                                                <img src="https://tekiondesignteam.github.io/design-experimentations/ai-logo.gif"
+                                                    alt="AI Assistant Logo">
+                                            </div>
+                                            <h2 class="greeting-title">Hi John,</h2>
+                                            <p class="greeting-subtitle">How can I help you today?</p>
                                         </div>
-                                        <h2 class="greeting-title">Hi John,</h2>
-                                        <p class="greeting-subtitle">How can I help you today?</p>
+                                    </div>
+
+                                    <!-- Suggestions List -->
+                                    <div class="suggestions-list content-aligner" id="suggestionsList"
+                                        style="flex-shrink:0;">
+                                        <div class="suggestion-item" onclick="startChat('Summarize recent hot leads')">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path
+                                                    d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z">
+                                                </path>
+                                            </svg>
+                                            <span>Summarize recent hot leads</span>
+                                        </div>
+                                        <div class="suggestion-item" onclick="startChat('Draft quote for Model X')">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path
+                                                    d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z">
+                                                </path>
+                                            </svg>
+                                            <span>Draft quote for Model X</span>
+                                        </div>
+                                        <div class="suggestion-item"
+                                            onclick="startChat('List high-priority test drives')">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path
+                                                    d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z">
+                                                </path>
+                                            </svg>
+                                            <span>List high-priority test drives for today</span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="active-chat-wrapper content-aligner" id="activeChat"></div>
 
                                 <!-- Main View Modules -->
                                 <div class="main-view-container" id="tasksView">
-                                    <div class="view-header">
-                                        <h1 class="view-title">Agent Tasks</h1>
-                                        <p class="view-subtitle">Review and manage your automated workflow tasks.</p>
-                                    </div>
-                                    <div class="tasks-container">
-                                        <div class="task-row">
-                                            <div class="task-status status-progress"></div>
-                                            <div class="task-info">
-                                                <div style="font-weight: 600;">Monthly Sales Data Reconciliation</div>
-                                                <div style="font-size: var(--font-sm); color: var(--color-text-muted);">
-                                                    In Progress • Due Today</div>
-                                            </div>
-                                        </div>
-                                        <div class="task-row">
-                                            <div class="task-status status-todo"></div>
-                                            <div class="task-info">
-                                                <div style="font-weight: 600;">Inventory Level Analysis (Tesla Model Y)
-                                                </div>
-                                                <div style="font-size: var(--font-sm); color: var(--color-text-muted);">
-                                                    To Do • Next Up</div>
-                                            </div>
-                                        </div>
-                                        <div class="task-row">
-                                            <div class="task-status status-done"></div>
-                                            <div class="task-info">
-                                                <div style="font-weight: 600; text-decoration: line-through;">Q4 Service
-                                                    Appointment Summary</div>
-                                                <div style="font-size: var(--font-sm); color: var(--color-text-muted);">
-                                                    Completed • Yesterday</div>
-                                            </div>
-                                        </div>
+                                    Garry <div class="view-empty-state">
+                                        <svg class="view-empty-icon" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path
+                                                d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2">
+                                            </path>
+                                            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                                        </svg>
+                                        <div class="view-empty-text">No active tasks at the moment.</div>
                                     </div>
                                 </div>
 
                                 <div class="main-view-container" id="insightsView">
-                                    <div class="view-header">
-                                        <h1 class="view-title">Insights</h1>
-                                        <p class="view-subtitle">AI-powered analytics and business trends.</p>
-                                    </div>
-                                    <div class="insights-grid">
-                                        <div class="insight-card">
-                                            <div style="font-size: 2rem; margin-bottom: 12px;">📈</div>
-                                            <div style="font-weight: 700; margin-bottom: 4px;">Conversion Rate Up 12%
-                                            </div>
-                                            <div style="font-size: var(--font-sm); color: var(--color-text-muted);">Your
-                                                personalized follow-ups are significantly outperforming standard
-                                                templates.</div>
-                                        </div>
-                                        <div class="insight-card">
-                                            <div style="font-size: 2rem; margin-bottom: 12px;">⚡</div>
-                                            <div style="font-weight: 700; margin-bottom: 4px;">Model 3 Interest Spike
-                                            </div>
-                                            <div style="font-size: var(--font-sm); color: var(--color-text-muted);">
-                                                Recent inquiries about Model 3 have increased by 40% in the last 48
-                                                hours.</div>
-                                        </div>
-                                        <div class="insight-card">
-                                            <div style="font-size: 2rem; margin-bottom: 12px;">⏰</div>
-                                            <div style="font-weight: 700; margin-bottom: 4px;">Top Active Times</div>
-                                            <div style="font-size: var(--font-sm); color: var(--color-text-muted);">
-                                                Clients are most responsive between 10am and 12pm on Tuesdays.</div>
-                                        </div>
+                                    Garry <div class="view-empty-state">
+                                        <svg class="view-empty-icon" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path
+                                                d="M12 3l1.65 4.35L18 9l-4.35 1.65L12 15l-1.65-4.35L6 9l4.35-1.65L12 3z">
+                                            </path>
+                                            <path d="M19 14l1.1 2.9L23 18l-2.9 1.1L19 22l-1.1-2.9L15 18l2.9-1.1L19 14z">
+                                            </path>
+                                        </svg>
+                                        <div class="view-empty-text">No insights to display yet. Start a
+                                            conversation to
+                                            see AI-powered trends.</div>
                                     </div>
                                 </div>
 
                                 <div class="main-view-container" id="templatesView">
-                                    <div class="view-header">
-                                        <h1 class="view-title">Prompt Templates</h1>
-                                        <p class="view-subtitle">Quick-start actions for common CRM and sales tasks.</p>
-                                    </div>
-                                    <div class="templates-grid">
-                                        <div class="template-card" onclick="startChat('Summarize recent hot leads')">
-                                            <div style="font-weight: 600; margin-bottom: 4px;">Hot Lead Summary</div>
-                                            <div style="font-size: var(--font-sm); color: var(--color-text-muted);">Get
-                                                a quick overview of all leads with high intent scores.</div>
-                                        </div>
-                                        <div class="template-card" onclick="startChat('Draft quote for Model X')">
-                                            <div style="font-weight: 600; margin-bottom: 4px;">Draft Quote</div>
-                                            <div style="font-size: var(--font-sm); color: var(--color-text-muted);">
-                                                Automatically generate a pricing quote based on customer prefs.</div>
-                                        </div>
-                                        <div class="template-card" onclick="startChat('Service FAQ')">
-                                            <div style="font-weight: 600; margin-bottom: 4px;">Service FAQ Assistant
-                                            </div>
-                                            <div style="font-size: var(--font-sm); color: var(--color-text-muted);">
-                                                Answer technical service questions using the knowledge base.</div>
-                                        </div>
+                                    Garry <div class="view-empty-state">
+                                        <svg class="view-empty-icon" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                            <line x1="9" y1="17" x2="15" y2="7"></line>
+                                        </svg>
+                                        <div class="view-empty-text">No templates available. You can save
+                                            your frequent
+                                            prompts here.</div>
                                     </div>
                                 </div>
 
                                 <div class="main-view-container" id="settingsView">
-                                    <div class="view-header">
-                                        <h1 class="view-title">Settings</h1>
-                                        <p class="view-subtitle">Manage your account preferences and system
-                                            configuration.</p>
-                                    </div>
+                                    Garry <div class="settings-list">
 
-                                    <div class="settings-list">
-                                        <div class="settings-group">
-                                            <div class="settings-group-title">
-                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                                                    stroke="currentColor" stroke-width="2">
-                                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                                    <circle cx="12" cy="7" r="4"></circle>
-                                                </svg>
-                                                Account
-                                            </div>
-                                            <div class="setting-row">
-                                                <div class="setting-info">
-                                                    <div class="setting-label">Profile Visibility</div>
-                                                    <div class="setting-desc">Control who can see your activity.</div>
+                                        <div class="settings-list">
+                                            <div class="settings-group">
+                                                <div class="settings-group-title">
+                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="2">
+                                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2">
+                                                        </path>
+                                                        <circle cx="12" cy="7" r="4"></circle>
+                                                    </svg>
+                                                    Account
                                                 </div>
-                                                <label class="toggle-switch">
-                                                    <input type="checkbox" checked>
-                                                    <span class="toggle-slider"></span>
-                                                </label>
-                                            </div>
-                                            <div class="setting-row">
-                                                <div class="setting-info">
-                                                    <div class="setting-label">Email Notifications</div>
-                                                    <div class="setting-desc">Receive updates about your leads.</div>
+                                                <div class="setting-row">
+                                                    <div class="setting-info">
+                                                        <div class="setting-label">Profile Visibility</div>
+                                                        <div class="setting-desc">Control who can see your
+                                                            activity.</div>
+                                                    </div>
+                                                    <label class="toggle-switch">
+                                                        <input type="checkbox" checked>
+                                                        <span class="toggle-slider"></span>
+                                                    </label>
                                                 </div>
-                                                <label class="toggle-switch">
-                                                    <input type="checkbox" checked>
-                                                    <span class="toggle-slider"></span>
-                                                </label>
+                                                <div class="setting-row">
+                                                    <div class="setting-info">
+                                                        <div class="setting-label">Email Notifications</div>
+                                                        <div class="setting-desc">Receive updates about your
+                                                            leads.</div>
+                                                    </div>
+                                                    <label class="toggle-switch">
+                                                        <input type="checkbox" checked>
+                                                        <span class="toggle-slider"></span>
+                                                    </label>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div class="settings-group">
-                                            <div class="settings-group-title">
-                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                                                    stroke="currentColor" stroke-width="2">
-                                                    <circle cx="12" cy="12" r="5"></circle>
-                                                    <line x1="12" y1="1" x2="12" y2="3"></line>
-                                                    <line x1="12" y1="21" x2="12" y2="23"></line>
-                                                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                                                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                                                    <line x1="1" y1="12" x2="3" y2="12"></line>
-                                                    <line x1="21" y1="12" x2="23" y2="12"></line>
-                                                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                                                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                                                </svg>
-                                                Appearance
-                                            </div>
-                                            <div class="setting-row">
-                                                <div class="setting-info">
-                                                    <div class="setting-label">Dark Mode</div>
-                                                    <div class="setting-desc">Use the darker color palette.</div>
+                                            <div class="settings-group">
+                                                <div class="settings-group-title">
+                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="2">
+                                                        <circle cx="12" cy="12" r="5"></circle>
+                                                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                                                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                                                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64">
+                                                        </line>
+                                                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78">
+                                                        </line>
+                                                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                                                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                                                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36">
+                                                        </line>
+                                                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22">
+                                                        </line>
+                                                    </svg>
+                                                    Appearance
                                                 </div>
-                                                <label class="toggle-switch">
-                                                    <input type="checkbox">
-                                                    <span class="toggle-slider"></span>
-                                                </label>
-                                            </div>
-                                            <div class="setting-row">
-                                                <div class="setting-info">
-                                                    <div class="setting-label">Compact Mode</div>
-                                                    <div class="setting-desc">Reduce padding in the chat history.</div>
+                                                <div class="setting-row">
+                                                    <div class="setting-info">
+                                                        <div class="setting-label">Dark Mode</div>
+                                                        <div class="setting-desc">Use the darker color
+                                                            palette.</div>
+                                                    </div>
+                                                    <label class="toggle-switch">
+                                                        <input type="checkbox">
+                                                        <span class="toggle-slider"></span>
+                                                    </label>
                                                 </div>
-                                                <label class="toggle-switch">
-                                                    <input type="checkbox">
-                                                    <span class="toggle-slider"></span>
-                                                </label>
+                                                <div class="setting-row">
+                                                    <div class="setting-info">
+                                                        <div class="setting-label">Compact Mode</div>
+                                                        <div class="setting-desc">Reduce padding in the chat
+                                                            history.</div>
+                                                    </div>
+                                                    <label class="toggle-switch">
+                                                        <input type="checkbox">
+                                                        <span class="toggle-slider"></span>
+                                                    </label>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div class="settings-group">
-                                            <div class="settings-group-title">
-                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                                                    stroke="currentColor" stroke-width="2">
-                                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                                                </svg>
-                                                Security
-                                            </div>
-                                            <div class="setting-row">
-                                                <div class="setting-info">
-                                                    <div class="setting-label">Two-Factor Auth</div>
-                                                    <div class="setting-desc">Add an extra layer of security.</div>
+                                            <div class="settings-group">
+                                                <div class="settings-group-title">
+                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="2">
+                                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z">
+                                                        </path>
+                                                    </svg>
+                                                    Security
                                                 </div>
-                                                <button class="action-btn"
-                                                    style="width: auto; padding: 0 var(--space-md); font-size: var(--font-sm); font-weight: 500; height: 32px; background: var(--color-bg-surface); border: 1px solid var(--color-border);">Enable</button>
+                                                <div class="setting-row">
+                                                    <div class="setting-info">
+                                                        <div class="setting-label">Two-Factor Auth</div>
+                                                        <div class="setting-desc">Add an extra layer of
+                                                            security.</div>
+                                                    </div>
+                                                    <button class="action-btn"
+                                                        style="width: auto; padding: 0 var(--space-md); font-size: var(--font-sm); font-weight: 500; height: 32px; background: var(--color-bg-surface); border: 1px solid var(--color-border);">Enable</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="footer-container">
-                                <div class="suggestions-list content-aligner" id="suggestionsList">
-                                    <div class="suggestion-item" onclick="startChat('Summarize recent hot leads')">
-                                        Summarize recent hot leads</div>
-                                    <div class="suggestion-item" onclick="startChat('Draft quote for Model X')">
-                                        Draft
-                                        quote for Model X</div>
-                                    <div class="suggestion-item" onclick="startChat('List high-priority test drives')">
-                                        List high-priority test drives for today</div>
-                                </div>
+                                <div class="footer-container">
+                                    <div class="input-wrapper content-aligner">
+                                        <div class="input-border-wrapper">
+                                            <div class="enhanced-input-box" id="enhancedInputBox">
+                                                <!-- Listening Overlay -->
+                                                <div class="listening-overlay" id="listeningOverlay">
+                                                    <button class="listen-close-btn" id="btnListenClose">
+                                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                                            stroke="currentColor" stroke-width="2"
+                                                            stroke-linecap="round" stroke-linejoin="round">
+                                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                        </svg>
+                                                    </button>
+                                                    <div class="listen-visualizer">
+                                                        <!-- Dynamic bars will be handled via CSS/JS or static repetitive HTML -->
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                    </div>
+                                                    <div class="listen-right-group">
+                                                        <div class="listen-timer" id="listenTimer">00:00
+                                                        </div>
+                                                        <button class="listen-stop-btn" id="btnListenStop">
+                                                            <svg width="12" height="12" viewBox="0 0 24 24"
+                                                                fill="currentColor">
+                                                                <rect x="2" y="2" width="20" height="20" rx="4"></rect>
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Toolbar (Bottom visually) -->
+                                                <div class="input-toolbar">
+                                                    <div class="toolbar-left">
+                                                        <button class="tool-icon-btn" id="btnSlashMenu"
+                                                            title="Open Templates">
+                                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2">
+                                                                <rect x="3" y="3" width="18" height="18" rx="4" ry="4">
+                                                                </rect>
+                                                                <line x1="10" y1="16" x2="14" y2="8"></line>
+                                                            </svg>
+                                                        </button>
+                                                        <button class="tool-icon-btn" title="Attach" id="btnAttach">
+                                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-linecap="round" stroke-linejoin="round">
+                                                                <path
+                                                                    d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48">
+                                                                </path>
+                                                            </svg>
+                                                        </button>
+                                                        <input type="file" id="fileInput" style="display: none;"
+                                                            multiple />
+                                                    </div>
+                                                    <div class="toolbar-right">
+                                                        <div class="toolbar-divider"></div>
+                                                        <button class="tool-icon-btn" id="btnMic"><svg
+                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-linecap="round" stroke-linejoin="round">
+                                                                <path
+                                                                    d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z">
+                                                                </path>
+                                                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                                                <line x1="12" y1="19" x2="12" y2="23">
+                                                                </line>
+                                                                <line x1="8" y1="23" x2="16" y2="23"></line>
+                                                            </svg></button>
+                                                        <button class="send-btn-square" id="btnSend" disabled><svg
+                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-linecap="round" stroke-linejoin="round">
+                                                                <line x1="12" y1="19" x2="12" y2="5"></line>
+                                                                <polyline points="5 12 12 5 19 12">
+                                                                </polyline>
+                                                            </svg></button>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Input Container (Middle Line) -->
+                                                <div class="input-container">
+
+                                                    <!-- Row 1: Context & Attachments Area -->
+                                                    <div class="input-context-row" id="contextRow">
+                                                        <!-- Context Pill -->
+                                                        <div class="unified-pill empty unified-pill-compact"
+                                                            id="unifiedContextPill" onclick="showContextMenu(event)">
+                                                            <div class="pill-part main">
+                                                                <span>Add Context</span>
+                                                            </div>
+                                                        </div>
+                                                        <div id="attachmentArea" class="attachment-area">
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Row 2: Input & Placeholder -->
+                                                    <div style="position: relative; width: 100%;">
+                                                        <div id="mainInput" class="main-input" contenteditable="true">
+                                                        </div>
+                                                        <div class="placeholder-wrapper" id="placeholderWrapper">
+                                                            <div class="placeholder-item visible" id="phItem1">Ask •
+                                                                Find •
+                                                                Summarize</div>
+                                                            <div class="placeholder-item hidden-down" id="phItem2">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
 
-
-
-                                <div class="input-wrapper content-aligner">
-                                    <div class="input-border-wrapper">
-                                        <div class="enhanced-input-box" id="enhancedInputBox">
+                                                <div id="datetimeMenu" class="popup-menu">
+                                                    <div class="popup-header">
+                                                        <span>Available Slots</span>
+                                                        <button onclick="closeAllMenus()">
+                                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                                stroke="#969AA3" stroke-width="2">
+                                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                    <div class="popup-list" id="datetimeList"></div>
+                                                </div>
+                                            </div>
 
                                             <div id="promptSheet" class="prompt-sheet-inline">
                                                 <div class="popup-header">
@@ -5840,17 +6166,6 @@
 
                                                 <div class="popup-list" id="promptList"></div>
 
-                                                <div class="popup-search-container">
-                                                    <div class="popup-search-input-wrapper" id="promptSearchWrapper">
-                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                                            stroke="currentColor" stroke-width="2">
-                                                            <circle cx="11" cy="11" r="8"></circle>
-                                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                                        </svg>
-                                                        <input type="text" placeholder="Search prompts..."
-                                                            id="promptSearchInput">
-                                                    </div>
-                                                </div>
                                             </div>
 
                                             <div id="contextMenu" class="popup-menu">
@@ -5861,7 +6176,8 @@
                                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
                                                                 stroke="currentColor" stroke-width="2">
                                                                 <line x1="19" y1="12" x2="5" y2="12"></line>
-                                                                <polyline points="12 19 5 12 12 5"></polyline>
+                                                                <polyline points="12 19 5 12 12 5">
+                                                                </polyline>
                                                             </svg>
                                                         </button>
                                                         <span id="contextTitle">Add Context</span>
@@ -5877,18 +6193,6 @@
 
                                                 <div class="popup-list" id="contextList"></div>
 
-                                                <div class="popup-search-container" id="contextSearchContainer"
-                                                    style="display:none;">
-                                                    <div class="popup-search-input-wrapper" id="contextSearchWrapper">
-                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                                            stroke="currentColor" stroke-width="2">
-                                                            <circle cx="11" cy="11" r="8"></circle>
-                                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                                        </svg>
-                                                        <input type="text" id="contextSearchInput"
-                                                            placeholder="Search... or Paste a link">
-                                                    </div>
-                                                </div>
                                             </div>
 
                                             <div id="customerMenu" class="popup-menu">
@@ -5903,17 +6207,6 @@
                                                     </button>
                                                 </div>
                                                 <div class="popup-list" id="customerList"></div>
-                                                <div class="popup-search-container">
-                                                    <div class="popup-search-input-wrapper" id="customerSearchWrapper">
-                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                                            stroke="currentColor" stroke-width="2">
-                                                            <circle cx="11" cy="11" r="8"></circle>
-                                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                                        </svg>
-                                                        <input type="text" id="customerSearchInput"
-                                                            placeholder="Search Customers...">
-                                                    </div>
-                                                </div>
                                             </div>
 
                                             <div id="vehicleMenu" class="popup-menu">
@@ -5928,17 +6221,6 @@
                                                     </button>
                                                 </div>
                                                 <div class="popup-list" id="vehicleList"></div>
-                                                <div class="popup-search-container">
-                                                    <div class="popup-search-input-wrapper" id="vehicleSearchWrapper">
-                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                                            stroke="currentColor" stroke-width="2">
-                                                            <circle cx="11" cy="11" r="8"></circle>
-                                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                                        </svg>
-                                                        <input type="text" id="vehicleSearchInput"
-                                                            placeholder="Search Vehicles">
-                                                    </div>
-                                                </div>
                                             </div>
 
                                             <div id="vinMenu" class="popup-menu">
@@ -5953,183 +6235,92 @@
                                                     </button>
                                                 </div>
                                                 <div class="popup-list" id="vinList"></div>
-                                                <div class="popup-search-container">
-                                                    <div class="popup-search-input-wrapper" id="vinSearchWrapper">
-                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                                            stroke="currentColor" stroke-width="2">
-                                                            <circle cx="11" cy="11" r="8"></circle>
-                                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                                        </svg>
-                                                        <input type="text" id="vinSearchInput"
-                                                            placeholder="Search VIN...">
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div id="datetimeMenu" class="popup-menu">
-                                                <div class="popup-header">
-                                                    <span>Available Slots</span>
-                                                    <button onclick="closeAllMenus()">
-                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                                            stroke="#969AA3" stroke-width="2">
-                                                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                                                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                                                        </svg>
-                                                    </button>
-                                                </div>
-                                                <div class="popup-list" id="datetimeList"></div>
-                                                <div class="popup-search-container">
-                                                    <div class="popup-search-input-wrapper" id="datetimeSearchWrapper">
-                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                                            stroke="currentColor" stroke-width="2">
-                                                            <circle cx="11" cy="11" r="8"></circle>
-                                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                                        </svg>
-                                                        <input type="text" id="datetimeSearchInput"
-                                                            placeholder="Search Date & Time...">
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- LISTENING OVERLAY -->
-                                            <div class="listening-overlay" id="listeningOverlay">
-                                                <button class="listen-close-btn" id="btnListenClose">
-                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                        stroke-linejoin="round">
-                                                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                                                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                                                    </svg>
-                                                </button>
-                                                <div class="listen-visualizer">
-                                                    <!-- Dynamic bars will be handled via CSS/JS or static repetitive HTML -->
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                </div>
-                                                <div class="listen-right-group">
-                                                    <div class="listen-timer" id="listenTimer">00:00</div>
-                                                    <button class="listen-stop-btn" id="btnListenStop">
-                                                        <svg width="12" height="12" viewBox="0 0 24 24"
-                                                            fill="currentColor">
-                                                            <rect x="2" y="2" width="20" height="20" rx="4"></rect>
-                                                        </svg>
-                                                    </button>
-                                                </div>
-                                            </div>
-
-
-
-                                            <!-- Input Container (Middle Line) -->
-                                            <div class="input-container">
-
-                                                <!-- Row 1: Attachments Area -->
-                                                <div class="input-context-row" id="contextRow" style="display: none;">
-                                                    <div id="attachmentArea" class="attachment-area"></div>
-                                                </div>
-
-                                                <!-- Row 2: Input & Placeholder -->
-                                                <div style="position: relative; width: 100%;">
-                                                    <div id="mainInput" class="main-input" contenteditable="true">
-                                                    </div>
-                                                    <div class="placeholder-wrapper" id="placeholderWrapper">
-                                                        <div class="placeholder-item visible" id="phItem1">Ask •
-                                                            Find •
-                                                            Summarize</div>
-                                                        <div class="placeholder-item hidden-down" id="phItem2">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Toolbar (Bottom Line) -->
-                                            <div class="input-toolbar">
-                                                <div class="toolbar-left">
-                                                    <button class="tool-icon-btn" id="btnSlashMenu"
-                                                        title="Open Templates">
-                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                            stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2">
-                                                            <rect x="3" y="3" width="18" height="18" rx="4" ry="4">
-                                                            </rect>
-                                                            <line x1="10" y1="16" x2="14" y2="8"></line>
-                                                        </svg>
-                                                    </button>
-                                                    <button class="tool-icon-btn" title="Attach" id="btnAttach">
-                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                            stroke-linecap="round" stroke-linejoin="round">
-                                                            <path
-                                                                d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48">
-                                                            </path>
-                                                        </svg>
-                                                    </button>
-                                                    <input type="file" id="fileInput" style="display: none;" />
-                                                </div>
-                                                <div class="toolbar-right">
-                                                    <!-- Context Pill Removed from here -->
-                                                    <button class="tool-icon-btn" id="btnMic"><svg viewBox="0 0 24 24"
-                                                            fill="none" stroke="currentColor" stroke-linecap="round"
-                                                            stroke-linejoin="round">
-                                                            <path
-                                                                d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z">
-                                                            </path>
-                                                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-                                                            <line x1="12" y1="19" x2="12" y2="23"></line>
-                                                            <line x1="8" y1="23" x2="16" y2="23"></line>
-                                                        </svg></button>
-                                                    <button class="send-btn-square" id="btnSend" disabled><svg
-                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                            stroke-linecap="round" stroke-linejoin="round">
-                                                            <line x1="12" y1="19" x2="12" y2="5"></line>
-                                                            <polyline points="5 12 12 5 19 12"></polyline>
-                                                        </svg></button>
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="disclaimer-text content-aligner">AI Assistant can make mistakes, so
-                                        please verify responses.</div>
+                                </div>
+                                <div class="disclaimer-text content-aligner" style="margin: 8px 0;">AI
+                                    Assistant can
+                                    make
+                                    mistakes, so please verify responses.</div>
+                            </div>
+                        </div>
+
+                        <!-- Rename/Delete Modals (localized to sidebar) -->
+                        <div class="modal-overlay" id="renameModal">
+                            <div class="modal-box">
+                                <div class="modal-title">Rename Chat</div>
+                                <input type="text" class="modal-input" id="renameInput" placeholder="Enter new name...">
+                                <div class="modal-actions">
+                                    <button class="modal-btn secondary" onclick="closeModals()">Cancel</button>
+                                    <button class="modal-btn primary" onclick="saveRename()">Save</button>
                                 </div>
                             </div>
                         </div>
-                    </div>
+
+                        <div class="modal-overlay" id="deleteModal">
+                            <div class="modal-box">
+                                <div class="modal-title">Delete Chat?</div>
+                                <p style="margin-bottom:20px; color:#444F5C; font-size:0.9rem;">Are you sure you want to
+                                    delete
+                                    this
+                                    conversation? This action cannot be undone.</p>
+                                <div class="modal-actions">
+                                    <button class="modal-btn secondary" onclick="closeModals()">Cancel</button>
+                                    <button class="modal-btn danger" onclick="confirmDelete()">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Filter Details Modal -->
+                        <div class="detail-modal-overlay" id="filterModal">
+                            <div class="detail-modal-box">
+                                <div class="detail-modal-header">
+                                    <div class="detail-modal-title">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M22 3H2l8 9v6l4 2v-8l8-9z"></path>
+                                        </svg>
+                                        Applied Filters
+                                    </div>
+                                    <button class="detail-modal-close" onclick="closeFilterModal()">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="detail-modal-content" id="filterModalContent">
+                                    <!-- Content will be populated dynamically -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sources Details Modal -->
+                        <div class="detail-modal-overlay" id="sourcesModal">
+                            <div class="detail-modal-box">
+                                <div class="detail-modal-header">
+                                    <div class="detail-modal-title">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z">
+                                            </path>
+                                        </svg>
+                                        Sources
+                                    </div>
+                                    <button class="detail-modal-close" onclick="closeSourcesModal()">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="detail-modal-content" id="sourcesModalContent">
+                                    <!-- Content will be populated dynamically -->
+                                </div>
+                            </div>
+                        </div>
                 </aside>
 
                 <main class="main-content pushed-by-dock" id="mainContent">
@@ -6193,8 +6384,6 @@
         const contextList = document.getElementById('contextList');
         const btnContextBack = document.getElementById('btnContextBack');
         const contextTitle = document.getElementById('contextTitle');
-        const contextSearchContainer = document.getElementById('contextSearchContainer');
-        const contextSearchInput = document.getElementById('contextSearchInput');
 
 
         const historySheet = document.getElementById('historySheet');
@@ -6226,7 +6415,10 @@
         const btnListenClose = document.getElementById('btnListenClose');
         const btnListenStop = document.getElementById('btnListenStop');
         const listenTimer = document.getElementById('listenTimer');
+        const unifiedContextPill = document.getElementById('unifiedContextPill');
         const enhancedInputBox = document.getElementById('enhancedInputBox');
+        const phItem1 = document.getElementById('phItem1');
+        const phItem2 = document.getElementById('phItem2');
 
         // Menu Elements
         const globalContextMenu = document.getElementById('globalContextMenu');
@@ -6248,24 +6440,46 @@
         const renameInput = document.getElementById('renameInput');
         const deleteModal = document.getElementById('deleteModal');
 
-        // Menu Elements
         const customerMenu = document.getElementById('customerMenu');
         const customerList = document.getElementById('customerList');
-        const customerSearchInput = document.getElementById('customerSearchInput');
 
         const vehicleMenu = document.getElementById('vehicleMenu');
         const vehicleList = document.getElementById('vehicleList');
-        const vehicleSearchInput = document.getElementById('vehicleSearchInput');
 
         const vinMenu = document.getElementById('vinMenu');
         const vinList = document.getElementById('vinList');
-        const vinSearchInput = document.getElementById('vinSearchInput');
-
         const datetimeMenu = document.getElementById('datetimeMenu');
         const datetimeList = document.getElementById('datetimeList');
-        const datetimeSearchInput = document.getElementById('datetimeSearchInput');
 
-        const promptSearchInput = document.getElementById('promptSearchInput');
+        // History & Overlay Elements
+        const historyOverlay = document.getElementById('historyOverlay');
+        const historySearchBtn = document.getElementById('historySearchBtn');
+        const historySearchWrapper = document.getElementById('historySearchWrapper');
+        const historySearchInput = document.getElementById('historySearchInput');
+        const historyNewChatBtn = document.getElementById('historyNewChatBtn');
+
+        // History Toggle Function (Moved up to avoid TDZ)
+        function toggleHistory(forceOpen = null) {
+            if (!historySheet || !historyOverlay) return;
+            let isOpen;
+            if (forceOpen === true) {
+                historySheet.classList.add('open');
+                isOpen = true;
+            } else if (forceOpen === false) {
+                historySheet.classList.remove('open');
+                isOpen = false;
+            } else {
+                isOpen = historySheet.classList.toggle('open');
+            }
+
+            if (isOpen) {
+                historyOverlay.classList.add('visible');
+            } else {
+                historyOverlay.classList.remove('visible');
+            }
+        }
+
+
 
         let historyAdded = false;
         let currentItem = null;
@@ -6273,8 +6487,74 @@
         let isDragging = false;
         let startX, startLeft;
 
-        let activePromptVar = null; // Track the span triggering the menu
+        let activePromptVar = null;
         let currentActiveMenu = null;
+
+        // Rotating Placeholder Logic
+        const placeholders = [
+            "Ask • Find • Summarize",
+            "Ask Anything...",
+            "Find this customer...",
+            "Summarize this page..."
+        ];
+        let placeholderIndex = 0;
+        let phCurrent, phNext;
+        let placeholderInterval;
+        let isInputFocused = false;
+
+        function rotatePlaceholder() {
+            if (!mainInput || !phItem1) return;
+            if (!phCurrent) {
+                phCurrent = phItem1;
+                phNext = phItem2;
+            }
+
+            const initialView = document.getElementById('initialView');
+            const isInitialState = initialView && initialView.style.display !== 'none';
+
+            let hasPageContext = false;
+            if (typeof selectedContexts !== 'undefined' && typeof dmsContextItems !== 'undefined') {
+                const allContexts = [...dmsContextItems, leadsItem];
+                hasPageContext = Array.from(selectedContexts).some(id => {
+                    const item = allContexts.find(i => i.id === id);
+                    return item && item.type === 'page';
+                });
+            }
+
+            if (!isInitialState) {
+                const baseText = hasPageContext ? "Ask a question about this page..." : "Follow up / ask anything";
+                if (phCurrent.innerText !== baseText) phCurrent.innerText = baseText;
+                phCurrent.className = 'placeholder-item visible no-placeholder-transition';
+                phNext.className = 'placeholder-item hidden-down no-placeholder-transition';
+                return;
+            }
+
+            const currentItemBranding = hasPageContext ? "Ask a question about this page..." : "Ask Anything...";
+            if (hasPageContext && (phCurrent.innerText === "Ask Anything..." || phCurrent.innerText === "Ask • Find • Summarize")) {
+                phCurrent.innerText = "Ask a question about this page...";
+            }
+
+            if (mainInput.textContent.trim() === "" && !isInputFocused) {
+                placeholderIndex = (placeholderIndex + 1) % placeholders.length;
+
+                phNext.classList.add('no-placeholder-transition');
+                let text = placeholders[placeholderIndex];
+                if (hasPageContext && (text === "Ask Anything..." || text === "Ask • Find • Summarize")) {
+                    text = "Ask a question about this page...";
+                }
+                phNext.innerText = text;
+                phNext.className = 'placeholder-item hidden-down no-placeholder-transition';
+
+                phNext.offsetHeight;
+                phNext.classList.remove('no-placeholder-transition');
+                phCurrent.className = 'placeholder-item hidden-up';
+                phNext.className = 'placeholder-item visible';
+
+                let temp = phCurrent;
+                phCurrent = phNext;
+                phNext = temp;
+            }
+        }
 
         // Typing Controller
         let typingController = null;
@@ -6312,45 +6592,22 @@
             { name: "/trade-in-value", desc: "Estimate trade-in value for [VIN] assuming good condition.", text: "Estimate trade-in value for [VIN] assuming good condition" }
         ];
 
+        // --- UPDATED DMS CONTEXT DATA ---
+        const dmsContextItems = [
+            { id: 'deal1', label: "Deal #4492: 2024 Ford F-150", type: 'deal' },
+            { id: 'ro1', label: "RO #10234: Brake Squeal Diag", type: 'service' },
+            { id: 'inv1', label: "Stock #F22-001: 2022 Mustang GT", type: 'car' },
+            { id: 'rpt1', label: "Report: EOM Sales Oct", type: 'report' },
+            { id: 'lead1', label: "Lead #1023: John Doe (Model Y)", type: 'lead' }
+        ];
+
+        const leadsItem = { id: 'curr1', label: "Leads", type: 'page', isCurrent: true };
+        let selectedContexts = new Set();
+
 
         // --- GLOBAL SEND DISABLE STATE ---
         let isListening = false;
 
-        // --- CLEAR INPUT HELPER ---
-        function setupClearableInput(wrapperId) {
-            const wrapper = document.getElementById(wrapperId);
-            const input = wrapper.querySelector('input');
-
-            // Create button
-            const btn = document.createElement('button');
-            btn.className = 'search-clear-btn';
-            btn.innerHTML = '&times;'; // X char
-            wrapper.appendChild(btn);
-
-            // Logic
-            const toggleBtn = () => {
-                if (input.value.length > 0) btn.classList.add('visible');
-                else btn.classList.remove('visible');
-            };
-
-            input.addEventListener('input', toggleBtn);
-
-            btn.onclick = (e) => {
-                e.stopPropagation();
-                input.value = '';
-                toggleBtn();
-                input.focus();
-                // Trigger input event to refresh list
-                input.dispatchEvent(new Event('input'));
-            };
-        }
-
-        // Initialize Clear Buttons
-        setupClearableInput('promptSearchWrapper');
-        setupClearableInput('customerSearchWrapper');
-        setupClearableInput('vehicleSearchWrapper');
-        setupClearableInput('vinSearchWrapper');
-        setupClearableInput('datetimeSearchWrapper');
 
 
         // --- FILTER LOGIC ---
@@ -6493,24 +6750,27 @@
             });
         }
 
-        function showMenu(menu, input, renderFn, targetElement) {
+        function showMenu(menu, renderFn, targetElement) {
             closeAllMenus();
 
-            if (input) {
-                input.value = '';
-                // Ensure clear button is hidden on reset
-                const clearBtn = input.parentNode.querySelector('.search-clear-btn');
-                if (clearBtn) clearBtn.classList.remove('visible');
-            }
             if (renderFn) renderFn();
 
-            // Just reveal it (positioned via CSS)
+            // Reveal it
             menu.classList.add('visible');
             enhancedInputBox.classList.add('menu-open');
 
-            if (input) setTimeout(() => input.focus(), 50);
-
             currentActiveMenu = menu;
+
+            // Ensure last message is visible if input expands
+            setTimeout(() => {
+                const scrollArea = document.querySelector('.chat-scroll-area');
+                if (scrollArea) {
+                    scrollArea.scrollTo({
+                        top: scrollArea.scrollHeight,
+                        behavior: 'smooth'
+                    });
+                }
+            }, 100);
         }
 
         function selectItem(text) {
@@ -6531,10 +6791,10 @@
                         activePromptVar = nextVar;
 
                         setTimeout(() => {
-                            if (txt === '[customer]') showMenu(customerMenu, customerSearchInput, () => renderCustomerList(), nextVar);
-                            else if (txt === '[vehicle]') showMenu(vehicleMenu, vehicleSearchInput, () => renderVehicleList(), nextVar);
-                            else if (txt === '[vin]') showMenu(vinMenu, vinSearchInput, () => renderVinList(), nextVar);
-                            else if (txt === '[date & time]') showMenu(datetimeMenu, datetimeSearchInput, () => renderDateTimeList(), nextVar);
+                            if (txt === '[customer]') showMenu(customerMenu, () => renderCustomerList(), nextVar);
+                            else if (txt === '[vehicle]') showMenu(vehicleMenu, () => renderVehicleList(), nextVar);
+                            else if (txt === '[vin]') showMenu(vinMenu, () => renderVinList(), nextVar);
+                            else if (txt === '[date & time]') showMenu(datetimeMenu, () => renderDateTimeList(), nextVar);
                         }, 600); // 600ms
                     }
                 }, 150); // 150ms
@@ -6542,23 +6802,169 @@
         }
 
         function closeAllMenus() {
-            customerMenu.classList.remove('visible');
-            vehicleMenu.classList.remove('visible');
-            vinMenu.classList.remove('visible');
-            datetimeMenu.classList.remove('visible');
-            promptSheet.classList.remove('visible');
+            if (customerMenu) customerMenu.classList.remove('visible');
+            if (vehicleMenu) vehicleMenu.classList.remove('visible');
+            if (vinMenu) vinMenu.classList.remove('visible');
+            if (datetimeMenu) datetimeMenu.classList.remove('visible');
+            if (promptSheet) promptSheet.classList.remove('visible');
             if (contextMenu) contextMenu.classList.remove('visible');
-            enhancedInputBox.classList.remove('menu-open');
+            if (enhancedInputBox) enhancedInputBox.classList.remove('menu-open');
             currentActiveMenu = null;
         }
 
-        // Search Listeners
-        customerSearchInput.addEventListener('input', (e) => renderCustomerList(e.target.value));
-        vehicleSearchInput.addEventListener('input', (e) => renderVehicleList(e.target.value));
-        vinSearchInput.addEventListener('input', (e) => renderVinList(e.target.value));
-        datetimeSearchInput.addEventListener('input', (e) => renderDateTimeList(e.target.value));
-        promptSearchInput.addEventListener('input', (e) => renderPromptList(e.target.value));
-        if (contextSearchInput) contextSearchInput.addEventListener('input', (e) => renderContextList(e.target.value));
+        // --- CONTEXT LOGIC (MULTI-SELECT) ---
+        function showContextMenu(e) {
+            if (e) e.stopPropagation();
+            if (contextMenu.classList.contains('visible')) {
+                closeAllMenus();
+            } else {
+                showMenu(contextMenu, () => renderContextList());
+            }
+        }
+
+        window.showContextMenu = showContextMenu;
+
+        function getIconForType(type) {
+            return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`;
+        }
+
+        const iconSquare = `<svg class="context-checkbox" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>`;
+        const iconChecked = `<svg class="context-checkbox" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>`;
+
+        function renderContextList(filter = "") {
+            if (!contextList) return;
+            contextList.innerHTML = '';
+            if (contextTitle) contextTitle.innerText = "Add Context";
+            if (btnContextBack) btnContextBack.style.display = 'none';
+
+            const filterText = filter.toLowerCase();
+            const allItems = [...dmsContextItems, leadsItem];
+            const filteredItems = allItems.filter(item => item.label.toLowerCase().includes(filterText));
+
+            if (filteredItems.length === 0) {
+                contextList.innerHTML = createEmptyState(
+                    'No context found',
+                    filter ? `No context items match "${filter}"` : 'No context items available'
+                );
+                return;
+            }
+
+            filteredItems.forEach(item => {
+                const isSelected = selectedContexts.has(item.id);
+                const div = document.createElement('div');
+                div.className = `popup-item context-row-item ${isSelected ? 'selected' : ''}`;
+                let rightContent = '';
+                if (item.isCurrent) {
+                    rightContent = `<span class="muted-tag">Current Page</span>`;
+                }
+                div.innerHTML = `
+                    <div class="popup-item-left-group">
+                        ${isSelected ? iconChecked : iconSquare}
+                        ${getIconForType(item.type)}
+                        <span>${item.label}</span>
+                    </div>
+                    <div class="popup-item-right">
+                        ${rightContent}
+                    </div>
+                `;
+                div.onclick = (e) => {
+                    e.stopPropagation();
+                    toggleContextItem(item);
+                };
+                contextList.appendChild(div);
+            });
+
+        }
+
+        window.goBackContext = function () { }
+
+        function toggleContextItem(item) {
+            if (selectedContexts.has(item.id)) {
+                selectedContexts.delete(item.id);
+            } else {
+                selectedContexts.add(item.id);
+            }
+            renderContextList();
+            renderContextPills();
+        }
+
+        window.clearContext = function (e) {
+            if (e) e.stopPropagation();
+            selectedContexts.clear();
+            renderContextPills();
+            if (contextMenu.classList.contains('visible')) {
+                renderContextList();
+            }
+        }
+
+        function renderContextPills() {
+            if (!unifiedContextPill) return;
+            const count = selectedContexts.size;
+
+            // Manage visibility of the entire context row
+            if (contextRow) {
+                const hasAttachments = attachmentArea && attachmentArea.children.length > 0;
+                // Always show if there is context or attachments
+                if (count > 0 || hasAttachments) {
+                    contextRow.style.display = 'flex';
+                } else {
+                    // Show it anyway because we want the "+ Context" button to be accessible at the top
+                    contextRow.style.display = 'flex';
+                }
+            }
+
+            unifiedContextPill.className = 'unified-pill unified-pill-compact';
+            unifiedContextPill.onclick = null;
+
+            if (count === 0) {
+                unifiedContextPill.classList.add('empty');
+                unifiedContextPill.innerHTML = `
+                    <div class="pill-part main">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> 
+                        <span>Add Context</span>
+                    </div>
+                `;
+                unifiedContextPill.onclick = (e) => { e.stopPropagation(); showContextMenu(); };
+            } else {
+                const allItems = [...dmsContextItems, leadsItem];
+                let contentHTML = '';
+
+                if (count === 1) {
+                    const id = [...selectedContexts][0];
+                    const item = allItems.find(i => i.id === id);
+                    const label = item ? item.label : 'Unknown';
+                    const isFullscreen = panel.classList.contains('state-fullscreen');
+                    const maxChars = isFullscreen ? 25 : 8;
+                    const truncateAt = isFullscreen ? 23 : 8;
+                    const displayLabel = label.length > maxChars ? label.substring(0, truncateAt) + '...' : label;
+                    contentHTML = `
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        <span>${displayLabel}</span>
+                    `;
+                } else {
+                    contentHTML = `
+                        <span>${count} Context selected</span>
+                    `;
+                }
+
+                unifiedContextPill.innerHTML = `
+                    <div class="pill-part content" onclick="showContextMenu(event)">
+                        ${contentHTML}
+                    </div>
+                    <div class="pill-divider"></div>
+                    <div class="pill-part close" onclick="clearContext(event)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </div>
+                `;
+            }
+
+            if (typeof rotatePlaceholder === 'function') rotatePlaceholder();
+        }
+
+        // Initialize Context Pill (moved to window.onload)
+        // selectedContexts.add(leadsItem.id);
+        // renderContextPills();
+
 
         function filterHistoryList(query) {
             const q = query.toLowerCase().trim();
@@ -6738,7 +7144,7 @@
                         <polyline points="10 9 9 9 8 9"></polyline>
                     </svg>
                     <span>${file.name}</span>
-                    <span class="attachment-remove" onclick="this.parentElement.remove(); if(attachmentArea && attachmentArea.children.length === 0) { attachmentArea.style.display='none'; if(contextRow) contextRow.style.display='none'; } updateSendButton(); event.stopPropagation();">
+                    <span class="attachment-remove" onclick="this.parentElement.remove(); if(attachmentArea && attachmentArea.children.length === 0) { attachmentArea.style.display='none'; if(contextRow && selectedContexts.size === 0) contextRow.style.display='none'; } updateSendButton(); event.stopPropagation();">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px;">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
                             <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -6970,7 +7376,7 @@
                 closePromptSheet();
             } else {
                 // If not visible, open it (toggle ON)
-                showMenu(promptSheet, promptSearchInput, () => renderPromptList());
+                showMenu(promptSheet, () => renderPromptList());
             }
         }
 
@@ -7008,16 +7414,16 @@
                     activePromptVar = span;
 
                     if (txt === '[customer]') {
-                        showMenu(customerMenu, customerSearchInput, () => renderCustomerList(), span);
+                        showMenu(customerMenu, () => renderCustomerList(), span);
                         break;
                     } else if (txt === '[vehicle]') {
-                        showMenu(vehicleMenu, vehicleSearchInput, () => renderVehicleList(), span);
+                        showMenu(vehicleMenu, () => renderVehicleList(), span);
                         break;
                     } else if (txt === '[vin]') {
-                        showMenu(vinMenu, vinSearchInput, () => renderVinList(), span);
+                        showMenu(vinMenu, () => renderVinList(), span);
                         break;
                     } else if (txt === '[date & time]') {
-                        showMenu(datetimeMenu, datetimeSearchInput, () => renderDateTimeList(), span);
+                        showMenu(datetimeMenu, () => renderDateTimeList(), span);
                         break;
                     }
                 }
@@ -7028,12 +7434,29 @@
 
         // --- INPUT EVENT HANDLING (DIV) ---
         mainInput.addEventListener('input', function (e) {
-            if (this.innerText === '/') {
-                showMenu(promptSheet, promptSearchInput, () => renderPromptList());
+            let filterTerm = "";
+            const text = this.innerText.replace(/\n/g, '').trim();
+
+            if (text === '/') {
+                showMenu(promptSheet, () => renderPromptList());
+            } else if (text.startsWith('/')) {
+                filterTerm = text.substring(1);
+                if (!currentActiveMenu) showMenu(promptSheet, () => renderPromptList(filterTerm));
+                else if (currentActiveMenu === promptSheet) renderPromptList(filterTerm);
+            } else if (activePromptVar) {
+                filterTerm = activePromptVar.innerText.trim();
+                if (currentActiveMenu === customerMenu) renderCustomerList(filterTerm);
+                else if (currentActiveMenu === vehicleMenu) renderVehicleList(filterTerm);
+                else if (currentActiveMenu === vinMenu) renderVinList(filterTerm);
+                else if (currentActiveMenu === datetimeMenu) renderDateTimeList(filterTerm);
+            } else if (currentActiveMenu === contextMenu) {
+                filterTerm = text;
+                renderContextList(filterTerm);
             }
 
             if (this.textContent.trim() === '') {
                 this.innerHTML = '';
+                if (currentActiveMenu) closeAllMenus();
             }
 
             updateSendButton();
@@ -7048,10 +7471,10 @@
                 const txt = originalValue.toLowerCase();
                 activePromptVar = span;
 
-                if (txt === '[customer]') showMenu(customerMenu, customerSearchInput, () => renderCustomerList(), span);
-                else if (txt === '[vehicle]') showMenu(vehicleMenu, vehicleSearchInput, () => renderVehicleList(), span);
-                else if (txt === '[vin]') showMenu(vinMenu, vinSearchInput, () => renderVinList(), span);
-                else if (txt === '[date & time]') showMenu(datetimeMenu, datetimeSearchInput, () => renderDateTimeList(), span);
+                if (txt === '[customer]') showMenu(customerMenu, () => renderCustomerList(), span);
+                else if (txt === '[vehicle]') showMenu(vehicleMenu, () => renderVehicleList(), span);
+                else if (txt === '[vin]') showMenu(vinMenu, () => renderVinList(), span);
+                else if (txt === '[date & time]') showMenu(datetimeMenu, () => renderDateTimeList(), span);
             }
         });
 
@@ -7071,6 +7494,9 @@
         function renderActionIcons(textWrapper, sourcesData = { count: 0 }) {
             const actionRow = document.createElement('div');
             actionRow.className = 'ai-actions-row';
+
+            const isDocked = !panel.classList.contains('state-fullscreen');
+
             const icons = [
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>',
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path></svg>',
@@ -7087,25 +7513,38 @@
                 actionRow.appendChild(btn);
             });
 
+            // Compact Spacer or Margin
+            const pillWrapper = document.createElement('div');
+            pillWrapper.style.display = 'flex';
+            pillWrapper.style.gap = '8px';
+            pillWrapper.style.marginLeft = '8px';
+            actionRow.appendChild(pillWrapper);
+
+            // Filters Pill
+            const filterCount = (sourcesData && sourcesData.contextItems) ? sourcesData.contextItems.length : 1;
+            const filterPill = document.createElement('div');
+            filterPill.className = 'reasoning-pill';
+            filterPill.style.display = 'flex';
+            const filterText = isDocked ? filterCount : `${filterCount} Filter${filterCount !== 1 ? 's' : ''} Applied`;
+            filterPill.innerHTML = `
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9v6l4 2v-8l8-9z"></path></svg>
+                <span>${filterText}</span>
+            `;
+            filterPill.onclick = (e) => toggleFilterPopover(e, filterPill);
+            pillWrapper.appendChild(filterPill);
+
             // Sources Pill
             if (sourcesData && sourcesData.count > 0) {
-                const sourcePill = document.createElement('button');
-                sourcePill.className = 'ai-action-btn sources-pill';
-                sourcePill.style.width = 'auto'; // allow text
-                sourcePill.style.fontSize = '0.75rem';
-                sourcePill.style.borderRadius = '16px';
-                sourcePill.style.padding = '2px 8px';
-                sourcePill.style.background = 'var(--color-bg-surface)';
-                sourcePill.style.border = '1px solid var(--color-border)';
-                sourcePill.style.color = 'var(--color-text-main)';
-                sourcePill.style.gap = '4px';
-                sourcePill.style.marginLeft = '8px'; // separate from icons
-
+                const sourcePill = document.createElement('div');
+                sourcePill.className = 'reasoning-pill';
+                sourcePill.style.display = 'flex';
+                const sourceText = isDocked ? sourcesData.count : `${sourcesData.count} Source${sourcesData.count > 1 ? 's' : ''}`;
                 sourcePill.innerHTML = `
-                   <span>${sourcesData.count} Sources</span>
-               `;
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    <span>${sourceText}</span>
+                `;
                 sourcePill.onclick = (e) => toggleSourcesPopover(e, sourcePill, sourcesData);
-                actionRow.appendChild(sourcePill);
+                pillWrapper.appendChild(sourcePill);
             }
 
             textWrapper.appendChild(actionRow);
@@ -7201,7 +7640,8 @@
         };
 
         document.addEventListener('click', (e) => {
-            if (!enhancedInputBox.contains(e.target) && e.target !== btnSlashMenu) {
+            const inputBorderWrapper = document.querySelector('.input-border-wrapper');
+            if (inputBorderWrapper && !inputBorderWrapper.contains(e.target) && e.target !== btnSlashMenu) {
                 closeAllMenus();
             }
             if (!globalContextMenu.contains(e.target) && !e.target.closest('.history-item-menu-btn')) {
@@ -7342,11 +7782,6 @@
                         <div class="reasoning-summary">Accessed conversation history and internal records to prepare the summary for ${title} accurately.</div>
                         <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </div>
-                    <div class="reasoning-content">
-                        <div class="step completed">Analyzed request intent</div>
-                        <div class="step completed">Retrieved conversation history</div>
-                        <div class="step completed">Formatted final response</div>
-                    </div>
                 </div>
             `;
 
@@ -7359,6 +7794,10 @@
             textWrapper.appendChild(aiContent);
             aiRow.appendChild(textWrapper);
             activeChat.appendChild(aiRow);
+
+            // Add action row with sources for history
+            const mockSources = { count: 1, contextItems: ['Internal record: #882'], attachmentItems: [] };
+            renderActionIcons(textWrapper, mockSources);
 
             if (!panel.classList.contains('state-fullscreen') || window.innerWidth <= 768) {
                 historySheet.classList.remove('open');
@@ -7483,6 +7922,7 @@
             const reasoningContent = document.createElement('div');
             reasoningContent.className = 'reasoning-content';
 
+
             reasoningContainer.appendChild(reasoningHeader);
             reasoningContainer.appendChild(reasoningSummaryWrapper);
             reasoningContainer.appendChild(reasoningContent);
@@ -7604,7 +8044,7 @@
 
                         // If stopped during thinking phase
                         if (currentController.stopped) {
-                            textWrapper.innerHTML = '<div class="ai-content"><em style="color:#969AA3">Response stopped by you</em></div>';
+                            textWrapper.innerHTML = '<div class="ai-content"><div style="color:var(--color-text-muted); padding-top: 0px;">Response stopped by you</div></div>';
 
                             // Reset UI
                             typingController = null;
@@ -7619,7 +8059,7 @@
                         const aiContent = document.createElement('div');
                         aiContent.className = 'ai-content';
 
-                        // Calculate Sources (Attachments only)
+                        // Calculate Sources (Context + Attachments)
                         let attachmentItems = [];
                         if (attachmentHTML) {
                             const tempDiv = document.createElement('div');
@@ -7628,7 +8068,18 @@
                                 attachmentItems.push(span.innerText);
                             });
                         }
-                        const sourcesData = { count: attachmentItems.length, contextItems: [], attachmentItems: attachmentItems };
+
+                        let contextLabels = [];
+                        if (typeof selectedContexts !== 'undefined' && selectedContexts.size > 0) {
+                            const allItems = [...dmsContextItems, leadsItem];
+                            selectedContexts.forEach(id => {
+                                const item = allItems.find(i => i.id === id);
+                                if (item) contextLabels.push(item.label);
+                            });
+                        }
+
+                        const totalSources = attachmentItems.length + contextLabels.length;
+                        const sourcesData = { count: totalSources, contextItems: contextLabels, attachmentItems: attachmentItems };
 
                         // Content Body for Typewriter
                         const contentBody = document.createElement('div');
@@ -7640,22 +8091,6 @@
                             case 'ryan_clarify':
                                 responseHTML = `<p>Please select the correct Ryan to proceed:</p>
                         <div class="compact-list-container">
-                            <!-- Header -->
-                            <div style="padding:12px 16px 0px 16px; font-weight:600; font-size:1rem; color:var(--color-text-heading);">
-                                Contacts
-                            </div>
-                            <!-- Filters -->
-                            <div style="padding:8px 16px 12px 16px; display:flex; align-items:center; justify-content:space-between; gap:16px; background:#fff;">
-                                <div style="display:flex; gap:8px; overflow:hidden; white-space:nowrap; align-items:center; flex:1;">
-                                    
-                                    <div style="display:inline-flex; align-items:center; padding:4px 8px; border-radius:4px; font-size:0.75rem; background:var(--color-bg-surface); color:var(--color-text-subtle); border:1px solid #E0E0E0; font-weight:500; flex-shrink:0;">
-                                        Contact = Ryan
-                                    </div>
-                                </div>
-                                <div style="font-size:0.75rem; font-weight:600; color:var(--color-primary); cursor:pointer; flex-shrink:0;">
-                                    Edit
-                                </div>
-                            </div>
                             <div class="compact-list-item" onclick="selectRyan(2)">
                                 <div class="avatar-circle avatar-pink">RC</div>
                                 <div class="item-main-info">
@@ -7751,18 +8186,18 @@
                                     </div>
                                     
                                     <!-- Row 2: Salesperson, Type, Status -->
-                                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); margin-bottom: 4px; padding: 8px 0; border-bottom: 1px solid #f1f3f4;">
+                                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 4px; padding: 8px 0; border-bottom: 1px solid #f1f3f4;">
                                         <div>
                                             <div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Salesperson</div>
-                                            <div style="font-size: 0.8rem; font-weight: 600; color: var(--color-text-main);">Sarah Jenkins</div>
+                                            <div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Sarah Jenkins</div>
                                         </div>
                                         <div>
                                             <div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Type</div>
-                                            <div style="font-size: 0.8rem; font-weight: 600; color: var(--color-text-main);">Finance</div>
+                                            <div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Finance</div>
                                         </div>
                                         <div>
                                             <div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Status</div>
-                                            <div style="font-size: 0.8rem; font-weight: 600; color: var(--color-text-main);">Quote</div>
+                                            <div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Quote</div>
                                         </div>
                                     </div>
 
@@ -7770,7 +8205,7 @@
                                     <div style="display: flex; justify-content: space-between; align-items: center;">
                                         <div>
                                             <div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500; padding-top:4px;">Last Updated</div>
-                                            <div style="font-size: 0.8rem; font-weight: 600; color: var(--color-text-main);">Dec 21, 2025</div>
+                                            <div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Dec 21, 2025</div>
                                         </div>
                                         <button class="open-btn-compact" style="font-size: 14px; padding: 0 20px; border-radius: 2px; font-weight: 600; height: 32px;">View</button>
                                     </div>
@@ -7792,18 +8227,18 @@
                                     </div>
                                     
                                     <!-- Row 2: Salesperson, Type, Status -->
-                                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); margin-bottom: 4px; padding: 8px 0; border-bottom: 1px solid #f1f3f4;">
+                                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 4px; padding: 8px 0; border-bottom: 1px solid #f1f3f4;">
                                         <div>
                                             <div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Salesperson</div>
-                                            <div style="font-size: 0.8rem; font-weight: 600; color: var(--color-text-main);">Mike Ross</div>
+                                            <div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Mike Ross</div>
                                         </div>
                                         <div>
                                             <div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Type</div>
-                                            <div style="font-size: 0.8rem; font-weight: 600; color: var(--color-text-main);">Lease</div>
+                                            <div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Lease</div>
                                         </div>
                                         <div>
                                             <div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Status</div>
-                                            <div style="font-size: 0.8rem; font-weight: 600; color: var(--color-text-main);">Booked</div>
+                                            <div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Booked</div>
                                         </div>
                                     </div>
 
@@ -7811,7 +8246,7 @@
                                     <div style="display: flex; justify-content: space-between; align-items: center;">
                                         <div>
                                             <div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500; padding-top:4px;">Last Updated</div>
-                                            <div style="font-size: 0.8rem; font-weight: 600; color: var(--color-text-main);">Dec 12, 2025</div>
+                                            <div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Dec 12, 2025</div>
                                         </div>
                                         <button class="open-btn-compact" style="font-size: 14px; padding: 0 20px; border-radius: 2px; font-weight: 600; height: 32px;">View</button>
                                     </div>
@@ -7871,71 +8306,64 @@
             startChat(text, "ryan_details");
         };
 
-        // --- FILTER POPOVER LOGIC ---
+        // --- FILTER MODAL LOGIC ---
         window.toggleFilterPopover = function (event, element) {
             event.stopPropagation();
 
-            // Remove existing popovers
-            const existing = document.getElementById('activeFilterPopover');
-            if (existing) existing.remove();
+            const modal = document.getElementById('filterModal');
+            const content = document.getElementById('filterModalContent');
 
-            // Create Popover
-            const popover = document.createElement('div');
-            popover.id = 'activeFilterPopover';
-            popover.className = 'filter-popover visible';
+            if (!modal || !content) return;
 
-            // Content
-            popover.innerHTML = `
-                <div style="font-weight:600; font-size:0.75rem; margin-bottom:8px; display:flex; align-items:center; gap:4px;">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
-                    Applied Filters
-                </div>
-                <div class="popover-item">
-                    <span class="popover-label">Status</span>
-                    <span class="popover-value">Open</span>
-                </div>
-                <div class="popover-item">
-                    <span class="popover-label">Customer ID</span>
-                    <span class="popover-value">#891</span>
-                </div>
-            `;
+            // Mock Data
+            const filters = [
+                { label: 'Status', value: 'Open' },
+                { label: 'Customer ID', value: '#891' }
+            ];
 
-            document.body.appendChild(popover);
-
-            // Positioning
-            // To ensure the popover moves with the scrolling content, we must append it 
-            // inside the scrolling container or position it relative to the parent.
-            // Since we can't easily change the DOM hierarchy of 'element' safely here,
-            // we will use a trick: Calculate position relative to the scrollable 'chat-scroll-area'.
-            // However, a simpler fix requested by the user is "tied to the element".
-            // We will append the popover DIRECTLY to the badge element and set the badge to relative.
-
-            // Remove from body first if we just added it (the line above was initial logic, replacing it now)
-            popover.remove();
-
-            element.style.position = 'relative';
-            element.appendChild(popover);
-
-            // Popover styling is absolute. 
-            // We want it below the badge.
-            popover.style.top = '100%';
-            popover.style.left = 'auto';
-            popover.style.right = '0';
-            popover.style.marginTop = '4px';
-            popover.style.position = 'absolute';
-
-            // Close on outside click
-            const closeHandler = function (e) {
-                if (!popover.contains(e.target) && e.target !== element) {
-                    popover.remove();
-                    document.removeEventListener('click', closeHandler);
+            // Update Header Count
+            const titleEl = modal.querySelector('.detail-modal-title');
+            if (titleEl) {
+                const icon = titleEl.querySelector('svg');
+                if (icon) {
+                    titleEl.innerHTML = '';
+                    titleEl.appendChild(icon);
+                    titleEl.appendChild(document.createTextNode(` Applied Filters (${filters.length})`));
                 }
-            };
-            // Add slight delay so this click doesn't trigger it immediately if event bubbling hits
-            setTimeout(() => {
-                document.addEventListener('click', closeHandler);
-            }, 0);
+            }
+
+            // Populate modal content
+            let html = '';
+            filters.forEach((item, index) => {
+                const isLast = index === filters.length - 1;
+                const borderStyle = isLast ? '' : 'border-bottom: 1px solid var(--color-border); padding-bottom: 12px; margin-bottom: 12px;';
+
+                html += `
+                <div style="${borderStyle}">
+                    <div style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 4px;">${item.label}</div>
+                    <div style="font-size: 0.95rem; font-weight: 500; color: var(--color-text-heading);">${item.value}</div>
+                </div>
+                `;
+            });
+
+            content.innerHTML = html;
+
+            // Show modal
+            modal.classList.add('visible');
         };
+
+        window.closeFilterModal = function () {
+            const modal = document.getElementById('filterModal');
+            if (modal) modal.classList.remove('visible');
+        };
+
+        // Close modal on overlay click
+        document.addEventListener('click', function (e) {
+            const filterModal = document.getElementById('filterModal');
+            if (filterModal && e.target === filterModal) {
+                closeFilterModal();
+            }
+        });
 
         function resetChat() {
             // Clear all highlights
@@ -7948,7 +8376,7 @@
 
             openMainView('emptyState');
             activeChat.innerHTML = '';
-            if (contextRow) contextRow.style.display = 'none';
+            if (contextRow) renderContextPills();
             if (chatHeaderTitle) chatHeaderTitle.innerText = "New Chat";
 
             if (btnHeaderNewChat) btnHeaderNewChat.disabled = true;
@@ -7977,11 +8405,15 @@
 
         // View Management
         window.openMainView = function (viewId) {
-            const views = ['emptyState', 'activeChat', 'tasksView', 'insightsView', 'templatesView', 'settingsView'];
+            const views = ['initialView', 'activeChat', 'tasksView', 'insightsView', 'templatesView', 'settingsView'];
             views.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.style.display = 'none';
             });
+
+            const finalViewId = (viewId === 'emptyState') ? 'initialView' : viewId;
+            const targetEl = document.getElementById(finalViewId);
+            if (targetEl) targetEl.style.display = 'flex';
 
             // Update Sidebar Highlights
             const navItems = document.querySelectorAll('.history-nav-item');
@@ -8088,20 +8520,14 @@
             }
 
             toggleHistory(false);
+            if (typeof rotatePlaceholder === 'function') rotatePlaceholder();
         }
 
         // FAB Button for New Chat
-        const historyNewChatBtn = document.getElementById('historyNewChatBtn');
         if (historyNewChatBtn) {
             historyNewChatBtn.onclick = () => {
                 resetChat();
-                historySheet.classList.remove('open');
-                if (!panel.classList.contains('state-fullscreen')) {
-                    historySheet.style.transform = 'translateX(-100%)';
-                    setTimeout(() => {
-                        historySheet.style.transform = '';
-                    }, 400);
-                }
+                toggleHistory(false);
             };
         }
 
@@ -8130,7 +8556,7 @@
 
         mainContent.onclick = () => {
             if (emptyState.style.display !== 'none') {
-                if (contextRow) contextRow.style.display = 'none';
+                if (contextRow) renderContextPills();
                 suggestionsList.style.display = 'flex';
             }
         };
@@ -8153,199 +8579,83 @@
             document.getElementById('btnClose').onclick = () => setState('closed');
         });
 
-        /* --- SOURCES POPOVER LOGIC --- */
+        /* --- SOURCES MODAL LOGIC --- */
         window.toggleSourcesPopover = function (event, element, data) {
             event.stopPropagation();
 
-            // Remove existing popovers
-            const existing = document.getElementById('activeSourcesPopover');
-            if (existing) {
-                const parent = existing.parentElement;
-                existing.remove();
-                if (parent === element) return; // Toggle off if clicking same element
-            }
+            const modal = document.getElementById('sourcesModal');
+            const content = document.getElementById('sourcesModalContent');
 
-            // Create Popover
-            const popover = document.createElement('div');
-            popover.id = 'activeSourcesPopover';
-            // Use same class as filter popover for consistency, assuming it provides basic styling
-            popover.className = 'filter-popover visible';
+            if (!modal || !content) return;
 
-            // Override or extra styling
-            popover.style.width = '240px'; // Wider for filenames
-            popover.style.zIndex = '100';
-            popover.style.padding = '16px'; // More padding like reference
+            // Prepare Data
+            const allSources = [];
+            if (data.contextItems) data.contextItems.forEach(i => allSources.push({ title: i, type: 'Record' }));
+            if (data.attachmentItems) data.attachmentItems.forEach(i => allSources.push({ title: i, type: 'File' }));
 
-            // Build Content
-            let html = `
-                <div style="font-weight:600; font-size:1.1rem; margin-bottom:16px; display:flex; align-items:center; gap:4px; color:var(--color-text-heading);">
-                    Sources
-                </div>
-            `;
-
-            // Context Section
-            if (data.contextItems && data.contextItems.length > 0) {
-                html += `<div style="margin-bottom:12px;">`;
-                html += `<div style="font-size:0.85rem; color:var(--color-text-muted); margin-bottom:8px;">Context</div>`;
-                data.contextItems.forEach(name => {
-                    html += `
-                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--color-text-main);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                        <span style="font-size:0.95rem; color:var(--color-text-heading);">${name}</span>
-                    </div>`;
-                });
-                html += `</div>`;
-            }
-
-            // Attachments Section
-            if (data.attachmentItems && data.attachmentItems.length > 0) {
-                html += `<div>`;
-                html += `<div style="font-size:0.85rem; color:var(--color-text-muted); margin-bottom:8px;">Attachments</div>`;
-                data.attachmentItems.forEach(name => {
-                    html += `
-                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--color-text-main);"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
-                        <span style="font-size:0.95rem; color:var(--color-text-heading); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${name}</span>
-                    </div>`;
-                });
-                html += `</div>`;
-            }
-
-            // Empty State (if needed, though count > 0 logic in main flow prevents this)
-            if ((!data.contextItems || data.contextItems.length === 0) && (!data.attachmentItems || data.attachmentItems.length === 0)) {
-                html += `<div style="color:var(--color-text-muted); font-size:0.9rem;">No sources found.</div>`;
-            }
-
-            popover.innerHTML = html;
-
-            element.style.position = 'relative';
-            element.appendChild(popover);
-
-            // Position (Bottom Left aligned)
-            popover.style.position = 'absolute';
-            popover.style.top = 'calc(100% + 4px)';
-            popover.style.left = '0';
-            popover.style.right = 'auto';
-            popover.style.marginTop = '0';
-
-            // Close handler
-            const closeHandler = function (e) {
-                if (!popover.contains(e.target) && e.target !== element) {
-                    popover.remove();
-                    document.removeEventListener('click', closeHandler);
+            // Update Header Count
+            const titleEl = modal.querySelector('.detail-modal-title');
+            if (titleEl) {
+                // Preserve existing icon if present
+                const icon = titleEl.querySelector('svg');
+                if (icon) {
+                    titleEl.innerHTML = '';
+                    titleEl.appendChild(icon);
+                    titleEl.appendChild(document.createTextNode(` Sources (${allSources.length})`));
                 }
-            };
-            // Delay adding listener to prevent immediate closing
-            setTimeout(() => {
-                document.addEventListener('click', closeHandler);
-            }, 0);
-        };
-
-        // Defined AFTER to override previous (due to edit conflicts)
-        window.toggleSourcesPopover = function (event, element, data) {
-            event.stopPropagation();
-
-            // Remove existing popovers
-            const existing = document.getElementById('activeSourcesPopover');
-            if (existing) {
-                const parent = existing.parentElement;
-                existing.remove();
-                if (parent === element) return; // Toggle off if clicking same element
             }
-
-            // Create Popover
-            const popover = document.createElement('div');
-            popover.id = 'activeSourcesPopover';
-            // Reuse filter-popover class
-            popover.className = 'filter-popover visible';
-
-            // Custom Styling
-            popover.style.width = '240px';
-            popover.style.zIndex = '1000'; // High z-index
-            popover.style.padding = '12px 16px';
-            popover.style.textAlign = 'left';
 
             // Build Content
-            let html = `
-                <div style="font-weight:600; font-size:0.8rem; margin-bottom:12px; display:flex; align-items:center; gap:6px; color:var(--color-text-heading);">
-                    Sources
-                </div>
-            `;
+            let html = '';
 
-            // Context Section
-            if (data.contextItems && data.contextItems.length > 0) {
-                html += `<div style="margin-bottom:12px;">`;
-                html += `<div style="font-size:0.75rem; font-weight:500; color:var(--color-text-muted); margin-bottom:6px;">Context</div>`;
-                data.contextItems.forEach(name => {
-                    html += `
-                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--color-text-heading);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                        <span style="font-size:0.85rem; color:var(--color-text-heading); font-weight:500;">${name}</span>
-                    </div>`;
-                });
-                html += `</div>`;
-            }
-
-            // Attachments Section
-            if (data.attachmentItems && data.attachmentItems.length > 0) {
-                html += `<div>`;
-                html += `<div style="font-size:0.75rem; font-weight:500; color:var(--color-text-muted); margin-bottom:6px;">Attachments</div>`;
-                data.attachmentItems.forEach(name => {
-                    html += `
-                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--color-text-heading);"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
-                        <span style="font-size:0.85rem; color:var(--color-text-heading); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${name}</span>
-                    </div>`;
-                });
-                html += `</div>`;
-            }
-
-            if ((!data.contextItems || data.contextItems.length === 0) && (!data.attachmentItems || data.attachmentItems.length === 0)) {
-                html += `<div style="color:var(--color-text-muted); font-size:0.8rem;">No sources found.</div>`;
-            }
-
-            popover.innerHTML = html;
-
-            element.style.position = 'relative';
-            element.appendChild(popover);
-
-            // INTELLIGENT POSITIONING
-            const rect = element.getBoundingClientRect();
-            const spaceBelow = window.innerHeight - rect.bottom;
-
-            popover.style.position = 'absolute';
-            popover.style.left = '0';
-            popover.style.right = 'auto'; // Default align left
-
-            if (spaceBelow < 250) {
-                // Not enough space below, pop UP
-                popover.style.top = 'auto';
-                popover.style.bottom = 'calc(100% + 8px)';
+            if (allSources.length === 0) {
+                html = '<div style="color:var(--color-text-muted); font-size:0.9rem; text-align:center; padding:20px;">No sources found.</div>';
             } else {
-                // Pop DOWN
-                popover.style.bottom = 'auto';
-                popover.style.top = 'calc(100% + 8px)';
+                allSources.forEach((source, index) => {
+                    const isLast = index === allSources.length - 1;
+                    const borderStyle = isLast ? '' : 'border-bottom: 1px solid var(--color-border); padding-bottom: 12px; margin-bottom: 12px;';
+
+                    // Generate Fake URL
+                    const slug = source.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+                    const url = source.type === 'File'
+                        ? `https://crm.example.com/storage/attachments/${slug}.pdf`
+                        : `https://crm.example.com/records/${slug}`;
+
+                    html += `
+                    <div style="${borderStyle}; display: flex; gap: 8px;">
+                        <div style="font-weight: 500; color: var(--color-text-heading); min-width: 14px; font-size: 0.95rem;">
+                            ${index + 1}.
+                        </div>
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="font-weight: 600; font-size: 0.95rem; color: var(--color-text-heading); margin-bottom: 2px;">${source.title}</div>
+                            <div style="font-size: 0.85rem; color: var(--color-text-muted); text-decoration: underline; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;" title="${url}">
+                                ${url}
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                });
             }
 
-            // Check right edge collision
-            const popRect = popover.getBoundingClientRect();
-            if (popRect.right > window.innerWidth) {
-                popover.style.left = 'auto';
-                popover.style.right = '0';
-            }
+            content.innerHTML = html;
 
-
-            // Close handler
-            const closeHandler = function (e) {
-                if (!popover.contains(e.target) && e.target !== element) {
-                    popover.remove();
-                    document.removeEventListener('click', closeHandler);
-                }
-            };
-            setTimeout(() => {
-                document.addEventListener('click', closeHandler);
-            }, 0);
+            // Show modal
+            modal.classList.add('visible');
         };
+
+        window.closeSourcesModal = function () {
+            const modal = document.getElementById('sourcesModal');
+            if (modal) modal.classList.remove('visible');
+        };
+
+        // Close modal on overlay click
+        document.addEventListener('click', function (e) {
+            const sourcesModal = document.getElementById('sourcesModal');
+            if (sourcesModal && e.target === sourcesModal) {
+                closeSourcesModal();
+            }
+        });
+
 
         // Populate Dummy History
         function populateDummyHistory() {
@@ -8475,37 +8785,11 @@
             setState('fullscreen'); // Open as full screen on mobile
         };
 
-        const historyOverlay = document.getElementById('historyOverlay');
-
-        function toggleHistory(forceOpen = null) {
-            let isOpen;
-            if (forceOpen === true) {
-                historySheet.classList.add('open');
-                isOpen = true;
-            } else if (forceOpen === false) {
-                historySheet.classList.remove('open');
-                isOpen = false;
-            } else {
-                isOpen = historySheet.classList.toggle('open');
-            }
-
-            if (isOpen) {
-                historyOverlay.classList.add('visible');
-            } else {
-                historyOverlay.classList.remove('visible');
-            }
-        }
-
-        btnShowHistory.onclick = () => toggleHistory();
         if (historyOverlay) {
             historyOverlay.onclick = () => toggleHistory(false);
         }
 
         // Search UI Logic
-        const historySearchBtn = document.getElementById('historySearchBtn');
-        const historySearchWrapper = document.getElementById('historySearchWrapper');
-        const historySearchInput = document.getElementById('historySearchInput');
-
         if (historySearchBtn && historySearchWrapper && historySearchInput) {
             historySearchBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -8519,13 +8803,7 @@
                 }
             });
 
-            // New Chat Button in History
-            if (window.historyNewChatBtn) {
-                historyNewChatBtn.addEventListener('click', () => {
-                    toggleHistory(false); // Close history/overlay
-                    startNewChat(); // Trigger new chat logic
-                });
-            }
+            // (Duplicate handler removed)
 
             historySearchInput.addEventListener('input', (e) => {
                 filterHistoryList(e.target.value);
@@ -8540,62 +8818,7 @@
             });
         }
 
-        // Rotating Placeholder Logic
-        const placeholders = [
-            "Ask • Find • Summarize",
-            "Ask Anything...",
-            "Find this customer...",
-            "Summarize this page..."
-        ];
-        let placeholderIndex = 0;
-        let phCurrent, phNext;
-        let placeholderInterval;
-        let isInputFocused = false;
-
-        function rotatePlaceholder() {
-            if (!mainInput) return;
-            if (!phCurrent) {
-                phCurrent = document.getElementById('phItem1');
-                phNext = document.getElementById('phItem2');
-            }
-
-            // Check if chat is active (emptyState is hidden)
-            const isChatActive = emptyState.style.display === 'none';
-
-            if (isChatActive) {
-                // Once initiated/active, show static placeholder
-                phCurrent.innerText = "Ask • Find • Summarize";
-                phCurrent.className = 'placeholder-item visible no-placeholder-transition';
-                phNext.className = 'placeholder-item hidden-down no-placeholder-transition';
-                return;
-            }
-
-            // Only animate if input is empty
-            if (mainInput.textContent.trim() === "") {
-                placeholderIndex = (placeholderIndex + 1) % placeholders.length;
-
-                // 1. Move Next item to bottom instantly
-                phNext.classList.add('no-placeholder-transition');
-                phNext.innerText = placeholders[placeholderIndex];
-                phNext.className = 'placeholder-item hidden-down no-placeholder-transition';
-
-                // Force layout reflow
-                phNext.offsetHeight;
-
-                // 2. Perform synchronized scroll up
-                phNext.classList.remove('no-placeholder-transition');
-
-                // Current slides out to top
-                phCurrent.className = 'placeholder-item hidden-up';
-                // Next slides in from bottom to center
-                phNext.className = 'placeholder-item visible';
-
-                // 3. Swap roles for next rotation
-                let temp = phCurrent;
-                phCurrent = phNext;
-                phNext = temp;
-            }
-        }
+        // Placeholder logic has been moved to the top of script to avoid TDZ issues.
 
         function startPlaceholderRotation() {
             if (placeholderInterval) clearInterval(placeholderInterval);
@@ -8656,368 +8879,18 @@
             document.removeEventListener('touchend', stopResizing);
         }
 
-        // Defined here to ensure it overrides any previous definitions
-        window.toggleSourcesPopover = function (event, element, data) {
-            event.stopPropagation();
-
-            // Remove existing popovers
-            const existing = document.getElementById('activeSourcesPopover');
-            if (existing) {
-                const parent = existing.parentElement;
-                existing.remove();
-                if (parent === element) return; // Toggle off if clicking same element
-            }
-
-            // Create Popover
-            const popover = document.createElement('div');
-            popover.id = 'activeSourcesPopover';
-            // Reuse filter-popover class
-            popover.className = 'filter-popover visible';
-
-            // Custom Styling - mimicking filter popover defaults + width for content
-            popover.style.width = '220px';
-            popover.style.zIndex = '1000';
-            popover.style.textAlign = 'left';
-
-            // Build Content
-            // Match Filter Popover Header: font-weight:600; font-size:0.75rem; margin-bottom:8px;
-            let html = `
-                <div style="font-weight:600; font-size:0.75rem; margin-bottom:8px; display:flex; align-items:center; gap:4px; color:var(--color-text-heading);">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                    Sources
-                </div>
-            `;
-
-            // Context Section
-            if (data.contextItems && data.contextItems.length > 0) {
-                html += `<div style="margin-bottom:8px;">`;
-                html += `<div style="font-size:0.7rem; font-weight:500; color:var(--color-text-muted); margin-bottom:4px;">Context</div>`;
-                data.contextItems.forEach(name => {
-                    html += `
-                    <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--color-text-heading);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                        <span style="font-size:0.75rem; color:var(--color-text-heading); font-weight:500;">${name}</span>
-                    </div>`;
-                });
-                html += `</div>`;
-            }
-
-            // Attachments Section
-            if (data.attachmentItems && data.attachmentItems.length > 0) {
-                html += `<div>`;
-                html += `<div style="font-size:0.7rem; font-weight:500; color:var(--color-text-muted); margin-bottom:4px;">Attachments</div>`;
-                data.attachmentItems.forEach(name => {
-                    html += `
-                    <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--color-text-heading);"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
-                        <span style="font-size:0.75rem; color:var(--color-text-heading); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${name}</span>
-                    </div>`;
-                });
-                html += `</div>`;
-            }
-
-            if ((!data.contextItems || data.contextItems.length === 0) && (!data.attachmentItems || data.attachmentItems.length === 0)) {
-                html += `<div style="color:var(--color-text-muted); font-size:0.75rem;">No sources found.</div>`;
-            }
-
-            popover.innerHTML = html;
-
-            element.style.position = 'relative';
-            element.appendChild(popover);
-
-            // INTELLIGENT POSITIONING
-            const rect = element.getBoundingClientRect();
-            const spaceBelow = window.innerHeight - rect.bottom;
-
-            popover.style.position = 'absolute';
-            popover.style.left = '0';
-            popover.style.right = 'auto'; // Default align left
-
-            if (spaceBelow < 250) {
-                // Not enough space below, pop UP
-                popover.style.top = 'auto';
-                popover.style.bottom = 'calc(100% + 4px)';
-            } else {
-                // Pop DOWN
-                popover.style.bottom = 'auto';
-                popover.style.top = 'calc(100% + 4px)';
-            }
-
-            // Check right edge collision
-            const popRect = popover.getBoundingClientRect();
-            if (popRect.right > window.innerWidth) {
-                popover.style.left = 'auto';
-                popover.style.right = '0';
-            }
-
-
-            // Close handler
-            const closeHandler = function (e) {
-                if (!popover.contains(e.target) && e.target !== element) {
-                    popover.remove();
-                    document.removeEventListener('click', closeHandler);
-                }
-            };
-            setTimeout(() => {
-                document.addEventListener('click', closeHandler);
-            }, 0);
-        };
-
-        // Defined here to ensure it overrides any previous definitions
-        window.toggleSourcesPopover = function (event, element, data) {
-            event.stopPropagation();
-
-            // Remove existing popovers
-            const existing = document.getElementById('activeSourcesPopover');
-            if (existing) {
-                const parent = existing.parentElement;
-                existing.remove();
-                if (existing.dataset.triggerId === element.id) return; // Toggle off if same
-            }
-
-            // Create Popover in BODY to avoid clipping
-            const popover = document.createElement('div');
-            popover.id = 'activeSourcesPopover';
-            if (element.id) popover.dataset.triggerId = element.id;
-
-            // Reuse filter-popover class
-            popover.className = 'filter-popover visible';
-
-            // Custom Styling
-            popover.style.width = '220px';
-            popover.style.zIndex = '9999'; // Very High z-index for fixed pos
-            popover.style.textAlign = 'left';
-            popover.style.position = 'fixed'; // Use fixed to ensure visibility over everything
-
-            // Build Content Match Filter Popover Header
-            let html = `
-                <div style="font-weight:600; font-size:0.75rem; margin-bottom:8px; display:flex; align-items:center; gap:4px; color:var(--color-text-heading);">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                    Sources
-                </div>
-            `;
-
-            // Context Section
-            if (data.contextItems && data.contextItems.length > 0) {
-                html += `<div style="margin-bottom:8px;">`;
-                html += `<div style="font-size:0.7rem; font-weight:500; color:var(--color-text-muted); margin-bottom:4px;">Context</div>`;
-                data.contextItems.forEach(name => {
-                    html += `
-                    <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--color-text-heading);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                        <span style="font-size:0.75rem; color:var(--color-text-heading); font-weight:500;">${name}</span>
-                    </div>`;
-                });
-                html += `</div>`;
-            }
-
-            // Attachments Section
-            if (data.attachmentItems && data.attachmentItems.length > 0) {
-                html += `<div>`;
-                html += `<div style="font-size:0.7rem; font-weight:500; color:var(--color-text-muted); margin-bottom:4px;">Attachments</div>`;
-                data.attachmentItems.forEach(name => {
-                    html += `
-                    <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--color-text-heading);"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
-                        <span style="font-size:0.75rem; color:var(--color-text-heading); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${name}</span>
-                    </div>`;
-                });
-                html += `</div>`;
-            }
-
-
-            if ((!data.contextItems || data.contextItems.length === 0) && (!data.attachmentItems || data.attachmentItems.length === 0)) {
-                html += `<div style="color:var(--color-text-muted); font-size:0.75rem;">No sources found.</div>`;
-            }
-
-            popover.innerHTML = html;
-            document.body.appendChild(popover);
-
-            // Calculation for Fixed Position
-            const rect = element.getBoundingClientRect();
-            let top = rect.bottom + 6;
-            let left = rect.left;
-
-            // Check Bottom edge collision
-            const estimatedHeight = 200;
-            if (rect.bottom + estimatedHeight > window.innerHeight) {
-                // Flip UP
-                // For fixed position, bottom is easier if we want it anchored to bottom of screen? 
-                // But let's stick to top/left coords for simplicity or use bottom property
-                // popover relative to view:
-                popover.style.top = 'auto';
-                popover.style.bottom = (window.innerHeight - rect.top + 6) + 'px';
-            } else {
-                popover.style.top = top + 'px';
-            }
-
-            // Check Right edge collision
-            if (left + 220 > window.innerWidth) {
-                // Align Right Edge with Element Right Edge
-                // left = rect.right - 220; 
-                // Or force align to window right edge - 10px
-                const diff = (left + 220) - window.innerWidth;
-                left = left - diff - 10;
-            }
-            // Check Left edge
-            if (left < 10) left = 10;
-
-            popover.style.left = left + 'px';
-
-            // Close handler + Scroll handler
-            const cleanup = () => {
-                if (popover && popover.parentNode) popover.remove();
-                document.removeEventListener('click', closeHandler);
-                window.removeEventListener('scroll', closeHandler, true);
-                window.removeEventListener('resize', closeHandler);
-            };
-
-            const closeHandler = function (e) {
-                // If scroll event, always close (simplest for fixed position)
-                if (e.type === 'scroll' || e.type === 'resize') {
-                    cleanup();
-                    return;
-                }
-                // Click event
-                if (!popover.contains(e.target) && e.target !== element) {
-                    cleanup();
-                }
-            };
-
-            setTimeout(() => {
-                document.addEventListener('click', closeHandler);
-                window.addEventListener('scroll', closeHandler, true);
-                window.addEventListener('resize', closeHandler);
-            }, 0);
-        };
-
-        // Defined here to ensure it overrides any previous definitions
-        window.toggleSourcesPopover = function (event, element, data) {
-            event.stopPropagation();
-
-            // Remove existing popovers
-            const existing = document.getElementById('activeSourcesPopover');
-            if (existing) {
-                const parent = existing.parentElement;
-                existing.remove();
-                if (existing.dataset.triggerId === element.id) return; // Toggle off if same
-            }
-
-            // Create Popover in BODY to avoid clipping
-            const popover = document.createElement('div');
-            popover.id = 'activeSourcesPopover';
-            if (element.id) popover.dataset.triggerId = element.id;
-
-            // Reuse filter-popover class
-            popover.className = 'filter-popover visible';
-
-            // Custom Styling
-            popover.style.width = '220px';
-            popover.style.zIndex = '9999'; // Very High z-index for fixed pos
-            popover.style.textAlign = 'left';
-            popover.style.position = 'fixed'; // Use fixed to ensure visibility over everything
-
-            // Build Content Match Filter Popover Header
-            // ICON REMOVED per request
-            let html = `
-                <div style="font-weight:600; font-size:0.75rem; margin-bottom:12px; display:flex; align-items:center; gap:4px; color:var(--color-text-heading);">
-                    Sources
-                </div>
-            `;
-
-            // Context Section
-            if (data.contextItems && data.contextItems.length > 0) {
-                html += `<div style="margin-bottom:8px;">`;
-                // Font size increased to 0.75rem match items
-                html += `<div style="font-size:0.75rem; font-weight:500; color:var(--color-text-muted); margin-bottom:8px;">Context</div>`;
-                data.contextItems.forEach(name => {
-                    html += `
-                    <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--color-text-heading);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                        <span style="font-size:0.75rem; color:var(--color-text-heading); font-weight:500;">${name}</span>
-                    </div>`;
-                });
-                html += `</div>`;
-            }
-
-            // Attachments Section
-            if (data.attachmentItems && data.attachmentItems.length > 0) {
-                html += `<div>`;
-                html += `<div style="font-size:0.75rem; font-weight:500; color:var(--color-text-muted); margin-bottom:8px;">Attachments</div>`;
-                data.attachmentItems.forEach(name => {
-                    html += `
-                    <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--color-text-heading);"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
-                        <span style="font-size:0.75rem; color:var(--color-text-heading); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${name}</span>
-                    </div>`;
-                });
-                html += `</div>`;
-            }
-
-            if ((!data.contextItems || data.contextItems.length === 0) && (!data.attachmentItems || data.attachmentItems.length === 0)) {
-                html += `<div style="color:var(--color-text-muted); font-size:0.75rem;">No sources found.</div>`;
-            }
-
-            popover.innerHTML = html;
-            document.body.appendChild(popover);
-
-            // Calculation for Fixed Position
-            const rect = element.getBoundingClientRect();
-            let top = rect.bottom + 6;
-
-            // Align Right Edge of Popover to Right Edge of Element
-            let left = rect.right - 220;
-
-            // Check Bottom edge collision
-            const estimatedHeight = 200;
-            if (rect.bottom + estimatedHeight > window.innerHeight) {
-                // Flip UP
-                popover.style.top = 'auto';
-                popover.style.bottom = (window.innerHeight - rect.top + 6) + 'px';
-            } else {
-                popover.style.top = top + 'px';
-            }
-
-            // Boundary Checks
-            if (left < 10) left = 10;
-            if (left + 220 > window.innerWidth) {
-                left = window.innerWidth - 230;
-            }
-
-            popover.style.left = left + 'px';
-
-            // Close handler + Scroll handler
-            const cleanup = () => {
-                if (popover && popover.parentNode) popover.remove();
-                document.removeEventListener('click', closeHandler);
-                window.removeEventListener('scroll', closeHandler, true);
-                window.removeEventListener('resize', closeHandler);
-            };
-
-            const closeHandler = function (e) {
-                // If scroll event, always close (simplest for fixed position)
-                if (e.type === 'scroll' || e.type === 'resize') {
-                    cleanup();
-                    return;
-                }
-                // Click event
-                if (!popover.contains(e.target) && e.target !== element) {
-                    cleanup();
-                }
-            };
-
-            setTimeout(() => {
-                document.addEventListener('click', closeHandler);
-                window.addEventListener('scroll', closeHandler, true);
-                window.addEventListener('resize', closeHandler);
-            }, 0);
-        };
+        // Populate Dummy History
+        function populateDummyHistory() {
+            // This function would populate dummy history items
+            // Currently not implemented
+        }
 
         // Load directly into a new conversation
         window.onload = function () {
+            selectedContexts.add(leadsItem.id);
+            renderContextPills();
             resetChat();
             startPlaceholderRotation();
-            // Ensure pinned items are at the top on page load
             sortHistoryList();
         };
 
