@@ -730,13 +730,33 @@
             font-size: var(--font-md);
             font-weight: 600;
             color: var(--color-text-heading);
-            text-align: center;
-            flex: 1;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            min-width: 0;
-            margin: 0 var(--space-md);
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 50%;
+            pointer-events: none;
+        }
+
+        .settings-reset-link {
+            color: var(--color-primary);
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: var(--space-sm);
+            text-decoration: none;
+            margin-left: auto;
+            position: relative;
+            z-index: var(--z-nav);
+        }
+
+        .settings-reset-link:hover {
+            text-decoration: underline;
         }
 
         #chatMenuContainer {
@@ -1342,7 +1362,7 @@
 
         .history-nav-item:hover svg,
         .history-nav-item.active svg {
-            color: var(--color-primary);
+            color: var(--color-bg-dark);
         }
 
         .history-section-header {
@@ -1472,13 +1492,18 @@
 
         /* --- MAIN VIEW MODULES --- */
         .main-view-container {
-            padding: var(--space-2xl) var(--space-3xl);
+            padding: var(--space-2xl) 0 var(--space-lg);
+            /* Reduced bottom padding */
+            /* Only vertical padding here, content-aligner handles horizontal */
             display: none;
             animation: fadeIn 0.3s ease;
             flex: 1;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
+            /* Changed from center to top-align content */
+            overflow-y: auto;
+            /* Ensure scrollability */
         }
 
         .view-header {
@@ -1626,17 +1651,85 @@
 
         .modal-input {
             width: var(--w-full);
-            padding: var(--space-10);
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius-md);
-            font-size: var(--font-base);
-            margin-bottom: var(--space-lg);
+            padding: var(--space-sm) var(--space-md);
+            /* Corrected padding */
+            border: 1px solid var(--color-border-muted);
+            /* Lightened border as per image */
+            border-radius: var(--radius-sm);
+            /* Slightly sharper corners for precision */
+            font-size: 14px;
             outline: none;
             color: var(--color-text-heading);
+            background: #FFFFFF;
         }
 
         .modal-input:focus {
             border-color: var(--color-primary);
+        }
+
+        textarea.modal-input {
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+        }
+
+        select.modal-input {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            /* Refined thinner chevron (stroke-width 2) and slightly more open shape */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23444F5C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 10 12 16 18 10'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 14px;
+            padding-right: 36px;
+            cursor: pointer;
+            transition: border-color var(--transition-speed-normal);
+        }
+
+        .setting-controls-group {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            width: 100%;
+        }
+
+        .voice-play-btn {
+            width: var(--space-3xl);
+            /* Reduced to 32px */
+            height: var(--space-3xl);
+            border-radius: 50%;
+            background: var(--color-bg-surface);
+            border: 1px solid var(--color-border-muted);
+            color: var(--color-text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+            padding: 0;
+            margin-bottom: 0;
+        }
+
+        .voice-play-btn:hover {
+            background: var(--color-border-muted);
+            color: var(--color-text-heading);
+            transform: scale(1.05);
+        }
+
+        .voice-play-btn.playing {
+            background: var(--color-stop-btn);
+            /* Match input bar stop button */
+            color: white;
+            border: none;
+            box-shadow: none;
+        }
+
+        .voice-play-btn svg {
+            width: 16px;
+            /* Reduced svg size */
+            height: 16px;
         }
 
         .modal-actions {
@@ -1678,16 +1771,17 @@
         }
 
         .settings-group {
-            background: var(--color-bg-surface);
+            background: #FFFFFF;
+            /* Forced white as requested */
             border: 1px solid var(--color-border-muted);
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius-md);
             padding: var(--space-lg);
         }
 
         .settings-group-title {
             font-weight: 600;
             color: var(--color-text-heading);
-            margin-bottom: var(--space-md);
+            margin-bottom: var(--space-2xs);
             font-size: var(--font-md);
             display: flex;
             align-items: center;
@@ -1698,13 +1792,50 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: var(--space-md) 0;
+            padding: var(--space-lg) 0;
+            /* Consistent internal spacing */
             border-bottom: 1px solid var(--color-border-muted);
+            gap: var(--space-lg);
         }
 
         .setting-row:last-child {
             border-bottom: none;
             padding-bottom: 0;
+        }
+
+        .setting-row-vertical {
+            display: flex;
+            flex-direction: column;
+            padding: var(--space-lg) 0;
+            border-bottom: 1px solid var(--color-border-muted);
+            gap: var(--space-sm);
+            /* Tighter gap between text and input */
+        }
+
+        .setting-row-vertical:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        /* Full Width Column Mode */
+        .chat-sidebar.state-fullscreen .setting-row-vertical {
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: var(--space-4xl);
+        }
+
+        .chat-sidebar.state-fullscreen .setting-row-vertical .setting-info {
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .chat-sidebar.state-fullscreen .setting-row-vertical .modal-input,
+        .chat-sidebar.state-fullscreen .setting-row-vertical textarea.modal-input {
+            flex: 2;
+            margin-top: 0;
+            max-width: 400px;
+            /* Reduced size as requested */
         }
 
         .setting-info {
@@ -1714,13 +1845,53 @@
         }
 
         .setting-label {
+            font-size: 14px;
+            /* Exactly 14px as requested */
             font-weight: 500;
             color: var(--color-text-main);
         }
 
         .setting-desc {
-            font-size: var(--font-sm);
+            font-size: 12px;
+            /* Exactly 12px as requested */
             color: var(--color-text-muted);
+        }
+
+        .settings-footer-actions {
+            margin-top: var(--space-lg);
+            /* Reduced from space-xl */
+            padding: var(--space-md) 0 0 0;
+            /* Reduced from space-lg */
+            display: flex;
+            justify-content: center;
+            border-top: 1px solid var(--color-border-muted);
+        }
+
+        .reset-bottom-btn {
+            background: white;
+            border: 1px solid var(--color-border);
+            color: var(--color-text-main);
+            font-size: 14px;
+            height: 32px;
+            /* Set to 32px */
+            padding: 0 var(--space-lg);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .reset-bottom-btn:hover {
+            border-color: var(--color-border-hover);
+            background: var(--color-bg-hover);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .reset-bottom-btn:active {
+            transform: translateY(1px);
         }
 
         /* Toggle Switch */
@@ -1729,6 +1900,8 @@
             display: inline-block;
             width: 44px;
             height: 24px;
+            flex-shrink: 0;
+            /* Alignment fix */
         }
 
         .toggle-switch input {
@@ -1901,6 +2074,8 @@
             padding: 80px 20px;
             text-align: center;
             color: var(--color-text-muted);
+            flex: 1;
+            /* Added to maintain centering in flex-start parent */
         }
 
         .view-empty-icon {
@@ -2667,8 +2842,7 @@
             box-shadow: 0 12px 48px rgba(0, 0, 0, 0.18);
 
             /* Match ai2.html smooth transition style */
-            transition:
-                max-height 0.4s ease-in-out,
+            transition: max-height 0.4s ease-in-out,
                 opacity 0.4s ease-in-out,
                 visibility 0.4s;
         }
@@ -3309,7 +3483,9 @@
             font-size: 11px;
             color: #969AA3;
             text-align: center;
-            margin-top: 8px;
+            margin: 8px auto 8px;
+            width: 100%;
+            display: block;
         }
 
         .send-btn-square {
@@ -4007,8 +4183,7 @@
                 display: grid;
                 grid-template-columns: 360px 1fr;
                 grid-template-rows: auto 1fr auto;
-                grid-template-areas:
-                    "sidebar nav"
+                grid-template-areas: "sidebar nav"
                     "sidebar content"
                     "sidebar footer";
                 height: 100%;
@@ -4770,7 +4945,7 @@
         .suggestion-item {
             display: flex;
             align-items: center;
-            padding: 10px 16px;
+            padding: 12px;
             transition: background-color 0.2s;
             gap: 10px;
             font-size: 14px;
@@ -4778,7 +4953,7 @@
         }
 
         .suggestion-item:hover {
-            background-color: #F9FAFB;
+            background-color: var(--color-border-muted);
         }
 
         .suggestion-item svg {
@@ -4895,8 +5070,7 @@
             position: relative;
             overflow: hidden;
             border: 1px solid transparent;
-            background:
-                linear-gradient(270deg, var(--aiSemantics-color-card-background-defaultStop1, #ECFEFF) 0%, var(--aiSemantics-color-card-background-defaultStop2, #F5F3FF) 74.52%, var(--aiSemantics-color-card-background-defaultStop3, #EDE9FE) 100%) padding-box,
+            background: linear-gradient(270deg, var(--aiSemantics-color-card-background-defaultStop1, #ECFEFF) 0%, var(--aiSemantics-color-card-background-defaultStop2, #F5F3FF) 74.52%, var(--aiSemantics-color-card-background-defaultStop3, #EDE9FE) 100%) padding-box,
                 linear-gradient(320deg, #2157F5 8.61%, #258DFF 39.1%, #86FFBB 92.21%) border-box;
         }
 
@@ -5698,12 +5872,12 @@
                         <!-- AI Actions (Hidden by default, shown via CSS when .ai-active) -->
                         <div class="ai-search-actions">
                             <button class="ai-ask-btn" id="aiSearchAskBtn" onclick="handleAIAsk()" disabled="">
+                                Ask
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                     stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M9 10l-5 5 5 5"></path>
                                     <path d="M20 4v7a4 4 0 0 1-4 4H4"></path>
                                 </svg>
-                                Ask
                             </button>
                         </div>
                     </div>
@@ -6950,16 +7124,156 @@
                                 </div>
 
                                 <div class="main-view-container" id="settingsView">
-                                    <div class="view-empty-state">
-                                        <svg class="view-empty-icon" viewBox="0 0 24 24" fill="none"
-                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <circle cx="12" cy="12" r="3"></circle>
-                                            <path
-                                                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
-                                            </path>
-                                        </svg>
-                                        <div class="view-empty-text">No settings available at this time.</div>
+                                    <div class="settings-list content-aligner">
+                                        <!-- About You -->
+                                        <div class="settings-group">
+                                            <div class="settings-group-title">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                    stroke-linejoin="round">
+                                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                                    <circle cx="12" cy="7" r="4"></circle>
+                                                </svg>
+                                                About You
+                                            </div>
+                                            <div class="setting-row-vertical">
+                                                <div class="setting-info">
+                                                    <div class="setting-label">Display name</div>
+                                                    <div class="setting-desc">Enter the name you’d like the AI to use.
+                                                    </div>
+                                                </div>
+                                                <input type="text" class="modal-input" value="John">
+                                            </div>
+                                            <div class="setting-row-vertical">
+                                                <div class="setting-info">
+                                                    <div class="setting-label">Role</div>
+                                                    <div class="setting-desc">Select your assigned organizational role.
+                                                    </div>
+                                                </div>
+                                                <select class="modal-input" id="settingsRoleSelect"
+                                                    onchange="updateRoleGuidelines()">
+                                                    <option value="sales_manager">Sales Manager</option>
+                                                    <option value="bdc_manager">BDC Manager</option>
+                                                </select>
+                                            </div>
+                                            <div class="setting-row-vertical">
+                                                <div class="setting-info">
+                                                    <div class="setting-label">What you do</div>
+                                                    <div class="setting-desc">Detailed guidelines and objectives for
+                                                        this role.</div>
+                                                </div>
+                                                <textarea class="modal-input" id="settingsRoleTextArea"
+                                                    style="min-height: 240px;"></textarea>
+                                            </div>
+                                        </div>
+
+                                        <!-- Personalization -->
+                                        <div class="settings-group">
+                                            <div class="settings-group-title">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                    stroke-linejoin="round">
+                                                    <path
+                                                        d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z">
+                                                    </path>
+                                                </svg>
+                                                Personalization
+                                            </div>
+                                            <div class="setting-row-vertical">
+                                                <div class="setting-info">
+                                                    <div class="setting-label">AI Assistant Style and Tone</div>
+                                                    <div class="setting-desc">Set the style and tone of how the AI
+                                                        responds to you.</div>
+                                                </div>
+                                                <select class="modal-input">
+                                                    <option>Default</option>
+                                                    <option>Professional</option>
+                                                    <option>Friendly</option>
+                                                    <option>Candid</option>
+                                                    <option>Quirky</option>
+                                                    <option>Efficient</option>
+                                                    <option>Nerdy</option>
+                                                    <option>Cynical</option>
+                                                </select>
+                                            </div>
+                                            <div class="setting-row-vertical">
+                                                <div class="setting-info">
+                                                    <div class="setting-label">AI Assistant Voice Selection</div>
+                                                    <div class="setting-desc">Pick how the AI sounds when it replies
+                                                    </div>
+                                                </div>
+                                                <div class="setting-controls-group">
+                                                    <select class="modal-input">
+                                                        <option>Alloy</option>
+                                                        <option>Echo</option>
+                                                        <option>Fable</option>
+                                                        <option>Onyx</option>
+                                                        <option>Nova</option>
+                                                        <option>Shimmer</option>
+                                                    </select>
+                                                    <button class="voice-play-btn" onclick="toggleVoiceSample(this)"
+                                                        title="Play voice sample">
+                                                        <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
+                                                            <path d="M8 5v14l11-7z" />
+                                                        </svg>
+                                                        <svg class="stop-icon" viewBox="0 0 24 24" fill="currentColor"
+                                                            style="display:none;">
+                                                            <rect x="6" y="6" width="12" height="12" rx="2" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="setting-row-vertical">
+                                                <div class="setting-info">
+                                                    <div class="setting-label">Your instructions for AI Assistant</div>
+                                                    <div class="setting-desc">Customise how AI responds to you by giving
+                                                        it instructions</div>
+                                                </div>
+                                                <textarea class="modal-input" style="min-height: 100px;"></textarea>
+                                            </div>
+                                        </div>
+
+                                        <!-- Advanced Section -->
+                                        <div class="settings-group">
+                                            <div class="settings-group-title">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                    stroke-linejoin="round">
+                                                    <circle cx="12" cy="12" r="3"></circle>
+                                                    <path
+                                                        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                                                    </path>
+                                                </svg>
+                                                Advanced
+                                            </div>
+                                            <div class="setting-row">
+                                                <div class="setting-info">
+                                                    <div class="setting-label">Web Search</div>
+                                                    <div class="setting-desc">This enabled the AI to use search results
+                                                        from the web.</div>
+                                                </div>
+                                                <label class="toggle-switch">
+                                                    <input type="checkbox" checked>
+                                                    <span class="toggle-slider"></span>
+                                                </label>
+                                            </div>
+                                            <div class="setting-row">
+                                                <div class="setting-info">
+                                                    <div class="setting-label">Personalize with your conversation
+                                                        history</div>
+                                                    <div class="setting-desc">Allow AI Assistant to remember details
+                                                        from your previous conversations.</div>
+                                                </div>
+                                                <label class="toggle-switch">
+                                                    <input type="checkbox" checked>
+                                                    <span class="toggle-slider"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="settings-footer-actions">
+                                            <button class="reset-bottom-btn" onclick="resetSettings()">reset to default
+                                                settings</button>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="footer-container">
@@ -7225,10 +7539,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="disclaimer-text content-aligner" style="margin: 8px 0;">AI
-                                    Assistant can
-                                    make
-                                    mistakes, so please verify responses.</div>
+                                <div class="disclaimer-text content-aligner">AI Assistant can make mistakes, so please
+                                    verify responses.</div>
                             </div>
                         </div>
 
@@ -10393,6 +10705,107 @@
             }
         }
 
+        const roleGuidelines = {
+            sales_manager: `Role & Persona: 
+Act as a Senior Automotive Retail Strategist and Data Scientist. Your goal is to maximize Front-End Gross, PVR (Profit Per Vehicle Retail), and Inventory Velocity across our dealer group.
+
+Operational Context:
+Primary KPIs: Always prioritize Days-to-Turn (aiming for <30 days), Lead-to-Close ratios (target 15%+), and Finance & Insurance (F&I) penetration.
+Data Synthesis: 
+When I ask about sales, cross-reference our CRM (lead volume) with our DMS (actual deals) and current Market Days Supply (MDS).
+Tone: 
+Be direct, proactive, and 'bottom-line' oriented. If you see a red flag in the data, lead with it.
+
+Response Framework:
+The 'So What?': 
+Start with the single most important insight.
+The Visual Logic: 
+Use tables to compare 'Actual vs. Goal' or 'Year-over-Year' performance.
+The Tactical Move: 
+End every response with three 'Action Items' for my desk managers (e.g., 'Lower the price on the aged Jeep units' or 'Re-assign stale internet leads').`,
+            bdc_manager: `Role & Persona: 
+Act as a High-Performance BDC Operations Consultant and Communications Coach. Your obsession is the 'Lead-to-Appointment' funnel and 'Speed-to-Lead' metrics.
+
+Operational Context:
+Primary KPIs: Focus on Speed to Lead (Target: <5 mins), Set Rate (Target: 40% of leads), Show Rate (Target: 50% of sets), and Sold Rate (Target: 15% of total leads).
+Lead Management: You have visibility into CRM workflows, call recordings, and third-party lead sources (Autotrader, Cars.com, OEM).
+Tone: High-energy, analytical, and coach-like. If a lead source has a 0% show rate, call it out as 'garbage' and suggest reallocation.
+
+Response Framework:
+The Funnel Audit: Whenever I ask for a status update, break it down by Set/Show/Sold.
+The 'Agent Spotlight': Identify the top-performing agent and the one who is struggling based on 'Outbound Effort vs. Appointment Result.'
+The Script Fix: Provide one specific, high-converting talk track or text-template adjustment based on current inventory or market trends.`
+        };
+
+        window.updateRoleGuidelines = function () {
+            const select = document.getElementById('settingsRoleSelect');
+            const textarea = document.getElementById('settingsRoleTextArea');
+            if (select && textarea) {
+                textarea.value = roleGuidelines[select.value] || "";
+            }
+        };
+
+        window.toggleVoiceSample = function (btn) {
+            const isPlaying = btn.classList.contains('playing');
+            const playIcon = btn.querySelector('.play-icon');
+            const stopIcon = btn.querySelector('.stop-icon');
+
+            // Reset all other voice buttons if any (though currently only one)
+            document.querySelectorAll('.voice-play-btn').forEach(b => {
+                if (b !== btn) {
+                    b.classList.remove('playing');
+                    b.querySelector('.play-icon').style.display = 'block';
+                    b.querySelector('.stop-icon').style.display = 'none';
+                }
+            });
+
+            if (isPlaying) {
+                btn.classList.remove('playing');
+                if (playIcon) playIcon.style.display = 'block';
+                if (stopIcon) stopIcon.style.display = 'none';
+            } else {
+                btn.classList.add('playing');
+                if (playIcon) playIcon.style.display = 'none';
+                if (stopIcon) stopIcon.style.display = 'block';
+
+                // Simulate sample end after 3 seconds
+                setTimeout(() => {
+                    if (btn.classList.contains('playing')) {
+                        btn.classList.remove('playing');
+                        if (playIcon) playIcon.style.display = 'block';
+                        if (stopIcon) stopIcon.style.display = 'none';
+                    }
+                }, 3000);
+            }
+        };
+
+        window.resetSettings = function () {
+            // Reset Display Name
+            const inputs = document.querySelectorAll('#settingsView input[type="text"]');
+            inputs.forEach(input => {
+                if (input.value === "John" || input.placeholder === "John") input.value = "John";
+            });
+
+            // Reset Role
+            const roleSelect = document.getElementById('settingsRoleSelect');
+            if (roleSelect) {
+                roleSelect.value = "sales_manager";
+                updateRoleGuidelines();
+            }
+
+            // Reset Toggles
+            const toggles = document.querySelectorAll('#settingsView input[type="checkbox"]');
+            toggles.forEach(toggle => toggle.checked = true);
+
+            // Reset Other Dropdowns
+            const selects = document.querySelectorAll('#settingsView select:not(#settingsRoleSelect)');
+            selects.forEach(select => select.selectedIndex = 0);
+
+            // Reset Textareas
+            const textareas = document.querySelectorAll('#settingsView textarea:not(#settingsRoleTextArea)');
+            textareas.forEach(ta => ta.value = "");
+        };
+
         // View Management
         window.openMainView = function (viewId) {
             const views = ['initialView', 'activeChat', 'tasksView', 'insightsView', 'templatesView', 'settingsView'];
@@ -10404,6 +10817,10 @@
             const finalViewId = (viewId === 'emptyState') ? 'initialView' : viewId;
             const targetEl = document.getElementById(finalViewId);
             if (targetEl) targetEl.style.display = 'flex';
+
+            if (viewId === 'settingsView') {
+                updateRoleGuidelines();
+            }
 
             // Update Sidebar Highlights
             const navItems = document.querySelectorAll('.history-nav-item');
