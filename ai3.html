@@ -1710,47 +1710,346 @@
             /* Allow select to fill group correctly */
         }
 
-        .voice-play-btn {
-            width: var(--space-3xl);
-            /* Reduced to 32px */
-            height: var(--space-3xl);
-            border-radius: 50%;
-            background: var(--color-bg-surface);
+        /* Custom Select Styles */
+        .custom-select-container {
+            position: relative;
+            width: var(--w-full);
+        }
+
+        .custom-select-trigger {
+            width: var(--w-full);
+            padding: var(--space-sm) var(--space-md);
             border: 1px solid var(--color-border-muted);
-            color: var(--color-text-main);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            color: var(--color-text-heading);
+            background: #FFFFFF;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
             cursor: pointer;
-            flex-shrink: 0;
-            transition: all 0.2s ease;
-            padding: 0;
-            margin-bottom: 0;
+            transition: all var(--transition-speed-normal);
+            text-align: left;
+            user-select: none;
+            height: 38px;
         }
 
-        .voice-play-btn:hover {
-            background: var(--color-border-muted);
-            color: var(--color-text-heading);
-            transform: scale(1.05);
+        .custom-select-trigger:hover {
+            border-color: var(--color-border-hover);
+            background: var(--color-bg-hover);
         }
 
-        .voice-play-btn.playing {
-            background: var(--gradient-primary);
-            color: var(--color-danger);
+        .custom-select-trigger:focus {
+            border-color: var(--color-primary);
+            outline: none;
+        }
+
+        .custom-select-trigger .chevron-icon {
+            width: 14px;
+            height: 14px;
+            color: var(--color-text-muted);
+            transition: transform var(--transition-speed-normal);
+            stroke-width: 2px;
+        }
+
+        .custom-select-container.open .chevron-icon {
+            transform: rotate(180deg);
+        }
+
+        .custom-select-container.open .custom-select-trigger {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 1px var(--color-primary);
+        }
+
+        .custom-select-options {
+            position: absolute;
+            width: 100%;
+            top: calc(100% + 4px);
+            left: 0;
+            background: white;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            display: none;
+            flex-direction: column;
+            z-index: var(--z-top);
+            max-height: 240px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .custom-select-container.open .custom-select-options {
+            display: flex;
+        }
+
+        .custom-select-value {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding-right: var(--space-sm);
+        }
+
+        /* Voice Selection Grid & Cards */
+        .voice-selection-preview {
+            width: 100%;
+            margin-top: var(--space-md);
+        }
+
+        .voice-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-md);
+            width: 100%;
+        }
+
+        .chat-sidebar.state-fullscreen .voice-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .voice-card {
+            display: flex;
+            align-items: center;
+            padding: var(--space-md);
+            background: white;
             border: 1px solid var(--color-border-muted);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all var(--transition-speed-normal);
+            gap: var(--space-md);
+            position: relative;
+            height: 72px;
+            /* Fixed height to prevent expanding */
+            box-sizing: border-box;
+        }
+
+        .voice-card:hover {
+            border-color: var(--color-border-hover);
+            background: var(--color-bg-hover);
+        }
+
+        .voice-card.active {
+            border: 1px solid var(--color-border-muted);
+            background: #FFFFFF;
+            /* Match input bgColor */
             box-shadow: none;
         }
 
-        .voice-play-btn.playing:hover {
-            background: var(--color-danger);
-            color: #fff;
-            filter: none;
+        /* Distinctive active state only in selection modal */
+        #voiceModal .voice-card.active {
+            border-color: var(--color-primary);
+            background-color: rgba(66, 133, 244, 0.06);
+            box-shadow: 0 0 0 1px var(--color-primary);
         }
 
-        .voice-play-btn svg {
-            width: 16px;
-            /* Reduced svg size */
-            height: 16px;
+        .voice-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+            background: var(--color-bg-surface);
+        }
+
+        /* Avatar Colors */
+        .avatar-alloy {
+            background: rgba(147, 124, 249, 0.15);
+        }
+
+        .avatar-echo {
+            background: rgba(123, 235, 236, 0.2);
+        }
+
+        .avatar-fable {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .avatar-onyx {
+            background: rgba(71, 85, 105, 0.1);
+        }
+
+        .avatar-nova {
+            background: rgba(251, 191, 36, 0.1);
+        }
+
+        .avatar-shimmer {
+            background: rgba(236, 72, 153, 0.1);
+        }
+
+        .voice-info {
+            flex: 1;
+            min-width: 0;
+            /* Allow truncation */
+        }
+
+        .voice-name {
+            font-weight: 600;
+            color: var(--color-text-heading);
+            font-size: 15px;
+            margin-bottom: 2px;
+        }
+
+        .voice-meta-stack {
+            position: relative;
+            height: 30px;
+            display: flex;
+            align-items: center;
+        }
+
+        .voice-desc {
+            font-size: 13px;
+            color: var(--color-text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            transition: opacity 0.2s ease;
+        }
+
+        .voice-visualizer {
+            display: flex;
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 30px;
+            width: 180px;
+            max-width: 100%;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .voice-card.playing-mode .voice-visualizer {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .voice-card.playing-mode .voice-desc {
+            opacity: 0;
+        }
+
+        .waveform-bg,
+        .waveform-progress {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+        }
+
+        .waveform-bg .visualizer-bar {
+            background: #E5EAF2;
+        }
+
+        .waveform-progress {
+            width: 0;
+            overflow: hidden;
+            z-index: 2;
+        }
+
+        .voice-card.playing-mode .waveform-progress {
+            animation: waveform-fill 5s linear forwards;
+        }
+
+        .waveform-progress .visualizer-bar {
+            background: var(--gradient-ai);
+            /* Using the brand gradient for AI feel */
+            flex-shrink: 0;
+        }
+
+        @keyframes waveform-fill {
+            from {
+                width: 0;
+            }
+
+            to {
+                width: 100%;
+            }
+        }
+
+        .visualizer-bar {
+            width: 2px;
+            border-radius: 1px;
+            flex-shrink: 0;
+        }
+
+        .voice-card-play-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: white;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-text-main);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .voice-card-play-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            background: white;
+            color: var(--color-primary);
+        }
+
+        .voice-card-play-btn svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+        }
+
+        .voice-card-play-btn.playing {
+            color: var(--color-danger);
+            background: var(--color-danger-bg);
+        }
+
+        .voice-card-play-btn .stop-icon {
+            display: none;
+        }
+
+        .voice-card-play-btn.playing .play-icon {
+            display: none;
+        }
+
+        .voice-card-play-btn.playing .stop-icon {
+            display: block;
+        }
+
+        .change-voice-link {
+            display: inline-block;
+            margin-top: var(--space-sm);
+            font-size: 14px;
+            color: var(--color-primary);
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .change-voice-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Modal Specific Extensions */
+        .modal-box.wide {
+            width: min(600px, 90%);
+        }
+
+        .voice-modal-content {
+            padding-top: var(--space-md);
         }
 
         .modal-actions {
@@ -1853,11 +2152,18 @@
 
         .chat-sidebar.state-fullscreen .setting-row-vertical .modal-input,
         .chat-sidebar.state-fullscreen .setting-row-vertical textarea.modal-input,
-        .chat-sidebar.state-fullscreen .setting-row-vertical .setting-controls-group {
+        .chat-sidebar.state-fullscreen .setting-row-vertical .setting-controls-group,
+        .chat-sidebar.state-fullscreen .setting-row-vertical .voice-setting-controls,
+        .chat-sidebar.state-fullscreen .setting-row-vertical .custom-select-container {
             flex: 2;
             margin-top: 0;
             max-width: 400px;
-            /* Reduced size as requested */
+        }
+
+        .voice-setting-controls {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
         }
 
         .setting-info {
@@ -1882,10 +2188,7 @@
         }
 
         .settings-footer-actions {
-            margin-top: var(--space-lg);
-            /* Reduced from space-xl */
-            padding: var(--space-md) 0 0 0;
-            /* Reduced from space-lg */
+            padding: var(--space-lg) 0 0 0;
             display: flex;
             justify-content: center;
             border-top: 1px solid var(--color-border-muted);
@@ -7176,11 +7479,31 @@
                                                     <div class="setting-desc">Select your assigned organizational role.
                                                     </div>
                                                 </div>
-                                                <select class="modal-input" id="settingsRoleSelect"
-                                                    onchange="updateRoleGuidelines()">
-                                                    <option value="sales_manager">Sales Manager</option>
-                                                    <option value="bdc_manager">BDC Manager</option>
-                                                </select>
+                                                <div class="custom-select-container" id="settingsRoleSelectContainer">
+                                                    <button class="custom-select-trigger"
+                                                        onclick="toggleCustomSelect(event, 'settingsRoleSelectContainer')">
+                                                        <span class="custom-select-value"
+                                                            id="settingsRoleSelectValue">Sales Manager</span>
+                                                        <svg class="chevron-icon" viewBox="0 0 24 24" fill="none"
+                                                            stroke="currentColor" stroke-width="2"
+                                                            stroke-linecap="round" stroke-linejoin="round">
+                                                            <polyline points="6 10 12 16 18 10"></polyline>
+                                                        </svg>
+                                                    </button>
+                                                    <div class="menu-dropdown custom-select-options">
+                                                        <button class="menu-item"
+                                                            onclick="handleCustomSelect('settingsRoleSelectContainer', 'sales_manager', 'Sales Manager')">Sales
+                                                            Manager</button>
+                                                        <button class="menu-item"
+                                                            onclick="handleCustomSelect('settingsRoleSelectContainer', 'bdc_manager', 'BDC Manager')">BDC
+                                                            Manager</button>
+                                                    </div>
+                                                    <select id="settingsRoleSelect" onchange="updateRoleGuidelines()"
+                                                        style="display: none;">
+                                                        <option value="sales_manager" selected>Sales Manager</option>
+                                                        <option value="bdc_manager">BDC Manager</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                             <div class="setting-row-vertical">
                                                 <div class="setting-info">
@@ -7211,16 +7534,47 @@
                                                     <div class="setting-desc">Set the style and tone of how the AI
                                                         responds to you.</div>
                                                 </div>
-                                                <select class="modal-input">
-                                                    <option>Default</option>
-                                                    <option>Professional</option>
-                                                    <option>Friendly</option>
-                                                    <option>Candid</option>
-                                                    <option>Quirky</option>
-                                                    <option>Efficient</option>
-                                                    <option>Nerdy</option>
-                                                    <option>Cynical</option>
-                                                </select>
+                                                <div class="custom-select-container" id="settingsToneSelectContainer">
+                                                    <button class="custom-select-trigger"
+                                                        onclick="toggleCustomSelect(event, 'settingsToneSelectContainer')">
+                                                        <span class="custom-select-value"
+                                                            id="settingsToneSelectValue">Default</span>
+                                                        <svg class="chevron-icon" viewBox="0 0 24 24" fill="none"
+                                                            stroke="currentColor" stroke-width="2"
+                                                            stroke-linecap="round" stroke-linejoin="round">
+                                                            <polyline points="6 10 12 16 18 10"></polyline>
+                                                        </svg>
+                                                    </button>
+                                                    <div class="menu-dropdown custom-select-options">
+                                                        <button class="menu-item"
+                                                            onclick="handleCustomSelect('settingsToneSelectContainer', 'Default', 'Default')">Default</button>
+                                                        <button class="menu-item"
+                                                            onclick="handleCustomSelect('settingsToneSelectContainer', 'Professional', 'Professional')">Professional</button>
+                                                        <button class="menu-item"
+                                                            onclick="handleCustomSelect('settingsToneSelectContainer', 'Friendly', 'Friendly')">Friendly</button>
+                                                        <button class="menu-item"
+                                                            onclick="handleCustomSelect('settingsToneSelectContainer', 'Candid', 'Candid')">Candid</button>
+                                                        <button class="menu-item"
+                                                            onclick="handleCustomSelect('settingsToneSelectContainer', 'Quirky', 'Quirky')">Quirky</button>
+                                                        <button class="menu-item"
+                                                            onclick="handleCustomSelect('settingsToneSelectContainer', 'Efficient', 'Efficient')">Efficient</button>
+                                                        <button class="menu-item"
+                                                            onclick="handleCustomSelect('settingsToneSelectContainer', 'Nerdy', 'Nerdy')">Nerdy</button>
+                                                        <button class="menu-item"
+                                                            onclick="handleCustomSelect('settingsToneSelectContainer', 'Cynical', 'Cynical')">Cynical</button>
+                                                    </div>
+                                                    <select class="modal-input" id="settingsToneSelect"
+                                                        style="display: none;">
+                                                        <option selected>Default</option>
+                                                        <option>Professional</option>
+                                                        <option>Friendly</option>
+                                                        <option>Candid</option>
+                                                        <option>Quirky</option>
+                                                        <option>Efficient</option>
+                                                        <option>Nerdy</option>
+                                                        <option>Cynical</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                             <div class="setting-row-vertical">
                                                 <div class="setting-info">
@@ -7228,26 +7582,22 @@
                                                     <div class="setting-desc">Pick how the AI sounds when it replies
                                                     </div>
                                                 </div>
-                                                <div class="setting-controls-group">
-                                                    <select class="modal-input">
-                                                        <option>Alloy</option>
-                                                        <option>Echo</option>
-                                                        <option>Fable</option>
-                                                        <option>Onyx</option>
-                                                        <option>Nova</option>
-                                                        <option>Shimmer</option>
-                                                    </select>
-                                                    <button class="voice-play-btn" onclick="toggleVoiceSample(this)"
-                                                        title="Play voice sample">
-                                                        <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
-                                                            <path d="M8 5v14l11-7z" />
-                                                        </svg>
-                                                        <svg class="stop-icon" viewBox="0 0 24 24" fill="currentColor"
-                                                            style="display:none;">
-                                                            <rect x="6" y="6" width="12" height="12" rx="2" />
-                                                        </svg>
-                                                    </button>
+                                                <div class="voice-setting-controls">
+                                                    <div class="voice-selection-preview" id="voiceSelectionPreview">
+                                                        <!-- Rendered by JS -->
+                                                    </div>
+                                                    <a class="change-voice-link" onclick="openVoiceModal()">Change
+                                                        voice</a>
                                                 </div>
+                                                <select class="modal-input" id="settingsVoiceSelect"
+                                                    style="display: none;">
+                                                    <option value="Alloy" selected>Alloy</option>
+                                                    <option value="Echo">Echo</option>
+                                                    <option value="Fable">Fable</option>
+                                                    <option value="Onyx">Onyx</option>
+                                                    <option value="Nova">Nova</option>
+                                                    <option value="Shimmer">Shimmer</option>
+                                                </select>
                                             </div>
                                             <div class="setting-row-vertical">
                                                 <div class="setting-info">
@@ -7596,23 +7946,19 @@
                             </div>
                         </div>
 
-                        <!-- Filter Details Modal -->
+                        <!-- Filter Modal -->
                         <div class="detail-modal-overlay" id="filterModal">
                             <div class="detail-modal-box">
                                 <div class="detail-modal-header">
                                     <div class="detail-modal-title">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M22 3H2l8 9v6l4 2v-8l8-9z"></path>
-                                        </svg>
-                                        Applied Filters
-                                    </div>
-                                    <button class="detail-modal-close" onclick="closeFilterModal()">
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                            stroke="currentColor" stroke-width="2">
-                                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
                                         </svg>
-                                    </button>
+                                        Applied Filters (2)
+                                    </div>
+                                    <button class="detail-modal-close" onclick="closeFilterModal()">&times;</button>
                                 </div>
                                 <div class="detail-modal-content" id="filterModalContent">
                                     <!-- Content will be populated dynamically -->
@@ -7642,6 +7988,22 @@
                                 </div>
                                 <div class="detail-modal-content" id="sourcesModalContent">
                                     <!-- Content will be populated dynamically -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Voice Selection Modal -->
+                        <div class="modal-overlay" id="voiceModal">
+                            <div class="modal-box wide">
+                                <h3 style="margin-bottom: var(--space-md); color: var(--color-text-heading);">Change
+                                    Voice</h3>
+                                <div class="voice-modal-content">
+                                    <div class="voice-grid" id="voiceGridContainer">
+                                        <!-- Rendered by JS -->
+                                    </div>
+                                </div>
+                                <div class="modal-actions" style="margin-top: var(--space-xl);">
+                                    <button class="modal-btn secondary" onclick="closeVoiceModal()">Cancel</button>
                                 </div>
                             </div>
                         </div>
@@ -9634,6 +9996,8 @@
         window.closeModals = function () {
             renameModal.classList.remove('visible');
             deleteModal.classList.remove('visible');
+            const voiceModal = document.getElementById('voiceModal');
+            if (voiceModal) voiceModal.classList.remove('visible');
         };
 
         // --- LAZY LOADING HISTORY ---
@@ -9975,6 +10339,12 @@
             }
             if (!chatDropdown.contains(e.target) && !btnChatMenu.contains(e.target)) {
                 chatDropdown.classList.remove('visible');
+            }
+            // Close custom selects
+            if (!e.target.closest('.custom-select-container')) {
+                document.querySelectorAll('.custom-select-container').forEach(c => {
+                    c.classList.remove('open');
+                });
             }
             if (e.target === renameModal) closeModals();
             if (e.target === deleteModal) closeModals();
@@ -10763,6 +11133,35 @@ The 'Agent Spotlight': Identify the top-performing agent and the one who is stru
 The Script Fix: Provide one specific, high-converting talk track or text-template adjustment based on current inventory or market trends.`
         };
 
+        // --- CUSTOM SELECT LOGIC ---
+        window.toggleCustomSelect = function (event, containerId) {
+            event.stopPropagation();
+            const container = document.getElementById(containerId);
+            const isOpen = container.classList.contains('open');
+
+            // Close all other custom selects
+            document.querySelectorAll('.custom-select-container').forEach(c => {
+                if (c.id !== containerId) c.classList.remove('open');
+            });
+
+            container.classList.toggle('open');
+        };
+
+        window.handleCustomSelect = function (containerId, value, text) {
+            const container = document.getElementById(containerId);
+            const valueSpan = container.querySelector('.custom-select-value');
+            const hiddenSelect = container.querySelector('select');
+
+            if (valueSpan) valueSpan.innerText = text;
+            if (hiddenSelect) {
+                hiddenSelect.value = value;
+                // Trigger change event on hidden select
+                hiddenSelect.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+
+            container.classList.remove('open');
+        };
+
         window.updateRoleGuidelines = function () {
             const select = document.getElementById('settingsRoleSelect');
             const textarea = document.getElementById('settingsRoleTextArea');
@@ -10771,35 +11170,114 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
             }
         };
 
-        window.toggleVoiceSample = function (btn) {
-            const isPlaying = btn.classList.contains('playing');
-            const playIcon = btn.querySelector('.play-icon');
-            const stopIcon = btn.querySelector('.stop-icon');
+        const voicesData = [
+            { id: 'Alloy', name: 'Alloy', desc: 'Neutral, Versatile', avatar: '✨', avatarClass: 'avatar-alloy' },
+            { id: 'Echo', name: 'Echo', desc: 'Soft, Warm', avatar: '🌊', avatarClass: 'avatar-echo' },
+            { id: 'Fable', name: 'Fable', desc: 'British, Expressive', avatar: '🔥', avatarClass: 'avatar-fable' },
+            { id: 'Onyx', name: 'Onyx', desc: 'Deep, Authoritative', avatar: '🌑', avatarClass: 'avatar-onyx' },
+            { id: 'Nova', name: 'Nova', desc: 'Professional, Energetic', avatar: '☀️', avatarClass: 'avatar-nova' },
+            { id: 'Shimmer', name: 'Shimmer', desc: 'Clear, Bright', avatar: '💎', avatarClass: 'avatar-shimmer' }
+        ];
 
-            // Reset all other voice buttons if any (though currently only one)
-            document.querySelectorAll('.voice-play-btn').forEach(b => {
-                if (b !== btn) {
-                    b.classList.remove('playing');
-                    b.querySelector('.play-icon').style.display = 'block';
-                    b.querySelector('.stop-icon').style.display = 'none';
-                }
+        window.getWaveformHTML = function () {
+            const heights = [4, 6, 8, 12, 18, 14, 10, 8, 12, 16, 24, 20, 14, 10, 8, 6, 4, 8, 12, 18, 26, 30, 26, 20, 14, 12, 16, 22, 28, 24, 18, 14, 10, 8, 6, 4, 8, 12, 16, 20, 16, 12, 8, 6, 4];
+            const bars = heights.map(h => `<div class="visualizer-bar" style="height: ${h}px;"></div>`).join('');
+            return `
+                <div class="voice-visualizer">
+                    <div class="waveform-bg">${bars}</div>
+                    <div class="waveform-progress">${bars}</div>
+                </div>
+            `;
+        };
+
+        window.renderVoicePreview = function (voiceId) {
+            const voice = voicesData.find(v => v.id === voiceId) || voicesData[0];
+            const container = document.getElementById('voiceSelectionPreview');
+            if (container) {
+                container.innerHTML = `
+                    <div class="voice-card active" onclick="openVoiceModal()">
+                        <div class="voice-avatar ${voice.avatarClass}">${voice.avatar}</div>
+                        <div class="voice-info">
+                            <div class="voice-name">${voice.name}</div>
+                            <div class="voice-meta-stack">
+                                <div class="voice-desc">${voice.desc}</div>
+                                ${getWaveformHTML()}
+                            </div>
+                        </div>
+                        <button class="voice-card-play-btn" onclick="toggleVoiceSample(event, this, '${voice.id}')">
+                            <svg class="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+                            <svg class="stop-icon" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" /></svg>
+                        </button>
+                    </div>
+                `;
+            }
+        };
+
+        window.renderVoiceModal = function () {
+            const container = document.getElementById('voiceGridContainer');
+            if (!container) return;
+            const currentVoiceId = document.getElementById('settingsVoiceSelect').value;
+
+            container.innerHTML = voicesData.map(voice => `
+                <div class="voice-card ${voice.id === currentVoiceId ? 'active' : ''}" onclick="selectVoice('${voice.id}')">
+                    <div class="voice-avatar ${voice.avatarClass}">${voice.avatar}</div>
+                    <div class="voice-info">
+                        <div class="voice-name">${voice.name}</div>
+                        <div class="voice-meta-stack">
+                            <div class="voice-desc">${voice.desc}</div>
+                            ${getWaveformHTML()}
+                        </div>
+                    </div>
+                    <button class="voice-card-play-btn" onclick="toggleVoiceSample(event, this, '${voice.id}')">
+                        <svg class="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+                        <svg class="stop-icon" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" /></svg>
+                    </button>
+                </div>
+            `).join('');
+        };
+
+        window.openVoiceModal = function () {
+            renderVoiceModal();
+            document.getElementById('voiceModal').classList.add('visible');
+        };
+
+        window.closeVoiceModal = function () {
+            document.getElementById('voiceModal').classList.remove('visible');
+        };
+
+        window.selectVoice = function (voiceId) {
+            const select = document.getElementById('settingsVoiceSelect');
+            if (select) {
+                select.value = voiceId;
+                select.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+            renderVoicePreview(voiceId);
+            closeVoiceModal();
+        };
+
+        window.toggleVoiceSample = function (event, btn, voiceName) {
+            if (event) event.stopPropagation();
+            const card = btn.closest('.voice-card');
+            const isPlaying = btn.classList.contains('playing');
+
+            // Reset all
+            document.querySelectorAll('.voice-card-play-btn').forEach(b => {
+                b.classList.remove('playing');
+                const p = b.closest('.voice-card');
+                if (p) p.classList.remove('playing-mode');
             });
 
             if (isPlaying) {
                 btn.classList.remove('playing');
-                if (playIcon) playIcon.style.display = 'block';
-                if (stopIcon) stopIcon.style.display = 'none';
+                if (card) card.classList.remove('playing-mode');
             } else {
                 btn.classList.add('playing');
-                if (playIcon) playIcon.style.display = 'none';
-                if (stopIcon) stopIcon.style.display = 'block';
+                if (card) card.classList.add('playing-mode');
 
-                // Simulate sample end after 5 seconds
                 setTimeout(() => {
                     if (btn.classList.contains('playing')) {
                         btn.classList.remove('playing');
-                        if (playIcon) playIcon.style.display = 'block';
-                        if (stopIcon) stopIcon.style.display = 'none';
+                        if (card) card.classList.remove('playing-mode');
                     }
                 }, 5000);
             }
@@ -10846,6 +11324,8 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
 
             if (viewId === 'settingsView') {
                 updateRoleGuidelines();
+                const currentVoiceId = document.getElementById('settingsVoiceSelect')?.value || 'Alloy';
+                renderVoicePreview(currentVoiceId);
             }
 
             // Update Sidebar Highlights
@@ -11037,7 +11517,8 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
                 if (icon) {
                     titleEl.innerHTML = '';
                     titleEl.appendChild(icon);
-                    titleEl.appendChild(document.createTextNode(` Sources (${allSources.length})`));
+                    titleEl.appendChild(document.createTextNode(` Sources(${allSources.length
+                        })`));
                 }
             }
 
@@ -11373,6 +11854,10 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
             resetChat();
             startPlaceholderRotation();
             sortHistoryList();
+
+            // Render initial voice preview
+            const currentVoiceId = document.getElementById('settingsVoiceSelect')?.value || 'Alloy';
+            renderVoicePreview(currentVoiceId);
         };
 
         // Placeholder for updating chat panel suggestions based on search query
