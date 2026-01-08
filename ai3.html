@@ -34,7 +34,7 @@
             --gradient-ai: linear-gradient(320deg, #2157F5 8.61%, #258DFF 39.1%, #86FFBB 92.21%), #FFFFFF;
 
             /* Dimensions */
-            --header-height: 48px;
+            --header-height: 60px;
             --sidebar-width: 400px;
             --sidebar-min-width: 280px;
             --sidebar-collapsed-width: 60px;
@@ -232,7 +232,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            transition: transform var(--transition-speed-slower) cubic-bezier(0.4, 0, 0.2, 1), width var(--transition-speed-slow) ease;
+            transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1), width var(--transition-speed-slow) ease;
         }
 
         .chat-sidebar.state-docked {
@@ -320,10 +320,7 @@
             }
 
             .main-content.pushed-by-dock {
-                padding-left: 30px !important;
-                padding-right: 30px !important;
-                padding-top: 30px !important;
-                padding-bottom: 30px !important;
+                padding: var(--space-2xl) !important;
             }
 
             /* Ensure app-container doesn't reserve space for floating sidebar */
@@ -2231,6 +2228,21 @@
             width: 14px;
             height: 14px;
             opacity: 0.8;
+            flex-shrink: 0;
+        }
+
+        /* Responsive Pills based on container state */
+        .chat-sidebar.state-fullscreen .reasoning-pill .pill-count-only {
+            display: none;
+        }
+
+        .chat-sidebar:not(.state-fullscreen) .reasoning-pill .pill-label {
+            display: none;
+        }
+
+        .chat-sidebar:not(.state-fullscreen) .reasoning-pill {
+            padding: 4px 8px;
+            gap: 4px;
         }
 
         .reasoning-container.expanded .chevron {
@@ -3897,7 +3909,7 @@
             flex: 1;
             height: 100%;
             background-color: #fff;
-            padding: 30px;
+            padding: var(--space-2xl);
             text-align: center;
             transition: padding-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
@@ -3908,8 +3920,8 @@
 
         .main-content.pushed-by-dock {
             padding-left: 430px;
-            padding-right: 30px;
-            padding-top: 30px;
+            padding-right: 24px;
+            padding-top: 24px;
             padding-bottom: 30px;
         }
 
@@ -4544,6 +4556,965 @@
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
+
+        /* ========================================
+           GLOBAL SEARCH - AI SEARCH TOGGLE SWITCH
+           ======================================== */
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: var(--space-lg);
+            min-width: 180px;
+        }
+
+        .nav-grid-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 4px;
+        }
+
+        .tekion-logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #00BFA5;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-family: sans-serif;
+        }
+
+        .nav-center {
+            flex: 1;
+            display: flex;
+            justify-content: flex-start;
+            margin-left: 200px;
+            gap: var(--space-md);
+            align-items: center;
+        }
+
+        .search-mode-switch {
+            width: 80px;
+            height: 36px;
+            background-color: #1F2937;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2px;
+            border: 1px solid #374151;
+            position: relative;
+        }
+
+        .switch-option {
+            flex: 1;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            z-index: 2;
+            transition: all 0.3s ease;
+            color: #6B7280;
+        }
+
+        .switch-option:hover {
+            color: #9CA3AF;
+        }
+
+        .switch-option.active {
+            color: #FFFFFF;
+        }
+
+        .switch-indicator {
+            position: absolute;
+            top: 2px;
+            bottom: 2px;
+            width: calc(50% - 2px);
+            border-radius: 4px;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            z-index: 1;
+        }
+
+        .search-mode-switch[data-mode="search"] .switch-indicator {
+            left: calc(50%);
+            background-color: #374151;
+        }
+
+        .search-mode-switch[data-mode="search"] .option-search {
+            color: #FFFFFF;
+        }
+
+        .search-mode-switch[data-mode="ai"] .switch-indicator {
+            left: 2px;
+            background: var(--gradient-ai);
+        }
+
+        .search-mode-switch[data-mode="ai"] .option-ai {
+            color: #FFFFFF;
+        }
+
+        .switch-option svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* ========================================
+           SEARCH INPUT WRAPPER & AI ACTIVE STATE
+           ======================================== */
+        .search-input-wrapper {
+            position: relative;
+            width: 100%;
+            background: white;
+            border: 1px solid #D1D5DB;
+            border-radius: 4px;
+            padding: 8px 8px 8px 12px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input-wrapper.ai-active {
+            border: 1px solid transparent;
+            z-index: 51;
+            position: relative;
+            background-image: linear-gradient(white, white),
+                linear-gradient(94deg, rgba(123, 235, 236, 0.40) 0%, rgba(147, 124, 249, 0.40) 98.94%);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.05);
+        }
+
+        .main-search-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 15px;
+            color: #161616;
+            background: transparent;
+        }
+
+        .main-search-input::placeholder {
+            color: #9CA3AF;
+        }
+
+        .ai-search-actions {
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-input-wrapper.ai-active .ai-search-actions {
+            display: flex;
+        }
+
+        .ai-ask-btn {
+            background: var(--gradient-ai);
+            color: white;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .ai-ask-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .ai-ask-btn:disabled {
+            background: #E5E7EB;
+            color: #9CA3AF;
+            opacity: 1;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .ai-ask-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* ========================================
+           AI SEARCH SUGGESTIONS
+           ======================================== */
+        .ai-search-suggestions {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            background-color: #ffffff;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 8px 0;
+        }
+
+        .ai-search-suggestions.visible {
+            display: flex !important;
+        }
+
+        .suggestion-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 16px;
+            transition: background-color 0.2s;
+            gap: 10px;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        .suggestion-item:hover {
+            background-color: #F9FAFB;
+        }
+
+        .suggestion-item svg {
+            width: 18px;
+            height: 18px;
+            color: #9CA3AF;
+            flex-shrink: 0;
+        }
+
+        .suggestion-item .query-text {
+            color: #9CA3AF;
+            font-weight: 400;
+        }
+
+        .suggestion-item .action-text {
+            color: #111827;
+            font-weight: 400;
+        }
+
+        /* ========================================
+           NORMAL SEARCH RESULTS PAGE
+           ======================================== */
+        .search-results-container {
+            display: none;
+            flex-direction: column;
+            margin: -24px;
+            height: calc(100vh + 24px);
+            background: #F9FAFB;
+            overflow-y: auto;
+            cursor: default;
+        }
+
+        .search-results-container.active {
+            display: flex;
+        }
+
+        .search-results-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            border-bottom: 1px solid #E5E7EB;
+            padding: 0 16px 0 0;
+        }
+
+        .search-results-close-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            color: #4B5563;
+            /* Darkened from #9CA3AF */
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .search-results-close-btn:hover {
+            background: #F3F4F6;
+            color: #111827;
+            /* Darker hover state */
+        }
+
+        .search-input-wrapper.results-active .search-results-close-btn {
+            display: flex;
+        }
+
+        .search-results-close-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .search-tabs {
+            display: flex;
+            gap: 0;
+            padding: 0 24px;
+            overflow-x: auto;
+        }
+
+        .search-tab {
+            padding: 14px 20px;
+            font-size: 14px;
+            color: #6B7280;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .search-tab:hover {
+            color: #374151;
+            background: #F9FAFB;
+        }
+
+        .search-tab.active {
+            color: #4285F4;
+            border-bottom-color: #4285F4;
+            font-weight: 500;
+        }
+
+        /* AI Suggestion Banner */
+        .ai-suggestion-banner {
+            margin: 0 0 24px 0;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            transition: all 0.2s;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid transparent;
+            background:
+                linear-gradient(270deg, var(--aiSemantics-color-card-background-defaultStop1, #ECFEFF) 0%, var(--aiSemantics-color-card-background-defaultStop2, #F5F3FF) 74.52%, var(--aiSemantics-color-card-background-defaultStop3, #EDE9FE) 100%) padding-box,
+                linear-gradient(320deg, #2157F5 8.61%, #258DFF 39.1%, #86FFBB 92.21%) border-box;
+        }
+
+        .ai-suggestion-banner:hover {
+            opacity: 1;
+        }
+
+        .ai-suggestion-banner svg {
+            width: 20px;
+            height: 20px;
+            color: #4285F4;
+            flex-shrink: 0;
+        }
+
+        .ai-suggestion-banner .banner-icon-container {
+            width: 32px;
+            height: 32px;
+            color: #10B981;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .ai-suggestion-banner .banner-icon-container svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .banner-text {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            text-align: left;
+        }
+
+        .banner-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--color-text-heading);
+        }
+
+        .banner-subtitle {
+            font-size: 14px;
+            padding-top: 4px;
+            color: var(--color-text-main);
+            font-weight: 400;
+        }
+
+        .initiate-chat-btn {
+            background: linear-gradient(322deg, #2157F5 8.63%, #258DFF 51.82%, #86FFBB 108.64%);
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .initiate-chat-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .initiate-chat-btn svg {
+            width: 16px;
+            height: 16px;
+            color: white;
+        }
+
+        .banner-subtitle strong {
+            color: #4B5563;
+            font-weight: 600;
+        }
+
+        .ai-suggestion-banner.expanded {
+            padding: 0;
+            cursor: default;
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: center;
+            gap: 0;
+            overflow: hidden;
+        }
+
+        .ai-suggestion-banner.aurora-active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 300%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                    transparent 10%,
+                    var(--aurora-color-1) 30%,
+                    var(--aurora-color-2) 50%,
+                    var(--aurora-color-3) 70%,
+                    var(--aurora-color-4) 85%,
+                    transparent 100%);
+            z-index: 0;
+            animation: auroraSlide 6s ease-in-out infinite;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        .ai-suggestion-banner.aurora-active {
+            border-color: transparent;
+            background: linear-gradient(270deg, var(--aiSemantics-color-card-background-defaultStop1, #ECFEFF) 0%, var(--aiSemantics-color-card-background-defaultStop2, #F5F3FF) 74.52%, var(--aiSemantics-color-card-background-defaultStop3, #EDE9FE) 100%) padding-box;
+        }
+
+        .ai-suggestion-banner.expanded:hover {
+            opacity: 1;
+        }
+
+        /* Insights Slider */
+        .ai-slider-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .ai-slider {
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 300%;
+            /* 3 slides */
+        }
+
+        .ai-slide {
+            width: 33.333%;
+            padding: 16px;
+            /* Reduced from 20px */
+            display: flex;
+            align-items: stretch;
+            justify-content: space-between;
+            gap: 16px;
+            /* Reduced from 24px */
+            box-sizing: border-box;
+            min-height: 100px;
+            /* Reduced from 120px */
+        }
+
+        .ai-slide-content {
+            flex: 1;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            /* This pushes label to top and body to bottom */
+        }
+
+        .ai-slide-body {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .ai-slide-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #7C3AED;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            height: 28px;
+            /* Match navigation button height exactly */
+        }
+
+        .ai-slide-label svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .ai-slide-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 2px;
+        }
+
+        .ai-slide-description {
+            font-size: 14px;
+            color: #4B5563;
+            line-height: 1.5;
+        }
+
+        .ai-slide-description strong {
+            color: #111827;
+            font-weight: 600;
+        }
+
+        .ai-slide-cta {
+            background: linear-gradient(322deg, #2157F5 8.63%, #258DFF 51.82%, #86FFBB 108.64%);
+            border: none;
+            border-radius: 4px;
+            height: 32px;
+            /* Fixed height */
+            padding: 0 16px;
+            /* Horizontal padding only */
+            font-size: 14px;
+            font-weight: 500;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            align-self: flex-end;
+            /* Align to the bottom of the text/slide */
+        }
+
+        .ai-slide-cta:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .ai-slide-cta svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .ai-slider-nav {
+            position: absolute;
+            top: 16px;
+            /* Align with reduced slide top padding */
+            right: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .nav-arrow-btn {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #F3F4F6;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #6B7280;
+            transition: all 0.2s;
+        }
+
+        .nav-arrow-btn:hover {
+            background: #E5E7EB;
+            color: #111827;
+        }
+
+        .nav-arrow-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .slide-indicator {
+            font-size: 13px;
+            font-weight: 600;
+            color: #111827;
+            min-width: 45px;
+            text-align: center;
+        }
+
+        /* Thinking State */
+        .banner-thinking {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            height: 100%;
+            position: relative;
+            z-index: 10;
+            padding-right: 20px;
+            /* Offset for perceptual centering and scrollbar */
+        }
+
+        .banner-thinking .thinking-avatar {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .banner-thinking .thinking-avatar svg {
+            width: 100%;
+            height: 100%;
+            animation: pulsate 1.5s ease-in-out infinite;
+        }
+
+        .banner-thinking span {
+            background: var(--gradient-ai);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% 200%;
+            animation: gradient-shift 3s ease infinite;
+            font-size: 15px;
+            font-weight: 600;
+            line-height: normal;
+            display: flex;
+            align-items: center;
+        }
+
+        @keyframes pulsate {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+
+            50% {
+                transform: scale(1.15);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+        }
+
+        /* Search Results Content */
+        .search-results-content {
+            display: flex;
+            gap: 24px;
+            padding: 24px;
+            flex: 1;
+        }
+
+        /* Right Side Container (AI Banner + Table) */
+        .search-results-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Filters Sidebar */
+        .search-filters-sidebar {
+            width: 200px;
+            flex-shrink: 0;
+        }
+
+        .filters-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .filters-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+            margin: 0;
+        }
+
+        .filters-header button {
+            background: none;
+            border: none;
+            color: #4285F4;
+            font-size: 13px;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .filters-header button:hover {
+            text-decoration: underline;
+        }
+
+        .filter-group {
+            margin-bottom: 20px;
+        }
+
+        .filter-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 6px;
+            text-align: left;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #111827;
+            background: white;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: #4285F4;
+            box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
+        }
+
+        /* Results Main Area */
+        .search-results-main {
+            flex: 1;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #E5E7EB;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .results-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #E5E7EB;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .results-count {
+            font-size: 14px;
+            color: #6B7280;
+        }
+
+        .results-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .results-actions button {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #D1D5DB;
+            background: white;
+            color: #374151;
+        }
+
+        .results-actions button:hover {
+            background: #F9FAFB;
+            border-color: #9CA3AF;
+        }
+
+        /* Results Table */
+        .search-results-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .search-results-table thead {
+            background: #F9FAFB;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .search-results-table th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6B7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .search-results-table td {
+            padding: 14px 16px;
+            font-size: 14px;
+            color: #111827;
+            border-bottom: 1px solid #F3F4F6;
+            text-align: left;
+        }
+
+        .search-results-table tbody tr:hover {
+            background: #F9FAFB;
+        }
+
+        .search-results-table .name-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-results-table .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10B981;
+            flex-shrink: 0;
+        }
+
+        .search-results-table .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .search-results-table .contact-email {
+            color: #111827;
+            font-size: 14px;
+        }
+
+        .search-results-table .contact-phone {
+            color: #6B7280;
+            font-size: 13px;
+        }
+
+        /* Insight Card Styling */
+        .insight-avatar {
+            width: 32px;
+            height: 32px;
+            background: #E0E7FF;
+            color: #4338CA;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .insight-card-header {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .insight-customer-name {
+            font-weight: 600;
+            color: #111827;
+            font-size: 16px;
+        }
+
+        .insight-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #6B7280;
+            font-size: 13px;
+        }
+
+        .insight-risk-badge {
+            background: #FEF3C7;
+            color: #D97706;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .insights-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .insights-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #9CA3AF;
+            letter-spacing: 0.1em;
+            margin-bottom: 4px;
+        }
+
+        .insight-item {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .insight-item svg {
+            width: 14px;
+            height: 14px;
+            color: #A78BFA;
+            margin-top: 3px;
+        }
+
+        .insight-item span {
+            font-size: 13px;
+            color: #374151;
+            line-height: 1.5;
+        }
+
+        .insight-btn.primary {
+            align-self: flex-end;
+            background: var(--gradient-ai);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .insight-btn.primary svg {
+            width: 14px;
+            height: 14px;
+            color: white;
+        }
     </style>
 </head>
 
@@ -4641,7 +5612,109 @@
     </div>
 
     <div class="layout-wrapper">
-        <nav class="global-top-nav"></nav>
+        <nav class="global-top-nav" style="display: flex; align-items: center; padding: 0 20px; gap: 16px;">
+            <!-- Center Section - Search -->
+            <div class="nav-center">
+                <!-- AI Search Toggle Switch -->
+                <div class="search-mode-switch" id="searchModeSwitch" data-mode="search">
+                    <div class="switch-indicator"></div>
+                    <!-- AI Option -->
+                    <div class="switch-option option-ai" onclick="setSearchMode('ai')">
+                        <svg viewBox="0 0 16 16" fill="none">
+                            <path
+                                d="M7.94922 14.2996C8.41854 14.2998 8.79948 14.6805 8.79948 15.1498C8.79934 15.619 8.41845 15.9999 7.94922 16C7.47986 16 7.0991 15.6191 7.09896 15.1498C7.09896 14.6804 7.47978 14.2996 7.94922 14.2996Z"
+                                fill="currentColor"></path>
+                            <path
+                                d="M12.1497 13.3973C12.5086 13.3973 12.7993 13.6882 12.7995 14.047C12.7995 14.406 12.5087 14.6967 12.1497 14.6967C11.7909 14.6966 11.5 14.4059 11.5 14.047C11.5001 13.6883 11.791 13.3975 12.1497 13.3973Z"
+                                fill="currentColor"></path>
+                            <path
+                                d="M3.45052 12.7997C3.86473 12.7997 4.20052 13.1355 4.20052 13.5497C4.20052 13.9639 3.86473 14.2996 3.45052 14.2996C3.03631 14.2996 2.70052 13.9639 2.70052 13.5497C2.70052 13.1355 3.03631 12.7997 3.45052 12.7997Z"
+                                fill="currentColor"></path>
+                            <path
+                                d="M6.25 10.3976C6.94036 10.3976 7.5 10.9572 7.5 11.6475C7.5 12.3378 6.94036 12.8974 6.25 12.8974C5.55964 12.8974 5 12.3378 5 11.6475C5 10.9572 5.55964 10.3976 6.25 10.3976Z"
+                                fill="currentColor"></path>
+                            <path
+                                d="M10.3503 10.3976C10.9853 10.3976 11.4999 10.9123 11.5 11.5472C11.5 12.1823 10.9854 12.6969 10.3503 12.6969C9.71525 12.6967 9.20052 12.1822 9.20052 11.5472C9.20066 10.9124 9.71534 10.3977 10.3503 10.3976Z"
+                                fill="currentColor"></path>
+                            <path
+                                d="M13.6497 10.1984C14.1191 10.1985 14.5 10.5793 14.5 11.0486C14.4999 11.5178 14.119 11.8986 13.6497 11.8988C13.1804 11.8988 12.7996 11.5179 12.7995 11.0486C12.7995 10.5792 13.1803 10.1984 13.6497 10.1984Z"
+                                fill="currentColor"></path>
+                            <path
+                                d="M3.41667 6.86923C3.73903 6.32538 4.45228 6.13871 5.01042 6.4526C5.56871 6.7668 5.75983 7.46295 5.4375 8.00716C5.36588 8.12803 5.27483 8.23174 5.17057 8.31573C4.68818 8.70417 3.97429 8.90987 3.66146 9.43803L3.625 9.49923C3.39616 9.88587 3.47637 10.4224 3.2474 10.809C3.0482 11.1453 2.60674 11.2609 2.26172 11.0668C1.91679 10.8727 1.79845 10.4422 1.9974 10.1059C2.23484 9.70506 2.78461 9.50557 3.02214 9.10473L3.04948 9.05656C3.35255 8.54486 3.18708 7.86584 3.27083 7.28066C3.291 7.13974 3.3392 7.00003 3.41667 6.86923Z"
+                                fill="currentColor"></path>
+                            <path
+                                d="M8.2487 6.60103C9.15988 6.60103 9.8983 7.33955 9.89844 8.25063C9.89844 9.16183 9.15997 9.90024 8.2487 9.90024C7.33755 9.9001 6.59896 9.16174 6.59896 8.25063C6.5991 7.33964 7.33763 6.60117 8.2487 6.60103Z"
+                                fill="currentColor"></path>
+                            <path
+                                d="M9.68229 3.55049C10.2406 3.23631 10.955 3.42298 11.2773 3.96713C11.3936 4.16346 11.4428 4.38 11.4323 4.59077C11.4095 5.04569 11.3042 5.54911 11.5378 5.94353C11.7715 6.33786 12.272 6.50082 12.6875 6.70909C12.8796 6.8055 13.0466 6.95463 13.1628 7.15046C13.4851 7.69466 13.294 8.39082 12.7357 8.70502C12.1774 9.01922 11.4643 8.8326 11.1419 8.28839C11.0257 8.09219 10.9752 7.87667 10.9857 7.66604C11.0084 7.21104 11.1152 6.7065 10.8815 6.31199C10.6478 5.91782 10.1472 5.75593 9.73177 5.54773C9.53925 5.45123 9.3715 5.30139 9.25521 5.10505C8.93305 4.56095 9.12424 3.86473 9.68229 3.55049Z"
+                                fill="currentColor"></path>
+                            <path
+                                d="M0.75 7.30019C1.16421 7.30019 1.5 7.63595 1.5 8.05013C1.5 8.46431 1.16421 8.80007 0.75 8.80007C0.335786 8.80007 0 8.46431 0 8.05013C0 7.63595 0.335786 7.30019 0.75 7.30019Z"
+                                fill="currentColor"></path>
+                            <path
+                                d="M15.25 7.30019C15.6642 7.30019 16 7.63595 16 8.05013C16 8.46431 15.6642 8.80007 15.25 8.80007C14.8358 8.80007 14.5 8.46431 14.5 8.05013C14.5 7.63595 14.8358 7.30019 15.25 7.30019Z"
+                                fill="currentColor"></path>
+                            <path
+                                d="M2.04948 3.49972C2.6292 3.49972 3.09998 3.9695 3.10026 4.54911C3.10026 5.12896 2.62938 5.5998 2.04948 5.5998C1.46982 5.59952 1 5.12879 1 4.54911C1.00028 3.96967 1.46999 3.5 2.04948 3.49972Z"
+                                fill="currentColor"></path>
+                            <path
+                                d="M6.54948 2.8982C7.23984 2.8982 7.79948 3.4578 7.79948 4.1481C7.79948 4.8384 7.23984 5.398 6.54948 5.398C5.85912 5.398 5.29948 4.8384 5.29948 4.1481C5.29948 3.4578 5.85912 2.8982 6.54948 2.8982Z"
+                                fill="currentColor"></path>
+                            <path
+                                d="M13.2005 2.4998C13.7528 2.4998 14.2005 2.94748 14.2005 3.49972C14.2005 4.05196 13.7528 4.49963 13.2005 4.49963C12.6482 4.49963 12.2005 4.05196 12.2005 3.49972C12.2005 2.94748 12.6482 2.4998 13.2005 2.4998Z"
+                                fill="currentColor"></path>
+                            <path
+                                d="M4.55078 0.800716C4.90968 0.800716 5.20038 1.09157 5.20052 1.4504C5.20052 1.80936 4.90977 2.10009 4.55078 2.10009C4.19192 2.09995 3.90104 1.80927 3.90104 1.4504C3.90118 1.09165 4.192 0.800857 4.55078 0.800716Z"
+                                fill="currentColor"></path>
+                            <path
+                                d="M8.75 0C9.16421 0 9.5 0.335759 9.5 0.749939C9.5 1.16412 9.16421 1.49988 8.75 1.49988C8.33579 1.49988 8 1.16412 8 0.749939C8 0.335759 8.33579 0 8.75 0Z"
+                                fill="currentColor"></path>
+                        </svg>
+                    </div>
+                    <!-- Search Option -->
+                    <div class="switch-option option-search active" onclick="setSearchMode('search')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Search Container (wrapper for input and suggestions) -->
+                <div style="position: relative; flex: 1; max-width: 600px;">
+                    <!-- Search Input Wrapper -->
+                    <div class="search-input-wrapper" id="searchInputWrapper">
+                        <input type="text" class="main-search-input" id="topSearchInput" placeholder="Search here..."
+                            autocomplete="off">
+                        <button class="search-results-close-btn" id="searchCloseBtn" onclick="hideSearchResults()"
+                            title="Clear Search">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+
+                        <!-- AI Actions (Hidden by default, shown via CSS when .ai-active) -->
+                        <div class="ai-search-actions">
+                            <button class="ai-ask-btn" id="aiSearchAskBtn" onclick="handleAIAsk()" disabled="">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M9 10l-5 5 5 5"></path>
+                                    <path d="M20 4v7a4 4 0 0 1-4 4H4"></path>
+                                </svg>
+                                Ask
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- AI Search Suggestions (outside input wrapper) -->
+                    <div class="ai-search-suggestions" id="aiSearchSuggestions">
+                        <!-- Populated dynamically by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </nav>
         <div class="main-row-wrapper">
 
             <nav class="global-side-nav">
@@ -5380,7 +6453,7 @@
 
             <div class="app-container">
 
-                <aside class="chat-sidebar state-docked" id="chatPanel">
+                <aside class="chat-sidebar state-closed" id="chatPanel">
 
                     <div class="minimized-view-wrapper">
                         <div class="min-left-group">
@@ -6236,8 +7309,436 @@
                         </div>
                 </aside>
 
-                <main class="main-content pushed-by-dock" id="mainContent">
-                    <div class="table-skeleton-container">
+                <main class="main-content" id="mainContent">
+                    <!-- Normal Search Results Page (Hidden by default) -->
+                    <div class="search-results-container" id="searchResultsContainer">
+                        <!-- Header with Tabs -->
+                        <div class="search-results-header">
+                            <div class="search-tabs">
+                                <button class="search-tab" onclick="switchSearchTab('dms-customer')">DMS
+                                    Customer</button>
+                                <button class="search-tab" onclick="switchSearchTab('repair-order')">Repair
+                                    Order</button>
+                                <button class="search-tab" onclick="switchSearchTab('service-appointment')">Service
+                                    Appointment</button>
+                                <button class="search-tab" onclick="switchSearchTab('vehicle-profile')">Vehicle
+                                    Profile</button>
+                                <button class="search-tab" onclick="switchSearchTab('crm-contacts')">CRM
+                                    Contacts</button>
+                                <button class="search-tab active" onclick="switchSearchTab('crm-leads')">CRM
+                                    Leads</button>
+                                <button class="search-tab" onclick="switchSearchTab('vehicle-inventory')">Vehicle
+                                    Inventory</button>
+                                <button class="search-tab" onclick="switchSearchTab('deals')">Deals</button>
+                            </div>
+                        </div>
+
+                        <!-- Main Content Area -->
+                        <div class="search-results-content">
+                            <!-- Filters Sidebar -->
+                            <aside class="search-filters-sidebar">
+                                <div class="filters-header">
+                                    <h3>Filters</h3>
+                                    <button onclick="clearAllFilters()">Clear all</button>
+                                </div>
+
+                                <div class="filter-group">
+                                    <label>Salesperson</label>
+                                    <select id="filterSalesperson" onchange="applyFilters()">
+                                        <option value="">All</option>
+                                        <option value="sophia">Sophia Mitchell</option>
+                                        <option value="benjamin">Benjamin Parker</option>
+                                        <option value="william">William Sullivan</option>
+                                        <option value="ava">Ava Ramirez</option>
+                                        <option value="elijah">Elijah Reed</option>
+                                    </select>
+                                </div>
+
+                                <div class="filter-group">
+                                    <label>Lead Status</label>
+                                    <select id="filterLeadStatus" onchange="applyFilters()">
+                                        <option value="">All</option>
+                                        <option value="new">New</option>
+                                        <option value="contacted">Contacted</option>
+                                        <option value="qualified">Qualified</option>
+                                        <option value="lost">Lost</option>
+                                    </select>
+                                </div>
+
+                                <div class="filter-group">
+                                    <label>Stock#</label>
+                                    <input type="text" id="filterStock" placeholder="Enter stock#"
+                                        oninput="applyFilters()">
+                                </div>
+
+                                <div class="filter-group">
+                                    <label>Year</label>
+                                    <input type="text" id="filterYear" placeholder="Enter year"
+                                        oninput="applyFilters()">
+                                </div>
+
+                                <div class="filter-group">
+                                    <label>Make</label>
+                                    <input type="text" id="filterMake" placeholder="Enter make"
+                                        oninput="applyFilters()">
+                                </div>
+                            </aside>
+
+                            <!-- Right Side: AI Banner + Table -->
+                            <div class="search-results-right">
+                                <!-- AI Suggestion Banner -->
+                                <div class="ai-suggestion-banner">
+                                    <div class="banner-text">
+                                        <div class="banner-title" id="aiBannerHeadline">Want deeper insights on
+                                            "<strong>keyword</strong>"?</div>
+                                        <div class="banner-subtitle">AI Assistant can summarize these results or provide
+                                            comparative insights.</div>
+                                    </div>
+                                    <button class="initiate-chat-btn" onclick="switchToAIFromSearch()">
+                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M7.94922 14.2996C8.41854 14.2998 8.79948 14.6805 8.79948 15.1498C8.79934 15.619 8.41845 15.9999 7.94922 16C7.47986 16 7.0991 15.6191 7.09896 15.1498C7.09896 14.6804 7.47978 14.2996 7.94922 14.2996Z"
+                                                fill="white" />
+                                            <path
+                                                d="M12.1497 13.3973C12.5086 13.3973 12.7993 13.6882 12.7995 14.047C12.7995 14.406 12.5087 14.6967 12.1497 14.6967C11.7909 14.6966 11.5 14.4059 11.5 14.047C11.5001 13.6883 11.791 13.3975 12.1497 13.3973Z"
+                                                fill="white" />
+                                            <path
+                                                d="M3.45052 12.7997C3.86473 12.7997 4.20052 13.1355 4.20052 13.5497C4.20052 13.9639 3.86473 14.2996 3.45052 14.2996C3.03631 14.2996 2.70052 13.9639 2.70052 13.5497C2.70052 13.1355 3.03631 12.7997 3.45052 12.7997Z"
+                                                fill="white" />
+                                            <path
+                                                d="M6.25 10.3976C6.94036 10.3976 7.5 10.9572 7.5 11.6475C7.5 12.3378 6.94036 12.8974 6.25 12.8974C5.55964 12.8974 5 12.3378 5 11.6475C5 10.9572 5.55964 10.3976 6.25 10.3976Z"
+                                                fill="white" />
+                                            <path
+                                                d="M10.3503 10.3976C10.9853 10.3976 11.4999 10.9123 11.5 11.5472C11.5 12.1823 10.9854 12.6969 10.3503 12.6969C9.71525 12.6967 9.20052 12.1822 9.20052 11.5472C9.20066 10.9124 9.71534 10.3977 10.3503 10.3976Z"
+                                                fill="white" />
+                                            <path
+                                                d="M13.6497 10.1984C14.1191 10.1985 14.5 10.5793 14.5 11.0486C14.4999 11.5178 14.119 11.8986 13.6497 11.8988C13.1804 11.8988 12.7996 11.5179 12.7995 11.0486C12.7995 10.5792 13.1803 10.1984 13.6497 10.1984Z"
+                                                fill="white" />
+                                            <path
+                                                d="M3.41667 6.86923C3.73903 6.32538 4.45228 6.13871 5.01042 6.4526C5.56871 6.7668 5.75983 7.46295 5.4375 8.00716C5.36588 8.12803 5.27483 8.23174 5.17057 8.31573C4.68818 8.70417 3.97429 8.90987 3.66146 9.43803L3.625 9.49923C3.39616 9.88587 3.47637 10.4224 3.2474 10.809C3.0482 11.1453 2.60674 11.2609 2.26172 11.0668C1.91679 10.8727 1.79845 10.4422 1.9974 10.1059C2.23484 9.70506 2.78461 9.50557 3.02214 9.10473L3.04948 9.05656C3.35255 8.54486 3.18708 7.86584 3.27083 7.28066C3.291 7.13974 3.3392 7.00003 3.41667 6.86923Z"
+                                                fill="white" />
+                                            <path
+                                                d="M8.2487 6.60103C9.15988 6.60103 9.8983 7.33955 9.89844 8.25063C9.89844 9.16183 9.15997 9.90024 8.2487 9.90024C7.33755 9.9001 6.59896 9.16174 6.59896 8.25063C6.5991 7.33964 7.33763 6.60117 8.2487 6.60103Z"
+                                                fill="white" />
+                                            <path
+                                                d="M9.68229 3.55049C10.2406 3.23631 10.955 3.42298 11.2773 3.96713C11.3936 4.16346 11.4428 4.38 11.4323 4.59077C11.4095 5.04569 11.3042 5.54911 11.5378 5.94353C11.7715 6.33786 12.272 6.50082 12.6875 6.70909C12.8796 6.8055 13.0466 6.95463 13.1628 7.15046C13.4851 7.69466 13.294 8.39082 12.7357 8.70502C12.1774 9.01922 11.4643 8.8326 11.1419 8.28839C11.0257 8.09219 10.9752 7.87667 10.9857 7.66604C11.0084 7.21104 11.1152 6.7065 10.8815 6.31199C10.6478 5.91782 10.1472 5.75593 9.73177 5.54773C9.53925 5.45123 9.3715 5.30139 9.25521 5.10505C8.93305 4.56095 9.12424 3.86473 9.68229 3.55049Z"
+                                                fill="white" />
+                                            <path
+                                                d="M0.75 7.30019C1.16421 7.30019 1.5 7.63595 1.5 8.05013C1.5 8.46431 1.16421 8.80007 0.75 8.80007C0.335786 8.80007 0 8.46431 0 8.05013C0 7.63595 0.335786 7.30019 0.75 7.30019Z"
+                                                fill="white" />
+                                            <path
+                                                d="M15.25 7.30019C15.6642 7.30019 16 7.63595 16 8.05013C16 8.46431 15.6642 8.80007 15.25 8.80007C14.8358 8.80007 14.5 8.46431 14.5 8.05013C14.5 7.63595 14.8358 7.30019 15.25 7.30019Z"
+                                                fill="white" />
+                                            <path
+                                                d="M2.04948 3.49972C2.6292 3.49972 3.09998 3.9695 3.10026 4.54911C3.10026 5.12896 2.62938 5.5998 2.04948 5.5998C1.46982 5.59952 1 5.12879 1 4.54911C1.00028 3.96967 1.46999 3.5 2.04948 3.49972Z"
+                                                fill="white" />
+                                            <path
+                                                d="M6.54948 2.8982C7.23984 2.8982 7.79948 3.4578 7.79948 4.1481C7.79948 4.8384 7.23984 5.398 6.54948 5.398C5.85912 5.398 5.29948 4.8384 5.29948 4.1481C5.29948 3.4578 5.85912 2.8982 6.54948 2.8982Z"
+                                                fill="white" />
+                                            <path
+                                                d="M13.2005 2.4998C13.7528 2.4998 14.2005 2.94748 14.2005 3.49972C14.2005 4.05196 13.7528 4.49963 13.2005 4.49963C12.6482 4.49963 12.2005 4.05196 12.2005 3.49972C12.2005 2.94748 12.6482 2.4998 13.2005 2.4998Z"
+                                                fill="white" />
+                                            <path
+                                                d="M4.55078 0.800716C4.90968 0.800716 5.20038 1.09157 5.20052 1.4504C5.20052 1.80936 4.90977 2.10009 4.55078 2.10009C4.19192 2.09995 3.90104 1.80927 3.90104 1.4504C3.90118 1.09165 4.192 0.800857 4.55078 0.800716Z"
+                                                fill="white" />
+                                            <path
+                                                d="M8.75 0C9.16421 0 9.5 0.335759 9.5 0.749939C9.5 1.16412 9.16421 1.49988 8.75 1.49988C8.33579 1.49988 8 1.16412 8 0.749939C8 0.335759 8.33579 0 8.75 0Z"
+                                                fill="white" />
+                                        </svg>
+                                        Generate Insights
+                                    </button>
+                                </div>
+
+                                <!-- Results Table -->
+                                <div class="search-results-main">
+                                    <div class="results-header">
+                                        <div class="results-count">
+                                            Showing 1 - 15 out of 15 | Not the results you expected? Adjust filter
+                                            criteria or try different search keywords.
+                                        </div>
+                                        <div class="results-actions">
+                                            <button onclick="addSalesLead()">+ Add Sales Lead</button>
+                                            <button onclick="addServiceLead()">+ Add Service Lead</button>
+                                        </div>
+                                    </div>
+
+                                    <table class="search-results-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Email & Phone</th>
+                                                <th>Sales Person</th>
+                                                <th>Vehicle</th>
+                                                <th>Deal#</th>
+                                                <th>Stock#</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="searchResultsTableBody">
+                                            <tr>
+                                                <td>
+                                                    <div class="name-cell">
+                                                        <span>Ryan Carter</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="contact-info">
+                                                        <div class="contact-email">r.carter@techstart.io</div>
+                                                        <div class="contact-phone">(512) 555-3421</div>
+                                                    </div>
+                                                </td>
+                                                <td>Sophia Mitchell</td>
+                                                <td>2022 Toyota Camry</td>
+                                                <td>310891</td>
+                                                <td>4102</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="name-cell">
+                                                        <span>Ryan Washington</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="contact-info">
+                                                        <div class="contact-email">rwashington@state.gov</div>
+                                                        <div class="contact-phone">(202) 555-7743</div>
+                                                    </div>
+                                                </td>
+                                                <td>Benjamin Parker</td>
+                                                <td>2023 Toyota Highlander</td>
+                                                <td>310892</td>
+                                                <td>4103</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="name-cell">
+                                                        <span>Ryan O'Connell</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="contact-info">
+                                                        <div class="contact-email">ryan.oc@consulting.net</div>
+                                                        <div class="contact-phone">(617) 555-9982</div>
+                                                    </div>
+                                                </td>
+                                                <td>William Sullivan</td>
+                                                <td>2021 Toyota RAV4</td>
+                                                <td>310893</td>
+                                                <td>4104</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="name-cell">
+                                                        <span>Ryan Miller</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="contact-info">
+                                                        <div class="contact-email">ryan.miller@gmail.com</div>
+                                                        <div class="contact-phone">(312) 555-0192</div>
+                                                    </div>
+                                                </td>
+                                                <td>Ava Ramirez</td>
+                                                <td>2020 Toyota Corolla</td>
+                                                <td>310894</td>
+                                                <td>4105</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="name-cell">
+                                                        <span>Ryan Lee</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="contact-info">
+                                                        <div class="contact-email">ryan@leedesign.studio</div>
+                                                        <div class="contact-phone">(415) 555-6621</div>
+                                                    </div>
+                                                </td>
+                                                <td>Elijah Reed</td>
+                                                <td>2024 Toyota Prius</td>
+                                                <td>310895</td>
+                                                <td>4106</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="name-cell">
+                                                        <span>Ryan Anderson</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="contact-info">
+                                                        <div class="contact-email">r.anderson@northway.io</div>
+                                                        <div class="contact-phone">(503) 555-1182</div>
+                                                    </div>
+                                                </td>
+                                                <td>Sophia Mitchell</td>
+                                                <td>2022 Toyota Avalon</td>
+                                                <td>310896</td>
+                                                <td>4107</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="name-cell">
+                                                        <span>Ryan Thompson</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="contact-info">
+                                                        <div class="contact-email">ryan.thompson@thompsonco.com</div>
+                                                        <div class="contact-phone">(720) 555-9033</div>
+                                                    </div>
+                                                </td>
+                                                <td>Benjamin Parker</td>
+                                                <td>2023 Toyota Tacoma</td>
+                                                <td>310897</td>
+                                                <td>4108</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="name-cell">
+                                                        <span>Ryan Patel</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="contact-info">
+                                                        <div class="contact-email">r.patel@patelgroup.co</div>
+                                                        <div class="contact-phone">(408) 555-7741</div>
+                                                    </div>
+                                                </td>
+                                                <td>William Sullivan</td>
+                                                <td>2021 Toyota Venza</td>
+                                                <td>310898</td>
+                                                <td>4109</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="name-cell">
+                                                        <span>Ryan Brooks</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="contact-info">
+                                                        <div class="contact-email">ryan.brooks@brookslabs.ai</div>
+                                                        <div class="contact-phone">(617) 555-4409</div>
+                                                    </div>
+                                                </td>
+                                                <td>Ava Ramirez</td>
+                                                <td>2022 Toyota Supra</td>
+                                                <td>310899</td>
+                                                <td>4110</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="name-cell">
+                                                        <span>Ryan Kim</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="contact-info">
+                                                        <div class="contact-email">ryan.kim@skylinesystems.io</div>
+                                                        <div class="contact-phone">(213) 555-2871</div>
+                                                    </div>
+                                                </td>
+                                                <td>Elijah Reed</td>
+                                                <td>2023 Toyota C-HR</td>
+                                                <td>310900</td>
+                                                <td>4111</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="name-cell">
+                                                        <span>Ryan Delgado</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="contact-info">
+                                                        <div class="contact-email">r.delgado@delgadomedia.com</div>
+                                                        <div class="contact-phone">(305) 555-6019</div>
+                                                    </div>
+                                                </td>
+                                                <td>Sophia Mitchell</td>
+                                                <td>2020 Toyota Yaris</td>
+                                                <td>310901</td>
+                                                <td>4112</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="name-cell">
+                                                        <span>Ryan Foster</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="contact-info">
+                                                        <div class="contact-email">ryan.foster@fosterbuilt.dev</div>
+                                                        <div class="contact-phone">(971) 555-9920</div>
+                                                    </div>
+                                                </td>
+                                                <td>Benjamin Parker</td>
+                                                <td>2024 Toyota Land Cruiser</td>
+                                                <td>310902</td>
+                                                <td>4113</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="name-cell">
+                                                        <span>Ryan Novak</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="contact-info">
+                                                        <div class="contact-email">r.novak@novakconsulting.eu</div>
+                                                        <div class="contact-phone">(312) 555-4438</div>
+                                                    </div>
+                                                </td>
+                                                <td>William Sullivan</td>
+                                                <td>2021 Toyota Camry</td>
+                                                <td>310903</td>
+                                                <td>4114</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="name-cell">
+                                                        <span>Ryan Wallace</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="contact-info">
+                                                        <div class="contact-email">ryan.wallace@wallaceholdings.com
+                                                        </div>
+                                                        <div class="contact-phone">(646) 555-8301</div>
+                                                    </div>
+                                                </td>
+                                                <td>Ava Ramirez</td>
+                                                <td>2022 Toyota Sequoia</td>
+                                                <td>310904</td>
+                                                <td>4115</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="name-cell">
+                                                        <span>Ryan Chen</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="contact-info">
+                                                        <div class="contact-email">r.chen@quantixlabs.com</div>
+                                                        <div class="contact-phone">(650) 555-7782</div>
+                                                    </div>
+                                                </td>
+                                                <td>Elijah Reed</td>
+                                                <td>2023 Toyota Corolla Cross</td>
+                                                <td>310905</td>
+                                                <td>4116</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-skeleton-container" id="skeletonTable">
                         <div class="skeleton-row header">
                             <div class="skeleton-cell">
                                 <div class="skeleton-bar"></div>
@@ -6347,6 +7848,581 @@
 
         // Top Bar for Aurora Effect
         const chatTopBar = document.getElementById('chatTopBar');
+
+        // ========================================
+        // GLOBAL SEARCH - AI SEARCH FUNCTIONALITY
+        // ========================================
+
+        // AI Search Suggestions Data
+        const aiDefaultSuggestions = [
+            { icon: '🚗', text: 'Show me all customers with overdue services' },
+            { icon: '📊', text: 'Which vehicles need warranty claims?' },
+            { icon: '⚠️', text: 'Find high-risk repair orders' },
+            { icon: '💰', text: 'Show customers with pending payments' }
+        ];
+
+        // Set Search Mode (AI vs Normal Search)
+        function setSearchMode(mode) {
+            const switchEl = document.getElementById('searchModeSwitch');
+            const searchInputWrapper = document.getElementById('searchInputWrapper');
+            const searchInput = document.getElementById('topSearchInput');
+            const suggestions = document.getElementById('aiSearchSuggestions');
+
+            if (!switchEl || !searchInputWrapper || !searchInput || !suggestions) return;
+
+            // Update Switch State
+            switchEl.setAttribute('data-mode', mode);
+
+            // Update active class on options
+            const aiOption = switchEl.querySelector('.option-ai');
+            const searchOption = switchEl.querySelector('.option-search');
+
+            if (mode === 'ai') {
+                aiOption.classList.add('active');
+                searchOption.classList.remove('active');
+
+                // Activate AI Search Bar Styles
+                searchInputWrapper.classList.add('ai-active');
+                searchInput.placeholder = "Ask • Find • Summarize";
+
+                // Show Suggestions & Focus
+                renderSuggestions(aiDefaultSuggestions);
+                suggestions.classList.add('visible');
+                searchInput.focus();
+            } else {
+                searchOption.classList.add('active');
+                aiOption.classList.remove('active');
+
+                // Deactivate AI Search Bar Styles
+                searchInputWrapper.classList.remove('ai-active');
+                searchInput.placeholder = "Search here...";
+
+                // Hide Suggestions
+                suggestions.classList.remove('visible');
+            }
+        }
+
+        // Render AI Suggestions
+        function renderSuggestions(suggestions, query = '') {
+            const container = document.getElementById('aiSearchSuggestions');
+            if (!container) return;
+
+            if (query) {
+                // Query-based suggestions
+                container.innerHTML = `
+                    <div class="suggestion-item" onclick="applySuggestion('${query} Summary')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+                        </svg>
+                        <span><span class="query-text">${query}</span> <span class="action-text">Summary</span></span>
+                    </div>
+                    <div class="suggestion-item" onclick="applySuggestion('${query} open deals?')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+                        </svg>
+                        <span><span class="query-text">${query}</span> <span class="action-text">open deals?</span></span>
+                    </div>
+                    <div class="suggestion-item" onclick="applySuggestion('${query} Analyze')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+                        </svg>
+                        <span><span class="query-text">${query}</span> <span class="action-text">Analyze</span></span>
+                    </div>
+                    <div class="suggestion-item" onclick="applySuggestion('Ask about ${query}')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+                        </svg>
+                        <span class="action-text">Ask about <span class="query-text">${query}</span></span>
+                    </div>
+                `;
+            } else {
+                // Default suggestions
+                container.innerHTML = suggestions.map(s => `
+                    <div class="suggestion-item" onclick="applySuggestion('${s.text.replace(/'/g, "\\'")}')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+                        </svg>
+                        <span class="action-text">${s.text}</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Apply Suggestion
+        function applySuggestion(text) {
+            const searchInput = document.getElementById('topSearchInput');
+            if (searchInput) {
+                searchInput.value = text;
+                handleAIAsk();
+            }
+        }
+
+        // Handle AI Ask Button Click
+        function handleAIAsk() {
+            const searchInput = document.getElementById('topSearchInput');
+            if (!searchInput) return;
+
+            const query = searchInput.value.trim();
+            if (!query) return;
+
+            // Switch to fullscreen AI chat
+            if (typeof setState === 'function') {
+                setState('fullscreen');
+            }
+            if (typeof resetChat === 'function') {
+                resetChat();
+            }
+
+            // Automatically send the message
+            if (typeof handleSend === 'function') {
+                handleSend(query);
+            }
+
+            // Clear input and reset search state
+            searchInput.value = '';
+
+            // Disable Ask button again
+            const askBtn = document.getElementById('aiSearchAskBtn');
+            if (askBtn) askBtn.disabled = true;
+
+            // Hide suggestions popover
+            const suggestions = document.getElementById('aiSearchSuggestions');
+            if (suggestions) suggestions.classList.remove('visible');
+
+            // Update chat panel suggestions
+            if (typeof updateChatPanelSuggestions === 'function') {
+                updateChatPanelSuggestions(query);
+            }
+        }
+
+        // Search Input Listeners
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('topSearchInput');
+            const suggestions = document.getElementById('aiSearchSuggestions');
+            let typingTimer;
+
+            if (searchInput && suggestions) {
+                searchInput.addEventListener('input', function () {
+                    const searchWrapper = document.getElementById('searchInputWrapper');
+                    if (!searchWrapper || !searchWrapper.classList.contains('ai-active')) return;
+
+                    const query = this.value.trim();
+                    const askBtn = document.getElementById('aiSearchAskBtn');
+                    if (askBtn) askBtn.disabled = query.length === 0;
+
+                    clearTimeout(typingTimer);
+                    if (query.length === 0) {
+                        renderSuggestions(aiDefaultSuggestions);
+                        suggestions.classList.add('visible');
+                    } else {
+                        suggestions.classList.remove('visible');
+                        typingTimer = setTimeout(() => {
+                            if (this.value.trim().length > 0) {
+                                renderSuggestions([], this.value.trim());
+                                suggestions.classList.add('visible');
+                            }
+                        }, 300);
+                    }
+                });
+
+                searchInput.addEventListener('keydown', function (e) {
+                    const searchWrapper = document.getElementById('searchInputWrapper');
+                    if (e.key === 'Enter' && searchWrapper && searchWrapper.classList.contains('ai-active')) {
+                        e.preventDefault();
+                        handleAIAsk();
+                    }
+                });
+
+                searchInput.addEventListener('focus', function () {
+                    const searchWrapper = document.getElementById('searchInputWrapper');
+                    if (searchWrapper && searchWrapper.classList.contains('ai-active') && this.value.trim().length === 0) {
+                        renderSuggestions(aiDefaultSuggestions);
+                        suggestions.classList.add('visible');
+                    }
+                });
+            }
+
+            // Click outside to close AI popover
+            document.addEventListener('click', function (event) {
+                const searchWrapper = document.getElementById('searchInputWrapper');
+                const suggestions = document.getElementById('aiSearchSuggestions');
+                const switchEl = document.getElementById('searchModeSwitch');
+
+                if (!searchWrapper || !suggestions) return;
+
+                const isClickInside = searchWrapper.contains(event.target) ||
+                    suggestions.contains(event.target) ||
+                    (switchEl && switchEl.contains(event.target));
+
+                if (suggestions.classList.contains('visible') && !isClickInside) {
+                    suggestions.classList.remove('visible');
+                }
+            });
+        });
+
+        // ========================================
+        // NORMAL SEARCH RESULTS FUNCTIONALITY
+        // ========================================
+
+        function showSearchResults(query) {
+            const searchResultsContainer = document.getElementById('searchResultsContainer');
+            const skeletonTable = document.getElementById('skeletonTable');
+            const mainContent = document.querySelector('.table-skeleton-container');
+            const aiSummaryBanner = document.getElementById('aiSummaryBanner');
+
+            if (searchResultsContainer) {
+                searchResultsContainer.classList.add('active');
+            }
+
+            // Reset banner to initial state for the new query
+            resetSearchAIBanner(query);
+
+            const searchInputWrapper = document.getElementById('searchInputWrapper');
+            if (searchInputWrapper) {
+                searchInputWrapper.classList.add('results-active');
+            }
+
+            // Hide other main content
+            if (skeletonTable) {
+                skeletonTable.style.display = 'none';
+            }
+            if (mainContent) {
+                mainContent.style.display = 'none';
+            }
+            if (aiSummaryBanner) {
+                aiSummaryBanner.style.display = 'none';
+            }
+
+            console.log('Showing search results for:', query);
+        }
+
+        function hideSearchResults() {
+            const searchResultsContainer = document.getElementById('searchResultsContainer');
+            const skeletonTable = document.getElementById('skeletonTable');
+            const mainContent = document.querySelector('.table-skeleton-container');
+            const aiSummaryBanner = document.getElementById('aiSummaryBanner');
+            const searchInput = document.getElementById('topSearchInput');
+
+            if (searchResultsContainer) {
+                searchResultsContainer.classList.remove('active');
+            }
+
+            const searchInputWrapper = document.getElementById('searchInputWrapper');
+            if (searchInputWrapper) {
+                searchInputWrapper.classList.remove('results-active');
+            }
+
+            // Show main content again
+            if (skeletonTable) {
+                skeletonTable.style.display = 'block';
+            }
+            if (mainContent) {
+                mainContent.style.display = 'block';
+            }
+            if (aiSummaryBanner) {
+                aiSummaryBanner.style.display = 'block';
+            }
+
+            // Clear search input and reset filters/banner
+            if (searchInput) {
+                searchInput.value = '';
+            }
+            clearAllFilters();
+            resetSearchAIBanner();
+        }
+
+        function switchSearchTab(tabName) {
+            const tabs = document.querySelectorAll('.search-tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.textContent.toLowerCase().replace(/\s+/g, '-') === tabName) {
+                    tab.classList.add('active');
+                }
+            });
+            console.log('Switched to tab:', tabName);
+        }
+
+        function applyFilters() {
+            const salesperson = document.getElementById('filterSalesperson')?.value || '';
+            const leadStatus = document.getElementById('filterLeadStatus')?.value || '';
+            const stock = document.getElementById('filterStock')?.value || '';
+            const year = document.getElementById('filterYear')?.value || '';
+            const make = document.getElementById('filterMake')?.value || '';
+
+            console.log('Applying filters:', { salesperson, leadStatus, stock, year, make });
+
+            // Removed static count update logic as per user request
+        }
+
+        function clearAllFilters() {
+            if (document.getElementById('filterSalesperson')) document.getElementById('filterSalesperson').value = '';
+            if (document.getElementById('filterLeadStatus')) document.getElementById('filterLeadStatus').value = '';
+            if (document.getElementById('filterStock')) document.getElementById('filterStock').value = '';
+            if (document.getElementById('filterYear')) document.getElementById('filterYear').value = '';
+            if (document.getElementById('filterMake')) document.getElementById('filterMake').value = '';
+
+            applyFilters();
+        }
+
+        function startChatWithContext(text) {
+            const searchInput = document.getElementById('topSearchInput');
+            if (searchInput) {
+                searchInput.value = text;
+                if (typeof setState === 'function') setState('fullscreen');
+                searchInput.focus();
+            }
+        }
+
+        function resetSearchAIBanner(query = "keyword") {
+            const banner = document.querySelector('.search-results-container .ai-suggestion-banner');
+            if (!banner) return;
+
+            banner.classList.remove('expanded');
+            banner.classList.remove('aurora-active');
+            banner.style.height = '';
+            banner.style.minHeight = '';
+
+            banner.innerHTML = `
+                <div class="banner-text">
+                    <div class="banner-title" id="aiBannerHeadline">Want deeper insights on "<strong>${query}</strong>"?</div>
+                    <div class="banner-subtitle">AI Assistant can summarize these results or provide comparative insights.</div>
+                </div>
+                <button class="initiate-chat-btn" onclick="switchToAIFromSearch()">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7.94922 14.2996C8.41854 14.2998 8.79948 14.6805 8.79948 15.1498C8.79934 15.619 8.41845 15.9999 7.94922 16C7.47986 16 7.0991 15.6191 7.09896 15.1498C7.09896 14.6804 7.47978 14.2996 7.94922 14.2996Z" fill="white" />
+                        <path d="M12.1497 13.3973C12.5086 13.3973 12.7993 13.6882 12.7995 14.047C12.7995 14.406 12.5087 14.6967 12.1497 14.6967C11.7909 14.6966 11.5 14.4059 11.5 14.047C11.5001 13.6883 11.791 13.3975 12.1497 13.3973Z" fill="white" />
+                        <path d="M3.45052 12.7997C3.86473 12.7997 4.20052 13.1355 4.20052 13.5497C4.20052 13.9639 3.86473 14.2996 3.45052 14.2996C3.03631 14.2996 2.70052 13.9639 2.70052 13.5497C2.70052 13.1355 3.03631 12.7997 3.45052 12.7997Z" fill="white" />
+                        <path d="M6.25 10.3976C6.94036 10.3976 7.5 10.9572 7.5 11.6475C7.5 12.3378 6.94036 12.8974 6.25 12.8974C5.55964 12.8974 5 12.3378 5 11.6475C5 10.9572 5.55964 10.3976 6.25 10.3976Z" fill="white" />
+                        <path d="M10.3503 10.3976C10.9853 10.3976 11.4999 10.9123 11.5 11.5472C11.5 12.1823 10.9854 12.6969 10.3503 12.6969C9.71525 12.6967 9.20052 12.1822 9.20052 11.5472C9.20066 10.9124 9.71534 10.3977 10.3503 10.3976Z" fill="white" />
+                        <path d="M13.6497 10.1984C14.1191 10.1985 14.5 10.5793 14.5 11.0486C14.4999 11.5178 14.119 11.8986 13.6497 11.8988C13.1804 11.8988 12.7996 11.5179 12.7995 11.0486C12.7995 10.5792 13.1803 10.1984 13.6497 10.1984Z" fill="white" />
+                        <path d="M3.41667 6.86923C3.73903 6.32538 4.45228 6.13871 5.01042 6.4526C5.56871 6.7668 5.75983 7.46295 5.4375 8.00716C5.36588 8.12803 5.27483 8.23174 5.17057 8.31573C4.68818 8.70417 3.97429 8.90987 3.66146 9.43803L3.625 9.49923C3.39616 9.88587 3.47637 10.4224 3.2474 10.809C3.0482 11.1453 2.60674 11.2609 2.26172 11.0668C1.91679 10.8727 1.79845 10.4422 1.9974 10.1059C2.23484 9.70506 2.78461 9.50557 3.02214 9.10473L3.04948 9.05656C3.35255 8.54486 3.18708 7.86584 3.27083 7.28066C3.291 7.13974 3.3392 7.00003 3.41667 6.86923Z" fill="white" />
+                        <path d="M8.2487 6.60103C9.15988 6.60103 9.8983 7.33955 9.89844 8.25063C9.89844 9.16183 9.15997 9.90024 8.2487 9.90024C7.33755 9.9001 6.59896 9.16174 6.59896 8.25063C6.5991 7.33964 7.33763 6.60117 8.2487 6.60103Z" fill="white" />
+                        <path d="M9.68229 3.55049C10.2406 3.23631 10.955 3.42298 11.2773 3.96713C11.3936 4.16346 11.4428 4.38 11.4323 4.59077C11.4095 5.04569 11.3042 5.54911 11.5378 5.94353C11.7715 6.33786 12.272 6.50082 12.6875 6.70909C12.8796 6.8055 13.0466 6.95463 13.1628 7.15046C13.4851 7.69466 13.294 8.39082 12.7357 8.70502C12.1774 9.01922 11.4643 8.8326 11.1419 8.28839C11.0257 8.09219 10.9752 7.87667 10.9857 7.66604C11.0084 7.21104 11.1152 6.7065 10.8815 6.31199C10.6478 5.91782 10.1472 5.75593 9.73177 5.54773C9.53925 5.45123 9.3715 5.30139 9.25521 5.10505C8.93305 4.56095 9.12424 3.86473 9.68229 3.55049Z" fill="white" />
+                        <path d="M0.75 7.30019C1.16421 7.30019 1.5 7.63595 1.5 8.05013C1.5 8.46431 1.16421 8.80007 0.75 8.80007C0.335786 8.80007 0 8.46431 0 8.05013C0 7.63595 0.335786 7.30019 0.75 7.30019Z" fill="white" />
+                        <path d="M15.25 7.30019C15.6642 7.30019 16 7.63595 16 8.05013C16 8.46431 15.6642 8.80007 15.25 8.80007C14.8358 8.80007 14.5 8.46431 14.5 8.05013C14.5 7.63595 14.8358 7.30019 15.25 7.30019Z" fill="white" />
+                        <path d="M2.04948 3.49972C2.6292 3.49972 3.09998 3.9695 3.10026 4.54911C3.10026 5.12896 2.62938 5.5998 2.04948 5.5998C1.46982 5.59952 1 5.12879 1 4.54911C1.00028 3.96967 1.46999 3.5 2.04948 3.49972Z" fill="white" />
+                        <path d="M6.54948 2.8982C7.23984 2.8982 7.79948 3.4578 7.79948 4.1481C7.79948 4.8384 7.23984 5.398 6.54948 5.398C5.85912 5.398 5.29948 4.8384 5.29948 4.1481C5.29948 3.4578 5.85912 2.8982 6.54948 2.8982Z" fill="white" />
+                        <path d="M13.2005 2.4998C13.7528 2.4998 14.2005 2.94748 14.2005 3.49972C14.2005 4.05196 13.7528 4.49963 13.2005 4.49963C12.6482 4.49963 12.2005 4.05196 12.2005 3.49972C12.2005 2.94748 12.6482 2.4998 13.2005 2.4998Z" fill="white" />
+                        <path d="M4.55078 0.800716C4.90968 0.800716 5.20038 1.09157 5.20052 1.4504C5.20052 1.80936 4.90977 2.10009 4.55078 2.10009C4.19192 2.09995 3.90104 1.80927 3.90104 1.4504C3.90118 1.09165 4.192 0.800857 4.55078 0.800716Z" fill="white" />
+                        <path d="M8.75 0C9.16421 0 9.5 0.335759 9.5 0.749939C9.5 1.16412 9.16421 1.49988 8.75 1.49988C8.33579 1.49988 8 1.16412 8 0.749939C8 0.335759 8.33579 0 8.75 0Z" fill="white" />
+                    </svg>
+                    Generate Insights
+                </button>
+            `;
+        }
+
+        function switchToAIFromSearch() {
+            const banner = document.querySelector('.search-results-container .ai-suggestion-banner');
+            if (!banner) return;
+
+            // Maintain current height for thinking state
+            const currentHeight = banner.offsetHeight;
+            banner.style.height = currentHeight + 'px';
+            banner.style.minHeight = currentHeight + 'px';
+
+            // Add expanded class to banner (removes padding)
+            banner.classList.add('expanded');
+            banner.classList.add('aurora-active');
+
+            // Show analyzing state
+            banner.innerHTML = `
+                <div class="banner-thinking">
+                    <div class="thinking-avatar">
+                        ${AI_LOGO_SVG}
+                    </div>
+                    <span>Generating Insights...</span>
+                </div>
+            `;
+
+            // After 5-8s, show the Insights Slider and allow height to expand naturally
+            const loadingDuration = Math.floor(Math.random() * 3001) + 5000;
+            setTimeout(() => {
+                banner.style.height = '';
+                banner.style.minHeight = '';
+                banner.classList.remove('aurora-active');
+
+                window.currentInsightSlide = 0;
+                const totalSlides = 3;
+
+                banner.innerHTML = `
+                    <div class="ai-slider-container">
+                        <div class="ai-slider" id="aiInsightsSlider">
+                            <!-- Slide 1: High Equity -->
+                            <div class="ai-slide">
+                                <div class="ai-slide-content">
+                                    <div class="ai-slide-label">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                                        <span>HIGH EQUITY ALERT</span>
+                                    </div>
+                                    <div class="ai-slide-body">
+                                        <div class="ai-slide-title">Upgrade Opportunity</div>
+                                        <div class="ai-slide-description">
+                                            Ryan Miller's 2020 Corolla has reached peak trade value. Estimated <strong>$4,200 positive equity</strong> available.
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="ai-slide-cta" onclick="startChatWithContext('Analyze Ryan Millers equity for Upgrade Opportunity')">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M7.94922 14.2996C8.41854 14.2998 8.79948 14.6805 8.79948 15.1498C8.79934 15.619 8.41845 15.9999 7.94922 16C7.47986 16 7.0991 15.6191 7.09896 15.1498C7.09896 14.6804 7.47978 14.2996 7.94922 14.2996Z" fill="white" />
+                                        <path d="M12.1497 13.3973C12.5086 13.3973 12.7993 13.6882 12.7995 14.047C12.7995 14.406 12.5087 14.6967 12.1497 14.6967C11.7909 14.6966 11.5 14.4059 11.5 14.047C11.5001 13.6883 11.791 13.3975 12.1497 13.3973Z" fill="white" />
+                                        <path d="M3.45052 12.7997C3.86473 12.7997 4.20052 13.1355 4.20052 13.5497C4.20052 13.9639 3.86473 14.2996 3.45052 14.2996C3.03631 14.2996 2.70052 13.9639 2.70052 13.5497C2.70052 13.1355 3.03631 12.7997 3.45052 12.7997Z" fill="white" />
+                                        <path d="M6.25 10.3976C6.94036 10.3976 7.5 10.9572 7.5 11.6475C7.5 12.3378 6.94036 12.8974 6.25 12.8974C5.55964 12.8974 5 12.3378 5 11.6475C5 10.9572 5.55964 10.3976 6.25 10.3976Z" fill="white" />
+                                        <path d="M10.3503 10.3976C10.9853 10.3976 11.4999 10.9123 11.5 11.5472C11.5 12.1823 10.9854 12.6969 10.3503 12.6969C9.71525 12.6967 9.20052 12.1822 9.20052 11.5472C9.20066 10.9124 9.71534 10.3977 10.3503 10.3976Z" fill="white" />
+                                        <path d="M13.6497 10.1984C14.1191 10.1985 14.5 10.5793 14.5 11.0486C14.4999 11.5178 14.119 11.8986 13.6497 11.8988C13.1804 11.8988 12.7996 11.5179 12.7995 11.0486C12.7995 10.5792 13.1803 10.1984 13.6497 10.1984Z" fill="white" />
+                                        <path d="M3.41667 6.86923C3.73903 6.32538 4.45228 6.13871 5.01042 6.4526C5.56871 6.7668 5.75983 7.46295 5.4375 8.00716C5.36588 8.12803 5.27483 8.23174 5.17057 8.31573C4.68818 8.70417 3.97429 8.90987 3.66146 9.43803L3.625 9.49923C3.39616 9.88587 3.47637 10.4224 3.2474 10.809C3.0482 11.1453 2.60674 11.2609 2.26172 11.0668C1.91679 10.8727 1.79845 10.4422 1.9974 10.1059C2.23484 9.70506 2.78461 9.50557 3.02214 9.10473L3.04948 9.05656C3.35255 8.54486 3.18708 7.86584 3.27083 7.28066C3.291 7.13974 3.3392 7.00003 3.41667 6.86923Z" fill="white" />
+                                        <path d="M8.2487 6.60103C9.15988 6.60103 9.8983 7.33955 9.89844 8.25063C9.89844 9.16183 9.15997 9.90024 8.2487 9.90024C7.33755 9.9001 6.59896 9.16174 6.59896 8.25063C6.5991 7.33964 7.33763 6.60117 8.2487 6.60103Z" fill="white" />
+                                        <path d="M9.68229 3.55049C10.2406 3.23631 10.955 3.42298 11.2773 3.96713C11.3936 4.16346 11.4428 4.38 11.4323 4.59077C11.4095 5.04569 11.3042 5.54911 11.5378 5.94353C11.7715 6.33786 12.272 6.50082 12.6875 6.70909C12.8796 6.8055 13.0466 6.95463 13.1628 7.15046C13.4851 7.69466 13.294 8.39082 12.7357 8.70502C12.1774 9.01922 11.4643 8.8326 11.1419 8.28839C11.0257 8.09219 10.9752 7.87667 10.9857 7.66604C11.0084 7.21104 11.1152 6.7065 10.8815 6.31199C10.6478 5.91782 10.1472 5.75593 9.73177 5.54773C9.53925 5.45123 9.3715 5.30139 9.25521 5.10505C8.93305 4.56095 9.12424 3.86473 9.68229 3.55049Z" fill="white" />
+                                        <path d="M0.75 7.30019C1.16421 7.30019 1.5 7.63595 1.5 8.05013C1.5 8.46431 1.16421 8.80007 0.75 8.80007C0.335786 8.80007 0 8.46431 0 8.05013C0 7.63595 0.335786 7.30019 0.75 7.30019Z" fill="white" />
+                                        <path d="M15.25 7.30019C15.6642 7.30019 16 7.63595 16 8.05013C16 8.46431 15.6642 8.80007 15.25 8.80007C14.8358 8.80007 14.5 8.46431 14.5 8.05013C14.5 7.63595 14.8358 7.30019 15.25 7.30019Z" fill="white" />
+                                        <path d="M2.04948 3.49972C2.6292 3.49972 3.09998 3.9695 3.10026 4.54911C3.10026 5.12896 2.62938 5.5998 2.04948 5.5998C1.46982 5.59952 1 5.12879 1 4.54911C1.00028 3.96967 1.46999 3.5 2.04948 3.49972Z" fill="white" />
+                                        <path d="M6.54948 2.8982C7.23984 2.8982 7.79948 3.4578 7.79948 4.1481C7.79948 4.8384 7.23984 5.398 6.54948 5.398C5.85912 5.398 5.29948 4.8384 5.29948 4.1481C5.29948 3.4578 5.85912 2.8982 6.54948 2.8982Z" fill="white" />
+                                        <path d="M13.2005 2.4998C13.7528 2.4998 14.2005 2.94748 14.2005 3.49972C14.2005 4.05196 13.7528 4.49963 13.2005 4.49963C12.6482 4.49963 12.2005 4.05196 12.2005 3.49972C12.2005 2.94748 12.6482 2.4998 13.2005 2.4998Z" fill="white" />
+                                        <path d="M4.55078 0.800716C4.90968 0.800716 5.20038 1.09157 5.20052 1.4504C5.20052 1.80936 4.90977 2.10009 4.55078 2.10009C4.19192 2.09995 3.90104 1.80927 3.90104 1.4504C3.90118 1.09165 4.192 0.800857 4.55078 0.800716Z" fill="white" />
+                                        <path d="M8.75 0C9.16421 0 9.5 0.335759 9.5 0.749939C9.5 1.16412 9.16421 1.49988 8.75 1.49988C8.33579 1.49988 8 1.16412 8 0.749939C8 0.335759 8.33579 0 8.75 0Z" fill="white" />
+                                    </svg>
+                                    Draft Offer
+                                </button>
+                            </div>
+                            <!-- Slide 2: Inventory Need -->
+                            <div class="ai-slide">
+                                <div class="ai-slide-content">
+                                    <div class="ai-slide-label">
+                                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.08 3.11H5.77L6.85 7zM19 19H5v-5h14v5z"/></svg>
+                                        <span>CRITICAL INVENTORY NEED</span>
+                                    </div>
+                                    <div class="ai-slide-body">
+                                        <div class="ai-slide-title">Upgrade Opportunity</div>
+                                        <div class="ai-slide-description">
+                                            Ryan Brooks owns a <strong>2022 Supra</strong>. This model is currently out of stock in pre-owned. Demand is high.
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="ai-slide-cta" onclick="startChatWithContext('Plan buy back strategy for Ryan Brooks Supra')">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M7.94922 14.2996C8.41854 14.2998 8.79948 14.6805 8.79948 15.1498C8.79934 15.619 8.41845 15.9999 7.94922 16C7.47986 16 7.0991 15.6191 7.09896 15.1498C7.09896 14.6804 7.47978 14.2996 7.94922 14.2996Z" fill="white" />
+                                        <path d="M12.1497 13.3973C12.5086 13.3973 12.7993 13.6882 12.7995 14.047C12.7995 14.406 12.5087 14.6967 12.1497 14.6967C11.7909 14.6966 11.5 14.4059 11.5 14.047C11.5001 13.6883 11.791 13.3975 12.1497 13.3973Z" fill="white" />
+                                        <path d="M3.45052 12.7997C3.86473 12.7997 4.20052 13.1355 4.20052 13.5497C4.20052 13.9639 3.86473 14.2996 3.45052 14.2996C3.03631 14.2996 2.70052 13.9639 2.70052 13.5497C2.70052 13.1355 3.03631 12.7997 3.45052 12.7997Z" fill="white" />
+                                        <path d="M6.25 10.3976C6.94036 10.3976 7.5 10.9572 7.5 11.6475C7.5 12.3378 6.94036 12.8974 6.25 12.8974C5.55964 12.8974 5 12.3378 5 11.6475C5 10.9572 5.55964 10.3976 6.25 10.3976Z" fill="white" />
+                                        <path d="M10.3503 10.3976C10.9853 10.3976 11.4999 10.9123 11.5 11.5472C11.5 12.1823 10.9854 12.6969 10.3503 12.6969C9.71525 12.6967 9.20052 12.1822 9.20052 11.5472C9.20066 10.9124 9.71534 10.3977 10.3503 10.3976Z" fill="white" />
+                                        <path d="M13.6497 10.1984C14.1191 10.1985 14.5 10.5793 14.5 11.0486C14.4999 11.5178 14.119 11.8986 13.6497 11.8988C13.1804 11.8988 12.7996 11.5179 12.7995 11.0486C12.7995 10.5792 13.1803 10.1984 13.6497 10.1984Z" fill="white" />
+                                        <path d="M3.41667 6.86923C3.73903 6.32538 4.45228 6.13871 5.01042 6.4526C5.56871 6.7668 5.75983 7.46295 5.4375 8.00716C5.36588 8.12803 5.27483 8.23174 5.17057 8.31573C4.68818 8.70417 3.97429 8.90987 3.66146 9.43803L3.625 9.49923C3.39616 9.88587 3.47637 10.4224 3.2474 10.809C3.0482 11.1453 2.60674 11.2609 2.26172 11.0668C1.91679 10.8727 1.79845 10.4422 1.9974 10.1059C2.23484 9.70506 2.78461 9.50557 3.02214 9.10473L3.04948 9.05656C3.35255 8.54486 3.18708 7.86584 3.27083 7.28066C3.291 7.13974 3.3392 7.00003 3.41667 6.86923Z" fill="white" />
+                                        <path d="M8.2487 6.60103C9.15988 6.60103 9.8983 7.33955 9.89844 8.25063C9.89844 9.16183 9.15997 9.90024 8.2487 9.90024C7.33755 9.9001 6.59896 9.16174 6.59896 8.25063C6.5991 7.33964 7.33763 6.60117 8.2487 6.60103Z" fill="white" />
+                                        <path d="M9.68229 3.55049C10.2406 3.23631 10.955 3.42298 11.2773 3.96713C11.3936 4.16346 11.4428 4.38 11.4323 4.59077C11.4095 5.04569 11.3042 5.54911 11.5378 5.94353C11.7715 6.33786 12.272 6.50082 12.6875 6.70909C12.8796 6.8055 13.0466 6.95463 13.1628 7.15046C13.4851 7.69466 13.294 8.39082 12.7357 8.70502C12.1774 9.01922 11.4643 8.8326 11.1419 8.28839C11.0257 8.09219 10.9752 7.87667 10.9857 7.66604C11.0084 7.21104 11.1152 6.7065 10.8815 6.31199C10.6478 5.91782 10.1472 5.75593 9.73177 5.54773C9.53925 5.45123 9.3715 5.30139 9.25521 5.10505C8.93305 4.56095 9.12424 3.86473 9.68229 3.55049Z" fill="white" />
+                                        <path d="M0.75 7.30019C1.16421 7.30019 1.5 7.63595 1.5 8.05013C1.5 8.46431 1.16421 8.80007 0.75 8.80007C0.335786 8.80007 0 8.46431 0 8.05013C0 7.63595 0.335786 7.30019 0.75 7.30019Z" fill="white" />
+                                        <path d="M15.25 7.30019C15.6642 7.30019 16 7.63595 16 8.05013C16 8.46431 15.6642 8.80007 15.25 8.80007C14.8358 8.80007 14.5 8.46431 14.5 8.05013C14.5 7.63595 14.8358 7.30019 15.25 7.30019Z" fill="white" />
+                                        <path d="M2.04948 3.49972C2.6292 3.49972 3.09998 3.9695 3.10026 4.54911C3.10026 5.12896 2.62938 5.5998 2.04948 5.5998C1.46982 5.59952 1 5.12879 1 4.54911C1.00028 3.96967 1.46999 3.5 2.04948 3.49972Z" fill="white" />
+                                        <path d="M6.54948 2.8982C7.23984 2.8982 7.79948 3.4578 7.79948 4.1481C7.79948 4.8384 7.23984 5.398 6.54948 5.398C5.85912 5.398 5.29948 4.8384 5.29948 4.1481C5.29948 3.4578 5.85912 2.8982 6.54948 2.8982Z" fill="white" />
+                                        <path d="M13.2005 2.4998C13.7528 2.4998 14.2005 2.94748 14.2005 3.49972C14.2005 4.05196 13.7528 4.49963 13.2005 4.49963C12.6482 4.49963 12.2005 4.05196 12.2005 3.49972C12.2005 2.94748 12.6482 2.4998 13.2005 2.4998Z" fill="white" />
+                                        <path d="M4.55078 0.800716C4.90968 0.800716 5.20038 1.09157 5.20052 1.4504C5.20052 1.80936 4.90977 2.10009 4.55078 2.10009C4.19192 2.09995 3.90104 1.80927 3.90104 1.4504C3.90118 1.09165 4.192 0.800857 4.55078 0.800716Z" fill="white" />
+                                        <path d="M8.75 0C9.16421 0 9.5 0.335759 9.5 0.749939C9.5 1.16412 9.16421 1.49988 8.75 1.49988C8.33579 1.49988 8 1.16412 8 0.749939C8 0.335759 8.33579 0 8.75 0Z" fill="white" />
+                                    </svg>
+                                    Plan Buy Back
+                                </button>
+                            </div>
+                            <!-- Slide 3: Retention Risk -->
+                            <div class="ai-slide">
+                                <div class="ai-slide-content">
+                                    <div class="ai-slide-label">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                        <span>RETENTION RISK</span>
+                                    </div>
+                                    <div class="ai-slide-body">
+                                        <div class="ai-slide-title">Warranty Expiry</div>
+                                        <div class="ai-slide-description">
+                                            Ryan O'Connell's <strong>2021 RAV4</strong> factory warranty expires next month. Good candidate for Extended Service Plan.
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="ai-slide-cta" onclick="startChatWithContext('Draft warranty expiration email for Ryan OConnell')">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M7.94922 14.2996C8.41854 14.2998 8.79948 14.6805 8.79948 15.1498C8.79934 15.619 8.41845 15.9999 7.94922 16C7.47986 16 7.0991 15.6191 7.09896 15.1498C7.09896 14.6804 7.47978 14.2996 7.94922 14.2996Z" fill="white" />
+                                        <path d="M12.1497 13.3973C12.5086 13.3973 12.7993 13.6882 12.7995 14.047C12.7995 14.406 12.5087 14.6967 12.1497 14.6967C11.7909 14.6966 11.5 14.4059 11.5 14.047C11.5001 13.6883 11.791 13.3975 12.1497 13.3973Z" fill="white" />
+                                        <path d="M3.45052 12.7997C3.86473 12.7997 4.20052 13.1355 4.20052 13.5497C4.20052 13.9639 3.86473 14.2996 3.45052 14.2996C3.03631 14.2996 2.70052 13.9639 2.70052 13.5497C2.70052 13.1355 3.03631 12.7997 3.45052 12.7997Z" fill="white" />
+                                        <path d="M6.25 10.3976C6.94036 10.3976 7.5 10.9572 7.5 11.6475C7.5 12.3378 6.94036 12.8974 6.25 12.8974C5.55964 12.8974 5 12.3378 5 11.6475C5 10.9572 5.55964 10.3976 6.25 10.3976Z" fill="white" />
+                                        <path d="M10.3503 10.3976C10.9853 10.3976 11.4999 10.9123 11.5 11.5472C11.5 12.1823 10.9854 12.6969 10.3503 12.6969C9.71525 12.6967 9.20052 12.1822 9.20052 11.5472C9.20066 10.9124 9.71534 10.3977 10.3503 10.3976Z" fill="white" />
+                                        <path d="M13.6497 10.1984C14.1191 10.1985 14.5 10.5793 14.5 11.0486C14.4999 11.5178 14.119 11.8986 13.6497 11.8988C13.1804 11.8988 12.7996 11.5179 12.7995 11.0486C12.7995 10.5792 13.1803 10.1984 13.6497 10.1984Z" fill="white" />
+                                        <path d="M3.41667 6.86923C3.73903 6.32538 4.45228 6.13871 5.01042 6.4526C5.56871 6.7668 5.75983 7.46295 5.4375 8.00716C5.36588 8.12803 5.27483 8.23174 5.17057 8.31573C4.68818 8.70417 3.97429 8.90987 3.66146 9.43803L3.625 9.49923C3.39616 9.88587 3.47637 10.4224 3.2474 10.809C3.0482 11.1453 2.60674 11.2609 2.26172 11.0668C1.91679 10.8727 1.79845 10.4422 1.9974 10.1059C2.23484 9.70506 2.78461 9.50557 3.02214 9.10473L3.04948 9.05656C3.35255 8.54486 3.18708 7.86584 3.27083 7.28066C3.291 7.13974 3.3392 7.00003 3.41667 6.86923Z" fill="white" />
+                                        <path d="M8.2487 6.60103C9.15988 6.60103 9.8983 7.33955 9.89844 8.25063C9.89844 9.16183 9.15997 9.90024 8.2487 9.90024C7.33755 9.9001 6.59896 9.16174 6.59896 8.25063C6.5991 7.33964 7.33763 6.60117 8.2487 6.60103Z" fill="white" />
+                                        <path d="M9.68229 3.55049C10.2406 3.23631 10.955 3.42298 11.2773 3.96713C11.3936 4.16346 11.4428 4.38 11.4323 4.59077C11.4095 5.04569 11.3042 5.54911 11.5378 5.94353C11.7715 6.33786 12.272 6.50082 12.6875 6.70909C12.8796 6.8055 13.0466 6.95463 13.1628 7.15046C13.4851 7.69466 13.294 8.39082 12.7357 8.70502C12.1774 9.01922 11.4643 8.8326 11.1419 8.28839C11.0257 8.09219 10.9752 7.87667 10.9857 7.66604C11.0084 7.21104 11.1152 6.7065 10.8815 6.31199C10.6478 5.91782 10.1472 5.75593 9.73177 5.54773C9.53925 5.45123 9.3715 5.30139 9.25521 5.10505C8.93305 4.56095 9.12424 3.86473 9.68229 3.55049Z" fill="white" />
+                                        <path d="M0.75 7.30019C1.16421 7.30019 1.5 7.63595 1.5 8.05013C1.5 8.46431 1.16421 8.80007 0.75 8.80007C0.335786 8.80007 0 8.46431 0 8.05013C0 7.63595 0.335786 7.30019 0.75 7.30019Z" fill="white" />
+                                        <path d="M15.25 7.30019C15.6642 7.30019 16 7.63595 16 8.05013C16 8.46431 15.6642 8.80007 15.25 8.80007C14.8358 8.80007 14.5 8.46431 14.5 8.05013C14.5 7.63595 14.8358 7.30019 15.25 7.30019Z" fill="white" />
+                                        <path d="M2.04948 3.49972C2.6292 3.49972 3.09998 3.9695 3.10026 4.54911C3.10026 5.12896 2.62938 5.5998 2.04948 5.5998C1.46982 5.59952 1 5.12879 1 4.54911C1.00028 3.96967 1.46999 3.5 2.04948 3.49972Z" fill="white" />
+                                        <path d="M6.54948 2.8982C7.23984 2.8982 7.79948 3.4578 7.79948 4.1481C7.79948 4.8384 7.23984 5.398 6.54948 5.398C5.85912 5.398 5.29948 4.8384 5.29948 4.1481C5.29948 3.4578 5.85912 2.8982 6.54948 2.8982Z" fill="white" />
+                                        <path d="M13.2005 2.4998C13.7528 2.4998 14.2005 2.94748 14.2005 3.49972C14.2005 4.05196 13.7528 4.49963 13.2005 4.49963C12.6482 4.49963 12.2005 4.05196 12.2005 3.49972C12.2005 2.94748 12.6482 2.4998 13.2005 2.4998Z" fill="white" />
+                                        <path d="M4.55078 0.800716C4.90968 0.800716 5.20038 1.09157 5.20052 1.4504C5.20052 1.80936 4.90977 2.10009 4.55078 2.10009C4.19192 2.09995 3.90104 1.80927 3.90104 1.4504C3.90118 1.09165 4.192 0.800857 4.55078 0.800716Z" fill="white" />
+                                        <path d="M8.75 0C9.16421 0 9.5 0.335759 9.5 0.749939C9.5 1.16412 9.16421 1.49988 8.75 1.49988C8.33579 1.49988 8 1.16412 8 0.749939C8 0.335759 8.33579 0 8.75 0Z" fill="white" />
+                                    </svg>
+                                    Draft Email
+                                </button>
+                            </div>
+                        </div>
+                        <div class="ai-slider-nav">
+                            <button class="nav-arrow-btn" onclick="moveSlide(-1)">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                            </button>
+                            <div class="slide-indicator" id="aiSlideIndicator">1 of 3</div>
+                            <button class="nav-arrow-btn" onclick="moveSlide(1)">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }, loadingDuration);
+        }
+
+        window.moveSlide = function (direction) {
+            const totalSlides = 3;
+            window.currentInsightSlide = (window.currentInsightSlide + direction + totalSlides) % totalSlides;
+
+            const slider = document.getElementById('aiInsightsSlider');
+            const indicator = document.getElementById('aiSlideIndicator');
+
+            if (slider) {
+                slider.style.transform = `translateX(-${window.currentInsightSlide * 33.333}%)`;
+            }
+            if (indicator) {
+                indicator.innerText = `${window.currentInsightSlide + 1} of ${totalSlides}`;
+            }
+        };
+
+        function addSalesLead() {
+            alert('Add Sales Lead functionality would open a modal/form here');
+        }
+
+        function addServiceLead() {
+            alert('Add Service Lead functionality would open a modal/form here');
+        }
+
+        // Listen for normal search input in DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('topSearchInput');
+            if (searchInput) {
+                let searchTimeout;
+                searchInput.addEventListener('input', function () {
+                    const searchWrapper = document.getElementById('searchInputWrapper');
+                    if (searchWrapper && !searchWrapper.classList.contains('ai-active')) {
+                        clearTimeout(searchTimeout);
+                        const query = this.value.trim();
+                        if (query.length > 0) {
+                            searchTimeout = setTimeout(() => showSearchResults(query), 500);
+                        } else {
+                            hideSearchResults();
+                        }
+                    }
+                });
+
+                // Also trigger on Enter key
+                searchInput.addEventListener('keypress', function (e) {
+                    if (e.key === 'Enter') {
+                        const query = this.value.trim();
+                        const searchWrapper = document.getElementById('searchInputWrapper');
+                        if (query.length > 0 && searchWrapper && !searchWrapper.classList.contains('ai-active')) {
+                            showSearchResults(query);
+                        }
+                    }
+                });
+            }
+        });
 
         // Modals
         const renameModal = document.getElementById('renameModal');
@@ -7408,8 +9484,6 @@
             const actionRow = document.createElement('div');
             actionRow.className = 'ai-actions-row';
 
-            const isDocked = !panel.classList.contains('state-fullscreen');
-
             const icons = [
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>',
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path></svg>',
@@ -7428,6 +9502,7 @@
 
             // Compact Spacer or Margin
             const pillWrapper = document.createElement('div');
+            pillWrapper.className = 'pill-wrapper';
             pillWrapper.style.display = 'flex';
             pillWrapper.style.gap = '8px';
             pillWrapper.style.marginLeft = '8px';
@@ -7438,10 +9513,10 @@
             const filterPill = document.createElement('div');
             filterPill.className = 'reasoning-pill';
             filterPill.style.display = 'flex';
-            const filterText = isDocked ? filterCount : `${filterCount} Filter${filterCount !== 1 ? 's' : ''} Applied`;
             filterPill.innerHTML = `
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9v6l4 2v-8l8-9z"></path></svg>
-                <span>${filterText}</span>
+                <span class="pill-label">${filterCount} Filter${filterCount !== 1 ? 's' : ''} Applied</span>
+                <span class="pill-count-only">${filterCount}</span>
             `;
             filterPill.onclick = (e) => toggleFilterPopover(e, filterPill);
             pillWrapper.appendChild(filterPill);
@@ -7451,10 +9526,10 @@
                 const sourcePill = document.createElement('div');
                 sourcePill.className = 'reasoning-pill';
                 sourcePill.style.display = 'flex';
-                const sourceText = isDocked ? sourcesData.count : `${sourcesData.count} Source${sourcesData.count > 1 ? 's' : ''}`;
                 sourcePill.innerHTML = `
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-                    <span>${sourceText}</span>
+                    <span class="pill-label">${sourcesData.count} Source${sourcesData.count > 1 ? 's' : ''}</span>
+                    <span class="pill-count-only">${sourcesData.count}</span>
                 `;
                 sourcePill.onclick = (e) => toggleSourcesPopover(e, sourcePill, sourcesData);
                 pillWrapper.appendChild(sourcePill);
@@ -8313,7 +10388,9 @@
             const mobileHandle = document.getElementById('mobileSheetHandle');
             if (mobileHandle) mobileHandle.classList.remove('aurora-active');
 
-            mainInput.focus();
+            if (panel && !panel.classList.contains('state-closed')) {
+                mainInput.focus();
+            }
         }
 
         // View Management
@@ -8628,7 +10705,35 @@
         document.addEventListener('DOMContentLoaded', populateDummyHistory);
         // Global State Logic
         function setState(state) {
-            if (panel) panel.classList.remove('state-docked', 'state-minimized', 'state-fullscreen', 'state-closed');
+            const wasFullscreen = panel.classList.contains('state-fullscreen');
+
+            // Logic for CLOSING FULLSCREEN smoothly: Slide out as full width, then reset.
+            if (wasFullscreen && state !== 'fullscreen') {
+                // force 100% width so it slides out completely instead of snapping to 400px then sliding
+                panel.style.width = '100%';
+
+                // Clean classes
+                panel.classList.remove('state-docked', 'state-minimized', 'state-fullscreen', 'state-closed');
+
+                // Add new state class
+                if (state === 'closed') panel.classList.add('state-closed');
+                else if (state === 'docked') panel.classList.add('state-docked');
+                else if (state === 'minimized') panel.classList.add('state-minimized');
+
+                // Provide a cleanup after transition
+                const cleanup = () => {
+                    panel.style.width = ''; // revert to CSS default (400px usually)
+                    panel.removeEventListener('transitionend', cleanup);
+                };
+                panel.addEventListener('transitionend', cleanup, { once: true });
+                // Fallback in case transition fails or is interrupted
+                setTimeout(cleanup, 1000);
+
+            } else {
+                // Normal class cleaning
+                panel.classList.remove('state-docked', 'state-minimized', 'state-fullscreen', 'state-closed');
+            }
+
             if (mainContent) mainContent.classList.remove('pushed-by-dock', 'full-hidden');
             if (btnFull) btnFull.style.display = 'flex';
             if (btnDock) btnDock.style.display = 'none';
@@ -8662,7 +10767,24 @@
                 panel.classList.add('state-minimized');
                 if (!panel.style.left) panel.style.left = '100px';
             } else if (state === 'fullscreen') {
+                // OPENING FULLSCREEN LOGIC for Smooth Slide
+                // We want to snap to 100% width instantly (offscreen) then slide in.
+                // Prevent transition on width property.
+
+                panel.style.transition = 'none'; // Disable all transitions momentarily
                 panel.classList.add('state-fullscreen');
+
+                // Force transform to -100% to ensure it starts fully offscreen at new 100% width
+                panel.style.transform = 'translateX(-100%)';
+
+                // Force reflow/repaint
+                void panel.offsetHeight;
+
+                // Re-enable CSS transitions
+                panel.style.transition = '';
+                // Clear inline transform so CSS rule (translateX(0)) takes effect and animates
+                panel.style.transform = '';
+
                 mainContent.classList.add('full-hidden');
                 btnFull.style.display = 'none';
                 btnDock.style.display = 'flex';
@@ -8810,6 +10932,11 @@
             sortHistoryList();
         };
 
+        // Placeholder for updating chat panel suggestions based on search query
+        window.updateChatPanelSuggestions = function (query) {
+            console.log('Updating chat panel suggestions for:', query);
+            // In a real implementation, this would fetch or generate relevant suggestions
+        };
     </script>
 </body>
 
