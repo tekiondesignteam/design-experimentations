@@ -3252,6 +3252,29 @@
             border-bottom: none;
         }
 
+        .popup-search-wrapper {
+            padding: 0 var(--space-xs) var(--space-md) var(--space-xs);
+            flex-shrink: 0;
+        }
+
+        .popup-search-input {
+            width: 100%;
+            padding: var(--space-sm) var(--space-md);
+            border: 1px solid var(--color-border-muted);
+            border-radius: var(--radius-md);
+            font-size: var(--font-sm);
+            outline: none;
+            transition: all var(--transition-speed-normal);
+            box-sizing: border-box;
+            background: var(--color-bg-surface);
+        }
+
+        .popup-search-input:focus {
+            border-color: var(--color-primary);
+            background: white;
+            box-shadow: 0 0 0 1px var(--color-primary);
+        }
+
         .popup-header button {
             background: none;
             border: none;
@@ -5525,6 +5548,199 @@
                 transform: translateY(-1px);
             }
 
+            /* Refine Results Banner */
+            .refine-results-banner {
+                margin: 16px 0;
+                padding: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 20px;
+                background: var(--gradient-primary);
+                border-radius: 8px;
+                box-shadow: none;
+            }
+
+            .refine-banner-content {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+            }
+
+            .refine-banner-content img {
+                border-radius: 4px;
+                flex-shrink: 0;
+            }
+
+            .refine-banner-text {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                text-align: left;
+            }
+
+            .refine-banner-title {
+                font-size: 14px;
+                font-weight: 600;
+                color: var(--color-text-heading);
+            }
+
+            .refine-banner-subtitle {
+                font-size: 14px;
+                font-weight: 500;
+                color: var(--color-text-main);
+                line-height: 1.4;
+            }
+
+            .refine-banner-btn {
+                background: var(--gradient-ai);
+                color: white;
+                border: none;
+                padding: 10px 24px;
+                border-radius: 4px;
+                font-size: 14px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: transform 0.2s, opacity 0.2s;
+                white-space: nowrap;
+                box-shadow: none;
+            }
+
+            .refine-banner-btn:hover {
+                opacity: 0.9;
+                transform: translateY(-1px);
+            }
+
+            .refine-results-banner.input-mode {
+                padding: 12px 16px !important;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .refine-results-banner.aurora-active::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 300%;
+                height: 100%;
+                background: linear-gradient(90deg,
+                        transparent 10%,
+                        var(--aurora-color-1) 30%,
+                        var(--aurora-color-2) 50%,
+                        var(--aurora-color-3) 70%,
+                        var(--aurora-color-4) 85%,
+                        transparent 100%);
+                z-index: 0;
+                animation: auroraSlide 6s ease-in-out infinite;
+                pointer-events: none;
+                opacity: 0.6;
+            }
+
+            .refine-results-banner.aurora-active {
+                border-color: transparent !important;
+                background: linear-gradient(270deg, var(--aiSemantics-color-card-background-defaultStop1, #ECFEFF) 0%, var(--aiSemantics-color-card-background-defaultStop2, #F5F3FF) 74.52%, var(--aiSemantics-color-card-background-defaultStop3, #EDE9FE) 100%) padding-box !important;
+            }
+
+            .refine-results-banner .input-wrapper {
+                position: relative;
+                z-index: 2;
+            }
+
+            .refine-results-banner .input-border-wrapper {
+                width: 100%;
+            }
+
+            .refine-results-banner .enhanced-input-box {
+                flex-direction: row !important;
+                padding: 4px 8px 4px 14px !important;
+                min-height: 48px !important;
+                background-color: white !important;
+                display: flex !important;
+                align-items: center !important;
+            }
+
+            .refine-results-banner .toolbar-right {
+                margin: 0 !important;
+                padding: 0 !important;
+                display: flex !important;
+                align-items: center !important;
+                gap: 8px !important;
+                position: relative;
+                z-index: 2;
+            }
+
+            .refine-input-thinking {
+                display: none;
+                align-items: center;
+                gap: 6px;
+                margin-right: 8px;
+                animation: fadeIn 0.3s ease;
+            }
+
+            .refine-input-thinking.active {
+                display: flex;
+            }
+
+            .refine-input-thinking span {
+                background: var(--gradient-ai);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                background-size: 200% 200%;
+                animation: gradient-shift 3s ease infinite;
+                font-size: 13px;
+                font-weight: 600;
+            }
+
+            /* Refine button stop state matches chat panel */
+            .send-btn-square.stop {
+                background: var(--gradient-primary) !important;
+                color: var(--color-danger) !important;
+            }
+
+            .send-btn-square.stop:hover {
+                background: var(--color-danger) !important;
+                color: #fff !important;
+                filter: none;
+            }
+
+            .results-loading-state {
+                display: none;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 100px 0;
+                width: 100%;
+                gap: 16px;
+                background: #fff;
+                border-radius: 8px;
+            }
+
+            .results-loading-state.active {
+                display: flex;
+            }
+
+            .loading-spinner-ai {
+                width: 32px;
+                height: 32px;
+                border: 3px solid rgba(66, 133, 244, 0.1);
+                border-top: 3px solid var(--color-primary);
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            }
+
+            .loading-text-ai {
+                font-size: 14px;
+                font-weight: 500;
+                color: var(--color-text-main);
+                background: var(--gradient-ai);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                letter-spacing: 0.02em;
+            }
+
             .initiate-chat-btn svg {
                 width: 16px;
                 height: 16px;
@@ -5532,8 +5748,93 @@
             }
 
             .banner-subtitle strong {
-                color: #4B5563;
+                color: var(--color-text-main);
                 font-weight: 600;
+            }
+
+            /* Filters Applied Styling */
+            .filters-applied-section {
+                display: none;
+                margin: 0 0 20px 0;
+                align-items: center;
+                gap: 12px;
+                animation: fadeIn 0.3s ease;
+            }
+
+            .filters-applied-section.active {
+                display: flex;
+            }
+
+            .filters-label {
+                font-size: 14px;
+                font-weight: 600;
+                color: #111827;
+                display: flex;
+                align-items: center;
+            }
+
+            .ai-badge {
+                display: inline-flex;
+                align-items: center;
+                background: var(--gradient-ai);
+                color: white;
+                font-size: 10px;
+                font-weight: 800;
+                padding: 1px 6px;
+                border-radius: 4px;
+                text-transform: uppercase;
+                margin-left: 6px;
+                line-height: normal;
+            }
+
+            .filter-pills {
+                display: flex;
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+
+            .filter-pill {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 6px 14px;
+                border-radius: 100px;
+                font-size: 13px;
+                font-weight: 500;
+                color: #111827;
+                background: linear-gradient(135deg, rgba(33, 87, 245, 0.06), rgba(37, 141, 255, 0.06), rgba(134, 255, 187, 0.06));
+                border: 1px solid rgba(66, 133, 244, 0.12);
+                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+            }
+
+            .filter-pill .close-icon {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                color: #9CA3AF;
+                transition: color 0.2s;
+            }
+
+            .filter-pill .close-icon:hover {
+                color: #4B5563;
+            }
+
+            .filter-pill .close-icon svg {
+                width: 14px;
+                height: 14px;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(-5px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
             }
 
             .ai-suggestion-banner.expanded {
@@ -5806,15 +6107,24 @@
 
             /* Filters Sidebar */
             .search-filters-sidebar {
-                width: 200px;
+                width: 240px;
+                /* Increased slightly for inner padding */
                 flex-shrink: 0;
+            }
+
+            .filters-card {
+                background: white;
+                border: 1px solid #E5E7EB;
+                border-radius: 8px;
+                padding: 16px;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
             }
 
             .filters-header {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                margin-bottom: 16px;
+                margin-bottom: 20px;
             }
 
             .filters-header h3 {
@@ -5870,17 +6180,17 @@
 
             /* Results Main Area */
             .search-results-main {
-                flex: 1;
+                flex: none;
                 background: white;
                 border-radius: 8px;
                 border: 1px solid #E5E7EB;
                 display: flex;
                 flex-direction: column;
+                overflow-x: auto;
             }
 
             .results-header {
-                padding: 16px 20px;
-                border-bottom: 1px solid #E5E7EB;
+                padding: 8px 0 16px 0;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
@@ -5948,8 +6258,21 @@
 
             .search-results-table .name-cell {
                 display: flex;
-                align-items: center;
-                gap: 8px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 2px;
+            }
+
+            .search-results-table .customer-info-main {
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+            }
+
+            .search-results-table .customer-id {
+                font-size: 12px;
+                color: #6B7280;
+                font-weight: 400;
             }
 
             .search-results-table .status-indicator {
@@ -5974,6 +6297,46 @@
             .search-results-table .contact-phone {
                 color: #6B7280;
                 font-size: 13px;
+            }
+
+            .search-results-table tbody tr {
+                position: relative;
+            }
+
+            .row-ai-icon {
+                position: absolute;
+                right: 24px;
+                top: 50%;
+                transform: translateY(-50%) translateX(10px);
+                opacity: 0;
+                transition: all 0.2s ease;
+                background: white;
+                width: 32px;
+                height: 32px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 6px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                border: 1px solid #E5E7EB;
+                z-index: 10;
+                cursor: pointer;
+            }
+
+            .row-ai-icon img {
+                width: 20px;
+                height: 20px;
+            }
+
+            .search-results-table tbody tr:hover .row-ai-icon {
+                opacity: 1;
+                transform: translateY(-50%) translateX(0);
+            }
+
+            .row-ai-icon:hover {
+                transform: translateY(-50%) scale(1.1) !important;
+                background: #F8FAFC;
+                border-color: #D1D5DB;
             }
 
             /* Insight Card Styling */
@@ -6072,6 +6435,28 @@
                 height: 14px;
                 color: white;
             }
+        }
+
+        @keyframes strokeGlow {
+            0% {
+                border-color: #E5E7EB;
+                box-shadow: none;
+            }
+
+            50% {
+                border-color: #4285F4;
+                box-shadow: 0 0 8px rgba(66, 133, 244, 0.4);
+            }
+
+            100% {
+                border-color: #4285F4;
+                box-shadow: 0 0 12px rgba(66, 133, 244, 0.6);
+            }
+        }
+
+        .input-border-wrapper.glow-active {
+            animation: strokeGlow 1s ease-in-out infinite alternate;
+            border-color: #4285F4 !important;
         }
     </style>
 </head>
@@ -7867,6 +8252,11 @@
                                                             </svg>
                                                         </button>
                                                     </div>
+                                                    <div class="popup-search-wrapper">
+                                                        <input type="text" class="popup-search-input"
+                                                            id="datetimeSearch" placeholder="Search slots..."
+                                                            oninput="renderDateTimeList(this.value)">
+                                                    </div>
                                                     <div class="popup-list" id="datetimeList"></div>
                                                 </div>
                                             </div>
@@ -7939,6 +8329,11 @@
                                                         </svg>
                                                     </button>
                                                 </div>
+                                                <div class="popup-search-wrapper">
+                                                    <input type="text" class="popup-search-input" id="customerSearch"
+                                                        placeholder="Search customers..."
+                                                        oninput="renderCustomerList(this.value)">
+                                                </div>
                                                 <div class="popup-list" id="customerList"></div>
                                             </div>
 
@@ -7953,6 +8348,11 @@
                                                         </svg>
                                                     </button>
                                                 </div>
+                                                <div class="popup-search-wrapper">
+                                                    <input type="text" class="popup-search-input" id="vehicleSearch"
+                                                        placeholder="Search vehicles..."
+                                                        oninput="renderVehicleList(this.value)">
+                                                </div>
                                                 <div class="popup-list" id="vehicleList"></div>
                                             </div>
 
@@ -7966,6 +8366,11 @@
                                                             <line x1="6" y1="6" x2="18" y2="18"></line>
                                                         </svg>
                                                     </button>
+                                                </div>
+                                                <div class="popup-search-wrapper">
+                                                    <input type="text" class="popup-search-input" id="vinSearch"
+                                                        placeholder="Search VINs..."
+                                                        oninput="renderVinList(this.value)">
                                                 </div>
                                                 <div class="popup-list" id="vinList"></div>
                                             </div>
@@ -8092,58 +8497,60 @@
 
                         <!-- Main Content Area -->
                         <div class="search-results-content">
-                            <!-- Filters Sidebar -->
                             <aside class="search-filters-sidebar">
-                                <div class="filters-header">
-                                    <h3>Filters</h3>
-                                    <button onclick="clearAllFilters()">Clear all</button>
-                                </div>
 
-                                <div class="filter-group">
-                                    <label>Salesperson</label>
-                                    <select id="filterSalesperson" onchange="applyFilters()">
-                                        <option value="">All</option>
-                                        <option value="sophia">Sophia Mitchell</option>
-                                        <option value="benjamin">Benjamin Parker</option>
-                                        <option value="william">William Sullivan</option>
-                                        <option value="ava">Ava Ramirez</option>
-                                        <option value="elijah">Elijah Reed</option>
-                                    </select>
-                                </div>
+                                <div class="filters-card">
+                                    <div class="filters-header">
+                                        <h3>Filters</h3>
+                                        <button onclick="clearAllFilters()">Clear all</button>
+                                    </div>
 
-                                <div class="filter-group">
-                                    <label>Lead Status</label>
-                                    <select id="filterLeadStatus" onchange="applyFilters()">
-                                        <option value="">All</option>
-                                        <option value="new">New</option>
-                                        <option value="contacted">Contacted</option>
-                                        <option value="qualified">Qualified</option>
-                                        <option value="lost">Lost</option>
-                                    </select>
-                                </div>
+                                    <div class="filter-group">
+                                        <label>Salesperson</label>
+                                        <select id="filterSalesperson" onchange="applyFilters()">
+                                            <option value="">All</option>
+                                            <option value="sophia">Sophia Mitchell</option>
+                                            <option value="benjamin">Benjamin Parker</option>
+                                            <option value="william">William Sullivan</option>
+                                            <option value="ava">Ava Ramirez</option>
+                                            <option value="elijah">Elijah Reed</option>
+                                        </select>
+                                    </div>
 
-                                <div class="filter-group">
-                                    <label>Stock#</label>
-                                    <input type="text" id="filterStock" placeholder="Enter stock#"
-                                        oninput="applyFilters()">
-                                </div>
+                                    <div class="filter-group">
+                                        <label>Lead Status</label>
+                                        <select id="filterLeadStatus" onchange="applyFilters()">
+                                            <option value="">All</option>
+                                            <option value="new">New</option>
+                                            <option value="contacted">Contacted</option>
+                                            <option value="qualified">Qualified</option>
+                                            <option value="lost">Lost</option>
+                                        </select>
+                                    </div>
 
-                                <div class="filter-group">
-                                    <label>Year</label>
-                                    <input type="text" id="filterYear" placeholder="Enter year"
-                                        oninput="applyFilters()">
-                                </div>
+                                    <div class="filter-group">
+                                        <label>Stock#</label>
+                                        <input type="text" id="filterStock" placeholder="Enter stock#"
+                                            oninput="applyFilters()">
+                                    </div>
 
-                                <div class="filter-group">
-                                    <label>Make</label>
-                                    <input type="text" id="filterMake" placeholder="Enter make"
-                                        oninput="applyFilters()">
+                                    <div class="filter-group">
+                                        <label>Year</label>
+                                        <input type="text" id="filterYear" placeholder="Enter year"
+                                            oninput="applyFilters()">
+                                    </div>
+
+                                    <div class="filter-group" style="margin-bottom: 0;">
+                                        <label>Make</label>
+                                        <input type="text" id="filterMake" placeholder="Enter make"
+                                            oninput="applyFilters()">
+                                    </div>
                                 </div>
                             </aside>
 
                             <!-- Right Side: AI Banner + Table -->
                             <div class="search-results-right">
-                                <!-- AI Suggestion Banner -->
+                                <!-- AI Suggestion Banner (Commented out)
                                 <div class="ai-suggestion-banner">
                                     <div class="banner-text">
                                         <div class="banner-title" id="aiBannerHeadline">Want deeper insights on
@@ -8206,20 +8613,65 @@
                                         Generate Insights
                                     </button>
                                 </div>
+                                -->
 
-                                <!-- Results Table -->
-                                <div class="search-results-main">
-                                    <div class="results-header">
-                                        <div class="results-count">
-                                            Showing 1 - 15 out of 15 | Not the results you expected? Adjust filter
-                                            criteria or try different search keywords.
-                                        </div>
-                                        <div class="results-actions">
-                                            <button onclick="addSalesLead()">+ Add Sales Lead</button>
-                                            <button onclick="addServiceLead()">+ Add Service Lead</button>
+                                <!-- Refine Results Banner -->
+                                <div class="refine-results-banner">
+                                    <div class="refine-banner-content">
+                                        <img src="https://tekiondesignteam.github.io/design-experimentations/ai-logo2.svg"
+                                            width="40" height="40" alt="AI Assistant">
+                                        <div class="refine-banner-text">
+                                            <div class="refine-banner-title">Not the results you expected?</div>
+                                            <div class="refine-banner-subtitle">AI Assistant can help surface results
+                                                that better match your intent.</div>
                                         </div>
                                     </div>
+                                    <button class="refine-banner-btn" onclick="showRefineEnhancedInput()">Refine
+                                        Results</button>
+                                </div>
 
+                                <!-- Filters Applied Section (Moved Here) -->
+                                <div class="filters-applied-section" id="filtersAppliedSection">
+                                    <div class="filters-label">Smart filters <span class="ai-badge">AI</span></div>
+                                    <div class="filter-pills">
+                                        <div class="filter-pill">
+                                            Last contacted : <7 days <span class="close-icon">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                </svg>
+                                                </span>
+                                        </div>
+                                        <div class="filter-pill">
+                                            Vehicle Type: SUV
+                                            <span class="close-icon">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <!-- Results Table -->
+                                <div class="results-header">
+                                    <div class="results-count" id="searchResultsCount">
+                                        Showing 1 - 15 out of 144 Results.
+                                    </div>
+                                    <div class="results-actions">
+                                        <button>+ Add Lead</button>
+                                    </div>
+                                </div>
+
+                                <div class="search-results-main">
+                                    <div id="resultsLoadingState" class="results-loading-state">
+                                        <div class="loading-spinner-ai"></div>
+                                        <div class="loading-text-ai">Loading results...</div>
+                                    </div>
                                     <table class="search-results-table">
                                         <thead>
                                             <tr>
@@ -8247,7 +8699,10 @@
                                                 <td>Sophia Mitchell</td>
                                                 <td>2022 Toyota Camry</td>
                                                 <td>310891</td>
-                                                <td>4102</td>
+                                                <td>4102<div class="row-ai-icon"><img
+                                                            src="https://tekiondesignteam.github.io/design-experimentations/ai-logo.svg"
+                                                            alt="AI"></div>
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td>
@@ -8264,7 +8719,10 @@
                                                 <td>Benjamin Parker</td>
                                                 <td>2023 Toyota Highlander</td>
                                                 <td>310892</td>
-                                                <td>4103</td>
+                                                <td>4103<div class="row-ai-icon"><img
+                                                            src="https://tekiondesignteam.github.io/design-experimentations/ai-logo.svg"
+                                                            alt="AI"></div>
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td>
@@ -8281,7 +8739,10 @@
                                                 <td>William Sullivan</td>
                                                 <td>2021 Toyota RAV4</td>
                                                 <td>310893</td>
-                                                <td>4104</td>
+                                                <td>4104<div class="row-ai-icon"><img
+                                                            src="https://tekiondesignteam.github.io/design-experimentations/ai-logo.svg"
+                                                            alt="AI"></div>
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td>
@@ -8298,7 +8759,10 @@
                                                 <td>Ava Ramirez</td>
                                                 <td>2020 Toyota Corolla</td>
                                                 <td>310894</td>
-                                                <td>4105</td>
+                                                <td>4105<div class="row-ai-icon"><img
+                                                            src="https://tekiondesignteam.github.io/design-experimentations/ai-logo.svg"
+                                                            alt="AI"></div>
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td>
@@ -8315,7 +8779,10 @@
                                                 <td>Elijah Reed</td>
                                                 <td>2024 Toyota Prius</td>
                                                 <td>310895</td>
-                                                <td>4106</td>
+                                                <td>4106<div class="row-ai-icon"><img
+                                                            src="https://tekiondesignteam.github.io/design-experimentations/ai-logo.svg"
+                                                            alt="AI"></div>
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td>
@@ -8332,7 +8799,10 @@
                                                 <td>Sophia Mitchell</td>
                                                 <td>2022 Toyota Avalon</td>
                                                 <td>310896</td>
-                                                <td>4107</td>
+                                                <td>4107<div class="row-ai-icon"><img
+                                                            src="https://tekiondesignteam.github.io/design-experimentations/ai-logo.svg"
+                                                            alt="AI"></div>
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td>
@@ -8349,7 +8819,10 @@
                                                 <td>Benjamin Parker</td>
                                                 <td>2023 Toyota Tacoma</td>
                                                 <td>310897</td>
-                                                <td>4108</td>
+                                                <td>4108<div class="row-ai-icon"><img
+                                                            src="https://tekiondesignteam.github.io/design-experimentations/ai-logo.svg"
+                                                            alt="AI"></div>
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td>
@@ -8366,7 +8839,10 @@
                                                 <td>William Sullivan</td>
                                                 <td>2021 Toyota Venza</td>
                                                 <td>310898</td>
-                                                <td>4109</td>
+                                                <td>4109<div class="row-ai-icon"><img
+                                                            src="https://tekiondesignteam.github.io/design-experimentations/ai-logo.svg"
+                                                            alt="AI"></div>
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td>
@@ -8383,7 +8859,10 @@
                                                 <td>Ava Ramirez</td>
                                                 <td>2022 Toyota Supra</td>
                                                 <td>310899</td>
-                                                <td>4110</td>
+                                                <td>4110<div class="row-ai-icon"><img
+                                                            src="https://tekiondesignteam.github.io/design-experimentations/ai-logo.svg"
+                                                            alt="AI"></div>
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td>
@@ -8400,7 +8879,10 @@
                                                 <td>Elijah Reed</td>
                                                 <td>2023 Toyota C-HR</td>
                                                 <td>310900</td>
-                                                <td>4111</td>
+                                                <td>4111<div class="row-ai-icon"><img
+                                                            src="https://tekiondesignteam.github.io/design-experimentations/ai-logo.svg"
+                                                            alt="AI"></div>
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td>
@@ -8417,7 +8899,10 @@
                                                 <td>Sophia Mitchell</td>
                                                 <td>2020 Toyota Yaris</td>
                                                 <td>310901</td>
-                                                <td>4112</td>
+                                                <td>4112<div class="row-ai-icon"><img
+                                                            src="https://tekiondesignteam.github.io/design-experimentations/ai-logo.svg"
+                                                            alt="AI"></div>
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td>
@@ -8434,7 +8919,10 @@
                                                 <td>Benjamin Parker</td>
                                                 <td>2024 Toyota Land Cruiser</td>
                                                 <td>310902</td>
-                                                <td>4113</td>
+                                                <td>4113<div class="row-ai-icon"><img
+                                                            src="https://tekiondesignteam.github.io/design-experimentations/ai-logo.svg"
+                                                            alt="AI"></div>
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td>
@@ -8451,7 +8939,10 @@
                                                 <td>William Sullivan</td>
                                                 <td>2021 Toyota Camry</td>
                                                 <td>310903</td>
-                                                <td>4114</td>
+                                                <td>4114<div class="row-ai-icon"><img
+                                                            src="https://tekiondesignteam.github.io/design-experimentations/ai-logo.svg"
+                                                            alt="AI"></div>
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td>
@@ -8469,7 +8960,10 @@
                                                 <td>Ava Ramirez</td>
                                                 <td>2022 Toyota Sequoia</td>
                                                 <td>310904</td>
-                                                <td>4115</td>
+                                                <td>4115<div class="row-ai-icon"><img
+                                                            src="https://tekiondesignteam.github.io/design-experimentations/ai-logo.svg"
+                                                            alt="AI"></div>
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td>
@@ -8486,7 +8980,10 @@
                                                 <td>Elijah Reed</td>
                                                 <td>2023 Toyota Corolla Cross</td>
                                                 <td>310905</td>
-                                                <td>4116</td>
+                                                <td>4116<div class="row-ai-icon"><img
+                                                            src="https://tekiondesignteam.github.io/design-experimentations/ai-logo.svg"
+                                                            alt="AI"></div>
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -8821,22 +9318,58 @@
         // NORMAL SEARCH RESULTS FUNCTIONALITY
         // ========================================
 
-        function showSearchResults(query) {
+        function addFilterPill(label) {
+            const filtersAppliedSection = document.getElementById('filtersAppliedSection');
+            if (!filtersAppliedSection) return;
+            const filterPills = filtersAppliedSection.querySelector('.filter-pills');
+            if (!filterPills) return;
+
+            // Simple deduplication
+            const existing = Array.from(filterPills.querySelectorAll('.filter-pill'));
+            const isDuplicate = existing.some(p => p.textContent.includes(label));
+            if (isDuplicate) return;
+
+            const div = document.createElement('div');
+            div.className = 'filter-pill';
+            div.innerHTML = `
+                ${label}
+                <span class="close-icon" onclick="this.parentElement.remove(); if(document.querySelectorAll('.filter-pill').length === 0) document.getElementById('filtersAppliedSection').classList.remove('active');">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </span>
+            `;
+            filterPills.appendChild(div);
+            filtersAppliedSection.classList.add('active');
+        }
+
+        function showSearchResults(query, fromRefine = false) {
             const searchResultsContainer = document.getElementById('searchResultsContainer');
             const skeletonTable = document.getElementById('skeletonTable');
             const mainContent = document.querySelector('.table-skeleton-container');
             const aiSummaryBanner = document.getElementById('aiSummaryBanner');
+            const filtersAppliedSection = document.getElementById('filtersAppliedSection');
+            const resultsCount = document.getElementById('searchResultsCount');
+            const tableBody = document.getElementById('searchResultsTableBody');
+            const filterPills = filtersAppliedSection ? filtersAppliedSection.querySelector('.filter-pills') : null;
 
             if (searchResultsContainer) {
                 searchResultsContainer.classList.add('active');
             }
 
             // Reset banner to initial state for the new query
-            resetSearchAIBanner(query);
+            resetSearchAIBanner(query, fromRefine);
 
             const searchInputWrapper = document.getElementById('searchInputWrapper');
             if (searchInputWrapper) {
                 searchInputWrapper.classList.add('results-active');
+            }
+
+            // If it's a fresh search, clear previous smart filters
+            if (!fromRefine && filterPills) {
+                filterPills.innerHTML = '';
+                if (filtersAppliedSection) filtersAppliedSection.classList.remove('active');
             }
 
             // Hide other main content
@@ -8848,6 +9381,125 @@
             }
             if (aiSummaryBanner) {
                 aiSummaryBanner.style.display = 'none';
+            }
+
+            const lowQuery = query.toLowerCase();
+            const isSUVQuery = lowQuery.includes('ryans') || lowQuery.includes('contacted in last 7 days') || lowQuery.includes('suv');
+            const isTestDriveQuery = lowQuery.includes('test drive') && (lowQuery.includes('tomorrow') || lowQuery.includes('jan 14'));
+
+            if (isTestDriveQuery) {
+                addFilterPill("Appointment type: Test Drive");
+                addFilterPill("Scheduled Date: Jan 14, 2026");
+
+                if (resultsCount) resultsCount.textContent = 'Showing 1 out of 1 Results.';
+
+                if (tableBody) {
+                    if (!tableBody.getAttribute('data-original-html')) {
+                        tableBody.setAttribute('data-original-html', tableBody.innerHTML);
+                    }
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td><div class="name-cell"><span>Ryan Carter</span><span class="customer-id">#0125</span></div></td>
+                            <td><div class="contact-info"><div class="contact-email">r.carter@techstart.io</div><div class="contact-phone">(512) 555-3421</div></div></td>
+                            <td>Sophia Mitchell</td>
+                            <td>2024 Toyota Highlander</td>
+                            <td>310891</td>
+                            <td>
+                                4102
+                                <div class="row-ai-icon">
+                                    <img src="https://tekiondesignteam.github.io/design-experimentations/ai-logo.svg" alt="AI">
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }
+            } else if (isSUVQuery) {
+                addFilterPill("Last contacted : <7 days");
+                addFilterPill("Vehicle Type: SUV");
+
+                if (resultsCount) resultsCount.textContent = 'Showing 5 out of 5 Results.';
+
+                if (tableBody) {
+                    // Store original if not already stored
+                    if (!tableBody.getAttribute('data-original-html')) {
+                        tableBody.setAttribute('data-original-html', tableBody.innerHTML);
+                    }
+
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td><div class="name-cell"><span>Ryan Carter</span><span class="customer-id">#0125</span></div></td>
+                            <td><div class="contact-info"><div class="contact-email">r.carter@techstart.io</div><div class="contact-phone">(512) 555-3421</div></div></td>
+                            <td>Sophia Mitchell</td>
+                            <td>2024 Toyota Highlander</td>
+                            <td>310891</td>
+                            <td>
+                                4102
+                                <div class="row-ai-icon">
+                                    <img src="https://tekiondesignteam.github.io/design-experimentations/ai-logo.svg" alt="AI">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="name-cell"><span>Ryan Washington</span><span class="customer-id">#4412</span></div></td>
+                            <td><div class="contact-info"><div class="contact-email">rwashington@state.gov</div><div class="contact-phone">(202) 555-7743</div></div></td>
+                            <td>Benjamin Parker</td>
+                            <td>2023 Toyota RAV4</td>
+                            <td>310892</td>
+                            <td>
+                                4103
+                                <div class="row-ai-icon">
+                                    <img src="https://tekiondesignteam.github.io/design-experimentations/ai-logo.svg" alt="AI">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="name-cell"><span>Ryan O'Connell</span><span class="customer-id">#8821</span></div></td>
+                            <td><div class="contact-info"><div class="contact-email">ryan.oc@consulting.net</div><div class="contact-phone">(617) 555-9982</div></div></td>
+                            <td>William Sullivan</td>
+                            <td>2024 Toyota Sequoia</td>
+                            <td>310893</td>
+                            <td>
+                                4104
+                                <div class="row-ai-icon">
+                                    <img src="https://tekiondesignteam.github.io/design-experimentations/ai-logo.svg" alt="AI">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="name-cell"><span>Ryan Miller</span><span class="customer-id">#1290</span></div></td>
+                            <td><div class="contact-info"><div class="contact-email">ryan.miller@gmail.com</div><div class="contact-phone">(312) 555-0192</div></div></td>
+                            <td>Ava Ramirez</td>
+                            <td>2023 Toyota 4Runner</td>
+                            <td>310894</td>
+                            <td>
+                                4105
+                                <div class="row-ai-icon">
+                                    <img src="https://tekiondesignteam.github.io/design-experimentations/ai-logo.svg" alt="AI">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div class="name-cell"><span>Ryan Lee</span><span class="customer-id">#5532</span></div></td>
+                            <td><div class="contact-info"><div class="contact-email">ryan@leedesign.studio</div><div class="contact-phone">(415) 555-6621</div></div></td>
+                            <td>Elijah Reed</td>
+                            <td>2022 Toyota Venza</td>
+                            <td>310895</td>
+                            <td>
+                                4106
+                                <div class="row-ai-icon">
+                                    <img src="https://tekiondesignteam.github.io/design-experimentations/ai-logo.svg" alt="AI">
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }
+            } else {
+                // If not explicitly a refined hardcoded query, we don't clear pills here if fromRefine is true
+                if (!fromRefine && filtersAppliedSection) filtersAppliedSection.classList.remove('active');
+                if (resultsCount) resultsCount.textContent = 'Showing 1 - 15 out of 144 Results.';
+                if (tableBody && tableBody.getAttribute('data-original-html')) {
+                    tableBody.innerHTML = tableBody.getAttribute('data-original-html');
+                }
             }
 
             console.log('Showing search results for:', query);
@@ -8930,42 +9582,197 @@
             }
         }
 
-        function resetSearchAIBanner(query = "keyword") {
-            const banner = document.querySelector('.search-results-container .ai-suggestion-banner');
+        function submitRefineSearch() {
+            const input = document.getElementById('enhancedRefineInput');
+            const banner = document.querySelector('.refine-results-banner');
+            const wrapper = document.querySelector('.refine-results-banner .input-border-wrapper');
+            const thinking = document.querySelector('.refine-input-thinking');
+            const sendBtn = document.querySelector('.refine-results-banner .send-btn-square');
+
+            if (input && input.value.trim() !== "") {
+                const query = input.value.trim();
+
+                // Keep the text but disable typing during processing
+                input.disabled = true;
+                input.style.opacity = "0.7";
+                input.style.cursor = "not-allowed";
+
+                if (wrapper) wrapper.classList.add('glow-active');
+                if (banner) banner.classList.add('aurora-active');
+                if (thinking) thinking.classList.add('active');
+                if (sendBtn) {
+                    sendBtn.classList.add('stop');
+                    sendBtn.innerHTML = btnStopIcon;
+                }
+
+                setTimeout(() => {
+                    if (wrapper) wrapper.classList.remove('glow-active');
+                    if (banner) banner.classList.remove('aurora-active');
+                    if (thinking) thinking.classList.remove('active');
+                    if (sendBtn) {
+                        sendBtn.classList.remove('stop');
+                        sendBtn.innerHTML = btnSendIcon;
+                    }
+
+                    // Intermediate "Loading results..." state
+                    const loadingState = document.getElementById('resultsLoadingState');
+                    const resultsTable = document.querySelector('.search-results-table');
+                    const resultsHeader = document.querySelector('.results-header');
+
+                    if (loadingState && resultsTable) {
+                        resultsTable.style.display = 'none';
+                        if (resultsHeader) resultsHeader.style.display = 'none';
+                        loadingState.classList.add('active');
+
+                        setTimeout(() => {
+                            loadingState.classList.remove('active');
+                            resultsTable.style.display = '';
+                            if (resultsHeader) resultsHeader.style.display = '';
+
+                            // Reset input to default once results are fully loaded
+                            input.value = "";
+                            input.disabled = false;
+                            input.style.opacity = "1";
+                            input.style.cursor = "text";
+                            if (sendBtn) sendBtn.classList.remove('active');
+
+                            showSearchResults(query, true);
+                        }, 2500);
+                    } else {
+                        // Fallback if elements not found
+                        input.value = "";
+                        input.disabled = false;
+                        input.style.opacity = "1";
+                        input.style.cursor = "text";
+                        if (sendBtn) sendBtn.classList.remove('active');
+                        showSearchResults(query, true);
+                    }
+                }, 4500);
+            }
+        }
+
+        function showRefineEnhancedInput() {
+            const banner = document.querySelector('.refine-results-banner');
             if (!banner) return;
 
-            banner.classList.remove('expanded');
-            banner.classList.remove('aurora-active');
-            banner.style.height = '';
-            banner.style.minHeight = '';
+            banner.classList.add('input-mode');
 
             banner.innerHTML = `
-                <div class="banner-text">
-                    <div class="banner-title" id="aiBannerHeadline">Want deeper insights on "<strong>${query}</strong>"?</div>
-                    <div class="banner-subtitle">AI Assistant can summarize these results or provide comparative insights.</div>
+                <div class="input-wrapper" style="padding: 0; width: 100%;">
+                    <div class="input-border-wrapper">
+                        <div class="enhanced-input-box">
+                                    <input type="text" 
+                                           id="enhancedRefineInput"
+                                           class="enhanced-refine-input" 
+                                           placeholder="Refine results by providing more context" 
+                                           style="flex: 1; border: none; outline: none; font-size: 16px; background: transparent; padding: 8px 0;"
+                                           onkeypress="if(event.key === 'Enter') submitRefineSearch()"
+                                           oninput="toggleRefineSendBtn(this.value)"
+                                           autofocus>
+                                    <div class="toolbar-right">
+                                        <div class="refine-input-thinking">
+                                            <span>Thinking...</span>
+                                        </div>
+                                        <button class="tool-icon-btn" title="Voice Search">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path>
+                                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                                <line x1="12" y1="19" x2="12" y2="22"></line>
+                                            </svg>
+                                        </button>
+                                        <button class="send-btn-square" id="refineSendBtn" title="Send" onclick="submitRefineSearch()">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <line x1="12" y1="19" x2="12" y2="5"></line>
+                                                <polyline points="5 12 12 5 19 12"></polyline>
+                                            </svg>
+                                        </button>
+                                    </div>
+                        </div>
+                    </div>
                 </div>
-                <button class="initiate-chat-btn" onclick="switchToAIFromSearch()">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M7.94922 14.2996C8.41854 14.2998 8.79948 14.6805 8.79948 15.1498C8.79934 15.619 8.41845 15.9999 7.94922 16C7.47986 16 7.0991 15.6191 7.09896 15.1498C7.09896 14.6804 7.47978 14.2996 7.94922 14.2996Z" fill="white" />
-                        <path d="M12.1497 13.3973C12.5086 13.3973 12.7993 13.6882 12.7995 14.047C12.7995 14.406 12.5087 14.6967 12.1497 14.6967C11.7909 14.6966 11.5 14.4059 11.5 14.047C11.5001 13.6883 11.791 13.3975 12.1497 13.3973Z" fill="white" />
-                        <path d="M3.45052 12.7997C3.86473 12.7997 4.20052 13.1355 4.20052 13.5497C4.20052 13.9639 3.86473 14.2996 3.45052 14.2996C3.03631 14.2996 2.70052 13.9639 2.70052 13.5497C2.70052 13.1355 3.03631 12.7997 3.45052 12.7997Z" fill="white" />
-                        <path d="M6.25 10.3976C6.94036 10.3976 7.5 10.9572 7.5 11.6475C7.5 12.3378 6.94036 12.8974 6.25 12.8974C5.55964 12.8974 5 12.3378 5 11.6475C5 10.9572 5.55964 10.3976 6.25 10.3976Z" fill="white" />
-                        <path d="M10.3503 10.3976C10.9853 10.3976 11.4999 10.9123 11.5 11.5472C11.5 12.1823 10.9854 12.6969 10.3503 12.6969C9.71525 12.6967 9.20052 12.1822 9.20052 11.5472C9.20066 10.9124 9.71534 10.3977 10.3503 10.3976Z" fill="white" />
-                        <path d="M13.6497 10.1984C14.1191 10.1985 14.5 10.5793 14.5 11.0486C14.4999 11.5178 14.119 11.8986 13.6497 11.8988C13.1804 11.8988 12.7996 11.5179 12.7995 11.0486C12.7995 10.5792 13.1803 10.1984 13.6497 10.1984Z" fill="white" />
-                        <path d="M3.41667 6.86923C3.73903 6.32538 4.45228 6.13871 5.01042 6.4526C5.56871 6.7668 5.75983 7.46295 5.4375 8.00716C5.36588 8.12803 5.27483 8.23174 5.17057 8.31573C4.68818 8.70417 3.97429 8.90987 3.66146 9.43803L3.625 9.49923C3.39616 9.88587 3.47637 10.4224 3.2474 10.809C3.0482 11.1453 2.60674 11.2609 2.26172 11.0668C1.91679 10.8727 1.79845 10.4422 1.9974 10.1059C2.23484 9.70506 2.78461 9.50557 3.02214 9.10473L3.04948 9.05656C3.35255 8.54486 3.18708 7.86584 3.27083 7.28066C3.291 7.13974 3.3392 7.00003 3.41667 6.86923Z" fill="white" />
-                        <path d="M8.2487 6.60103C9.15988 6.60103 9.8983 7.33955 9.89844 8.25063C9.89844 9.16183 9.15997 9.90024 8.2487 9.90024C7.33755 9.9001 6.59896 9.16174 6.59896 8.25063C6.5991 7.33964 7.33763 6.60117 8.2487 6.60103Z" fill="white" />
-                        <path d="M9.68229 3.55049C10.2406 3.23631 10.955 3.42298 11.2773 3.96713C11.3936 4.16346 11.4428 4.38 11.4323 4.59077C11.4095 5.04569 11.3042 5.54911 11.5378 5.94353C11.7715 6.33786 12.272 6.50082 12.6875 6.70909C12.8796 6.8055 13.0466 6.95463 13.1628 7.15046C13.4851 7.69466 13.294 8.39082 12.7357 8.70502C12.1774 9.01922 11.4643 8.8326 11.1419 8.28839C11.0257 8.09219 10.9752 7.87667 10.9857 7.66604C11.0084 7.21104 11.1152 6.7065 10.8815 6.31199C10.6478 5.91782 10.1472 5.75593 9.73177 5.54773C9.53925 5.45123 9.3715 5.30139 9.25521 5.10505C8.93305 4.56095 9.12424 3.86473 9.68229 3.55049Z" fill="white" />
-                        <path d="M0.75 7.30019C1.16421 7.30019 1.5 7.63595 1.5 8.05013C1.5 8.46431 1.16421 8.80007 0.75 8.80007C0.335786 8.80007 0 8.46431 0 8.05013C0 7.63595 0.335786 7.30019 0.75 7.30019Z" fill="white" />
-                        <path d="M15.25 7.30019C15.6642 7.30019 16 7.63595 16 8.05013C16 8.46431 15.6642 8.80007 15.25 8.80007C14.8358 8.80007 14.5 8.46431 14.5 8.05013C14.5 7.63595 14.8358 7.30019 15.25 7.30019Z" fill="white" />
-                        <path d="M2.04948 3.49972C2.6292 3.49972 3.09998 3.9695 3.10026 4.54911C3.10026 5.12896 2.62938 5.5998 2.04948 5.5998C1.46982 5.59952 1 5.12879 1 4.54911C1.00028 3.96967 1.46999 3.5 2.04948 3.49972Z" fill="white" />
-                        <path d="M6.54948 2.8982C7.23984 2.8982 7.79948 3.4578 7.79948 4.1481C7.79948 4.8384 7.23984 5.398 6.54948 5.398C5.85912 5.398 5.29948 4.8384 5.29948 4.1481C5.29948 3.4578 5.85912 2.8982 6.54948 2.8982Z" fill="white" />
-                        <path d="M13.2005 2.4998C13.7528 2.4998 14.2005 2.94748 14.2005 3.49972C14.2005 4.05196 13.7528 4.49963 13.2005 4.49963C12.6482 4.49963 12.2005 4.05196 12.2005 3.49972C12.2005 2.94748 12.6482 2.4998 13.2005 2.4998Z" fill="white" />
-                        <path d="M4.55078 0.800716C4.90968 0.800716 5.20038 1.09157 5.20052 1.4504C5.20052 1.80936 4.90977 2.10009 4.55078 2.10009C4.19192 2.09995 3.90104 1.80927 3.90104 1.4504C3.90118 1.09165 4.192 0.800857 4.55078 0.800716Z" fill="white" />
-                        <path d="M8.75 0C9.16421 0 9.5 0.335759 9.5 0.749939C9.5 1.16412 9.16421 1.49988 8.75 1.49988C8.33579 1.49988 8 1.16412 8 0.749939C8 0.335759 8.33579 0 8.75 0Z" fill="white" />
-                    </svg>
-                    Generate Insights
-                </button>
             `;
+
+            const input = banner.querySelector('.enhanced-refine-input');
+            if (input) input.focus();
+        }
+
+        function toggleRefineSendBtn(val) {
+            const btn = document.getElementById('refineSendBtn');
+            if (btn) {
+                if (val.trim().length > 0) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            }
+        }
+
+        function resetSearchAIBanner(query = "keyword", fromRefine = false) {
+            // Reset AI Suggestion Banner
+            const suggestionBanner = document.querySelector('.search-results-container .ai-suggestion-banner');
+            if (suggestionBanner) {
+                suggestionBanner.classList.remove('expanded');
+                suggestionBanner.classList.remove('aurora-active');
+                suggestionBanner.style.height = '';
+                suggestionBanner.style.minHeight = '';
+                suggestionBanner.innerHTML = `
+                    <div class="banner-text">
+                        <div class="banner-title" id="aiBannerHeadline">Want deeper insights on "<strong>${query}</strong>"?</div>
+                        <div class="banner-subtitle">AI Assistant can summarize these results or provide comparative insights.</div>
+                    </div>
+                    <button class="initiate-chat-btn" onclick="switchToAIFromSearch()">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7.94922 14.2996C8.41854 14.2998 8.79948 14.6805 8.79948 15.1498C8.79934 15.619 8.41845 15.9999 7.94922 16C7.47986 16 7.0991 15.6191 7.09896 15.1498C7.09896 14.6804 7.47978 14.2996 7.94922 14.2996Z" fill="white" />
+                            <path d="M12.1497 13.3973C12.5086 13.3973 12.7993 13.6882 12.7995 14.047C12.7995 14.406 12.5087 14.6967 12.1497 14.6967C11.7909 14.6966 11.5 14.4059 11.5 14.047C11.5001 13.6883 11.791 13.3975 12.1497 13.3973Z" fill="white" />
+                            <path d="M3.45052 12.7997C3.86473 12.7997 4.20052 13.1355 4.20052 13.5497C4.20052 13.9639 3.86473 14.2996 3.45052 14.2996C3.03631 14.2996 2.70052 13.9639 2.70052 13.5497C2.70052 13.1355 3.03631 12.7997 3.45052 12.7997Z" fill="white" />
+                            <path d="M6.25 10.3976C6.94036 10.3976 7.5 10.9572 7.5 11.6475C7.5 12.3378 6.94036 12.8974 6.25 12.8974C5.55964 12.8974 5 12.3378 5 11.6475C5 10.9572 5.55964 10.3976 6.25 10.3976Z" fill="white" />
+                            <path d="M10.3503 10.3976C10.9853 10.3976 11.4999 10.9123 11.5 11.5472C11.5 12.1823 10.9854 12.6969 10.3503 12.6969C9.71525 12.6967 9.20052 12.1822 9.20052 11.5472C9.20066 10.9124 9.71534 10.3977 10.3503 10.3976Z" fill="white" />
+                            <path d="M13.6497 10.1984C14.1191 10.1985 14.5 10.5793 14.5 11.0486C14.4999 11.5178 14.119 11.8986 13.6497 11.8988C13.1804 11.8988 12.7996 11.5179 12.7995 11.0486C12.7995 10.5792 13.1803 10.1984 13.6497 10.1984Z" fill="white" />
+                            <path d="M3.41667 6.86923C3.73903 6.32538 4.45228 6.13871 5.01042 6.4526C5.56871 6.7668 5.75983 7.46295 5.4375 8.00716C5.36588 8.12803 5.27483 8.23174 5.17057 8.31573C4.68818 8.70417 3.97429 8.90987 3.66146 9.43803L3.625 9.49923C3.39616 9.88587 3.47637 10.4224 3.2474 10.809C3.0482 11.1453 2.60674 11.2609 2.26172 11.0668C1.91679 10.8727 1.79845 10.4422 1.9974 10.1059C2.23484 9.70506 2.78461 9.50557 3.02214 9.10473L3.04948 9.05656C3.35255 8.54486 3.18708 7.86584 3.27083 7.28066C3.291 7.13974 3.3392 7.00003 3.41667 6.86923Z" fill="white" />
+                            <path d="M8.2487 6.60103C9.15988 6.60103 9.8983 7.33955 9.89844 8.25063C9.89844 9.16183 9.15997 9.90024 8.2487 9.90024C7.33755 9.9001 6.59896 9.16174 6.59896 8.25063C6.5991 7.33964 7.33763 6.60117 8.2487 6.60103Z" fill="white" />
+                            <path d="M9.68229 3.55049C10.2406 3.23631 10.955 3.42298 11.2773 3.96713C11.3936 4.16346 11.4428 4.38 11.4323 4.59077C11.4095 5.04569 11.3042 5.54911 11.5378 5.94353C11.7715 6.33786 12.272 6.50082 12.6875 6.70909C12.8796 6.8055 13.0466 6.95463 13.1628 7.15046C13.4851 7.69466 13.294 8.39082 12.7357 8.70502C12.1774 9.01922 11.4643 8.8326 11.1419 8.28839C11.0257 8.09219 10.9752 7.87667 10.9857 7.66604C11.0084 7.21104 11.1152 6.7065 10.8815 6.31199C10.6478 5.91782 10.1472 5.75593 9.73177 5.54773C9.53925 5.45123 9.3715 5.30139 9.25521 5.10505C8.93305 4.56095 9.12424 3.86473 9.68229 3.55049Z" fill="white" />
+                            <path d="M0.75 7.30019C1.16421 7.30019 1.5 7.63595 1.5 8.05013C1.5 8.46431 1.16421 8.80007 0.75 8.80007C0.335786 8.80007 0 8.46431 0 8.05013C0 7.63595 0.335786 7.30019 0.75 7.30019Z" fill="white" />
+                            <path d="M15.25 7.30019C15.6642 7.30019 16 7.63595 16 8.05013C16 8.46431 15.6642 8.80007 15.25 8.80007C14.8358 8.80007 14.5 8.46431 14.5 8.05013C14.5 7.63595 14.8358 7.30019 15.25 7.30019Z" fill="white" />
+                            <path d="M2.04948 3.49972C2.6292 3.49972 3.09998 3.9695 3.10026 4.54911C3.10026 5.12896 2.62938 5.5998 2.04948 5.5998C1.46982 5.59952 1 5.12879 1 4.54911C1.00028 3.96967 1.46999 3.5 2.04948 3.49972Z" fill="white" />
+                            <path d="M6.54948 2.8982C7.23984 2.8982 7.79948 3.4578 7.79948 4.1481C7.79948 4.8384 7.23984 5.398 6.54948 5.398C5.85912 5.398 5.29948 4.8384 5.29948 4.1481C5.29948 3.4578 5.85912 2.8982 6.54948 2.8982Z" fill="white" />
+                            <path d="M13.2005 2.4998C13.7528 2.4998 14.2005 2.94748 14.2005 3.49972C14.2005 4.05196 13.7528 4.49963 13.2005 4.49963C12.6482 4.49963 12.2005 4.05196 12.2005 3.49972C12.2005 2.94748 12.6482 2.4998 13.2005 2.4998Z" fill="white" />
+                            <path d="M4.55078 0.800716C4.90968 0.800716 5.20038 1.09157 5.20052 1.4504C5.20052 1.80936 4.90977 2.10009 4.55078 2.10009C4.19192 2.09995 3.90104 1.80927 3.90104 1.4504C3.90118 1.09165 4.192 0.800857 4.55078 0.800716Z" fill="white" />
+                            <path d="M8.75 0C9.16421 0 9.5 0.335759 9.5 0.749939C9.5 1.16412 9.16421 1.49988 8.75 1.49988C8.33579 1.49988 8 1.16412 8 0.749939C8 0.335759 8.33579 0 8.75 0Z" fill="white" />
+                        </svg>
+                        Generate Insights
+                    </button>
+                `;
+            }
+
+            // Reset Refine Results Banner (Smarter)
+            const refineBanner = document.querySelector('.refine-results-banner');
+            if (refineBanner) {
+                if (fromRefine) {
+                    // Stay in input mode but keep it at default placeholder
+                    showRefineEnhancedInput();
+                    const input = refineBanner.querySelector('.enhanced-refine-input');
+                    if (input) {
+                        input.value = ""; // Reset to placeholder
+                    }
+                    toggleRefineSendBtn(""); // Ensure button is deactivated
+                } else {
+                    // Reset to banner button state
+                    refineBanner.classList.remove('input-mode');
+                    refineBanner.innerHTML = `
+                        <div class="refine-banner-content">
+                            <img src="https://tekiondesignteam.github.io/design-experimentations/ai-logo2.svg"
+                                width="40" height="40" alt="AI Assistant">
+                            <div class="refine-banner-text">
+                                <div class="refine-banner-title">Not the results you expected?</div>
+                                <div class="refine-banner-subtitle">AI Assistant can help surface results
+                                    that better match your intent.</div>
+                            </div>
+                        </div>
+                        <button class="refine-banner-btn" onclick="showRefineEnhancedInput()">Refine
+                            Results</button>
+                    `;
+                }
+            }
         }
 
         function switchToAIFromSearch() {
@@ -9499,6 +10306,12 @@
         function showMenu(menu, renderFn, targetElement) {
             closeAllMenus();
 
+            // Clear any previous search text
+            const searchInput = menu.querySelector('.popup-search-input');
+            if (searchInput) {
+                searchInput.value = '';
+            }
+
             if (renderFn) renderFn();
 
             // Reveal it
@@ -9506,6 +10319,11 @@
             enhancedInputBox.classList.add('menu-open');
 
             currentActiveMenu = menu;
+
+            // Focus search if it exists
+            if (searchInput) {
+                setTimeout(() => searchInput.focus(), 50);
+            }
 
             // Ensure last message is visible if input expands
             setTimeout(() => {
