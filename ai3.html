@@ -1376,7 +1376,7 @@
         }
 
         .history-section-header {
-            padding: 24px var(--space-lg) 12px;
+            padding: 12px;
             font-size: 0.85rem;
             font-weight: 600;
             color: var(--color-text-muted);
@@ -1408,7 +1408,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 10px var(--space-md);
+            padding: 12px 0px 12px 12px;
             border-radius: var(--radius-md);
             cursor: pointer;
             transition: background var(--transition-speed-normal);
@@ -1739,6 +1739,13 @@
             background: var(--color-bg-hover);
         }
 
+        .custom-select-trigger:disabled {
+            background-color: #F9FAFB;
+            cursor: not-allowed;
+            border-color: var(--color-border-muted);
+            opacity: 0.8;
+        }
+
         .custom-select-trigger:focus {
             border-color: var(--color-primary);
             outline: none;
@@ -1821,6 +1828,7 @@
             height: 72px;
             /* Fixed height to prevent expanding */
             box-sizing: border-box;
+            overflow: hidden;
         }
 
         .voice-card:hover {
@@ -1976,11 +1984,11 @@
             top: 50%;
             transform: translateY(-50%);
             height: 30px;
-            width: 180px;
-            max-width: 100%;
+            width: 100%;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.2s ease;
+            overflow: hidden;
         }
 
         .voice-card.playing-mode .voice-visualizer {
@@ -2144,57 +2152,75 @@
             display: flex;
             flex-direction: column;
             gap: var(--space-xl);
-            max-width: 800px;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
         }
 
         .settings-group {
             background: #FFFFFF;
-            /* Forced white as requested */
             border: 1px solid var(--color-border-muted);
             border-radius: var(--radius-md);
-            padding: var(--space-lg);
+            padding: var(--space-lg) var(--space-xl);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
         }
 
         .settings-group-title {
             font-weight: 600;
             color: var(--color-text-heading);
-            margin-bottom: var(--space-2xs);
-            font-size: var(--font-md);
+            margin-bottom: var(--space-md);
+            font-size: 16px;
             display: flex;
             align-items: center;
-            gap: 8px;
-        }
-
-        .setting-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: var(--space-lg) 0;
-            /* Consistent internal spacing */
+            gap: 12px;
+            padding-bottom: var(--space-sm);
             border-bottom: 1px solid var(--color-border-muted);
-            gap: var(--space-lg);
         }
 
-        .setting-row:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
+        .settings-group-title svg {
+            color: var(--color-bg-dark);
+            opacity: 0.8;
+            flex-shrink: 0;
         }
 
+        /* Responsive Row: 1 Column on Mobile/Sidebar, 2 Columns on Desktop Fullscreen */
+        .setting-row,
         .setting-row-vertical {
             display: flex;
             flex-direction: column;
-            padding: var(--space-lg) 0;
+            padding: var(--space-xl) 0;
             border-bottom: 1px solid var(--color-border-muted);
-            gap: var(--space-sm);
-            /* Tighter gap between text and input */
+            gap: var(--space-md);
         }
 
+        .setting-row:last-child,
         .setting-row-vertical:last-child {
             border-bottom: none;
             padding-bottom: 0;
         }
 
-        /* Full Width Column Mode */
+        .setting-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 0;
+        }
+
+        .setting-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-text-heading);
+        }
+
+        .setting-desc {
+            font-size: 12px;
+            color: var(--color-text-muted);
+            line-height: 1.5;
+            max-width: 100%;
+        }
+
+        /* 2-Column Mode: Fullscreen */
+        .chat-sidebar.state-fullscreen .setting-row,
         .chat-sidebar.state-fullscreen .setting-row-vertical {
             flex-direction: row;
             align-items: flex-start;
@@ -2202,19 +2228,29 @@
             gap: var(--space-4xl);
         }
 
-        .chat-sidebar.state-fullscreen .setting-row-vertical .setting-info {
-            flex: 1;
-            max-width: 300px;
+        .chat-sidebar.state-fullscreen .setting-info {
+            flex: 0 0 320px;
+            max-width: 320px;
         }
 
-        .chat-sidebar.state-fullscreen .setting-row-vertical .modal-input,
-        .chat-sidebar.state-fullscreen .setting-row-vertical textarea.modal-input,
-        .chat-sidebar.state-fullscreen .setting-row-vertical .setting-controls-group,
-        .chat-sidebar.state-fullscreen .setting-row-vertical .voice-setting-controls,
-        .chat-sidebar.state-fullscreen .setting-row-vertical .custom-select-container {
-            flex: 2;
+        .chat-sidebar.state-fullscreen .modal-input,
+        .chat-sidebar.state-fullscreen textarea.modal-input,
+        .chat-sidebar.state-fullscreen .setting-controls-group,
+        .chat-sidebar.state-fullscreen .voice-setting-controls,
+        .chat-sidebar.state-fullscreen .custom-select-container,
+        .chat-sidebar.state-fullscreen .toggle-switch {
+            flex: 1;
+            max-width: 480px;
             margin-top: 0;
-            max-width: 400px;
+        }
+
+        /* Special case for toggles and small controls: align center in 2-column mode */
+        .chat-sidebar.state-fullscreen .setting-row {
+            align-items: center;
+        }
+
+        .chat-sidebar.state-fullscreen .setting-row .toggle-switch {
+            flex: 0 0 auto;
         }
 
         .voice-setting-controls {
@@ -2223,25 +2259,82 @@
             width: 100%;
         }
 
-        .setting-info {
+        .setting-controls-wrapper {
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            width: 100%;
+            gap: var(--space-xs);
         }
 
-        .setting-label {
+
+        /* Context Guideline Card (Rich Preview) */
+        .context-guideline-card {
+            background: #FFFFFF;
+            border: 1px solid var(--color-border-muted);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            margin-top: 4px;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .context-guideline-content {
+            padding: var(--space-lg) var(--space-xl) 0 var(--space-xl);
+            font-family: inherit;
+            max-height: 140px;
+            /* Limit height to show part of the text */
+            overflow: hidden;
+            position: relative;
+            mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+        }
+
+        .context-guideline-header {
+            color: #EC4899;
+            /* Vibrant pink/rose from image */
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .context-guideline-body {
             font-size: 14px;
-            /* Exactly 14px as requested */
-            font-weight: 500;
             color: var(--color-text-main);
-            min-width: 120px;
-            /* Ensure labels align across rows */
+            line-height: 1.5;
+            padding-bottom: var(--space-xl);
+            /* Ensure some space for the fade */
         }
 
-        .setting-desc {
-            font-size: 12px;
-            /* Exactly 12px as requested */
+        .context-guideline-body strong {
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .context-guideline-list {
+            margin-top: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .context-guideline-item {
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+        }
+
+        .context-guideline-item::before {
+            content: "*";
             color: var(--color-text-muted);
+            font-weight: bold;
+        }
+
+
+
+        .chat-sidebar.state-fullscreen .setting-controls-wrapper {
+            flex: 1;
+            max-width: 480px;
         }
 
         .settings-footer-actions {
@@ -2406,7 +2499,7 @@
         }
 
         .suggestion-item:hover svg {
-            color: var(--color-primary);
+            color: var(--color-text-heading);
             opacity: 1;
         }
 
@@ -5230,7 +5323,8 @@
 
             .search-mode-switch[data-mode="ai"] .switch-indicator {
                 left: 2px;
-                background: var(--gradient-ai);
+                background: #111827;
+                /* Neutral black/dark grey */
             }
 
             .search-mode-switch[data-mode="ai"] .option-ai {
@@ -5294,7 +5388,8 @@
             }
 
             .ai-ask-btn {
-                background: var(--gradient-ai);
+                background: #111827;
+                /* Neutral black/dark grey */
                 color: white;
                 border: none;
                 padding: 6px 16px;
@@ -5527,7 +5622,8 @@
             }
 
             .initiate-chat-btn {
-                background: linear-gradient(322deg, #2157F5 8.63%, #258DFF 51.82%, #86FFBB 108.64%);
+                background: #111827;
+                /* Neutral black/dark grey */
                 border: none;
                 border-radius: 4px;
                 padding: 8px 16px;
@@ -5695,7 +5791,7 @@
 
             /* Refine button stop state matches chat panel */
             .send-btn-square.stop {
-                background: var(--gradient-primary) !important;
+                background: #F3F4F6 !important;
                 color: var(--color-danger) !important;
             }
 
@@ -5724,8 +5820,8 @@
             .loading-spinner-ai {
                 width: 32px;
                 height: 32px;
-                border: 3px solid rgba(66, 133, 244, 0.1);
-                border-top: 3px solid var(--color-primary);
+                border: 3px solid rgba(0, 0, 0, 0.1);
+                border-top: 3px solid #111827;
                 border-radius: 50%;
                 animation: spin 1s linear infinite;
             }
@@ -6326,6 +6422,8 @@
             .row-ai-icon img {
                 width: 20px;
                 height: 20px;
+                filter: grayscale(1) contrast(0.5) brightness(0.7);
+                /* Keep it grey/black in search */
             }
 
             .search-results-table tbody tr:hover .row-ai-icon {
@@ -7918,43 +8016,78 @@
                                             <div class="setting-row-vertical">
                                                 <div class="setting-info">
                                                     <div class="setting-label">Role</div>
-                                                    <div class="setting-desc">Select your assigned organizational role.
+                                                    <div class="setting-desc">Your assigned organizational role and
+                                                        context guidelines.</div>
+                                                </div>
+                                                <div class="setting-controls-wrapper">
+                                                    <div class="custom-select-container"
+                                                        id="settingsRoleSelectContainer">
+                                                        <button class="custom-select-trigger" disabled
+                                                            onclick="toggleCustomSelect(event, 'settingsRoleSelectContainer')">
+                                                            <span class="custom-select-value"
+                                                                id="settingsRoleSelectValue">Sales Manager</span>
+                                                            <svg class="chevron-icon" viewBox="0 0 24 24" fill="none"
+                                                                stroke="currentColor" stroke-width="2"
+                                                                stroke-linecap="round" stroke-linejoin="round">
+                                                                <polyline points="6 10 12 16 18 10"></polyline>
+                                                            </svg>
+                                                        </button>
+                                                        <div class="menu-dropdown custom-select-options">
+                                                            <button class="menu-item"
+                                                                onclick="handleCustomSelect('settingsRoleSelectContainer', 'sales_manager', 'Sales Manager')">Sales
+                                                                Manager</button>
+                                                            <button class="menu-item"
+                                                                onclick="handleCustomSelect('settingsRoleSelectContainer', 'bdc_manager', 'BDC Manager')">BDC
+                                                                Manager</button>
+                                                        </div>
+                                                        <select id="settingsRoleSelect"
+                                                            onchange="updateRoleGuidelines()" style="display: none;"
+                                                            disabled>
+                                                            <option value="sales_manager" selected>Sales Manager
+                                                            </option>
+                                                            <option value="bdc_manager">BDC Manager</option>
+                                                        </select>
                                                     </div>
-                                                </div>
-                                                <div class="custom-select-container" id="settingsRoleSelectContainer">
-                                                    <button class="custom-select-trigger"
-                                                        onclick="toggleCustomSelect(event, 'settingsRoleSelectContainer')">
-                                                        <span class="custom-select-value"
-                                                            id="settingsRoleSelectValue">Sales Manager</span>
-                                                        <svg class="chevron-icon" viewBox="0 0 24 24" fill="none"
-                                                            stroke="currentColor" stroke-width="2"
-                                                            stroke-linecap="round" stroke-linejoin="round">
-                                                            <polyline points="6 10 12 16 18 10"></polyline>
-                                                        </svg>
-                                                    </button>
-                                                    <div class="menu-dropdown custom-select-options">
-                                                        <button class="menu-item"
-                                                            onclick="handleCustomSelect('settingsRoleSelectContainer', 'sales_manager', 'Sales Manager')">Sales
-                                                            Manager</button>
-                                                        <button class="menu-item"
-                                                            onclick="handleCustomSelect('settingsRoleSelectContainer', 'bdc_manager', 'BDC Manager')">BDC
-                                                            Manager</button>
+                                                    <div class="context-guideline-card">
+                                                        <div class="context-guideline-content">
+                                                            <div class="context-guideline-header">## 1. Role & Objective
+                                                            </div>
+                                                            <div class="context-guideline-body">
+                                                                You are an experienced <strong>Sales Manager</strong> at
+                                                                a dealership.
+                                                                Your primary goals are to:
+                                                                <div class="context-guideline-list">
+                                                                    <div class="context-guideline-item">
+                                                                        <span><strong>Maximize Gross
+                                                                                Profit:</strong> Structure deals that
+                                                                            are profitable while maintaining customer
+                                                                            satisfaction.</span>
+                                                                    </div>
+                                                                    <div class="context-guideline-item">
+                                                                        <span><strong>Drive Volume:</strong> Move aged
+                                                                            inventory and hit monthly unit
+                                                                            targets.</span>
+                                                                    </div>
+                                                                    <div class="context-guideline-item">
+                                                                        <span><strong>Manage Workflow:</strong> Oversee
+                                                                            sales consultants, approve deals
+                                                                            ("desking"), and ensure CRM
+                                                                            compliance.</span>
+                                                                    </div>
+                                                                    <div class="context-guideline-item">
+                                                                        <span><strong>Problem Solve:</strong>
+                                                                            De-escalate customer issues and overcome
+                                                                            objections regarding price, trade-in value,
+                                                                            or interest rates.</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <select id="settingsRoleSelect" onchange="updateRoleGuidelines()"
-                                                        style="display: none;">
-                                                        <option value="sales_manager" selected>Sales Manager</option>
-                                                        <option value="bdc_manager">BDC Manager</option>
-                                                    </select>
+                                                    <a class="change-voice-link" href="#"
+                                                        style="margin-top: var(--space-md);">View & Edit the role
+                                                        context</a>
                                                 </div>
-                                            </div>
-                                            <div class="setting-row-vertical">
-                                                <div class="setting-info">
-                                                    <div class="setting-label">What you do</div>
-                                                    <div class="setting-desc">Detailed guidelines and objectives for
-                                                        this role.</div>
-                                                </div>
-                                                <textarea class="modal-input" id="settingsRoleTextArea"
-                                                    style="min-height: 240px;"></textarea>
                                             </div>
                                         </div>
 
