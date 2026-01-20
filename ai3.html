@@ -4641,8 +4641,8 @@
 
             /* ADJUST WINDOW CONTROLS: Hide all except Close */
             .top-bar {
-                height: 56px !important;
-                padding: 0 20px !important;
+                height: 32px !important;
+                padding: 0 12px !important;
                 /* Fixed padding to allow space for content and handle */
                 display: flex !important;
                 align-items: center !important;
@@ -4652,19 +4652,19 @@
             }
 
             .brand-text {
-                font-size: 1rem !important;
-                /* Slightly smaller to fit 56px height */
+                font-size: 0.8rem !important;
+                /* Even smaller to fit 32px height */
                 font-weight: 600 !important;
                 display: flex !important;
                 align-items: center !important;
-                gap: 8px !important;
+                gap: 6px !important;
                 color: var(--color-text-heading) !important;
                 margin: 0 !important;
             }
 
             .brand-text svg {
-                width: 22px !important;
-                height: 22px !important;
+                width: 14px !important;
+                height: 14px !important;
             }
 
             .window-controls {
@@ -4683,9 +4683,9 @@
 
             #btnClose {
                 display: flex !important;
-                width: 36px !important;
-                /* Reduced to fit 56px bar */
-                height: 36px !important;
+                width: 28px !important;
+                /* Reduced to fit 32px bar */
+                height: 28px !important;
                 align-items: center !important;
                 justify-content: center !important;
                 margin-right: -4px !important;
@@ -4693,8 +4693,8 @@
             }
 
             #btnClose svg {
-                width: 24px !important;
-                height: 24px !important;
+                width: 18px !important;
+                height: 18px !important;
                 stroke-width: 2px !important;
             }
 
@@ -12477,6 +12477,20 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
             document.getElementById('btnFull').onclick = () => setState('fullscreen');
             document.getElementById('btnDock').onclick = () => setState('docked');
             document.getElementById('btnClose').onclick = () => setState('closed');
+
+            // Initial mobile check
+            if (window.innerWidth <= 768 && panel.classList.contains('state-closed')) {
+                mobileFab.classList.add('visible');
+            }
+
+            // Handle resize for FAB visibility
+            window.addEventListener('resize', () => {
+                if (window.innerWidth <= 768 && panel.classList.contains('state-closed')) {
+                    mobileFab.classList.add('visible');
+                } else if (window.innerWidth > 768) {
+                    mobileFab.classList.remove('visible');
+                }
+            });
         });
 
         /* --- SOURCES MODAL LOGIC --- */
