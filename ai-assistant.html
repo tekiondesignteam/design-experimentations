@@ -225,7 +225,8 @@
             position: absolute;
             bottom: 0;
             left: 0;
-            z-index: var(--z-nav);
+            z-index: var(--z-max);
+            /* Higher than lead detail and other content overlays */
             width: var(--sidebar-width);
             height: 100%;
             background: var(--gradient-primary);
@@ -256,6 +257,7 @@
             border-radius: var(--radius-xs) var(--radius-xs) 0 0;
             box-shadow: var(--shadow-sidebar);
             opacity: 1;
+            z-index: var(--z-max);
         }
 
         .chat-sidebar.state-fullscreen .nav-header-right {
@@ -292,7 +294,7 @@
                 box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
                 border: 1px solid rgba(0, 0, 0, 0.1);
                 border-bottom: none;
-                z-index: var(--z-top);
+                z-index: var(--z-max);
                 transform: translateY(0);
                 transform-origin: bottom center;
             }
@@ -308,7 +310,7 @@
                 box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15) !important;
                 border: 1px solid rgba(0, 0, 0, 0.1) !important;
                 border-bottom: none !important;
-                z-index: var(--z-top) !important;
+                z-index: var(--z-max) !important;
                 transform: translateY(0) !important;
             }
 
@@ -320,13 +322,11 @@
                 bottom: 0 !important;
                 top: auto !important;
                 border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important;
-                z-index: var(--z-top) !important;
+                z-index: var(--z-max) !important;
                 transform: translateY(100%) !important;
             }
 
-            .main-content.pushed-by-dock {
-                padding: var(--space-2xl) !important;
-            }
+            .main-content.pushed-by-dock {}
 
             /* Ensure app-container doesn't reserve space for floating sidebar */
             .app-container {
@@ -2136,6 +2136,7 @@
         }
 
         .modal-actions {
+            margin-top: 16px;
             display: flex;
             justify-content: flex-end;
             gap: var(--space-sm);
@@ -2468,7 +2469,7 @@
             width: var(--w-full);
             margin: 0 auto;
             box-sizing: border-box;
-            padding: 0 var(--space-2xl);
+            padding: 0 var(--space-lg);
             /* Default for Docked */
             transition: max-width var(--transition-speed-slow) ease, padding var(--transition-speed-slow) ease;
         }
@@ -4392,7 +4393,7 @@
             background-color: #BFDBFE;
         }
 
-        /* --- SKELETON --- */
+        /* --- TABLE SKELETON (Prefixed to avoid collisions) --- */
         .table-skeleton-container {
             width: 100%;
             height: 100%;
@@ -4401,43 +4402,125 @@
             background: #fff;
             border: 1px solid #E2E8F0;
             border-radius: 8px;
-            overflow: hidden;
+            overflow-x: auto;
+            overflow-y: hidden;
         }
 
-        .skeleton-row {
+        .ts-row {
             display: grid;
-            grid-template-columns: 2fr 3fr 2fr 2fr 2fr 1fr;
-            gap: 24px;
-            padding: 0 24px;
+            grid-template-columns: 260px 1fr 1fr 1fr 120px 80px;
+            gap: 16px;
+            padding: 0 16px;
             border-bottom: 1px solid #F1F5F9;
             align-items: center;
-            height: 50px;
+            height: 36px;
+            background: #fff;
+            min-width: 1100px;
+            flex-shrink: 0;
         }
 
-        .skeleton-row:last-child {
+        .ts-row:last-child {
             border-bottom: none;
         }
 
-        .skeleton-row.header {
+        .ts-row.header {
             background-color: #F8FAFC;
             border-bottom: 1px solid #E2E8F0;
+            height: 40px;
         }
 
-        .skeleton-cell {
+        .ts-cell {
             display: flex;
             align-items: center;
+            gap: 12px;
             width: 100%;
         }
 
-        .skeleton-bar {
-            height: 12px;
+        .ts-bar {
+            height: 8px;
+            background: #F1F5F9;
+            border-radius: 4px;
+        }
+
+        .ts-circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background: #F1F5F9;
+        }
+
+        .header .ts-bar {
+            height: 10px;
+            width: 70%;
+            background: #E2E8F0;
+            animation: none;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .ts-top-nav {
+            height: 56px;
+            background: #fff;
+            border-bottom: 1px solid #E2E8F0;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            margin: -24px -24px 24px -24px;
+        }
+
+        .ts-action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding: 0 4px;
+        }
+
+        .ts-filter-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .ts-filter-item {
+            height: 32px;
+            width: 80px;
             background: #F1F5F9;
             border-radius: 6px;
-            width: 100%;
         }
 
-        .header .skeleton-bar {
-            background: #E2E8F0;
+        .ts-search-box {
+            height: 32px;
+            width: 240px;
+            background: #F1F5F9;
+            border-radius: 6px;
+        }
+
+        .ts-pagination-bar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 12px 24px;
+            gap: 8px;
+            background: #fff;
+            border: 1px solid #E2E8F0;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .ts-pager-item {
+            width: 28px;
+            height: 28px;
+            background: #F1F5F9;
+            border-radius: 4px;
         }
 
         /* --- MOBILE FAB (New) --- */
@@ -4768,7 +4851,7 @@
         }
 
         .main-content.pushed-by-dock {
-            padding-left: 430px;
+            padding-left: 400px;
             padding-right: 24px;
             padding-top: 24px;
             padding-bottom: 30px;
@@ -5817,14 +5900,24 @@
                 display: none;
                 flex-direction: column;
                 margin: -24px;
-                height: calc(100vh + 24px);
+                height: calc(100% + 48px);
+                /* Corrected: Fill space and counteract negative margins */
+                min-height: 0;
                 background: #F9FAFB;
-                overflow-y: auto;
                 cursor: default;
+                position: relative;
+                overflow-y: auto;
             }
 
             .search-results-container.active {
                 display: flex;
+            }
+
+            /* Robustly hide other view elements when search is active */
+            .search-results-container.active~#leadsListViewSkeleton,
+            .search-results-container.active~#aiSummaryBanner,
+            .search-results-container.active~.table-skeleton-container {
+                display: none !important;
             }
 
             .search-results-header {
@@ -5870,6 +5963,58 @@
                 gap: 0;
                 padding: 0 24px;
                 overflow-x: auto;
+            }
+
+            /* When lead detail is active, neutralize main content padding and overflow */
+            .main-content:has(.lead-detail-page.active) {
+                padding: 0 !important;
+                overflow: hidden !important;
+            }
+
+            @media (min-width: 1600px) {
+                .main-content.pushed-by-dock:has(.lead-detail-page.active) {
+                    padding-left: 400px !important;
+                }
+
+                .main-content.pushed-by-dock:has(.search-results-container.active) {
+                    padding-left: 400px !important;
+                }
+
+                .main-content.pushed-by-dock:has(#leadsListViewSkeleton.active) {
+                    padding-left: 400px !important;
+                    position: relative;
+                    z-index: 1002;
+                }
+
+                .chat-sidebar.state-docked {
+                    position: absolute;
+                    left: 0;
+                    z-index: var(--z-max) !important;
+                }
+            }
+
+            .search-results-container:has(.lead-detail-page.active) {
+                margin: 0 !important;
+                padding: 0 !important;
+                height: 100% !important;
+                width: 100% !important;
+                overflow: hidden !important;
+            }
+
+            /* Hide search results header (tabs) when lead detail is active */
+            .search-results-container:has(.lead-detail-page.active) .search-results-header {
+                display: none;
+            }
+
+            /* Hide filters sidebar when lead detail is active */
+            .search-results-container:has(.lead-detail-page.active) .search-filters-sidebar {
+                display: none;
+            }
+
+            /* Remove padding from content when lead detail is active */
+            .search-results-container:has(.lead-detail-page.active) .search-results-content {
+                padding: 0 !important;
+                height: 100%;
             }
 
             .search-tab {
@@ -5980,9 +6125,10 @@
                 transform: translateY(-1px);
             }
 
+
             /* Refine Results Banner */
             .refine-results-banner {
-                margin: 0px;
+                margin: 0px 0px 16px 0px;
                 padding: 16px;
                 display: flex;
                 align-items: center;
@@ -6044,9 +6190,12 @@
             }
 
             .refine-results-banner.input-mode {
-                padding: 12px 16px !important;
+                padding: 16px !important;
                 position: relative;
                 overflow: hidden;
+                background: linear-gradient(94deg, rgba(147, 124, 249, 0.15) 1.61%, rgba(123, 235, 236, 0.15) 107.91%), #FFFFFF !important;
+                border-radius: 12px !important;
+                min-height: 80px;
             }
 
             .refine-results-banner.aurora-active::before {
@@ -6081,15 +6230,23 @@
 
             .refine-results-banner .input-border-wrapper {
                 width: 100%;
+                background-color: #FFFFFF;
+                border: 1px solid #E5E7EB;
+                padding: 4px;
+                border-radius: 12px;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
             }
 
             .refine-results-banner .enhanced-input-box {
                 flex-direction: row !important;
-                padding: 4px 8px 4px 14px !important;
-                min-height: 48px !important;
-                background-color: white !important;
+                padding: 8px 12px !important;
+                min-height: 44px !important;
+                background-color: transparent !important;
                 display: flex !important;
                 align-items: center !important;
+                border: none !important;
+                border-radius: 8px !important;
+                box-shadow: none !important;
             }
 
             .refine-results-banner .toolbar-right {
@@ -6147,6 +6304,8 @@
                 gap: 16px;
                 background: #fff;
                 border-radius: 8px;
+                margin-top: 24px;
+                /* Added spacing */
             }
 
             .results-loading-state.active {
@@ -6171,6 +6330,11 @@
                 -webkit-text-fill-color: transparent;
                 background-clip: text;
                 letter-spacing: 0.02em;
+            }
+
+            /* Hide pagination when loading */
+            .search-results-main:has(.results-loading-state.active) .search-pagination {
+                display: none;
             }
 
             .initiate-chat-btn svg {
@@ -6528,6 +6692,9 @@
                 gap: 24px;
                 padding: 24px;
                 flex: 1;
+                min-height: 0;
+                overflow-y: auto;
+                align-items: flex-start;
             }
 
             /* Right Side Container (AI Banner + Table) */
@@ -6535,6 +6702,8 @@
                 flex: 1;
                 display: flex;
                 flex-direction: column;
+                position: relative;
+                min-height: 100vh;
             }
 
             /* Filters Sidebar */
@@ -6542,6 +6711,10 @@
                 width: 240px;
                 /* Increased slightly for inner padding */
                 flex-shrink: 0;
+                position: sticky;
+                top: 0;
+                align-self: flex-start;
+                max-height: 100vh;
             }
 
             .filters-card {
@@ -6550,6 +6723,8 @@
                 border-radius: 8px;
                 padding: 16px;
                 box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+                max-height: calc(100vh - 48px);
+                overflow-y: auto;
             }
 
             .filters-header {
@@ -6619,6 +6794,8 @@
                 display: flex;
                 flex-direction: column;
                 overflow-x: auto;
+                margin-top: 12px;
+                /* Added spacing */
             }
 
             .results-header {
@@ -6733,6 +6910,7 @@
 
             .search-results-table tbody tr {
                 position: relative;
+                cursor: pointer;
             }
 
             .row-ai-icon {
@@ -6768,8 +6946,241 @@
 
             .row-ai-icon:hover {
                 transform: translateY(-50%) scale(1.1) !important;
-                background: #F8FAFC;
+            }
+
+            /* Pagination */
+            .search-pagination {
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+                gap: 8px;
+                padding: 12px;
+            }
+
+            .pagination-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 36px;
+                height: 36px;
+                padding: 0 12px;
+                background: white;
+                border: 1px solid #E5E7EB;
+                border-radius: 6px;
+                color: #374151;
+                font-size: 14px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+
+            .pagination-btn:hover:not(:disabled) {
+                background: #F9FAFB;
                 border-color: #D1D5DB;
+            }
+
+            .pagination-btn:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+
+            .pagination-btn.active {
+                background: #4285F4;
+                border-color: #4285F4;
+                color: white;
+            }
+
+            .pagination-btn svg {
+                width: 16px;
+                height: 16px;
+            }
+
+            .pagination-ellipsis {
+                color: #9CA3AF;
+                padding: 0 4px;
+            }
+
+
+            /* Lead Detail Page View */
+            .lead-detail-page {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: #F9FAFB;
+                z-index: 100;
+                display: none;
+                flex-direction: column;
+            }
+
+            .lead-detail-page.active {
+                display: flex;
+            }
+
+            .lead-detail-sidebar {
+                width: 240px;
+                background: white;
+                border-right: 1px solid #E5E7EB;
+                padding: 0;
+                flex-shrink: 0;
+                height: 100%;
+                overflow-y: auto;
+                position: relative;
+            }
+
+            .lead-detail-body {
+                display: flex;
+                flex: 1;
+                overflow: hidden;
+                width: 100%;
+            }
+
+            .lead-detail-main {
+                flex: 1;
+                overflow-y: auto;
+                padding: 24px 24px 12px 24px;
+                min-width: 0;
+            }
+
+            .lead-detail-center {
+                flex: 1;
+                max-width: 800px;
+                margin: 0 auto;
+            }
+
+            .lead-detail-right-panel {
+                width: 320px;
+                flex-shrink: 0;
+                background: white;
+                border-left: 1px solid #E5E7EB;
+                overflow-y: auto;
+                padding: 24px;
+                height: 100%;
+            }
+
+            .lead-detail-header {
+                background: white;
+                padding: 16px 24px;
+                border-bottom: 1px solid #E5E7EB;
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                height: 57px;
+                flex-shrink: 0;
+                width: 100%;
+                position: sticky;
+                top: 0;
+                z-index: 10;
+            }
+
+            .lead-back-btn {
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 8px;
+                color: #6B7280;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 6px;
+            }
+
+            .lead-back-btn:hover {
+                background: #F3F4F6;
+                color: #111827;
+            }
+
+            /* Lead Detail Skeleton Styles */
+            .skeleton-bar {
+                background: #F3F4F6;
+                border-radius: 4px;
+                height: 12px;
+                width: 100%;
+            }
+
+            .skeleton-circle {
+                background: #F3F4F6;
+                border-radius: 50%;
+            }
+
+            .skeleton-avatar {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                margin: 0 auto 16px;
+            }
+
+            .skeleton-card {
+                background: white;
+                border-radius: 8px;
+                padding: 20px;
+                margin-bottom: 16px;
+                border: 1px solid #E5E7EB;
+            }
+
+            .skeleton-row {
+                display: flex;
+                align-items: center;
+                /* Fix for alignment */
+                gap: 12px;
+                margin-bottom: 12px;
+            }
+
+            .skeleton-row:last-child {
+                margin-bottom: 0;
+            }
+
+            .sidebar-skeleton-item {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 12px;
+                /* Balanced padding */
+                border-bottom: 1px solid #F3F4F6;
+            }
+
+            .sidebar-skeleton-circle {
+                width: 40px;
+                height: 40px;
+                flex-shrink: 0;
+            }
+
+            .sidebar-skeleton-text {
+                flex: 1;
+            }
+
+            .search-results-content {
+                position: relative;
+            }
+
+            /* Responsive Styles for Lead Detail Page */
+            @media (max-width: 1024px) {
+                .lead-detail-sidebar {
+                    width: 200px;
+                }
+
+                .lead-detail-right-panel {
+                    width: 280px;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .lead-detail-sidebar {
+                    display: none;
+                }
+
+                .lead-detail-main {
+                    padding: 16px;
+                }
+
+                .lead-detail-right-panel {
+                    display: none;
+                }
+
+                .lead-detail-center {
+                    max-width: 100%;
+                }
             }
 
             /* Insight Card Styling */
@@ -6870,6 +7281,223 @@
             }
         }
 
+        /* Appointment Notes Styling */
+        .appointment-notes-section {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #E5E7EB;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .appointment-notes-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid #E5E7EB;
+            background: #F9FAFB;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .appointment-notes-content {
+            padding: 12px 20px;
+            max-height: 500px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: white;
+        }
+
+        .todo-card {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            padding: 4px 0;
+            /* Minimal vertical padding */
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            gap: 0;
+        }
+
+        .todo-main-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .todo-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .todo-icon-wrapper {
+            width: 36px;
+            height: 36px;
+            background: #FCE7F3;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .todo-icon-wrapper svg {
+            width: 18px;
+            height: 18px;
+            color: #EC4899;
+        }
+
+        .todo-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            text-align: left;
+        }
+
+        .todo-title {
+            font-weight: 700;
+            color: #1E293B;
+            font-size: 14px;
+        }
+
+        .todo-meta {
+            font-size: 13px;
+            color: #64748B;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .todo-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .todo-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: white;
+            border: 1px solid #E2E8F0;
+            border-radius: 6px;
+            color: #1E293B;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .todo-btn:hover {
+            background: #F1F5F9;
+            border-color: #CBD5E1;
+        }
+
+        .todo-btn svg {
+            width: 14px;
+            height: 14px;
+            color: #6366F1;
+        }
+
+        .todo-more-btn {
+            background: none;
+            border: none;
+            padding: 6px;
+            color: #64748B;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+
+        .todo-more-btn:hover {
+            background: #F1F5F9;
+        }
+
+        /* Embedded Notes Styles */
+        .todo-notes-box {
+            margin-top: 16px;
+            padding: 16px;
+            background: var(--gradient-primary);
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            text-align: left;
+        }
+
+        .todo-notes-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: #1E293B;
+            font-size: 14px;
+        }
+
+        .todo-notes-header svg {
+            width: 16px;
+            height: 16px;
+            color: #64748B;
+        }
+
+        .todo-notes-query {
+            font-size: 14px;
+            color: #475569;
+            padding-left: 24px;
+            line-height: 1.4;
+            text-align: left;
+        }
+
+        .todo-notes-ai-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            margin-top: 4px;
+            padding-top: 4px;
+            background: var(--gradient-ai);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% 200%;
+            animation: gradient-shift 3s ease infinite;
+        }
+
+        .todo-notes-ai-row svg {
+            width: 14px;
+            height: 14px;
+            opacity: 0.8;
+        }
+
+        .todo-notes-details {
+            margin-top: 12px;
+            padding-left: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 13.5px;
+            line-height: 1.6;
+            color: #334155;
+            text-align: left;
+        }
+
+        .todo-notes-details strong {
+            color: #0F172A;
+            font-weight: 600;
+        }
+
         @keyframes strokeGlow {
             0% {
                 border-color: #E5E7EB;
@@ -6898,12 +7526,12 @@
     <!-- Global SVG Gradient Definition -->
     <svg width="0" height="0" style="position: absolute;">
         <defs>
-            <linearGradient id="aiLogoGradient" x1="13.2581" y1="16.0035" x2="1.09252" y2="1.37408"
+            <lineargradient id="aiLogoGradient" x1="13.2581" y1="16.0035" x2="1.09252" y2="1.37408"
                 gradientUnits="userSpaceOnUse">
                 <stop offset="0.01" stop-color="#2157F5" />
                 <stop offset="0.371064" stop-color="#258DFF" />
                 <stop offset="1" stop-color="#86FFBB" />
-            </linearGradient>
+            </lineargradient>
         </defs>
     </svg>
 
@@ -7208,220 +7836,220 @@
                                 fill="url(#paint35_linear_2791_76828)" />
                         </g>
                         <defs>
-                            <linearGradient id="paint0_linear_2791_76828" x1="0.502666" y1="2.7219" x2="45.6723"
+                            <lineargradient id="paint0_linear_2791_76828" x1="0.502666" y1="2.7219" x2="45.6723"
                                 y2="5.74959" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint1_linear_2791_76828" x1="0" y1="0" x2="42.2021" y2="3.03087"
+                            </lineargradient>
+                            <lineargradient id="paint1_linear_2791_76828" x1="0" y1="0" x2="42.2021" y2="3.03087"
                                 gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#7BEBEC" />
                                 <stop offset="1" stop-color="#937CF9" />
-                            </linearGradient>
-                            <linearGradient id="paint2_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint2_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint3_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint3_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint4_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint4_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint5_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint5_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint6_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint6_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint7_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint7_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint8_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint8_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint9_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint9_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint10_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint10_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint11_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint11_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint12_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint12_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint13_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint13_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint14_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint14_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint15_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint15_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint16_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint16_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint17_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint17_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint18_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint18_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint19_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint19_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint20_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint20_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint21_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint21_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint22_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint22_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint23_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint23_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint24_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint24_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint25_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint25_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint26_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint26_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint27_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint27_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint28_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint28_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint29_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint29_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint30_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint30_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint31_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint31_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint32_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint32_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint33_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint33_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint34_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint34_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint35_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
+                            </lineargradient>
+                            <lineargradient id="paint35_linear_2791_76828" x1="27.8872" y1="32.0052" x2="9.63878"
                                 y2="10.0611" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
+                            </lineargradient>
                         </defs>
                     </svg>
                 </div>
@@ -7637,182 +8265,182 @@
                                 fill="url(#paint34_linear_2791_77215)" fill-opacity="0.08" />
                         </g>
                         <defs>
-                            <linearGradient id="paint0_linear_2791_77215" x1="33.1454" y1="40.0086" x2="2.7313"
+                            <lineargradient id="paint0_linear_2791_77215" x1="33.1454" y1="40.0086" x2="2.7313"
                                 y2="3.43519" gradientUnits="userSpaceOnUse">
                                 <stop offset="0.01" stop-color="#2157F5" />
                                 <stop offset="0.371064" stop-color="#258DFF" />
                                 <stop offset="1" stop-color="#86FFBB" />
-                            </linearGradient>
-                            <linearGradient id="paint1_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint1_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint2_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint2_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint3_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint3_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint4_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint4_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint5_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint5_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint6_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint6_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint7_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint7_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint8_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint8_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint9_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint9_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint10_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint10_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint11_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint11_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint12_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint12_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint13_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint13_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint14_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint14_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint15_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint15_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint16_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint16_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint17_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint17_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint18_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint18_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint19_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint19_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint20_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint20_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint21_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint21_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint22_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint22_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint23_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint23_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint24_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint24_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint25_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint25_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint26_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint26_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint27_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint27_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint28_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint28_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint29_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint29_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint30_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint30_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint31_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint31_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint32_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint32_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint33_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint33_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
-                            <linearGradient id="paint34_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
+                            </lineargradient>
+                            <lineargradient id="paint34_linear_2791_77215" x1="8.3016" y1="9.63314" x2="35.4034"
                                 y2="11.4498" gradientUnits="userSpaceOnUse">
                                 <stop stop-color="#937CF9" />
                                 <stop offset="1" stop-color="#7BEBEC" />
-                            </linearGradient>
+                            </lineargradient>
                             <clipPath id="clip0_2791_77215">
                                 <rect width="40" height="40" fill="white" />
                             </clipPath>
@@ -7968,102 +8596,102 @@
                                         d="M8.75 0C9.16421 0 9.5 0.335759 9.5 0.749939C9.5 1.16412 9.16421 1.49988 8.75 1.49988C8.33579 1.49988 8 1.16412 8 0.749939C8 0.335759 8.33579 0 8.75 0Z"
                                         fill="url(#brand_paint15_linear)" />
                                     <defs>
-                                        <linearGradient id="brand_paint0_linear" x1="13.2581" y1="16.0035" x2="1.09252"
+                                        <lineargradient id="brand_paint0_linear" x1="13.2581" y1="16.0035" x2="1.09252"
                                             y2="1.37408" gradientUnits="userSpaceOnUse">
                                             <stop offset="0.01" stop-color="#2157F5" />
                                             <stop offset="0.371064" stop-color="#258DFF" />
                                             <stop offset="1" stop-color="#86FFBB" />
-                                        </linearGradient>
-                                        <linearGradient id="brand_paint1_linear" x1="13.2581" y1="16.0035" x2="1.09252"
+                                        </lineargradient>
+                                        <lineargradient id="brand_paint1_linear" x1="13.2581" y1="16.0035" x2="1.09252"
+                                            y2="4.00445" gradientUnits="userSpaceOnUse">
+                                            <stop stop-color="#2157F5" />
+                                            <stop offset="0.489583" stop-color="#3C6DFF" />
+                                            <stop offset="1" stop-color="#47FF97" />
+                                        </lineargradient>
+                                        <lineargradient id="brand_paint2_linear" x1="13.2581" y1="16.0035" x2="1.09252"
                                             y2="1.37408" gradientUnits="userSpaceOnUse">
                                             <stop offset="0.01" stop-color="#2157F5" />
                                             <stop offset="0.371064" stop-color="#258DFF" />
                                             <stop offset="1" stop-color="#86FFBB" />
-                                        </linearGradient>
-                                        <linearGradient id="brand_paint2_linear" x1="13.2581" y1="16.0035" x2="1.09252"
+                                        </lineargradient>
+                                        <lineargradient id="brand_paint3_linear" x1="13.2581" y1="16.0035" x2="1.09252"
                                             y2="1.37408" gradientUnits="userSpaceOnUse">
                                             <stop offset="0.01" stop-color="#2157F5" />
                                             <stop offset="0.371064" stop-color="#258DFF" />
                                             <stop offset="1" stop-color="#86FFBB" />
-                                        </linearGradient>
-                                        <linearGradient id="brand_paint3_linear" x1="13.2581" y1="16.0035" x2="1.09252"
+                                        </lineargradient>
+                                        <lineargradient id="brand_paint4_linear" x1="13.2581" y1="16.0035" x2="1.09252"
                                             y2="1.37408" gradientUnits="userSpaceOnUse">
                                             <stop offset="0.01" stop-color="#2157F5" />
                                             <stop offset="0.371064" stop-color="#258DFF" />
                                             <stop offset="1" stop-color="#86FFBB" />
-                                        </linearGradient>
-                                        <linearGradient id="brand_paint4_linear" x1="13.2581" y1="16.0035" x2="1.09252"
+                                        </lineargradient>
+                                        <lineargradient id="brand_paint5_linear" x1="13.2581" y1="16.0035" x2="1.09252"
                                             y2="1.37408" gradientUnits="userSpaceOnUse">
                                             <stop offset="0.01" stop-color="#2157F5" />
                                             <stop offset="0.371064" stop-color="#258DFF" />
                                             <stop offset="1" stop-color="#86FFBB" />
-                                        </linearGradient>
-                                        <linearGradient id="brand_paint5_linear" x1="13.2581" y1="16.0035" x2="1.09252"
+                                        </lineargradient>
+                                        <lineargradient id="brand_paint6_linear" x1="13.2581" y1="16.0035" x2="1.09252"
                                             y2="1.37408" gradientUnits="userSpaceOnUse">
                                             <stop offset="0.01" stop-color="#2157F5" />
                                             <stop offset="0.371064" stop-color="#258DFF" />
                                             <stop offset="1" stop-color="#86FFBB" />
-                                        </linearGradient>
-                                        <linearGradient id="brand_paint6_linear" x1="13.2581" y1="16.0035" x2="1.09252"
+                                        </lineargradient>
+                                        <lineargradient id="brand_paint7_linear" x1="13.2581" y1="16.0035" x2="1.09252"
                                             y2="1.37408" gradientUnits="userSpaceOnUse">
                                             <stop offset="0.01" stop-color="#2157F5" />
                                             <stop offset="0.371064" stop-color="#258DFF" />
                                             <stop offset="1" stop-color="#86FFBB" />
-                                        </linearGradient>
-                                        <linearGradient id="brand_paint7_linear" x1="13.2581" y1="16.0035" x2="1.09252"
+                                        </lineargradient>
+                                        <lineargradient id="brand_paint8_linear" x1="13.2581" y1="16.0035" x2="1.09252"
                                             y2="1.37408" gradientUnits="userSpaceOnUse">
                                             <stop offset="0.01" stop-color="#2157F5" />
                                             <stop offset="0.371064" stop-color="#258DFF" />
                                             <stop offset="1" stop-color="#86FFBB" />
-                                        </linearGradient>
-                                        <linearGradient id="brand_paint8_linear" x1="13.2581" y1="16.0035" x2="1.09252"
+                                        </lineargradient>
+                                        <lineargradient id="brand_paint9_linear" x1="13.2581" y1="16.0035" x2="1.09252"
                                             y2="1.37408" gradientUnits="userSpaceOnUse">
                                             <stop offset="0.01" stop-color="#2157F5" />
                                             <stop offset="0.371064" stop-color="#258DFF" />
                                             <stop offset="1" stop-color="#86FFBB" />
-                                        </linearGradient>
-                                        <linearGradient id="brand_paint9_linear" x1="13.2581" y1="16.0035" x2="1.09252"
+                                        </lineargradient>
+                                        <lineargradient id="brand_paint10_linear" x1="13.2581" y1="16.0035" x2="1.09252"
                                             y2="1.37408" gradientUnits="userSpaceOnUse">
                                             <stop offset="0.01" stop-color="#2157F5" />
                                             <stop offset="0.371064" stop-color="#258DFF" />
                                             <stop offset="1" stop-color="#86FFBB" />
-                                        </linearGradient>
-                                        <linearGradient id="brand_paint10_linear" x1="13.2581" y1="16.0035" x2="1.09252"
+                                        </lineargradient>
+                                        <lineargradient id="brand_paint11_linear" x1="13.2581" y1="16.0035" x2="1.09252"
                                             y2="1.37408" gradientUnits="userSpaceOnUse">
                                             <stop offset="0.01" stop-color="#2157F5" />
                                             <stop offset="0.371064" stop-color="#258DFF" />
                                             <stop offset="1" stop-color="#86FFBB" />
-                                        </linearGradient>
-                                        <linearGradient id="brand_paint11_linear" x1="13.2581" y1="16.0035" x2="1.09252"
+                                        </lineargradient>
+                                        <lineargradient id="brand_paint12_linear" x1="13.2581" y1="16.0035" x2="1.09252"
                                             y2="1.37408" gradientUnits="userSpaceOnUse">
                                             <stop offset="0.01" stop-color="#2157F5" />
                                             <stop offset="0.371064" stop-color="#258DFF" />
                                             <stop offset="1" stop-color="#86FFBB" />
-                                        </linearGradient>
-                                        <linearGradient id="brand_paint12_linear" x1="13.2581" y1="16.0035" x2="1.09252"
+                                        </lineargradient>
+                                        <lineargradient id="brand_paint13_linear" x1="13.2581" y1="16.0035" x2="1.09252"
                                             y2="1.37408" gradientUnits="userSpaceOnUse">
                                             <stop offset="0.01" stop-color="#2157F5" />
                                             <stop offset="0.371064" stop-color="#258DFF" />
                                             <stop offset="1" stop-color="#86FFBB" />
-                                        </linearGradient>
-                                        <linearGradient id="brand_paint13_linear" x1="13.2581" y1="16.0035" x2="1.09252"
+                                        </lineargradient>
+                                        <lineargradient id="brand_paint14_linear" x1="13.2581" y1="16.0035" x2="1.09252"
                                             y2="1.37408" gradientUnits="userSpaceOnUse">
                                             <stop offset="0.01" stop-color="#2157F5" />
                                             <stop offset="0.371064" stop-color="#258DFF" />
                                             <stop offset="1" stop-color="#86FFBB" />
-                                        </linearGradient>
-                                        <linearGradient id="brand_paint14_linear" x1="13.2581" y1="16.0035" x2="1.09252"
+                                        </lineargradient>
+                                        <lineargradient id="brand_paint15_linear" x1="13.2581" y1="16.0035" x2="1.09252"
                                             y2="1.37408" gradientUnits="userSpaceOnUse">
                                             <stop offset="0.01" stop-color="#2157F5" />
                                             <stop offset="0.371064" stop-color="#258DFF" />
                                             <stop offset="1" stop-color="#86FFBB" />
-                                        </linearGradient>
-                                        <linearGradient id="brand_paint15_linear" x1="13.2581" y1="16.0035" x2="1.09252"
-                                            y2="1.37408" gradientUnits="userSpaceOnUse">
-                                            <stop offset="0.01" stop-color="#2157F5" />
-                                            <stop offset="0.371064" stop-color="#258DFF" />
-                                            <stop offset="1" stop-color="#86FFBB" />
-                                        </linearGradient>
+                                        </lineargradient>
                                     </defs>
                                 </svg>
                                 AI Assistant
@@ -9249,7 +9877,7 @@
                                                     </div>
                                                 </td>
                                                 <td>Sophia Mitchell</td>
-                                                <td>2022 Toyota Camry</td>
+                                                <td>2026 Toyota Camry</td>
                                                 <td>310891</td>
                                                 <td>4102<div class="row-ai-icon"><img
                                                             src="https://tekiondesignteam.github.io/design-experimentations/ai-logo.svg"
@@ -9258,42 +9886,381 @@
                                             </tr>
                                         </tbody>
                                     </table>
+
+                                    <!-- Pagination -->
+                                    <div class="search-pagination">
+                                        <button class="pagination-btn" onclick="goToPage(1)" disabled>
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M15 18l-6-6 6-6" />
+                                            </svg>
+                                        </button>
+                                        <button class="pagination-btn active" onclick="goToPage(1)">1</button>
+                                        <button class="pagination-btn" onclick="goToPage(2)">2</button>
+                                        <button class="pagination-btn" onclick="goToPage(3)">3</button>
+                                        <button class="pagination-btn" onclick="goToPage(4)">4</button>
+                                        <button class="pagination-btn" onclick="goToPage(5)">5</button>
+                                        <span class="pagination-ellipsis">...</span>
+                                        <button class="pagination-btn" onclick="goToPage(8)">8</button>
+                                        <button class="pagination-btn" onclick="goToPage(2)">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M9 18l6-6-6-6" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Lead Detail Full Page View -->
+                                <div class="lead-detail-page" id="leadDetailPage">
+                                    <div class="lead-detail-header">
+                                        <button class="lead-back-btn" onclick="closeLeadDetail()">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round">
+                                                <path d="M19 12H5M12 19l-7-7 7-7" />
+                                            </svg>
+                                        </button>
+                                        <div class="skeleton-bar" style="width: 120px; height: 20px;"></div>
+                                    </div>
+
+                                    <div class="lead-detail-body">
+                                        <!-- Left Sidebar -->
+                                        <div class="lead-detail-sidebar">
+                                            <div class="sidebar-skeleton-item">
+                                                <div class="skeleton-circle sidebar-skeleton-circle"
+                                                    style="background: #93C5FD;"></div>
+                                                <div class="sidebar-skeleton-text">
+                                                    <div class="skeleton-bar"
+                                                        style="width: 100%; height: 12px; margin-bottom: 6px;"></div>
+                                                    <div class="skeleton-bar" style="width: 60%; height: 10px;"></div>
+                                                </div>
+                                            </div>
+                                            <div class="sidebar-skeleton-item">
+                                                <div class="skeleton-circle sidebar-skeleton-circle"
+                                                    style="background: #FDE047;"></div>
+                                                <div class="sidebar-skeleton-text">
+                                                    <div class="skeleton-bar"
+                                                        style="width: 100%; height: 12px; margin-bottom: 6px;"></div>
+                                                    <div class="skeleton-bar" style="width: 70%; height: 10px;"></div>
+                                                </div>
+                                            </div>
+                                            <div class="sidebar-skeleton-item">
+                                                <div class="skeleton-circle sidebar-skeleton-circle"
+                                                    style="background: #6EE7B7;"></div>
+                                                <div class="sidebar-skeleton-text">
+                                                    <div class="skeleton-bar"
+                                                        style="width: 100%; height: 12px; margin-bottom: 6px;"></div>
+                                                    <div class="skeleton-bar" style="width: 50%; height: 10px;"></div>
+                                                </div>
+                                            </div>
+                                            <div class="sidebar-skeleton-item">
+                                                <div class="skeleton-circle sidebar-skeleton-circle"
+                                                    style="background: #C4B5FD;"></div>
+                                                <div class="sidebar-skeleton-text">
+                                                    <div class="skeleton-bar"
+                                                        style="width: 100%; height: 12px; margin-bottom: 6px;"></div>
+                                                    <div class="skeleton-bar" style="width: 80%; height: 10px;"></div>
+                                                </div>
+                                            </div>
+                                            <div class="sidebar-skeleton-item">
+                                                <div class="skeleton-circle sidebar-skeleton-circle"
+                                                    style="background: #FDA4AF;"></div>
+                                                <div class="sidebar-skeleton-text">
+                                                    <div class="skeleton-bar"
+                                                        style="width: 100%; height: 12px; margin-bottom: 6px;"></div>
+                                                    <div class="skeleton-bar" style="width: 65%; height: 10px;"></div>
+                                                </div>
+                                            </div>
+                                            <div class="sidebar-skeleton-item">
+                                                <div class="skeleton-circle sidebar-skeleton-circle"
+                                                    style="background: #93C5FD;"></div>
+                                                <div class="sidebar-skeleton-text">
+                                                    <div class="skeleton-bar"
+                                                        style="width: 100%; height: 12px; margin-bottom: 6px;"></div>
+                                                    <div class="skeleton-bar" style="width: 55%; height: 10px;"></div>
+                                                </div>
+                                            </div>
+                                            <div class="sidebar-skeleton-item">
+                                                <div class="skeleton-circle sidebar-skeleton-circle"
+                                                    style="background: #FCD34D;"></div>
+                                                <div class="sidebar-skeleton-text">
+                                                    <div class="skeleton-bar"
+                                                        style="width: 100%; height: 12px; margin-bottom: 6px;"></div>
+                                                    <div class="skeleton-bar" style="width: 75%; height: 10px;"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Main Content Area -->
+                                        <div class="lead-detail-main">
+                                            <!-- Center Content -->
+                                            <div class="lead-detail-center">
+                                                <!-- Top Action Bar -->
+                                                <div class="skeleton-card" style="padding: 16px;">
+                                                    <div class="skeleton-row">
+                                                        <div class="skeleton-bar"
+                                                            style="width: 40px; height: 32px; border-radius: 20px;">
+                                                        </div>
+                                                        <div class="skeleton-bar"
+                                                            style="width: 80px; height: 32px; border-radius: 6px;">
+                                                        </div>
+                                                        <div class="skeleton-bar"
+                                                            style="width: 80px; height: 32px; border-radius: 6px;">
+                                                        </div>
+                                                        <div class="skeleton-bar"
+                                                            style="width: 80px; height: 32px; border-radius: 6px;">
+                                                        </div>
+                                                        <div style="flex: 1;"></div>
+                                                        <div class="skeleton-bar"
+                                                            style="width: 100px; height: 32px; border-radius: 6px;">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Icon Row -->
+                                                <div class="skeleton-card" style="padding: 20px;">
+                                                    <div class="skeleton-row">
+                                                        <div class="skeleton-circle" style="width: 32px; height: 32px;">
+                                                        </div>
+                                                        <div class="skeleton-circle" style="width: 32px; height: 32px;">
+                                                        </div>
+                                                        <div class="skeleton-circle" style="width: 32px; height: 32px;">
+                                                        </div>
+                                                        <div class="skeleton-circle" style="width: 32px; height: 32px;">
+                                                        </div>
+                                                        <div class="skeleton-circle" style="width: 32px; height: 32px;">
+                                                        </div>
+                                                        <div class="skeleton-circle" style="width: 32px; height: 32px;">
+                                                        </div>
+                                                        <div class="skeleton-circle" style="width: 32px; height: 32px;">
+                                                        </div>
+                                                        <div class="skeleton-circle" style="width: 32px; height: 32px;">
+                                                        </div>
+                                                        <div class="skeleton-circle" style="width: 32px; height: 32px;">
+                                                        </div>
+                                                        <div class="skeleton-circle" style="width: 32px; height: 32px;">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Info Sections -->
+                                                <!-- Appointment Notes Section -->
+                                                <div class="appointment-notes-section" id="appointmentNotesSection">
+                                                    <div class="appointment-notes-header">
+                                                        To-Dos (1)
+                                                    </div>
+                                                    <div class="appointment-notes-content">
+                                                        <div class="todo-card">
+                                                            <div class="todo-main-row">
+                                                                <div class="todo-left">
+                                                                    <div class="todo-icon-wrapper">
+                                                                        <svg viewBox="0 0 24 24" fill="none"
+                                                                            stroke="currentColor" stroke-width="2"
+                                                                            stroke-linecap="round"
+                                                                            stroke-linejoin="round">
+                                                                            <rect x="3" y="4" width="18" height="18"
+                                                                                rx="2" ry="2"></rect>
+                                                                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                                                                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                                                                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                                                                        </svg>
+                                                                    </div>
+                                                                    <div class="todo-info">
+                                                                        <div class="todo-title">Test Drive</div>
+                                                                        <div class="todo-meta">
+                                                                            <span id="todoTomorrowDate">Jan 23,
+                                                                                2026</span> 10:00 AM
+                                                                            &nbsp;|&nbsp; 2026 Toyota Camry
+                                                                            &nbsp;|&nbsp;
+                                                                            Assignee : John Draper
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="todo-right">
+                                                                    <button class="todo-btn">
+                                                                        <svg viewBox="0 0 24 24" fill="none"
+                                                                            stroke="currentColor" stroke-width="2"
+                                                                            stroke-linecap="round"
+                                                                            stroke-linejoin="round">
+                                                                            <path
+                                                                                d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z">
+                                                                            </path>
+                                                                            <circle cx="12" cy="10" r="3"></circle>
+                                                                        </svg>
+                                                                        Check-in
+                                                                    </button>
+                                                                    <button class="todo-more-btn">
+                                                                        <svg viewBox="0 0 24 24" fill="none"
+                                                                            stroke="currentColor" stroke-width="2"
+                                                                            stroke-linecap="round"
+                                                                            stroke-linejoin="round">
+                                                                            <circle cx="12" cy="12" r="1"></circle>
+                                                                            <circle cx="12" cy="5" r="1"></circle>
+                                                                            <circle cx="12" cy="19" r="1"></circle>
+                                                                        </svg>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                            <div id="todoNotesContainer"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="skeleton-card">
+                                                    <div class="skeleton-row">
+                                                        <div class="skeleton-circle"
+                                                            style="width: 24px; height: 24px; background: #60A5FA;">
+                                                        </div>
+                                                        <div class="skeleton-bar" style="width: 180px; height: 16px;">
+                                                        </div>
+                                                    </div>
+                                                    <div class="skeleton-bar"
+                                                        style="width: 100%; height: 100px; margin-top: 12px;"></div>
+                                                </div>
+
+                                                <div class="skeleton-card">
+                                                    <div class="skeleton-row">
+                                                        <div class="skeleton-circle"
+                                                            style="width: 24px; height: 24px; background: #34D399;">
+                                                        </div>
+                                                        <div class="skeleton-bar" style="width: 220px; height: 16px;">
+                                                        </div>
+                                                    </div>
+                                                    <div class="skeleton-bar"
+                                                        style="width: 100%; height: 120px; margin-top: 12px;"></div>
+                                                </div>
+
+                                                <div class="skeleton-card">
+                                                    <div class="skeleton-row">
+                                                        <div class="skeleton-circle"
+                                                            style="width: 24px; height: 24px; background: #60A5FA;">
+                                                        </div>
+                                                        <div class="skeleton-bar" style="width: 160px; height: 16px;">
+                                                        </div>
+                                                    </div>
+                                                    <div class="skeleton-bar"
+                                                        style="width: 100%; height: 90px; margin-top: 12px;"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Right Panel -->
+                                        <div class="lead-detail-right-panel">
+                                            <!-- Profile Card -->
+                                            <div class="skeleton-card" style="text-align: center;">
+                                                <div class="skeleton-circle skeleton-avatar"
+                                                    style="background: #93C5FD;"></div>
+                                                <div class="skeleton-bar"
+                                                    style="width: 60%; height: 18px; margin: 0 auto 8px;"></div>
+                                                <div class="skeleton-bar"
+                                                    style="width: 40%; height: 14px; margin: 0 auto 16px;"></div>
+                                                <div class="skeleton-row" style="justify-content: center;">
+                                                    <div class="skeleton-bar" style="width: 80px; height: 12px;">
+                                                    </div>
+                                                </div>
+                                                <div class="skeleton-row" style="justify-content: center;">
+                                                    <div class="skeleton-bar" style="width: 100px; height: 12px;">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Info Cards -->
+                                            <div class="skeleton-card">
+                                                <div class="skeleton-bar"
+                                                    style="width: 50%; height: 14px; margin-bottom: 12px;"></div>
+                                                <div class="skeleton-bar"
+                                                    style="width: 100%; height: 12px; margin-bottom: 8px;"></div>
+                                                <div class="skeleton-bar"
+                                                    style="width: 90%; height: 12px; margin-bottom: 8px;"></div>
+                                                <div class="skeleton-bar" style="width: 80%; height: 12px;"></div>
+                                            </div>
+
+                                            <div class="skeleton-card">
+                                                <div class="skeleton-bar"
+                                                    style="width: 60%; height: 14px; margin-bottom: 12px;"></div>
+                                                <div class="skeleton-bar"
+                                                    style="width: 100%; height: 12px; margin-bottom: 8px;"></div>
+                                                <div class="skeleton-bar"
+                                                    style="width: 85%; height: 12px; margin-bottom: 8px;"></div>
+                                                <div class="skeleton-bar" style="width: 75%; height: 12px;"></div>
+                                            </div>
+
+                                            <div class="skeleton-card">
+                                                <div class="skeleton-bar"
+                                                    style="width: 55%; height: 14px; margin-bottom: 12px;"></div>
+                                                <div class="skeleton-bar"
+                                                    style="width: 100%; height: 12px; margin-bottom: 8px;"></div>
+                                                <div class="skeleton-bar"
+                                                    style="width: 95%; height: 12px; margin-bottom: 8px;"></div>
+                                                <div class="skeleton-bar" style="width: 70%; height: 12px;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="table-skeleton-container" id="skeletonTable">
-                        <div class="skeleton-row header">
-                            <div class="skeleton-cell">
-                                <div class="skeleton-bar"></div>
-                            </div>
-                            <div class="skeleton-cell">
-                                <div class="skeleton-bar"></div>
-                            </div>
-                            <div class="skeleton-cell">
-                                <div class="skeleton-bar"></div>
-                            </div>
-                            <div class="skeleton-cell">
-                                <div class="skeleton-bar"></div>
-                            </div>
-                            <div class="skeleton-cell">
-                                <div class="skeleton-bar"></div>
-                            </div>
-                            <div class="skeleton-cell">
-                                <div class="skeleton-bar"></div>
-                            </div>
+                    <!-- Main Leads List View Skeleton -->
+                    <div id="leadsListViewSkeleton">
+                        <div class="ts-top-nav">
+                            <div class="ts-bar" style="width: 200px; height: 16px;"></div>
                         </div>
-                        <script>
-                            for (let i = 0; i < 20; i++) {
-                                let cellsHtml = '';
-                                for (let j = 0; j < 6; j++) {
-                                    const width = 50 + Math.random() * 50;
-                                    cellsHtml += `<div class="skeleton-cell"><div class="skeleton-bar" style="width: ${width}%"></div></div>`;
+
+                        <div class="ts-action-bar">
+                            <div class="ts-filter-group">
+                                <div class="ts-filter-item"></div>
+                                <div class="ts-filter-item"></div>
+                                <div class="ts-filter-item"></div>
+                            </div>
+                            <div class="ts-search-box"></div>
+                        </div>
+
+                        <div class="table-skeleton-container" id="skeletonTable"
+                            style="height: auto; border-radius: 8px 8px 0 0;">
+                            <div class="ts-row header">
+                                <div class="ts-cell">
+                                    <div class="ts-bar"></div>
+                                </div>
+                                <div class="ts-cell">
+                                    <div class="ts-bar"></div>
+                                </div>
+                                <div class="ts-cell">
+                                    <div class="ts-bar"></div>
+                                </div>
+                                <div class="ts-cell">
+                                    <div class="ts-bar"></div>
+                                </div>
+                                <div class="ts-cell">
+                                    <div class="ts-bar"></div>
+                                </div>
+                                <div class="ts-cell">
+                                    <div class="ts-bar"></div>
+                                </div>
+                            </div>
+                            <script>
+                                for (let i = 0; i < 20; i++) {
+                                    let cellsHtml = '';
+                                    cellsHtml += `<div class="ts-cell"><div class="ts-circle"></div><div class="ts-bar" style="width: ${50 + Math.random() * 30}%"></div></div>`;
+                                    for (let j = 0; j < 4; j++) {
+                                        const width = 40 + Math.random() * 50;
+                                        cellsHtml += `<div class="ts-cell"><div class="ts-bar" style="width: ${width}%"></div></div>`;
+                                    }
+                                    cellsHtml += `<div class="ts-cell"><div class="ts-bar" style="width: 50%"></div></div>`;
+                                    document.write(`<div class="ts-row">${cellsHtml}</div>`);
                                 }
-                                document.write(`<div class="skeleton-row">${cellsHtml}</div>`);
-                            }
-                        </script>
+                            </script>
+                        </div>
+
+                        <div class="ts-pagination-bar">
+                            <div class="ts-bar" style="width: 120px; height: 12px; margin-right: auto;"></div>
+                            <div class="ts-pager-item"></div>
+                            <div class="ts-pager-item"></div>
+                            <div class="ts-pager-item"></div>
+                            <div class="ts-pager-item"></div>
+                            <div class="ts-pager-item"></div>
+                        </div>
                     </div>
                 </main>
 
@@ -9421,13 +10388,22 @@
                     "Correlating feedback",
                     "Flagging anomalies",
                     "Generating report"
+                ],
+                "safety_tech_query": [
+                    "Analyzing customer request for safety and tech features...",
+                    "Searching vehicle catalog for 2026 Toyota Camry...",
+                    "Extracting safety features: Toyota Safety Sense 3.0, Pre-Collision System...",
+                    "Extracting tech features: 12.3-inch Toyota Audio Multimedia, Wireless Apple CarPlay...",
+                    "Formulating summary for appointment notes...",
+                    "Updating appointment record..."
                 ]
             },
             "thinkingSummaries": {
                 "default": "Analyzed your CRM inquiry and cross-referenced with your dealership records to provide the most relevant response.",
                 "ryan_clarify": "Found multiple 'Ryan' contacts in your system. I've narrowed it down to 5 active matches for your review.",
                 "ryan_details": "Located Ryan Carter's profile and identified 2 active deals. I've compiled the status and pricing for both vehicles.",
-                "appointment_report": "Gathered and analyzed appointment performance data across all regions to generate a comprehensive monthly report."
+                "appointment_report": "Gathered and analyzed appointment performance data across all regions to generate a comprehensive monthly report.",
+                "safety_tech_query": "Analyzed the safety and tech features for the 2026 Toyota Camry and updated the appointment notes for Ryan Carter."
             },
             "aiResponses": {
                 "ryan_clarify": `<p>Please select the correct Ryan to proceed:</p><div class="compact-list-container"><div class="compact-list-item" onclick="selectRyan(2)"><div class="avatar-circle avatar-pink">RC</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan Carter</span><span class="item-id">#891</span></div><div class="item-sub-row">(512) 555-3421 • r.carter@techstart.io</div></div><div class="item-meta-info"><span class="meta-date">12:30 PM</span><span class="deal-badge badge-grey">2 Deals</span></div></div><div class="compact-list-item" onclick="selectRyan(4)"><div class="avatar-circle avatar-green">RW</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan Washington</span><span class="item-id">#554</span></div><div class="item-sub-row">(202) 555-7743 • rwashington@state.gov</div></div><div class="item-meta-info"><span class="meta-date">Yesterday</span><span class="deal-badge badge-grey">1 Deal</span></div></div><div class="compact-list-item" onclick="selectRyan(3)"><div class="avatar-circle avatar-grey">RO</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan O'Connell</span><span class="item-id">#112</span></div><div class="item-sub-row">(617) 555-9982 • ryan.oc@consulting.net</div></div><div class="item-meta-info"><span class="meta-date">Nov 12</span><span class="deal-badge badge-grey">1 Deal</span></div></div><div class="compact-list-item" onclick="selectRyan(1)"><div class="avatar-circle avatar-blue">RM</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan Miller</span><span class="item-id">#402</span></div><div class="item-sub-row">(312) 555-0192 • ryan.miller@gmail.com</div></div><div class="item-meta-info"><span class="meta-date">Oct 24</span><span class="deal-badge badge-grey">2 Deals</span></div></div><div class="compact-list-item" onclick="selectRyan(5)"><div class="avatar-circle avatar-orange">RL</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan Lee</span><span class="item-id">#339</span></div><div class="item-sub-row">(415) 555-6621 • ryan@leedesign.studio</div></div><div class="item-meta-info"><span class="meta-date">Sep 28</span><span class="deal-badge badge-grey">3 Deals</span></div></div></div>`,
@@ -9453,7 +10429,8 @@
                         <div class="report-name">Monthly Appointment Performance Report - December 2025</div>
                         <div class="report-meta"><a href="#" target="_blank" class="report-view-link">View</a></div>
                     </div>
-                </div>`
+                </div>`,
+                "safety_tech_query": `<p>I've analyzed the <strong>safety and tech features</strong> for the 2026 Toyota Camry as requested.</p><p>I have also updated the <strong>Appointment Notes</strong> for Ryan Carter with the following details:</p><ul><li><strong>Safety:</strong> Toyota Safety Sense™ 3.0 (TSS 3.0), Proactive Driving Assist, Blind Spot Monitor.</li><li><strong>Tech:</strong> 12.3-in. Toyota Audio Multimedia, Wireless Apple CarPlay® & Android Auto™, Digital Key.</li></ul>`
             },
             "searchOverrides": {
                 "isTestDriveQuery": {
@@ -9462,7 +10439,7 @@
                         "Appointment Date: Jan 14, 2026"
                     ],
                     "resultsCount": "Showing 1 out of 1 Results.",
-                    "html": "<tr><td><div class=\"name-cell\"><span>Ryan Carter</span><span class=\"customer-id\">#0125</span></div></td><td><div class=\"contact-info\"><div class=\"contact-email\">r.carter@techstart.io</div><div class=\"contact-phone\">(512) 555-3421</div></div></td><td>Sophia Mitchell</td><td>2024 Toyota Highlander</td><td>310891</td><td>4102<div class=\"row-ai-icon\"><img src=\"https://tekiondesignteam.github.io/design-experimentations/ai-logo.svg\" alt=\"AI\"></div></td></tr>"
+                    "html": "<tr><td><div class=\"name-cell\"><span>Ryan Carter</span><span class=\"customer-id\">#0125</span></div></td><td><div class=\"contact-info\"><div class=\"contact-email\">r.carter@techstart.io</div><div class=\"contact-phone\">(512) 555-3421</div></div></td><td>Sophia Mitchell</td><td>2026 Toyota Camry</td><td>310891</td><td>4102<div class=\"row-ai-icon\"><img src=\"https://tekiondesignteam.github.io/design-experimentations/ai-logo.svg\" alt=\"AI\"></div></td></tr>"
                 },
                 "isSUVQuery": {
                     "pills": [
@@ -9520,6 +10497,11 @@
                     "ctaQuery": "Draft warranty expiration email for Ryan OConnell",
                     "iconType": "retention"
                 }
+            ],
+            "leadDetailSuggestions": [
+                "How likely is this lead to close in the next 30 days?",
+                "Suggest the best next step and when I should follow up.",
+                "Compare this vehicle's pricing and incentives to similar deals we've closed recently."
             ],
             "roleGuidelines": {
                 sales_manager: `Role & Persona: 
@@ -9636,7 +10618,16 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
                 searchInput.placeholder = "Ask • Find • Summarize";
 
                 // Show Suggestions & Focus
-                renderSuggestions(AI_DATA.aiSuggestions);
+                // Check if we're on a lead detail page
+                const leadDetailPage = document.getElementById('leadDetailPage');
+                const isOnLeadDetail = leadDetailPage && leadDetailPage.classList.contains('active');
+
+                if (isOnLeadDetail && window.currentLeadContext) {
+                    renderSuggestions(AI_DATA.leadDetailSuggestions);
+                } else {
+                    renderSuggestions(AI_DATA.aiSuggestions);
+                }
+
                 suggestions.classList.add('visible');
                 searchInput.focus();
             } else {
@@ -9650,6 +10641,33 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
                 // Hide Suggestions
                 suggestions.classList.remove('visible');
             }
+        }
+
+        // Helper to render Chat Panel Suggestions (not search bar)
+        function renderChatSuggestions(suggestionsList) {
+            const container = document.getElementById('suggestionsList');
+            if (!container) return;
+
+            // Clear existing suggestions
+            container.innerHTML = '';
+
+            // Render new suggestions
+            suggestionsList.forEach(suggestion => {
+                const text = typeof suggestion === 'string' ? suggestion : suggestion.text;
+
+                const item = document.createElement('div');
+                item.className = 'suggestion-item';
+                item.onclick = () => startChat(text);
+
+                item.innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                    </svg>
+                    <span>${text}</span>
+                `;
+
+                container.appendChild(item);
+            });
         }
 
         // Render AI Suggestions
@@ -9842,8 +10860,7 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
 
         function showSearchResults(query, fromRefine = false) {
             const searchResultsContainer = document.getElementById('searchResultsContainer');
-            const skeletonTable = document.getElementById('skeletonTable');
-            const mainContent = document.querySelector('.table-skeleton-container');
+            const leadsListViewSkeleton = document.getElementById('leadsListViewSkeleton');
             const aiSummaryBanner = document.getElementById('aiSummaryBanner');
             const filtersAppliedSection = document.getElementById('filtersAppliedSection');
             const resultsCount = document.getElementById('searchResultsCount');
@@ -9852,6 +10869,12 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
 
             if (searchResultsContainer) {
                 searchResultsContainer.classList.add('active');
+            }
+
+            // Close lead detail page if it's open
+            const leadDetailPage = document.getElementById('leadDetailPage');
+            if (leadDetailPage) {
+                leadDetailPage.classList.remove('active');
             }
 
             // Reset banner to initial state for the new query
@@ -9869,12 +10892,6 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
             }
 
             // Hide other main content
-            if (skeletonTable) {
-                skeletonTable.style.display = 'none';
-            }
-            if (mainContent) {
-                mainContent.style.display = 'none';
-            }
             if (aiSummaryBanner) {
                 aiSummaryBanner.style.display = 'none';
             }
@@ -9899,7 +10916,7 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
             } else {
                 // If not explicitly a refined hardcoded query, we don't clear pills here if fromRefine is true
                 if (!fromRefine && filtersAppliedSection) filtersAppliedSection.classList.remove('active');
-                if (resultsCount) resultsCount.textContent = 'Showing 1 - 18 out of 144 Results.';
+                if (resultsCount) resultsCount.textContent = 'Showing 1 - 15 out of 144 Results.';
                 if (tableBody && tableBody.getAttribute('data-original-html')) {
                     tableBody.innerHTML = tableBody.getAttribute('data-original-html');
                 }
@@ -9910,8 +10927,7 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
 
         function hideSearchResults() {
             const searchResultsContainer = document.getElementById('searchResultsContainer');
-            const skeletonTable = document.getElementById('skeletonTable');
-            const mainContent = document.querySelector('.table-skeleton-container');
+            const leadsListViewSkeleton = document.getElementById('leadsListViewSkeleton');
             const aiSummaryBanner = document.getElementById('aiSummaryBanner');
             const searchInput = document.getElementById('topSearchInput');
 
@@ -9925,11 +10941,8 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
             }
 
             // Show main content again
-            if (skeletonTable) {
-                skeletonTable.style.display = 'block';
-            }
-            if (mainContent) {
-                mainContent.style.display = 'block';
+            if (leadsListViewSkeleton) {
+                leadsListViewSkeleton.classList.add('active');
             }
             if (aiSummaryBanner) {
                 aiSummaryBanner.style.display = 'block';
@@ -9942,6 +10955,248 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
             clearAllFilters();
             resetSearchAIBanner();
         }
+
+        // Lead Detail Page Functions
+        function openLeadDetail(leadData) {
+            const chatPanel = document.getElementById('chatPanel');
+            if (chatPanel) {
+                if (chatPanel.classList.contains('state-docked')) {
+                    window.lastChatPanelState = 'docked';
+                } else if (chatPanel.classList.contains('state-minimized')) {
+                    window.lastChatPanelState = 'minimized';
+                } else if (chatPanel.classList.contains('state-fullscreen')) {
+                    window.lastChatPanelState = 'fullscreen';
+                } else if (chatPanel.classList.contains('state-closed')) {
+                    window.lastChatPanelState = 'closed';
+                } else {
+                    window.lastChatPanelState = null; // Default or unknown state
+                }
+            } else {
+                window.lastChatPanelState = null;
+            }
+            const page = document.getElementById('leadDetailPage');
+
+            if (!page) return;
+
+            // Clear search input and reset search input wrapper
+            const searchInput = document.getElementById('topSearchInput');
+            const searchInputWrapper = document.getElementById('searchInputWrapper');
+
+            if (searchInput) {
+                searchInput.value = '';
+            }
+
+            if (searchInputWrapper) {
+                searchInputWrapper.classList.remove('results-active');
+            }
+
+            // Update AI context for lead detail
+            if (leadData && leadData.name) {
+                // Remove old leads context
+                if (typeof selectedContexts !== 'undefined') {
+                    selectedContexts.delete('curr1');
+                }
+
+                // Update the context item to show lead name
+                AI_DATA.leadsItem = {
+                    id: 'lead-detail',
+                    label: leadData.name,  // Just the name, not "Leads - Name"
+                    type: 'page',
+                    isCurrent: true
+                };
+
+                // Add new lead detail context
+                if (typeof selectedContexts !== 'undefined') {
+                    selectedContexts.add('lead-detail');
+                    // Re-render context pills to show updated label
+                    if (typeof renderContextPills === 'function') {
+                        renderContextPills();
+                    }
+                }
+
+                // Store current lead data globally for AI to access
+                window.currentLeadContext = leadData;
+
+                // Update Chat Panel Suggestions
+                if (typeof renderChatSuggestions === 'function') {
+                    renderChatSuggestions(AI_DATA.leadDetailSuggestions);
+                }
+
+                // Trigger AI context update if AI is active
+                const suggestions = document.getElementById('aiSuggestions');
+                const switchEl = document.querySelector('.ai-search-switch');
+                if (switchEl && switchEl.getAttribute('data-mode') === 'ai' && suggestions) {
+                    renderSuggestions(AI_DATA.leadDetailSuggestions);
+                }
+            }
+
+            // Show the full page
+            page.classList.add('active');
+
+            // Scroll content to top
+            // The lead detail page is inside .search-results-content which scrolls.
+            // We need to scroll the parent to top, but save position first.
+            const resultsContent = document.querySelector('.search-results-content');
+            if (resultsContent) {
+                window.lastResultsScrollTop = resultsContent.scrollTop;
+                resultsContent.scrollTop = 0;
+            }
+
+            const mainContent = page.querySelector('.lead-detail-main');
+            const rightPanel = page.querySelector('.lead-detail-right-panel');
+            if (mainContent) mainContent.scrollTop = 0;
+            if (rightPanel) rightPanel.scrollTop = 0;
+
+            // Update To-Do date to tomorrow
+            const tomorrowEl = document.getElementById('todoTomorrowDate');
+            if (tomorrowEl) {
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const options = { month: 'short', day: 'numeric', year: 'numeric' };
+                // Format: Jan 23, 2026
+                tomorrowEl.textContent = tomorrow.toLocaleDateString('en-US', options);
+            }
+        }
+
+        function closeLeadDetail() {
+            const page = document.getElementById('leadDetailPage');
+            const mainContent = document.getElementById('mainContent');
+
+            if (mainContent) {
+                mainContent.classList.remove('pushed-by-dock');
+            }
+
+            // Restore scroll position
+            if (typeof window.lastResultsScrollTop !== 'undefined') {
+                const resultsContent = document.querySelector('.search-results-content');
+                if (resultsContent) {
+                    resultsContent.scrollTop = window.lastResultsScrollTop;
+                }
+            }
+
+            if (page) {
+                page.classList.remove('active');
+            }
+
+            // Reset AI context back to general Leads
+            // Remove lead detail context
+            if (typeof selectedContexts !== 'undefined') {
+                selectedContexts.delete('lead-detail');
+            }
+
+            AI_DATA.leadsItem = {
+                id: 'curr1',
+                label: "Leads",
+                type: 'page',
+                isCurrent: true
+            };
+
+            // Add back default leads context
+            if (typeof selectedContexts !== 'undefined') {
+                selectedContexts.add('curr1');
+                // Re-render context pills to show updated label
+                if (typeof renderContextPills === 'function') {
+                    renderContextPills();
+                }
+            }
+
+            // Clear current lead context
+            window.currentLeadContext = null;
+
+            // Reset Chat Panel Suggestions
+            if (typeof renderChatSuggestions === 'function') {
+                renderChatSuggestions(AI_DATA.aiSuggestions);
+            }
+
+            // Reset suggestions if AI is active
+            const suggestions = document.getElementById('aiSuggestions');
+            const switchEl = document.querySelector('.ai-search-switch');
+            if (switchEl && switchEl.getAttribute('data-mode') === 'ai' && suggestions) {
+                renderSuggestions(AI_DATA.aiSuggestions);
+            }
+
+            // Navigate back to leads list page
+            hideSearchResults();
+
+            const chatPanel = document.getElementById('chatPanel');
+
+            if (chatPanel) {
+                // Remove all state classes
+                chatPanel.classList.remove('state-closed', 'state-minimized', 'state-fullscreen', 'state-docked');
+
+                if (window.lastChatPanelState) {
+                    chatPanel.classList.add(`state-${window.lastChatPanelState}`);
+                    if (window.lastChatPanelState === 'docked' && window.innerWidth >= 1600) {
+                        if (mainContent) mainContent.classList.add('pushed-by-dock');
+                    } else {
+                        if (mainContent) mainContent.classList.remove('pushed-by-dock');
+                    }
+                } else {
+                    // Default to closed if no previous state was saved
+                    chatPanel.classList.add('state-closed');
+                    if (mainContent) mainContent.classList.remove('pushed-by-dock');
+                }
+            } else {
+                if (mainContent) mainContent.classList.remove('pushed-by-dock');
+            }
+
+            // Clear the saved state
+            window.lastChatPanelState = null;
+        }
+
+        function goToPage(pageNumber) {
+            console.log('Going to page:', pageNumber);
+            // Update active state
+            const buttons = document.querySelectorAll('.pagination-btn');
+            buttons.forEach(btn => {
+                if (btn.textContent.trim() === pageNumber.toString()) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            // In a real implementation, this would load the data for that page
+        }
+
+        // Add click handlers to table rows
+        document.addEventListener('DOMContentLoaded', function () {
+            // Use event delegation for table rows
+            const tableBody = document.getElementById('searchResultsTableBody');
+            if (tableBody) {
+                tableBody.addEventListener('click', function (e) {
+                    const row = e.target.closest('tr');
+                    if (!row) return;
+
+                    // Don't trigger if clicking on the AI icon
+                    if (e.target.closest('.row-ai-icon')) return;
+
+                    // Extract data from the row
+                    const nameCell = row.querySelector('.name-cell span:first-child');
+                    const customerIdCell = row.querySelector('.customer-id');
+                    const emailCell = row.querySelector('.contact-email');
+                    const phoneCell = row.querySelector('.contact-phone');
+                    const salespersonCell = row.querySelectorAll('td')[2];
+                    const vehicleCell = row.querySelectorAll('td')[3];
+                    const dealCell = row.querySelectorAll('td')[4];
+                    const stockCell = row.querySelectorAll('td')[5];
+
+                    if (!nameCell) return;
+
+                    const leadData = {
+                        name: nameCell.textContent.trim(),
+                        customerId: customerIdCell ? customerIdCell.textContent.trim() : 'N/A',
+                        email: emailCell ? emailCell.textContent.trim() : 'N/A',
+                        phone: phoneCell ? phoneCell.textContent.trim() : 'N/A',
+                        salesperson: salespersonCell ? salespersonCell.textContent.trim() : 'N/A',
+                        vehicle: vehicleCell ? vehicleCell.textContent.trim() : 'N/A',
+                        dealNumber: dealCell ? dealCell.textContent.trim().replace(/\s+/g, ' ') : 'N/A',
+                        stockNumber: stockCell ? stockCell.textContent.trim().replace(/\s+/g, ' ') : 'N/A'
+                    };
+
+                    openLeadDetail(leadData);
+                });
+            }
+        });
 
         function switchSearchTab(tabName) {
             const tabs = document.querySelectorAll('.search-tab');
@@ -9980,10 +11235,16 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
             const searchInput = document.getElementById('topSearchInput');
             if (searchInput) {
                 searchInput.value = text;
-                if (typeof setState === 'function') setState('fullscreen');
-                searchInput.focus();
+                if (typeof handleAIAsk === 'function') {
+                    handleAIAsk();
+                } else {
+                    if (typeof setState === 'function') setState('fullscreen');
+                    searchInput.focus();
+                }
             }
         }
+
+
 
         function submitRefineSearch() {
             const input = document.getElementById('enhancedRefineInput');
@@ -10159,8 +11420,9 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
                     }
                     toggleRefineSendBtn(""); // Ensure button is deactivated
                 } else {
-                    // Reset to banner button state
+                    // Reset to banner button state - always remove input-mode class
                     refineBanner.classList.remove('input-mode');
+                    refineBanner.classList.remove('aurora-active');
                     refineBanner.innerHTML = `
                         <div class="refine-banner-content">
                             <img src="https://tekiondesignteam.github.io/design-experimentations/ai-logo2.svg"
@@ -10380,7 +11642,7 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
 
             let hasPageContext = false;
             if (typeof selectedContexts !== 'undefined' && typeof dmsContextItems !== 'undefined') {
-                const allContexts = [...dmsContextItems, leadsItem];
+                const allContexts = [...dmsContextItems, AI_DATA.leadsItem];
                 hasPageContext = Array.from(selectedContexts).some(id => {
                     const item = allContexts.find(i => i.id === id);
                     return item && item.type === 'page';
@@ -10714,7 +11976,7 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
             if (btnContextBack) btnContextBack.style.display = 'none';
 
             const filterText = filter.toLowerCase();
-            const allItems = [...dmsContextItems, leadsItem];
+            const allItems = [...dmsContextItems, AI_DATA.leadsItem];
             const filteredItems = allItems.filter(item => item.label.toLowerCase().includes(filterText));
 
             if (filteredItems.length === 0) {
@@ -10752,7 +12014,9 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
 
         }
 
-        window.goBackContext = function () { }
+        window.goBackContext = function () {
+            history.back();
+        }
 
         function toggleContextItem(item) {
             if (selectedContexts.has(item.id)) {
@@ -10804,7 +12068,7 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
                         `;
                     pill.onclick = (e) => { e.stopPropagation(); showContextMenu(); };
                 } else {
-                    const allItems = [...dmsContextItems, leadsItem];
+                    const allItems = [...dmsContextItems, AI_DATA.leadsItem];
                     let contentHTML = '';
 
                     if (count === 1) {
@@ -11509,6 +12773,7 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
             if (lower.includes('list') || lower.includes('high-priority')) return 'List high-priority test drives';
             if (lower.includes('test drive') || lower.includes('book')) return '/schedule-drive';
             if (lower.includes('generate') && lower.includes('report')) return 'appointment_report';
+            if (lower.includes('safety') && lower.includes('tech')) return 'safety_tech_query';
 
             // Fallback to original text
             return text;
@@ -12108,7 +13373,7 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
 
                         let contextLabels = [];
                         if (typeof selectedContexts !== 'undefined' && selectedContexts.size > 0) {
-                            const allItems = [...dmsContextItems, leadsItem];
+                            const allItems = [...dmsContextItems, AI_DATA.leadsItem];
                             selectedContexts.forEach(id => {
                                 const item = allItems.find(i => i.id === id);
                                 if (item) contextLabels.push(item.label);
@@ -12126,6 +13391,41 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
                         let responseHTML = AI_DATA.aiResponses[logicKey] || AI_DATA.aiResponses[userText] || AI_DATA.aiResponsesDefault.replace('{logicKey}', logicKey);
 
                         await typeWriter(contentBody, responseHTML, currentController, sourcesData);
+
+                        // If this was the safety/tech query, update the appointment notes in lead detail
+                        if (logicKey === 'safety_tech_query') {
+                            const notesContainer = document.getElementById('todoNotesContainer');
+                            if (notesContainer) {
+                                // Clean up userText for display
+                                let displayText = userText.replace(/,\s*add this to appointment notes/i, '.')
+                                    .replace(/\s*add this to appointment notes/i, '.')
+                                    .replace(/\.\.+$/, '.'); // Avoid double dots
+
+                                notesContainer.innerHTML = `
+                                    <div class="todo-notes-box">
+                                        <div class="todo-notes-header">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                                <polyline points="14 2 14 8 20 8"></polyline>
+                                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                                <polyline points="10 9 9 9 8 9"></polyline>
+                                            </svg>
+                                            Appointment Notes
+                                        </div>
+                                        <div class="todo-notes-query">${displayText}</div>
+                                        <div class="todo-notes-details">
+                                            <div><strong>Safety:</strong> Toyota Safety Sense™ 3.0 (TSS 3.0), Proactive Driving Assist, Blind Spot Monitor.</div>
+                                            <div><strong>Tech:</strong> 12.3-in. Toyota Audio Multimedia, Wireless Apple CarPlay® & Android Auto™, Digital Key.</div>
+                                        </div>
+                                        <div class="todo-notes-ai-row">
+                                            ${AI_LOGO_SVG}
+                                            Insights powered by AI Assistant
+                                        </div>
+                                    </div>
+                                `;
+                            }
+                        }
 
                         // Sync with session storage if backgrounded or if we switched chats
                         const syncTitle = currentController.chatTitle;
@@ -12478,6 +13778,9 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
             document.getElementById('btnDock').onclick = () => setState('docked');
             document.getElementById('btnClose').onclick = () => setState('closed');
 
+            // Open the panel by default
+            setState('docked');
+
             // Initial mobile check
             if (window.innerWidth <= 768 && panel.classList.contains('state-closed')) {
                 mobileFab.classList.add('visible');
@@ -12673,7 +13976,9 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
 
             if (state === 'docked') {
                 panel.classList.add('state-docked');
-                mainContent.classList.add('pushed-by-dock');
+                if (window.innerWidth >= 1600) {
+                    mainContent.classList.add('pushed-by-dock');
+                }
                 panel.style.left = '';
                 mainInput.focus();
             } else if (state === 'minimized') {
@@ -12829,7 +14134,12 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
 
         // Load directly into a new conversation
         window.onload = function () {
-            selectedContexts.add(leadsItem.id); // Leads as global default context
+            if (typeof leadsItem !== 'undefined') {
+                selectedContexts.add(leadsItem.id); // Leads as global default context
+            } else if (AI_DATA && AI_DATA.leadsItem) {
+                selectedContexts.add(AI_DATA.leadsItem.id);
+            }
+
             renderContextPills();
             resetChat();
             startPlaceholderRotation();
@@ -12842,12 +14152,11 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
             // Handle URL params for Use Case Hub integration
             handleUrlParams();
 
-            // Initial state check: if sidebar is closed (default), ensure mobile FAB is visible on mobile
-            if (panel && !panel.classList.contains('state-docked') &&
-                !panel.classList.contains('state-minimized') &&
-                !panel.classList.contains('state-fullscreen')) {
-                setState('closed');
-            }
+            // Open chat panel by default (docked on desktop, bottom on mobile)
+            // Use a small delay to ensure layout is ready
+            setTimeout(() => {
+                setState('docked');
+            }, 100);
         };
 
 
