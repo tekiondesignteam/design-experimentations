@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant | Use Case Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            /* --- TOKENS --- */
+            --color-primary: #4285F4;
+            --color-text-heading: #161616;
+            --color-text-main: #444F5C;
+            --color-text-muted: #969AA3;
+            --color-text-subtle: #64748B;
+            --color-bg-main: #FFFFFF;
+            --color-border-muted: #E8E9EB;
+
+            --gradient-brand: linear-gradient(38deg, #2157F5 0%, #3C6DFF 50%, #47FF97 100%);
+            --gradient-ai: linear-gradient(320deg, #2157F5 8.61%, #258DFF 39.1%, #86FFBB 92.21%);
+
+            --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.1);
+
+            --radius-lg: 14px;
+            --radius-xl: 20px;
+
+            --space-lg: 16px;
+            --space-xl: 24px;
+            --space-2xl: 48px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #F8FAFC;
+            color: var(--color-text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* --- Aurora Background --- */
+        .aurora-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 20% 20%, rgba(66, 133, 244, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(71, 255, 151, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(60, 109, 255, 0.02) 0%, transparent 60%);
+            filter: blur(80px);
+        }
+
+        /* --- Header --- */
+        header {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: var(--space-lg) var(--space-xl);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--color-text-heading);
+            letter-spacing: -0.01em;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--gradient-brand);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 4px 12px rgba(33, 87, 245, 0.2);
+        }
+
+        .nav-btn {
+            background: #4285F4;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(66, 133, 244, 0.2);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(66, 133, 244, 0.3);
+            background: #3367d6;
+        }
+
+        /* --- Hero --- */
+        .hero {
+            padding: var(--space-2xl);
+            text-align: center;
+            max-width: 900px;
+            margin: 80px auto 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -0.04em;
+            line-height: 1.1;
+            background: linear-gradient(135deg,
+                    rgba(134, 255, 187, 0.7) 0%,
+                    rgba(37, 141, 255, 0.7) 25%,
+                    rgba(33, 87, 245, 0.7) 50%,
+                    rgba(37, 141, 255, 0.7) 75%,
+                    rgba(134, 255, 187, 0.7) 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: aurora-text 6s linear infinite;
+        }
+
+        @keyframes aurora-text {
+            to {
+                background-position: 200% center;
+            }
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--color-text-subtle);
+            line-height: 1.6;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* --- Search --- */
+        .search-section {
+            padding: var(--space-xl);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .search-wrapper {
+            position: relative;
+            background: white;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            padding: 8px 16px;
+            gap: 12px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .search-wrapper:focus-within {
+            box-shadow: var(--shadow-lg), 0 0 0 4px rgba(66, 133, 244, 0.1);
+            border-color: var(--color-primary);
+            transform: scale(1.02);
+        }
+
+        .search-input {
+            width: 100%;
+            border: none;
+            padding: 12px 0;
+            font-size: 1.15rem;
+            outline: none;
+            color: var(--color-text-heading);
+            background: transparent;
+            font-family: inherit;
+        }
+
+        /* --- Filters --- */
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: var(--space-2xl);
+            flex-wrap: wrap;
+            padding: 0 var(--space-xl);
+        }
+
+        .filter-chip {
+            padding: 10px 20px;
+            border-radius: 50px;
+            background: white;
+            border: 1px solid var(--color-border-muted);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--color-text-subtle);
+        }
+
+        .filter-chip:hover {
+            border-color: var(--color-text-muted);
+            color: var(--color-text-heading);
+        }
+
+        .filter-chip.active {
+            background: var(--color-text-heading);
+            color: white;
+            border-color: var(--color-text-heading);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- Grid --- */
+        .usecase-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 24px;
+            padding: 0 var(--space-xl) var(--space-2xl);
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .usecase-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: var(--radius-xl);
+            padding: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+            box-shadow: var(--shadow-md);
+            animation: fadeIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .usecase-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(66, 133, 244, 0.3);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .usecase-card:hover .card-icon {
+            transform: scale(1.1) rotate(-5deg);
+            box-shadow: 0 8px 20px rgba(66, 133, 244, 0.15);
+        }
+
+        .card-content {
+            flex-grow: 1;
+        }
+
+        .card-tag {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .tag-ask {
+            color: #4285F4;
+            /* Blue */
+        }
+
+        .tag-decide {
+            color: #9B51E0;
+            /* Purple */
+        }
+
+        .tag-execute {
+            color: #E91E63;
+            /* Pink/Crimson */
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--color-text-heading);
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: var(--color-text-subtle);
+            line-height: 1.5;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+        }
+
+        .arrow-link {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f1f5f9;
+            color: var(--color-text-heading);
+            transition: all 0.3s ease;
+        }
+
+        .usecase-card:hover .arrow-link {
+            background: var(--color-text-heading);
+            color: white;
+            transform: translateX(4px);
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .usecase-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="aurora-bg"></div>
+
+    <header>
+        <div class="logo-container">
+            <img src="https://tekiondesignteam.github.io/design-experimentations/ai-logo2.svg" alt="AI Logo"
+                style="width: 32px; height: 32px;">
+            <span>AI Assistant</span>
+        </div>
+        <a href="ai-assistant.html?open=true" class="nav-btn" target="_blank">Launch Chat</a>
+    </header>
+
+    <div class="hero">
+        <h1>What can I help you<br>with today?</h1>
+        <p>Your AI-powered dealer assistant is ready to handle everything from lead management to complex equity
+            analysis.</p>
+    </div>
+
+    <div class="search-section">
+        <div class="search-wrapper">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="searchInput" class="search-input" placeholder="Search capabilities..."
+                oninput="filterCards()">
+        </div>
+    </div>
+
+    <div class="filters" id="filterContainer">
+        <button class="filter-chip active" data-filter="all">All</button>
+        <button class="filter-chip" data-filter="Ask">Ask</button>
+        <button class="filter-chip" data-filter="Decide">Decide</button>
+        <button class="filter-chip" data-filter="Execute">Execute</button>
+    </div>
+
+    <div class="usecase-grid" id="usecaseGrid">
+        <!-- Cards injected by JS -->
+    </div>
+
+    <div style="text-align:center; padding: 40px; display: none;" id="emptyResults">
+        <h3 style="color: var(--color-text-heading);">No capabilities found</h3>
+        <p style="color: var(--color-text-subtle);">Try searching for "leads" or "equity".</p>
+    </div>
+
+    <script>
+        const usecases = [
+            {
+                title: "Summarize Hot Leads",
+                desc: "Identify high-intent customers from the current page and synthesize their needs into key action items.",
+                icon: "⚡",
+                tag: "Ask",
+                id: "summarize_leads",
+                query: "Summarize recent hot leads"
+            },
+            {
+                title: "Focus Today",
+                desc: "Get a prioritized list of tasks, leads, and actions for the day.",
+                icon: "🎯",
+                tag: "Decide",
+                id: "focus_today",
+                query: "What should I focus on today"
+            },
+            {
+                title: "Customers Needing Quotes",
+                desc: "Identify customers currently waiting for a price quote and prioritize follow-ups.",
+                icon: "📋",
+                tag: "Execute",
+                id: "quote_customers",
+                query: "Show me customers needing quotes"
+            },
+            {
+                title: "Sarah Jenkins Brief",
+                desc: "Get a comprehensive snapshot of a VIP customer's recent activity and status.",
+                icon: "👤",
+                tag: "Ask",
+                id: "sarah_brief",
+                query: "Brief me on Sarah Jenkins"
+            },
+            {
+                title: "Vehicle Inventory Search",
+                desc: "Find vehicles matching specific criteria across all lots.",
+                icon: "🔎",
+                tag: "Ask",
+                id: "vehicle_inquiry",
+                query: "Check inventory for White Tacoma under $45k"
+            },
+            {
+                title: "Trade-in Objection",
+                desc: "Analyze customer objections regarding trade-in values and suggest strategies.",
+                icon: "🧠",
+                tag: "Decide",
+                id: "tradein_objection",
+                query: "Customer says trade-in is worth more"
+            },
+            {
+                title: "Ryan's Deal Details",
+                desc: "View detailed information and history about Ryan's active deal.",
+                icon: "📄",
+                tag: "Ask",
+                id: "ryan_details",
+                query: "Show details for Ryan's deal"
+            },
+            {
+                title: "Clarify Ryan's Deal",
+                desc: "Get clarification or context on specific aspects of Ryan's ongoing negotiations.",
+                icon: "❓",
+                tag: "Ask",
+                id: "ryan_clarify",
+                query: "Clarify Ryan's deal status"
+            },
+            {
+                title: "Safety & Tech Features",
+                desc: "Instantly generate detailed explanations of safety and tech features for specific models.",
+                icon: "🛡️",
+                tag: "Ask",
+                id: "safety_tech_query",
+                query: "Tell me about safety and tech features"
+            },
+            {
+                title: "Appointment Report",
+                desc: "Generate comprehensive performance reports regarding appointments.",
+                icon: "📊",
+                tag: "Decide",
+                id: "appointment_report",
+                query: "Generate appointment report"
+            },
+            {
+                title: "Inventory Stock Check",
+                desc: "Real-time stock availability check across dealership locations.",
+                icon: "📦",
+                tag: "Ask",
+                id: "inventory_check",
+                query: "/inventory-check"
+            },
+            {
+                title: "Credit Prequalification",
+                desc: "Authorize soft credit inquiries to determine rate eligibility.",
+                icon: "🏦",
+                tag: "Decide",
+                id: "credit_prequal",
+                query: "/credit-prequal"
+            },
+            {
+                title: "Deal Probability Matrix",
+                desc: "Data-driven prediction of deal closure probability.",
+                icon: "🔮",
+                tag: "Decide",
+                id: "deal_probability",
+                query: "/deal-probability"
+            },
+            {
+                title: "Trade-In Valuation",
+                desc: "Estimate trade-in value using market data and conditions.",
+                icon: "💎",
+                tag: "Decide",
+                id: "trade_in_val",
+                query: "/trade-in-val"
+            },
+            {
+                title: "High-Priority Test Drives",
+                desc: "List today's high-priority test drive appointments.",
+                icon: "📍",
+                tag: "Decide",
+                id: "test_drive",
+                query: "List high-priority test drives"
+            },
+            {
+                title: "Schedule Test Drive",
+                desc: "Book and schedule test drive slots automatically.",
+                icon: "🏁",
+                tag: "Execute",
+                id: "schedule_drive",
+                query: "/schedule-drive"
+            },
+            {
+                title: "Customer Feedback",
+                desc: "Aggregate and summarize recent customer reviews and sentiment.",
+                icon: "🗣️",
+                tag: "Ask",
+                id: "customer_sentiment",
+                query: "Summarize customer feedback"
+            },
+            {
+                title: "Draft Vehicle Quote",
+                desc: "Generate professional quotes for vehicles like Model X.",
+                icon: "📝",
+                tag: "Execute",
+                id: "draft_quote",
+                query: "Draft quote for Model X"
+            },
+            {
+                title: "Equity Analysis",
+                desc: "Analyze customer equity for potential upgrade opportunities.",
+                icon: "✨",
+                tag: "Decide",
+                id: "equity_alert",
+                query: "Analyze Ryan Miller's equity for Upgrade Opportunity"
+            },
+            {
+                title: "Buy Back Strategy",
+                desc: "Plan a buy-back strategy for high-demand pre-owned models.",
+                icon: "🤝",
+                tag: "Execute",
+                id: "buy_back",
+                query: "Plan buy back strategy for Ryan Brooks Supra"
+            },
+            {
+                title: "Warranty Expiration Email",
+                desc: "Draft emails for customers with expiring warranties to improve retention.",
+                icon: "🔔",
+                tag: "Execute",
+                id: "retention_watch",
+                query: "Draft warranty expiration email for Ryan OConnell"
+            },
+            {
+                title: "Ryan's Open Deals",
+                desc: "Show all active and open deals for Ryan.",
+                icon: "📂",
+                tag: "Ask",
+                id: "ryan_deals",
+                query: "Show open deals for Ryan"
+            },
+            {
+                title: "Tomorrow's Test Drives",
+                desc: "Filter and show test drive appointments scheduled for tomorrow.",
+                icon: "📅",
+                tag: "Ask",
+                id: "filter_test_drive",
+                query: "Show test drives tomorrow"
+            },
+            {
+                title: "Ryan's SUV Leads",
+                desc: "Filter Ryan's leads to show only SUV interests.",
+                icon: "🚗",
+                tag: "Ask",
+                id: "filter_suv",
+                query: "Show Ryan's SUV leads"
+            },
+            {
+                title: "Fleet Inquiries",
+                desc: "Summarize and manage inquiries related to fleet sales.",
+                icon: "🚛",
+                tag: "Decide",
+                id: "fleet_inquiry",
+                query: "Summarize Tesla fleet inquiries"
+            },
+            {
+                title: "Pricing Strategy",
+                desc: "Show pricing strategies for models like Model 3.",
+                icon: "🏷️",
+                tag: "Decide",
+                id: "pricing_strategy",
+                query: "Show Model 3 pricing strategies"
+            },
+            {
+                title: "Aged Inventory Pricing",
+                desc: "Recommendations for lowering prices on aged inventory units.",
+                icon: "📉",
+                tag: "Execute",
+                id: "aged_pricing",
+                query: "Lower price on aged units"
+            },
+            {
+                title: "Reassign Stale Leads",
+                desc: "Automatically re-assign leads that have become stale.",
+                icon: "♻️",
+                tag: "Execute",
+                id: "reassign_leads",
+                query: "Re-assign stale leads"
+            },
+            {
+                title: "Sales Talk Tracks",
+                desc: "Provide high-converting talk tracks for sales scenarios.",
+                icon: "💬",
+                tag: "Execute",
+                id: "talk_tracks",
+                query: "Provide talk track"
+            },
+            {
+                title: "Overdue Services",
+                desc: "Show customers who have overdue service appointments.",
+                icon: "🛠️",
+                tag: "Ask",
+                id: "overdue_services",
+                query: "Show customers with overdue services"
+            },
+            {
+                title: "Warranty Claims",
+                desc: "Identify vehicles that need warranty claims filed.",
+                icon: "📜",
+                tag: "Ask",
+                id: "warranty_claims",
+                query: "Which vehicles need warranty claims?"
+            },
+            {
+                title: "High-Risk Repairs",
+                desc: "Find repair orders that are classified as high-risk.",
+                icon: "⚠️",
+                tag: "Decide",
+                id: "ro_risk",
+                query: "Find high-risk repair orders"
+            },
+            {
+                title: "Pending Payments",
+                desc: "Show list of customers with pending payments.",
+                icon: "💰",
+                tag: "Ask",
+                id: "pending_payments",
+                query: "Show customers with pending payments"
+            }
+        ];
+
+        let activeFilter = 'all';
+
+        function renderCards() {
+            const grid = document.getElementById('usecaseGrid');
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const emptyResults = document.getElementById('emptyResults');
+            grid.innerHTML = '';
+
+            const filtered = usecases.filter(uc => {
+                const searchString = (uc.title + uc.desc + uc.tag).toLowerCase();
+                const matchesSearch = searchString.includes(searchInput);
+                const matchesFilter = activeFilter === 'all' || uc.tag.includes(activeFilter);
+                return matchesSearch && matchesFilter;
+            });
+
+            if (filtered.length === 0) {
+                emptyResults.style.display = 'block';
+            } else {
+                emptyResults.style.display = 'none';
+                filtered.forEach((uc, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'usecase-card';
+                    card.style.animationDelay = `${index * 0.05}s`;
+                    card.innerHTML = `
+                        <div class="card-icon">${uc.icon}</div>
+                        <div class="card-content">
+                            <span class="card-tag tag-${uc.tag.split(' ')[0].toLowerCase()}">${uc.tag}</span>
+                            <h3 class="card-title">${uc.title}</h3>
+                            <p class="card-description">${uc.desc}</p>
+                        </div>
+                        <div class="card-footer">
+                            <span style="font-size: 0.8rem; font-weight: 600; color: var(--color-text-heading);">Try capability</span>
+                            <div class="arrow-link">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    <polyline points="12 5 19 12 12 19"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                    `;
+                    card.onclick = () => {
+                        window.open(`ai-assistant.html?action=${encodeURIComponent(uc.id)}`, '_blank');
+                    };
+                    grid.appendChild(card);
+                });
+            }
+        }
+
+        function filterCards() {
+            renderCards();
+        }
+
+        document.querySelectorAll('.filter-chip').forEach(btn => {
+            btn.onclick = () => {
+                document.querySelector('.filter-chip.active').classList.remove('active');
+                btn.classList.add('active');
+                activeFilter = btn.getAttribute('data-filter');
+                renderCards();
+            };
+        });
+
+        // Initialize
+        renderCards();
+    </script>
+</body>
+
+</html>
