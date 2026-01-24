@@ -2,13 +2,12 @@ Title,Description,Icon,Tag,ID,Query
 Summarize Hot Leads,Identify high-intent customers from the current page and synthesize their needs into key action items.,⚡,Ask,summarize_leads,Summarize recent hot leads
 Focus Today,Get a prioritized list of tasks leads and actions for the day.,🎯,Decide,focus_today,What should I focus on today
 Customers Needing Quotes,Identify customers currently waiting for a price quote and prioritize follow-ups.,📋,Execute,quote_customers,Show me customers needing quotes
-Get Customer Brief,Get a comprehensive snapshot of any customer's recent activity deal status and communication history.,👤,Ask,sarah_brief,Brief me on [Customer]
+Get Customer Brief,Get a comprehensive snapshot of any customer's recent activity deal status and communication history.,👤,Ask,sarah_brief,Brief me on Sarah Jenkins
 Vehicle Inventory Search,Find vehicles matching specific criteria across all lots.,🔎,Ask,vehicle_inquiry,Check inventory for White Tacoma under $45k
-Trade-in Objection,Analyze customer objections regarding trade-in values and suggest strategies.,🧠,Decide,tradein_objection,Customer says trade-in is worth more
-Ryan's Deal Details,View detailed information and history about Ryan's active deal.,📄,Ask,ryan_details,Show details for Ryan's deal
-Clarify Ryan's Deal,Get clarification or context on specific aspects of Ryan's ongoing negotiations.,❓,Ask,ryan_clarify,Clarify Ryan's deal status
-Safety & Tech Features,Instantly generate detailed explanations of safety and tech features for specific models.,🛡️,Ask,safety_tech_query,Tell me about safety and tech features
-Appointment Report,Generate comprehensive performance reports regarding appointments.,📊,Decide,appointment_report,Generate appointment report
+Trade-in Objection,Analyze customer objections regarding trade-in values and suggest strategies.,🧠,Decide,tradein_objection,"Spoke to the customer. She thinks her trade-in is worth $5k more than our appraisal. How do I handle this?"
+Find open deals for Ryan,Search across all Ryan contacts to find active and open deals.,🔍,Ask,ryan_deals,Show ryan's open deals
+Vehicle Feature Search,Ask about any features of a car from your inventory to get detailed specs and information.,🛡️,Ask,safety_tech_query,Tell me about safety and tech features in 2026 Toyota Camry
+Generate Reports on demand,Instantly create detailed performance sales or appointment reports tailored to your dealership requirements.,📊,Execute,appointment_report,Generate appointment performance report
 Inventory Stock Check,Real-time stock availability check across dealership locations.,📦,Ask,inventory_check,/inventory-check
 Credit Prequalification,Authorize soft credit inquiries to determine rate eligibility.,🏦,Decide,credit_prequal,/credit-prequal
 Deal Probability Matrix,Data-driven prediction of deal closure probability.,🔮,Decide,deal_probability,/deal-probability
@@ -20,7 +19,6 @@ Draft Vehicle Quote,Generate professional quotes for vehicles like Model X.,📝
 Equity Analysis,Analyze customer equity for potential upgrade opportunities.,✨,Decide,equity_alert,Analyze Ryan Miller's equity for Upgrade Opportunity
 Buy Back Strategy,Plan a buy-back strategy for high-demand pre-owned models.,🤝,Execute,buy_back,Plan buy back strategy for Ryan Brooks Supra
 Warranty Expiration Email,Draft emails for customers with expiring warranties to improve retention.,🔔,Execute,retention_watch,Draft warranty expiration email for Ryan OConnell
-Ryan's Open Deals,Show all active and open deals for Ryan.,📂,Ask,ryan_deals,Show open deals for Ryan
 Tomorrow's Test Drives,Filter and show test drive appointments scheduled for tomorrow.,📅,Ask,filter_test_drive,Show test drives tomorrow
 Ryan's SUV Leads,Filter Ryan's leads to show only SUV interests.,🚗,Ask,filter_suv,Show Ryan's SUV leads
 Fleet Inquiries,Summarize and manage inquiries related to fleet sales.,🚛,Decide,fleet_inquiry,Summarize Tesla fleet inquiries
