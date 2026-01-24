@@ -314,6 +314,11 @@
                 transform: translateY(0) !important;
             }
 
+            .chat-card-container {
+                border-top-left-radius: 0 !important;
+                border-top-right-radius: 0 !important;
+            }
+
             .chat-sidebar.state-closed {
                 position: fixed !important;
                 width: var(--sidebar-width) !important;
@@ -4642,6 +4647,305 @@
 
         .chat-sidebar.state-fullscreen .compact-list-item .avatar-circle {
             display: flex;
+        }
+
+        /* Checklist Card Styles */
+        .task-card {
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 12px 14px;
+            margin: 10px 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .task-card.completed {
+            border-color: #10B981;
+            background: #F0FDF4;
+        }
+
+        .task-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            width: 100%;
+            padding-right: 2px;
+        }
+
+        .task-header-content {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .task-title {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #1E293B;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .task-status {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            white-space: nowrap;
+            flex-shrink: 0;
+            color: #64748B;
+            text-align: right;
+            min-width: 60px;
+        }
+
+        .task-progress-container {
+            width: 100%;
+            height: 4px;
+            background: #F1F5F9;
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 4px 0;
+        }
+
+        .task-progress-bar {
+            height: 100%;
+            background: #3B82F6;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .task-card.completed .task-progress-bar {
+            background: #10B981;
+        }
+
+        .status-pending {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .status-completed {
+            color: #065F46;
+        }
+
+        /* SMS Draft Card Styles */
+        .sms-draft-container {
+            margin-top: 12px;
+            width: 100%;
+            max-width: 420px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .sms-draft-card {
+            background: #FFFFFF;
+            border-radius: 8px;
+            padding: 12px 14px;
+            border: 1px solid var(--color-border-muted);
+            margin-bottom: 6px;
+        }
+
+        .sms-draft-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--color-border-muted);
+        }
+
+        .sms-draft-to {
+            font-size: 0.8rem;
+            color: #6C757D;
+        }
+
+        .sms-draft-pill {
+            background: #F8F9FA;
+            border: 1px solid #DEE2E6;
+            border-radius: 100px;
+            padding: 2px 10px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #212529;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+        }
+
+        .sms-draft-body {
+            font-size: 0.875rem;
+            color: #212529;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            outline: none;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px dashed transparent;
+            border-radius: 4px;
+            transition: all 0.2s;
+            cursor: text;
+        }
+
+        .sms-draft-body:hover {
+            border-color: #CBD5E1;
+            background: #F8FAFC;
+        }
+
+        .sms-draft-body:focus {
+            background: #fff;
+            border: 1px solid #2D6AEE;
+            box-shadow: 0 0 0 3px rgba(45, 106, 238, 0.1);
+        }
+
+        .sms-draft-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .sms-btn-send {
+            background: #2D6AEE;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .sms-btn-send.sending {
+            background: #94A3B8;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .sent-success-banner {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #ECFDF5;
+            color: #065F46;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-top: 10px;
+            border: 1px solid #D1FAE5;
+            animation: slideUpFade 0.3s ease-out;
+        }
+
+        @keyframes slideUpFade {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .sms-btn-send:hover {
+            background: #1C58D9;
+            transform: translateY(-1px);
+        }
+
+        .task-steps {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .task-step {
+            display: flex;
+            align-items: center;
+            padding: 6px 0;
+            border-bottom: 1px solid #F9FAFB;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .task-section-title {
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: #64748B;
+            margin: 4px 0 2px 0;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .task-step:last-child {
+            border-bottom: none;
+        }
+
+        .step-checkbox {
+            width: 14px;
+            height: 14px;
+            border: 1.5px solid #CBD5E1;
+            border-radius: 3px;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .task-step.done .step-checkbox {
+            background: #10B981;
+            border-color: #10B981;
+        }
+
+        .step-checkbox svg {
+            width: 10px;
+            height: 10px;
+            color: white;
+            display: none;
+        }
+
+        .task-step.done .step-checkbox svg {
+            display: block;
+        }
+
+        .step-text {
+            font-size: 0.875rem;
+            color: #374151;
+            transition: all 0.2s ease;
+        }
+
+        .task-step.done .step-text {
+            color: #9CA3AF;
+            text-decoration: line-through;
+        }
+
+        /* Loading animation for checkbox */
+        @keyframes step-pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .task-step.processing .step-checkbox {
+            border-color: #3B82F6;
+            animation: step-pulse 1s infinite;
         }
 
         /* Avatar Colors */
@@ -10268,6 +10572,13 @@
                     "Formulating summary for appointment notes...",
                     "Updating appointment record..."
                 ],
+                "create_deal_test_drive": [
+                    "Analyzing request for deal creation and test drive scheduling...",
+                    "Detected combined intent from user instruction…",
+                    "Identifying necessary steps for deal creation…",
+                    "Identifying necessary steps for scheduling test drive appointment…",
+                    "Compiling action items into a checklist…"
+                ],
                 "focus_today": [
                     "Analyzing daily schedule...",
                     "Checking urgent emails and chats...",
@@ -10307,7 +10618,8 @@
                 "quote_customers": "I've identified 5 customers who are currently waiting for a quote.",
                 "vehicle_inquiry": "I've queried the inventory and found matching vehicles based on your criteria.",
                 "tradein_objection": "I've analyzed the trade-in objection. The customer is likely conflating retail and trade-in values. I recommend pivoting to tax savings.",
-                "sarah_brief": "I've retrieved the latest details for Sarah Jenkins, including her recent vehicle interest and lead source."
+                "sarah_brief": "I've retrieved the latest details for Sarah Jenkins, including her recent vehicle interest and lead source.",
+                "create_deal_test_drive": "I've identified and assigned these tasks to an AI Assistant agent…"
             },
             "aiResponses": {
                 "ryan_clarify": `<p>Please select the correct Ryan to proceed:</p><div class="compact-list-container"><div class="compact-list-item" onclick="selectRyan(2)"><div class="avatar-circle avatar-pink">RC</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan Carter</span><span class="item-id">#891</span></div><div class="item-sub-row">(512) 555-3421 • r.carter@techstart.io</div></div><div class="item-meta-info"><span class="meta-date">12:30 PM</span><span class="deal-badge badge-grey">2 Deals</span></div></div><div class="compact-list-item" onclick="selectRyan(4)"><div class="avatar-circle avatar-green">RW</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan Washington</span><span class="item-id">#554</span></div><div class="item-sub-row">(202) 555-7743 • rwashington@state.gov</div></div><div class="item-meta-info"><span class="meta-date">Yesterday</span><span class="deal-badge badge-grey">1 Deal</span></div></div><div class="compact-list-item" onclick="selectRyan(3)"><div class="avatar-circle avatar-grey">RO</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan O'Connell</span><span class="item-id">#112</span></div><div class="item-sub-row">(617) 555-9982 • ryan.oc@consulting.net</div></div><div class="item-meta-info"><span class="meta-date">Nov 12</span><span class="deal-badge badge-grey">1 Deal</span></div></div><div class="compact-list-item" onclick="selectRyan(1)"><div class="avatar-circle avatar-blue">RM</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan Miller</span><span class="item-id">#402</span></div><div class="item-sub-row">(312) 555-0192 • ryan.miller@gmail.com</div></div><div class="item-meta-info"><span class="meta-date">Oct 24</span><span class="deal-badge badge-grey">2 Deals</span></div></div><div class="compact-list-item" onclick="selectRyan(5)"><div class="avatar-circle avatar-orange">RL</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan Lee</span><span class="item-id">#339</span></div><div class="item-sub-row">(415) 555-6621 • ryan@leedesign.studio</div></div><div class="item-meta-info"><span class="meta-date">Sep 28</span><span class="deal-badge badge-grey">3 Deals</span></div></div></div>`,
@@ -10337,6 +10649,24 @@
                     </div>
                 </div>`,
                 "safety_tech_query": `<p>I've analyzed the <strong>safety and tech features</strong> for the 2026 Toyota Camry as requested.</p><p>I have also updated the <strong>Appointment Notes</strong> for Ryan Carter with the following details:</p><ul><li><strong>Safety:</strong> Toyota Safety Sense™ 3.0 (TSS 3.0), Proactive Driving Assist, Blind Spot Monitor.</li><li><strong>Tech:</strong> 12.3-in. Toyota Audio Multimedia, Wireless Apple CarPlay® & Android Auto™, Digital Key.</li></ul>`,
+                "Draft a text to her confirming the appointment": `<div class="sms-draft-container">
+                    <div class="sms-draft-card">
+                        <div class="sms-draft-header">
+                            <span class="sms-draft-to">To:</span>
+                            <div class="sms-draft-pill">Sarah Jenkins</div>
+                        </div>
+                        <div class="sms-draft-body" contenteditable="true" title="Click to edit message">Hi Sarah,
+
+Great speaking with you! I have you down for Tuesday at 10 AM to drive the white Tacoma Limited.
+
+See you then!
+John</div>
+                        <div class="sms-draft-actions">
+                            <button class="sms-btn-send" onclick="sendSMS(this)">Send</button>
+                        </div>
+                    </div>
+                    <div class="sms-draft-note">Note: Once you send this message, it cannot be undone.</div>
+                </div>`,
                 "sarah_brief": `<p style="margin-bottom: 16px; font-size: 0.875rem; color: var(--color-text-main); line-height: 1.5;">Last interaction was yesterday via text. She is looking to trade in a <strong>Tesla Cybertruck</strong> (likely negative equity) for a white Toyota Tacoma under $45k. Note that she owns a dog and explicitly <strong>prefers text communication</strong> over calls</p>
                 <div class="premium-deals-grid">
                     <div class="premium-deal-card" style="border: 1px solid var(--color-border-muted); border-radius: 4px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
@@ -10418,6 +10748,69 @@
                                 </div>
                             </div>
                         </div>`,
+                "create_deal_test_drive": `<p style="margin-bottom: 8px; font-size: 0.85rem; color: var(--color-text-main);">I've outlined the action plan for this request:</p>
+                <div class="task-card" id="deal-task-card">
+                    <div class="task-header">
+                        <div class="task-header-content">
+                            <div class="task-title" style="font-size: 0.85rem; font-weight: 600; color: #1E293B;">Sarah Jenkins: Action Plan</div>
+                        </div>
+                        <div class="task-status">0/10 DONE</div>
+                    </div>
+                    
+                    <div class="task-progress-container">
+                        <div class="task-progress-bar" id="task-progress"></div>
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 4px;">
+                        <div class="task-section-title">1. Create Deal</div>
+                        <div class="task-steps">
+                            <div class="task-step" onclick="completeStep(this)">
+                                <div class="step-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                <div class="step-text" style="font-size: 0.8rem;">Select Customer</div>
+                            </div>
+                            <div class="task-step" onclick="completeStep(this)">
+                                <div class="step-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                <div class="step-text" style="font-size: 0.8rem;">Select Co‑buyer / Guarantor check if needed</div>
+                            </div>
+                            <div class="task-step" onclick="completeStep(this)">
+                                <div class="step-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                <div class="step-text" style="font-size: 0.8rem;">Select Vehicle</div>
+                            </div>
+                             <div class="task-step" onclick="completeStep(this)">
+                                <div class="step-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                <div class="step-text" style="font-size: 0.8rem;">Vehicle Variant / Config</div>
+                            </div>
+                             <div class="task-step" onclick="completeStep(this)">
+                                <div class="step-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                <div class="step-text" style="font-size: 0.8rem;">Select Deal Structure</div>
+                            </div>
+                        </div>
+
+                        <div class="task-section-title" style="margin-top: 8px; border-top: 1px solid #F1F5F9; padding-top: 12px;">2. Schedule Test Drive </div>
+                        <div class="task-steps">
+                            <div class="task-step" onclick="completeStep(this)">
+                                <div class="step-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                <div class="step-text" style="font-size: 0.8rem;">Select appointment type: Test Drive</div>
+                            </div>
+                            <div class="task-step" onclick="completeStep(this)">
+                                <div class="step-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                <div class="step-text" style="font-size: 0.8rem;">Select Customer</div>
+                            </div>
+                            <div class="task-step" onclick="completeStep(this)">
+                                <div class="step-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                <div class="step-text" style="font-size: 0.8rem;">Select Vehicle</div>
+                            </div>
+                            <div class="task-step" onclick="completeStep(this)">
+                                <div class="step-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                <div class="step-text" style="font-size: 0.8rem;">Confirm Test Drive Date and Time</div>
+                            </div>
+                            <div class="task-step" onclick="completeStep(this)">
+                                <div class="step-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                <div class="step-text" style="font-size: 0.8rem;">Assign Salesperson and Save Appointment</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`,
                 "quote_customers": `<p style="margin-bottom: 16px; font-size: 0.875rem; color: var(--color-text-main);">Here are the customers who need the quote to be sent:</p>
                                 <div class="compact-list-container">
                                     <style>
@@ -12827,6 +13220,11 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
             const actionRow = document.createElement('div');
             actionRow.className = 'ai-actions-row';
 
+            // Hide action row if there's an incomplete task card (simulation in progress)
+            if (textWrapper.querySelector('.task-card:not(.completed)')) {
+                actionRow.style.display = 'none';
+            }
+
             const icons = [
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>',
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path></svg>',
@@ -12963,6 +13361,7 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
             if (lower.includes('white tacoma') && lower.includes('45k')) return 'vehicle_inquiry';
             if (lower.includes("trade-in") && lower.includes("worth more")) return 'tradein_objection';
             if (lower.includes('customers needing quotes') || lower.includes('quote customers')) return 'quote_customers';
+            if (lower.includes('create') && lower.includes('deal') && lower.includes('sarah') && lower.includes('limited')) return 'create_deal_test_drive';
 
             // 1. High-Fidelity Action: Summarize Leads
             if (lower.includes('summarize') && (lower.includes('leads') || lower.includes('hot'))) {
@@ -13143,10 +13542,19 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
                         node.classList.contains('compact-list-item') ||
                         node.classList.contains('premium-deals-grid') ||
                         node.classList.contains('premium-deal-card') ||
+                        node.classList.contains('task-card') ||
                         node.classList.contains('report-download-card')) {
                         await new Promise(r => setTimeout(r, 250)); // Artificial delay for better feel
                         newElement.innerHTML = node.innerHTML;
                         scrollToBottom();
+
+                        // AUTO SIMULATION TRIGGER: If it's the task card, start checking steps after 0.5s
+                        if (node.classList.contains('task-card')) {
+                            setTimeout(() => {
+                                if (window.simulateTaskSteps) window.simulateTaskSteps(newElement, controller);
+                            }, 500);
+                        }
+
                         return;
                     }
 
@@ -13176,14 +13584,169 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
 
             // Reset UI state only if this task is still the active one
             if (controller === typingController) {
-                typingController = null;
-                btnSend.innerHTML = btnSendIcon;
-                btnSend.classList.remove('stop');
-                updateSendButton();
+                // If there's an active task card simulation, don't clear the 'thinking'/'stop' state yet
+                if (container.querySelector('.task-card:not(.completed)')) {
+                    // completion will be handled by simulateTaskSteps completion
+                } else {
+                    typingController = null;
+                    btnSend.innerHTML = btnSendIcon;
+                    btnSend.classList.remove('stop');
+                    updateSendButton();
+                }
             }
             scrollToBottom();
             saveCurrentSession();
         }
+
+        window.completeStep = function (element) {
+            if (element.classList.contains('done') || element.classList.contains('processing')) return;
+
+            element.classList.add('processing');
+
+            // Simulate processing
+            setTimeout(() => {
+                element.classList.remove('processing');
+                element.classList.add('done');
+
+                // Check if all steps are done
+                const card = element.closest('.task-card');
+                const totalSteps = card.querySelectorAll('.task-step').length;
+                const doneSteps = card.querySelectorAll('.task-step.done').length;
+
+                const statusBadge = card.querySelector('.task-status');
+                if (statusBadge) {
+                    statusBadge.innerText = `${doneSteps}/${totalSteps} DONE`;
+                }
+
+                const progressBar = card.querySelector('.task-progress-bar');
+                if (progressBar) {
+                    const percent = (doneSteps / totalSteps) * 100;
+                    progressBar.style.width = percent + '%';
+                }
+
+                if (doneSteps === totalSteps) {
+                    card.classList.add('completed');
+                    if (statusBadge) {
+                        statusBadge.innerText = 'COMPLETED';
+                        statusBadge.className = 'task-status status-completed';
+                        statusBadge.style.color = '#10B981';
+                    }
+
+                    // Show AI action row now that we are done
+                    const messageRow = card.closest('.ai-message-row');
+                    if (messageRow) {
+                        const actionRow = messageRow.querySelector('.ai-actions-row');
+                        if (actionRow) actionRow.style.display = 'flex';
+                    }
+
+                    // Append the success cards similar to report view
+                    const container = card.parentElement;
+
+                    const dealCard = document.createElement('div');
+                    dealCard.className = 'report-download-card';
+                    dealCard.style.marginTop = '12px';
+                    dealCard.innerHTML = `
+                        <div class="report-icon-box" style="background: rgba(0, 191, 165, 0.08);">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display: block;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        </div>
+                        <div class="report-info">
+                            <div class="report-name" style="margin-bottom: 2px;">Deal #13455</div>
+                            <div style="font-size: 0.8125rem; color: var(--color-text-muted); margin-bottom: 2px;">2024 Toyota Tacoma Limited</div>
+                            <div class="report-meta"><a href="#" class="report-view-link">View</a></div>
+                        </div>
+                    `;
+                    container.appendChild(dealCard);
+
+                    const testDriveCard = document.createElement('div');
+                    testDriveCard.className = 'report-download-card';
+                    testDriveCard.style.marginTop = '12px';
+                    testDriveCard.innerHTML = `
+                        <div class="report-icon-box" style="background: rgba(59, 130, 246, 0.08);">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display: block;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        </div>
+                        <div class="report-info">
+                            <div class="report-name" style="margin-bottom: 2px;">Test Drive Appointment</div>
+                            <div style="font-size: 0.8125rem; color: var(--color-text-muted); margin-bottom: 2px;">Feb 10, 2026  |  10:00 AM to 11:00 AM</div>
+                            <div class="report-meta"><a href="#" class="report-view-link">View</a></div>
+                        </div>
+                    `;
+                    container.appendChild(testDriveCard);
+
+                    // Final cleanup for AI response state
+                    if (typingController) {
+                        typingController = null;
+                        btnSend.innerHTML = btnSendIcon;
+                        btnSend.classList.remove('stop');
+                        updateSendButton();
+                    }
+                    scrollToBottom();
+                }
+            }, 800);
+        };
+
+        window.sendSMS = async function (btn) {
+            if (btn.classList.contains('sending')) return;
+
+            const originalText = btn.innerText;
+            btn.classList.add('sending');
+            btn.innerText = 'Sending...';
+
+            // Simulate network delay
+            await new Promise(r => setTimeout(r, 1500));
+
+            const card = btn.closest('.sms-draft-card');
+            const actionsContainer = btn.closest('.sms-draft-actions');
+
+            if (actionsContainer) {
+                const banner = document.createElement('div');
+                banner.className = 'sent-success-banner';
+                banner.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>Text successfully sent to Sarah Jenkins</span>
+                `;
+
+                // Replace the entire actions container with the banner
+                actionsContainer.replaceWith(banner);
+
+                // Make the text body no longer editable after sending
+                const body = card.querySelector('.sms-draft-body');
+                if (body) {
+                    body.contentEditable = "false";
+                    body.style.cursor = "default";
+                    body.style.background = "transparent";
+                    body.style.border = "none";
+                }
+            }
+        };
+
+        window.simulateTaskSteps = async function (card, controller) {
+            if (!card) return;
+            const steps = Array.from(card.querySelectorAll('.task-step:not(.done)'));
+
+            for (const step of steps) {
+                if (controller && controller.stopped) {
+                    const container = card.parentElement;
+                    // Add delay to match feeling of stopping
+                    await new Promise(r => setTimeout(r, 100));
+
+                    if (!container.querySelector('.stopped-by-you')) {
+                        const stopDiv = document.createElement('div');
+                        stopDiv.className = 'stopped-by-you';
+                        stopDiv.style.color = 'var(--color-text-muted)';
+                        stopDiv.style.paddingTop = '12px';
+                        stopDiv.style.fontSize = '0.85rem';
+                        stopDiv.innerText = 'Task execution stopped by you';
+                        container.appendChild(stopDiv);
+                        renderActionIcons(container.parentElement);
+                        scrollToBottom();
+                    }
+                    return;
+                }
+                completeStep(step);
+                // Wait for the step's own animation (800ms) + longer buffer (now ~2.5s total)
+                await new Promise(r => setTimeout(r, 2500));
+            }
+        };
 
         function loadHistoryChat(title, callback) {
             cancelEditMode();
@@ -14500,7 +15063,9 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
                     'tradein_objection': 'Customer says trade-in is worth more',
                     'quote_customers': 'Show me customers needing quotes',
                     'safety_tech_query': 'Tell me about safety and tech features',
-                    'sarah_brief': 'Brief me on Sarah Jenkins'
+                    'sarah_brief': 'Brief me on Sarah Jenkins',
+                    'create_deal_test_drive': 'Create a deal for Sarah on the Limited and schedule a test drive for Tuesday at 10 AM.',
+                    'confirm_sms': 'Draft a text to her confirming the appointment'
                 };
 
                 const prompt = actionMap[action] || decodeURIComponent(action);
