@@ -235,7 +235,7 @@
         /* --- Grid --- */
         .usecase-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 24px;
             padding: 0 var(--space-xl) var(--space-2xl);
             max-width: 1300px;
@@ -247,13 +247,13 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border-radius: var(--radius-xl);
-            padding: 32px;
+            padding: 24px;
             border: 1px solid rgba(255, 255, 255, 0.5);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
             position: relative;
             box-shadow: var(--shadow-md);
             animation: fadeIn 0.6s ease-out forwards;
@@ -280,14 +280,14 @@
         }
 
         .card-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 16px;
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
             background: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.75rem;
+            font-size: 1.5rem;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
             transition: all 0.3s ease;
         }
@@ -326,17 +326,17 @@
         }
 
         .card-title {
-            font-size: 1.4rem;
+            font-size: 1.25rem;
             font-weight: 700;
             color: var(--color-text-heading);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             letter-spacing: -0.02em;
         }
 
         .card-description {
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: var(--color-text-subtle);
-            line-height: 1.5;
+            line-height: 1.4;
         }
 
         .card-footer {
@@ -424,280 +424,81 @@
     </div>
 
     <script>
-        const usecases = [
-            {
-                title: "Summarize Hot Leads",
-                desc: "Identify high-intent customers from the current page and synthesize their needs into key action items.",
-                icon: "⚡",
-                tag: "Ask",
-                id: "summarize_leads",
-                query: "Summarize recent hot leads"
-            },
-            {
-                title: "Focus Today",
-                desc: "Get a prioritized list of tasks, leads, and actions for the day.",
-                icon: "🎯",
-                tag: "Decide",
-                id: "focus_today",
-                query: "What should I focus on today"
-            },
-            {
-                title: "Customers Needing Quotes",
-                desc: "Identify customers currently waiting for a price quote and prioritize follow-ups.",
-                icon: "📋",
-                tag: "Execute",
-                id: "quote_customers",
-                query: "Show me customers needing quotes"
-            },
-            {
-                title: "Sarah Jenkins Brief",
-                desc: "Get a comprehensive snapshot of a VIP customer's recent activity and status.",
-                icon: "👤",
-                tag: "Ask",
-                id: "sarah_brief",
-                query: "Brief me on Sarah Jenkins"
-            },
-            {
-                title: "Vehicle Inventory Search",
-                desc: "Find vehicles matching specific criteria across all lots.",
-                icon: "🔎",
-                tag: "Ask",
-                id: "vehicle_inquiry",
-                query: "Check inventory for White Tacoma under $45k"
-            },
-            {
-                title: "Trade-in Objection",
-                desc: "Analyze customer objections regarding trade-in values and suggest strategies.",
-                icon: "🧠",
-                tag: "Decide",
-                id: "tradein_objection",
-                query: "Customer says trade-in is worth more"
-            },
-            {
-                title: "Ryan's Deal Details",
-                desc: "View detailed information and history about Ryan's active deal.",
-                icon: "📄",
-                tag: "Ask",
-                id: "ryan_details",
-                query: "Show details for Ryan's deal"
-            },
-            {
-                title: "Clarify Ryan's Deal",
-                desc: "Get clarification or context on specific aspects of Ryan's ongoing negotiations.",
-                icon: "❓",
-                tag: "Ask",
-                id: "ryan_clarify",
-                query: "Clarify Ryan's deal status"
-            },
-            {
-                title: "Safety & Tech Features",
-                desc: "Instantly generate detailed explanations of safety and tech features for specific models.",
-                icon: "🛡️",
-                tag: "Ask",
-                id: "safety_tech_query",
-                query: "Tell me about safety and tech features"
-            },
-            {
-                title: "Appointment Report",
-                desc: "Generate comprehensive performance reports regarding appointments.",
-                icon: "📊",
-                tag: "Decide",
-                id: "appointment_report",
-                query: "Generate appointment report"
-            },
-            {
-                title: "Inventory Stock Check",
-                desc: "Real-time stock availability check across dealership locations.",
-                icon: "📦",
-                tag: "Ask",
-                id: "inventory_check",
-                query: "/inventory-check"
-            },
-            {
-                title: "Credit Prequalification",
-                desc: "Authorize soft credit inquiries to determine rate eligibility.",
-                icon: "🏦",
-                tag: "Decide",
-                id: "credit_prequal",
-                query: "/credit-prequal"
-            },
-            {
-                title: "Deal Probability Matrix",
-                desc: "Data-driven prediction of deal closure probability.",
-                icon: "🔮",
-                tag: "Decide",
-                id: "deal_probability",
-                query: "/deal-probability"
-            },
-            {
-                title: "Trade-In Valuation",
-                desc: "Estimate trade-in value using market data and conditions.",
-                icon: "💎",
-                tag: "Decide",
-                id: "trade_in_val",
-                query: "/trade-in-val"
-            },
-            {
-                title: "High-Priority Test Drives",
-                desc: "List today's high-priority test drive appointments.",
-                icon: "📍",
-                tag: "Decide",
-                id: "test_drive",
-                query: "List high-priority test drives"
-            },
-            {
-                title: "Schedule Test Drive",
-                desc: "Book and schedule test drive slots automatically.",
-                icon: "🏁",
-                tag: "Execute",
-                id: "schedule_drive",
-                query: "/schedule-drive"
-            },
-            {
-                title: "Customer Feedback",
-                desc: "Aggregate and summarize recent customer reviews and sentiment.",
-                icon: "🗣️",
-                tag: "Ask",
-                id: "customer_sentiment",
-                query: "Summarize customer feedback"
-            },
-            {
-                title: "Draft Vehicle Quote",
-                desc: "Generate professional quotes for vehicles like Model X.",
-                icon: "📝",
-                tag: "Execute",
-                id: "draft_quote",
-                query: "Draft quote for Model X"
-            },
-            {
-                title: "Equity Analysis",
-                desc: "Analyze customer equity for potential upgrade opportunities.",
-                icon: "✨",
-                tag: "Decide",
-                id: "equity_alert",
-                query: "Analyze Ryan Miller's equity for Upgrade Opportunity"
-            },
-            {
-                title: "Buy Back Strategy",
-                desc: "Plan a buy-back strategy for high-demand pre-owned models.",
-                icon: "🤝",
-                tag: "Execute",
-                id: "buy_back",
-                query: "Plan buy back strategy for Ryan Brooks Supra"
-            },
-            {
-                title: "Warranty Expiration Email",
-                desc: "Draft emails for customers with expiring warranties to improve retention.",
-                icon: "🔔",
-                tag: "Execute",
-                id: "retention_watch",
-                query: "Draft warranty expiration email for Ryan OConnell"
-            },
-            {
-                title: "Ryan's Open Deals",
-                desc: "Show all active and open deals for Ryan.",
-                icon: "📂",
-                tag: "Ask",
-                id: "ryan_deals",
-                query: "Show open deals for Ryan"
-            },
-            {
-                title: "Tomorrow's Test Drives",
-                desc: "Filter and show test drive appointments scheduled for tomorrow.",
-                icon: "📅",
-                tag: "Ask",
-                id: "filter_test_drive",
-                query: "Show test drives tomorrow"
-            },
-            {
-                title: "Ryan's SUV Leads",
-                desc: "Filter Ryan's leads to show only SUV interests.",
-                icon: "🚗",
-                tag: "Ask",
-                id: "filter_suv",
-                query: "Show Ryan's SUV leads"
-            },
-            {
-                title: "Fleet Inquiries",
-                desc: "Summarize and manage inquiries related to fleet sales.",
-                icon: "🚛",
-                tag: "Decide",
-                id: "fleet_inquiry",
-                query: "Summarize Tesla fleet inquiries"
-            },
-            {
-                title: "Pricing Strategy",
-                desc: "Show pricing strategies for models like Model 3.",
-                icon: "🏷️",
-                tag: "Decide",
-                id: "pricing_strategy",
-                query: "Show Model 3 pricing strategies"
-            },
-            {
-                title: "Aged Inventory Pricing",
-                desc: "Recommendations for lowering prices on aged inventory units.",
-                icon: "📉",
-                tag: "Execute",
-                id: "aged_pricing",
-                query: "Lower price on aged units"
-            },
-            {
-                title: "Reassign Stale Leads",
-                desc: "Automatically re-assign leads that have become stale.",
-                icon: "♻️",
-                tag: "Execute",
-                id: "reassign_leads",
-                query: "Re-assign stale leads"
-            },
-            {
-                title: "Sales Talk Tracks",
-                desc: "Provide high-converting talk tracks for sales scenarios.",
-                icon: "💬",
-                tag: "Execute",
-                id: "talk_tracks",
-                query: "Provide talk track"
-            },
-            {
-                title: "Overdue Services",
-                desc: "Show customers who have overdue service appointments.",
-                icon: "🛠️",
-                tag: "Ask",
-                id: "overdue_services",
-                query: "Show customers with overdue services"
-            },
-            {
-                title: "Warranty Claims",
-                desc: "Identify vehicles that need warranty claims filed.",
-                icon: "📜",
-                tag: "Ask",
-                id: "warranty_claims",
-                query: "Which vehicles need warranty claims?"
-            },
-            {
-                title: "High-Risk Repairs",
-                desc: "Find repair orders that are classified as high-risk.",
-                icon: "⚠️",
-                tag: "Decide",
-                id: "ro_risk",
-                query: "Find high-risk repair orders"
-            },
-            {
-                title: "Pending Payments",
-                desc: "Show list of customers with pending payments.",
-                icon: "💰",
-                tag: "Ask",
-                id: "pending_payments",
-                query: "Show customers with pending payments"
-            }
-        ];
-
+        let usecases = [];
         let activeFilter = 'all';
+
+        async function loadUsecases() {
+            try {
+                const response = await fetch('usecases.csv');
+                if (!response.ok) throw new Error('Fetch failed. Ensure you are running a local server.');
+                const csvData = await response.text();
+                usecases = parseCSV(csvData);
+                renderCards();
+            } catch (error) {
+                console.error('Error loading usecases CSV:', error);
+                const emptyResults = document.getElementById('emptyResults');
+                if (emptyResults) {
+                    emptyResults.style.display = 'block';
+                    emptyResults.innerHTML = `
+                        <h3 style="color: var(--color-text-heading);">Connection Issue</h3>
+                        <p style="color: var(--color-text-subtle);">Could not load usecases.csv. Please ensure you are running this page through a local web server (e.g., npx serve or python http.server).</p>
+                    `;
+                }
+            }
+        }
+
+        function parseCSV(csvText) {
+            const lines = [];
+            let currentLine = [];
+            let currentToken = '';
+            let inQuotes = false;
+
+            for (let i = 0; i < csvText.length; i++) {
+                const char = csvText[i];
+                if (char === '"' && csvText[i + 1] === '"') {
+                    currentToken += '"';
+                    i++;
+                } else if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    currentLine.push(currentToken.trim());
+                    currentToken = '';
+                } else if ((char === '\r' || char === '\n') && !inQuotes) {
+                    if (currentToken || currentLine.length > 0) {
+                        currentLine.push(currentToken.trim());
+                        lines.push(currentLine);
+                        currentLine = [];
+                        currentToken = '';
+                    }
+                } else {
+                    currentToken += char;
+                }
+            }
+            if (currentToken || currentLine.length > 0) {
+                currentLine.push(currentToken.trim());
+                lines.push(currentLine);
+            }
+
+            if (lines.length < 2) return [];
+
+            const headers = lines[0].map(h => h.toLowerCase().trim());
+            return lines.slice(1).map(row => {
+                const obj = {};
+                headers.forEach((header, index) => {
+                    let key = header === 'description' ? 'desc' : header;
+                    obj[key] = row[index] || '';
+                });
+                return obj;
+            });
+        }
 
         function renderCards() {
             const grid = document.getElementById('usecaseGrid');
             const searchInput = document.getElementById('searchInput').value.toLowerCase();
             const emptyResults = document.getElementById('emptyResults');
             grid.innerHTML = '';
+
+            if (usecases.length === 0) return;
 
             const filtered = usecases.filter(uc => {
                 const searchString = (uc.title + uc.desc + uc.tag).toLowerCase();
@@ -753,7 +554,7 @@
         });
 
         // Initialize
-        renderCards();
+        loadUsecases();
     </script>
 </body>
 
