@@ -1,0 +1,39 @@
+Title,Description,Icon,Tag,ID,Query
+Summarize Hot Leads,Identify high-intent customers from the current page and synthesize their needs into key action items.,⚡,Ask,summarize_leads,Summarize recent hot leads
+Focus Today,Get a prioritized list of tasks leads and actions for the day.,🎯,Decide,focus_today,What should I focus on today
+Customers Needing Quotes,Identify customers currently waiting for a price quote and prioritize follow-ups.,📋,Execute,quote_customers,Show me customers needing quotes
+Get Customer Brief,Get a comprehensive snapshot of any customer's recent activity deal status and communication history.,👤,Ask,sarah_brief,Brief me on [Customer]
+Vehicle Inventory Search,Find vehicles matching specific criteria across all lots.,🔎,Ask,vehicle_inquiry,Check inventory for White Tacoma under $45k
+Trade-in Objection,Analyze customer objections regarding trade-in values and suggest strategies.,🧠,Decide,tradein_objection,Customer says trade-in is worth more
+Ryan's Deal Details,View detailed information and history about Ryan's active deal.,📄,Ask,ryan_details,Show details for Ryan's deal
+Clarify Ryan's Deal,Get clarification or context on specific aspects of Ryan's ongoing negotiations.,❓,Ask,ryan_clarify,Clarify Ryan's deal status
+Safety & Tech Features,Instantly generate detailed explanations of safety and tech features for specific models.,🛡️,Ask,safety_tech_query,Tell me about safety and tech features
+Appointment Report,Generate comprehensive performance reports regarding appointments.,📊,Decide,appointment_report,Generate appointment report
+Inventory Stock Check,Real-time stock availability check across dealership locations.,📦,Ask,inventory_check,/inventory-check
+Credit Prequalification,Authorize soft credit inquiries to determine rate eligibility.,🏦,Decide,credit_prequal,/credit-prequal
+Deal Probability Matrix,Data-driven prediction of deal closure probability.,🔮,Decide,deal_probability,/deal-probability
+Trade-In Valuation,Estimate trade-in value using market data and conditions.,💎,Decide,trade_in_val,/trade-in-val
+High-Priority Test Drives,List today's high-priority test drive appointments.,📍,Decide,test_drive,List high-priority test drives
+Schedule Test Drive,Book and schedule test drive slots automatically.,🏁,Execute,schedule_drive,/schedule-drive
+Customer Feedback,Aggregate and summarize recent customer reviews and sentiment.,🗣️,Ask,customer_sentiment,Summarize customer feedback
+Draft Vehicle Quote,Generate professional quotes for vehicles like Model X.,📝,Execute,draft_quote,Draft quote for Model X
+Equity Analysis,Analyze customer equity for potential upgrade opportunities.,✨,Decide,equity_alert,Analyze Ryan Miller's equity for Upgrade Opportunity
+Buy Back Strategy,Plan a buy-back strategy for high-demand pre-owned models.,🤝,Execute,buy_back,Plan buy back strategy for Ryan Brooks Supra
+Warranty Expiration Email,Draft emails for customers with expiring warranties to improve retention.,🔔,Execute,retention_watch,Draft warranty expiration email for Ryan OConnell
+Ryan's Open Deals,Show all active and open deals for Ryan.,📂,Ask,ryan_deals,Show open deals for Ryan
+Tomorrow's Test Drives,Filter and show test drive appointments scheduled for tomorrow.,📅,Ask,filter_test_drive,Show test drives tomorrow
+Ryan's SUV Leads,Filter Ryan's leads to show only SUV interests.,🚗,Ask,filter_suv,Show Ryan's SUV leads
+Fleet Inquiries,Summarize and manage inquiries related to fleet sales.,🚛,Decide,fleet_inquiry,Summarize Tesla fleet inquiries
+Pricing Strategy,Show pricing strategies for models like Model 3.,🏷️,Decide,pricing_strategy,Show Model 3 pricing strategies
+Aged Inventory Pricing,Recommendations for lowering prices on aged inventory units.,📉,Execute,aged_pricing,Lower price on aged units
+Reassign Stale Leads,Automatically re-assign leads that have become stale.,♻️,Execute,reassign_leads,Re-assign stale leads
+Sales Talk Tracks,Provide high-converting talk tracks for sales scenarios.,💬,Execute,talk_tracks,Provide talk track
+Overdue Services,Show customers who have overdue service appointments.,🛠️,Ask,overdue_services,Show customers with overdue services
+Warranty Claims,Identify vehicles that need warranty claims filed.,📜,Ask,warranty_claims,Which vehicles need warranty claims?
+High-Risk Repairs,Find repair orders that are classified as high-risk.,⚠️,Decide,ro_risk,Find high-risk repair orders
+Pending Payments,Show list of customers with pending payments.,💰,Ask,pending_payments,Show customers with pending payments
+Create Deal & Test Drive,Automatically create a new deal and schedule a test drive concurrently for a customer.,✍️,Execute,create_deal_test_drive,Create a deal for Sarah on the Limited and schedule a test drive for Tuesday at 10 AM.
+Confirm Appointment SMS,Draft a tailored SMS to confirm an upcoming test drive or service appointment.,📱,Execute,confirm_sms,Draft a text to her confirming the appointment
+Lead Closure Probability,Predict the likelihood of a lead closing within the next 30 days based on behavioral data.,📈,Decide,lead_closure_probability,How likely is this lead to close in the next 30 days?
+Best Next Step Advice,Get AI-recommended next actions and follow-up timing for a specific lead.,💡,Decide,best_next_step,Suggest the best next step and when I should follow up.
+Deal Pricing Comparison,Compare a current deal's pricing and incentives against historical benchmarks.,⚖️,Decide,deal_pricing_comparison,Compare this vehicle's pricing and incentives to similar deals we've closed recently.
