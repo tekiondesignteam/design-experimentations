@@ -10796,10 +10796,8 @@
                                         </div>
                                     </div>
                                 </div>`,
-                "Draft quote for Model X": `<p><strong>Subject: Your Tesla Model X Quote</strong></p><p>Hi <strong>[Customer Name]</strong>,</p><p>Great choice on the <strong>Model X</strong>. Based on your configuration (Long Range, Black Interior), here is the preliminary quote attached. This includes the federal tax incentive deduction.</p>`,
                 "List high-priority test drives": `<p><strong>Today's High Priority Test Drives:</strong></p><div class="ai-list-item"><span class="ai-list-number">1.</span><span><strong>10:00 AM - BMW X5</strong> (Client: A. Miller)</span></div><div class="ai-list-item"><span class="ai-list-number">2.</span><span><strong>1:30 PM - Audi Q7</strong> (Client: B. Davis) - <em>Confirm trade-in arrival</em></span></div>`,
                 "/inventory-check": "<strong>Stock Status:</strong><br>We have 3 units matching that description at the Main Lot, and 1 in transit (ETA: 5 days).",
-                "/deal-probability": "<strong>Deal Probability: 75%</strong><br>Customer has high intent. Credit score is solid (720+). Pending spouse approval on color.",
                 "/credit-prequal": `<p style="margin-bottom: 16px; font-size: 0.875rem; color: var(--color-text-main);">I've completed the soft credit pull for your customer. Here are the qualification details:</p>
 <div class="premium-deal-card" style="border: 1px solid var(--color-border-muted); border-radius: 8px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow: hidden; margin-bottom: 8px;">
     <div style="padding: 10px 16px; border-bottom: 1px solid #F1F5F9; background: #FAFBFC;">
@@ -11081,7 +11079,7 @@
                     </div>
                     <div class="report-info">
                         <div class="report-name">Monthly Appointment Performance Report - December 2025</div>
-                        <div class="report-meta"><a href="#" target="_blank" class="report-view-link">View</a></div>
+                        <div class="report-meta"><a href="report.html" target="_blank" class="report-view-link">View</a></div>
                     </div>
                 </div>`,
                 "safety_tech_query": `<p>I've analyzed the <strong>safety and tech features</strong> for the 2026 Toyota Camry as requested.</p><p>I have also updated the <strong>Appointment Notes</strong> for Ryan Carter with the following details:</p><ul><li><strong>Safety:</strong> Toyota Safety Sense™ 3.0 (TSS 3.0), Proactive Driving Assist, Blind Spot Monitor.</li><li><strong>Tech:</strong> 12.3-in. Toyota Audio Multimedia, Wireless Apple CarPlay® & Android Auto™, Digital Key.</li></ul>`,
@@ -13794,7 +13792,6 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
             const lower = text.toLowerCase().replace(/\u00a0/g, ' ').trim().replace(/\s+/g, ' ');
 
             // 0. Specific Matches (High Priority)
-            if (lower.includes('customer feedback') || lower.includes('sentiment')) return 'Summarize recent customer feedback';
             if (lower.includes('safety') && lower.includes('tech')) return 'safety_tech_query';
             if (lower.includes('sarah jenkins')) return 'sarah_brief';
             if (lower.includes('white tacoma') && lower.includes('45k')) return 'vehicle_inquiry';
@@ -13824,7 +13821,6 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
             // 3. Slash Commands & Utility Actions
             if (lower.includes('stock availability') || lower.includes('inventory')) return '/inventory-check';
             if (lower.includes('soft credit') || lower.includes('credit')) return '/credit-prequal';
-            if (lower.includes('deal probability') || lower.includes('probability')) return '/deal-probability';
             if (lower.includes("trade-in") && (lower.includes("worth") || lower.includes("value")) && (lower.includes("more") || lower.includes("higher"))) return 'tradein_objection';
             if (lower.includes('trade-in') || lower.includes('estimate value')) return '/trade-in-val';
             if (lower.includes('list') || lower.includes('high-priority')) return 'List high-priority test drives';
@@ -15474,7 +15470,6 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
                     'summarize_leads': 'Summarize recent hot leads',
                     'summarize_hot_leads': 'Summarize recent hot leads',
                     'focus_today': 'What should I focus on today',
-                    'draft_quote': 'Draft quote for Model X',
                     'test_drive': 'List high-priority test drives',
                     'inventory_audit': 'Check stock availability for [Vehicle] across all lots',
                     'inventory_check': 'Check stock availability for [Vehicle] across all lots',
@@ -15482,25 +15477,12 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
                     'trade_in_val': 'Estimate trade-in value for [VIN] assuming good condition',
                     'credit_check': 'Run a soft credit qualification check for [Customer] to determine eligibility',
                     'credit_prequal': 'Run a soft credit qualification check for [Customer] to determine eligibility',
-                    'deal_probability': '/deal-probability',
                     'equity_alert': 'Analyze Ryan Millers equity for Upgrade Opportunity',
                     'buy_back': 'Plan buy back strategy for Ryan Brooks Supra',
                     'retention_watch': 'Draft warranty expiration email for Ryan OConnell',
                     'ryan_deals': "Show ryan's open deals",
-                    'filter_test_drive': 'Show me all test drives for tomorrow',
-                    'filter_suv': "Show me Ryan's SUV leads",
                     'appointment_report': 'Generate appointment performance report',
                     'schedule_drive': 'Book a test drive appointment for [Vehicle] on [Date & Time]',
-                    'overdue_services': 'Show me all customers with overdue services',
-                    'warranty_claims': 'Which vehicles need warranty claims?',
-                    'ro_risk': 'Find high-risk repair orders',
-                    'pending_payments': 'Show customers with pending payments',
-                    'fleet_inquiry': 'Summarize Tesla fleet inquiries',
-                    'pricing_strategy': 'Show Model 3 pricing strategies',
-                    'customer_sentiment': 'Summarize recent customer feedback',
-                    'aged_pricing': 'Lower the price on the aged units',
-                    'reassign_leads': 'Re-assign stale internet leads',
-                    'talk_tracks': 'Provide high-converting talk track',
                     'vehicle_inquiry': 'Check inventory for White Tacoma under $45k',
                     'tradein_objection': 'Spoke to the customer. She thinks her trade-in is worth $5k more than our appraisal. How do I handle this?',
                     'quote_customers': 'Show me customers needing quotes',
