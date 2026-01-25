@@ -1307,6 +1307,7 @@
                 const timeStr = ((Date.now() - startTime) / 1000).toFixed(1) + 's';
                 timerEl.textContent = timeStr;
             }, 100);
+            currentController.timerId = timerInterval;
 
             const reasoningContent = aiRow.querySelector('.reasoning-content');
             const thinkingSteps = AI_DATA.thinkingSteps[logicKey] || AI_DATA.thinkingSteps.default;
@@ -1358,6 +1359,24 @@
                 btnSend.disabled = true;
                 typingController = null;
                 scrollToBottom();
+            } else {
+                // STOPPED STATE - Match ai-assistant.html behavior
+                clearInterval(timerInterval);
+                const textWrapper = aiRow.querySelector('.ai-text-wrapper');
+                if (textWrapper) {
+                    textWrapper.innerHTML = '<div class="ai-content"><div style="color:var(--color-text-muted); padding-top: 0px;">Response stopped by you</div></div>';
+                    renderActionIcons(textWrapper);
+                }
+                const avatar = aiRow.querySelector('.ai-avatar');
+                if (avatar) avatar.classList.remove('thinking');
+
+                sidebar.classList.remove('aurora-active');
+                btnSend.innerHTML = btnSendIcon;
+                btnSend.classList.remove('stop');
+                btnSend.classList.remove('active');
+                btnSend.disabled = true;
+                typingController = null;
+                scrollToBottom();
             }
         }
 
@@ -1387,12 +1406,14 @@
         btnSend.onclick = () => {
             if (typingController) {
                 typingController.stopped = true;
-                sidebar.classList.remove('aurora-active');
-                btnSend.innerHTML = btnSendIcon;
-                btnSend.classList.remove('stop');
-                btnSend.classList.remove('active');
+                if (typingController.timerId) clearInterval(typingController.timerId);
+            } else {
+                const text = mainInput.innerText.trim();
+                if (text) startChat(text);
+                mainInput.innerText = '';
+                placeholderWrapper.style.display = 'block';
                 btnSend.disabled = true;
-                typingController = null;
+                btnSend.classList.remove('active');
             }
         };
 
