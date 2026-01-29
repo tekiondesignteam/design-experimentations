@@ -14381,9 +14381,10 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
 
             // 0. Specific Matches (High Priority)
             if (window.CreateDealFlow && window.CreateDealFlow.matches(text)) return 'create_deal_test_drive';
-            if (lower.includes('nebula nimbus') || lower.includes('2023 nebula nimbus')) return 'safety_tech_query';
             if (lower.includes('flora fleisher')) return 'sarah_brief';
             if (lower.includes('aerovibe') || lower.includes('2023 aerovibe')) return 'vehicle_inquiry';
+            if (lower.includes('stock availability') || lower.includes('inventory')) return '/inventory-check';
+            if (lower.includes('nebula nimbus') || lower.includes('2023 nebula nimbus')) return 'safety_tech_query';
             if (lower.includes("trade-in") && lower.includes("worth more")) return 'tradein_objection';
             if (lower.includes('customers needing quotes') || lower.includes('quote customers')) return 'quote_customers';
             if (lower.includes('confirming') && lower.includes('appointment') && (lower.includes('draft') || lower.includes('text'))) return 'confirm_sms';
@@ -14408,7 +14409,7 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
             }
 
             // 3. Slash Commands & Utility Actions
-            if (lower.includes('stock availability') || lower.includes('inventory')) return '/inventory-check';
+
             if (lower.includes('soft credit') || lower.includes('credit')) return '/credit-prequal';
             if (lower.includes("trade-in") && (lower.includes("worth") || lower.includes("value")) && (lower.includes("more") || lower.includes("higher"))) return 'tradein_objection';
             if (lower.includes('trade-in') || lower.includes('estimate value')) return '/trade-in-val';
