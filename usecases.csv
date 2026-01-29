@@ -15,7 +15,7 @@ High-Priority Test Drives,List today's high-priority test drive appointments.,�
 Schedule Test Drive,Book and schedule test drive slots automatically.,🏁,Execute,schedule_drive,/schedule-drive
 Equity Analysis,Analyze customer equity for potential upgrade opportunities.,✨,Decide,equity_alert,Analyze Curtis Gables equity for Upgrade Opportunity
 Buy Back Strategy,Plan a buy-back strategy for high-demand pre-owned models.,🤝,Execute,buy_back,Plan buy back strategy for Tony Smehrik Lunar Blitz
-Create Deal & Test Drive,Automatically create a new deal and schedule a test drive concurrently for a customer.,✍️,Execute,create_deal_test_drive,Create a deal for Flora on the Limited and schedule a test drive for Tuesday at 10 AM.
+Create Deal & Test Drive,Automatically create a new deal and schedule a test drive concurrently for a customer.,✍️,Execute,create_deal_test_drive,Create a deal for Flora on the 2023 AeroVibe and schedule a test drive for Tuesday at 10 AM.
 Confirm Appointment SMS,Draft a tailored SMS to confirm an upcoming test drive or service appointment.,📱,Execute,confirm_sms,Draft a text to her confirming the appointment
 Lead Closure Probability,Predict the likelihood of a lead closing within the next 30 days based on behavioral data.,📈,Decide,lead_closure_probability,How likely is this lead to close in the next 30 days?
 Best Next Step Advice,Get AI-recommended next actions and follow-up timing for a specific lead.,💡,Decide,best_next_step,Suggest the best next step and when I should follow up.
