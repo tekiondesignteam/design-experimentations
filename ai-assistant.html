@@ -14382,12 +14382,14 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
             // 0. Specific Matches (High Priority)
             if (window.CreateDealFlow && window.CreateDealFlow.matches(text)) return 'create_deal_test_drive';
             if (lower.includes('flora fleisher')) return 'sarah_brief';
+            if (lower.includes('white aerovibes') && (lower.includes('arriving') || lower.includes('soon'))) return 'white_aerovibes_check';
             if (lower.includes('aerovibe') || lower.includes('2023 aerovibe')) return 'vehicle_inquiry';
             if (lower.includes('stock availability') || lower.includes('inventory')) return '/inventory-check';
             if (lower.includes('nebula nimbus') || lower.includes('2023 nebula nimbus')) return 'safety_tech_query';
             if (lower.includes("trade-in") && lower.includes("worth more")) return 'tradein_objection';
             if (lower.includes('customers needing quotes') || lower.includes('quote customers')) return 'quote_customers';
             if (lower.includes('confirming') && lower.includes('appointment') && (lower.includes('draft') || lower.includes('text'))) return 'confirm_sms';
+
 
             if (lower.includes('remind me') && lower.includes('trade-in') && (lower.includes('status') || lower.includes('check'))) return 'tradein_reminder';
 
@@ -15417,6 +15419,80 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
                                         `;
                         }
 
+                        if (logicKey === 'white_aerovibes_check') {
+                            responseHTML = `
+                                <div style="font-weight: 500; color: var(--color-text-main); font-size: 14px; margin-bottom: 8px;">I found 3 White AeroVibes that match your criteria:</div>
+                                <div class="compact-list-container" style="background: #fff; border: 1px solid var(--color-border-muted); border-radius: 8px; overflow: hidden;">
+                                    <!-- Row 1 -->
+                                    <div class="compact-list-item" style="padding: 12px; cursor: default; border-bottom: 1px solid var(--color-border-muted);">
+                                        <div style="display: flex; width: 100%; align-items: center;">
+                                            <div class="avatar-circle" style="width: 40px; height: 40px; background: #F3F4F6; color: #4B5563; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin-right: 12px;">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle></svg>
+                                            </div>
+                                            <div style="flex: 1; min-width: 0;">
+                                                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                                    <div>
+                                                         <div style="font-size: 0.9rem; font-weight: 600; color: #111827;">2023 AeroVibe SR5</div>
+                                                         <div style="font-size: 0.8rem; color: #6B7280; margin-top: 2px;">
+                                                             <span style="text-decoration: underline; color: #4B5563;">Stock 1234</span> • 12 days on lot • White
+                                                         </div>
+                                                    </div>
+                                                    <div style="text-align: right;">
+                                                        <div style="font-size: 0.8rem; color: #6B7280; font-weight: 500;">Available</div>
+                                                        <div style="font-size: 16px; font-weight: 600; color: #111827;">$42,500</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Row 2 -->
+                                    <div class="compact-list-item" style="padding: 12px; cursor: default; border-bottom: 1px solid var(--color-border-muted);">
+                                        <div style="display: flex; width: 100%; align-items: center;">
+                                             <div class="avatar-circle" style="width: 40px; height: 40px; background: #F3F4F6; color: #4B5563; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin-right: 12px;">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle></svg>
+                                            </div>
+                                            <div style="flex: 1; min-width: 0;">
+                                                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                                    <div>
+                                                         <div style="font-size: 0.9rem; font-weight: 600; color: #111827;">2024 AeroVibe TRD</div>
+                                                         <div style="font-size: 0.8rem; color: #6B7280; margin-top: 2px;">
+                                                             <span style="text-decoration: underline; color: #4B5563;">Stock 5748</span> • 45 days on lot • White
+                                                         </div>
+                                                    </div>
+                                                    <div style="text-align: right;">
+                                                        <div style="font-size: 0.8rem; color: #6B7280; font-weight: 500;">Pending</div>
+                                                        <div style="font-size: 16px; font-weight: 600; color: #111827;">$45,200</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Row 3 -->
+                                    <div class="compact-list-item" style="padding: 12px; cursor: default;">
+                                        <div style="display: flex; width: 100%; align-items: center;">
+                                             <div class="avatar-circle" style="width: 40px; height: 40px; background: #F3F4F6; color: #4B5563; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin-right: 12px;">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle></svg>
+                                            </div>
+                                            <div style="flex: 1; min-width: 0;">
+                                                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                                    <div>
+                                                         <div style="font-size: 0.9rem; font-weight: 600; color: #111827;">2024 AeroVibe Limited</div>
+                                                         <div style="font-size: 0.8rem; color: #6B7280; margin-top: 2px;">
+                                                             <span style="text-decoration: underline; color: #4B5563;">Stock: -</span> • 0 days on lot • White
+                                                         </div>
+                                                    </div>
+                                                    <div style="text-align: right;">
+                                                        <div style="font-size: 0.8rem; color: #6B7280; font-weight: 500;">Arriving</div>
+                                                        <div style="font-size: 16px; font-weight: 600; color: #111827;">$46,900</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+
 
                         if (responseHTML.includes('{{YESTERDAY}}')) {
                             const d = new Date();
@@ -15434,7 +15510,7 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
 
 
 
-                        if (logicKey === 'tradein_reminder') {
+                        if (logicKey === 'tradein_reminder' || logicKey === 'white_aerovibes_check') {
                             sourcesData.count = 0;
                             sourcesData.contextItems = [];
                             sourcesData.attachmentItems = [];
