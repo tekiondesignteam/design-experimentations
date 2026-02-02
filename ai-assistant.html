@@ -7702,6 +7702,93 @@
             animation: strokeGlow 1s ease-in-out infinite alternate;
             border-color: #4285F4 !important;
         }
+
+        /* --- ACTIVITY CARD --- */
+        .activity-card {
+            border: 1px solid var(--color-border-muted);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            background: var(--color-bg-main);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+            margin-top: var(--space-sm);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .activity-top {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-md);
+        }
+
+        .activity-icon {
+            width: 32px;
+            height: 32px;
+            background-color: #FAE3E1;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: #D14343;
+        }
+
+        .activity-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .activity-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .activity-title {
+            font-weight: 700;
+            color: var(--color-text-heading);
+            font-size: var(--font-base);
+        }
+
+        .activity-type-suffix {
+            font-weight: 400;
+            color: var(--color-text-subtle);
+        }
+
+        .activity-time {
+            font-size: var(--font-xs);
+            color: var(--color-text-subtle);
+        }
+
+        .activity-text {
+            font-size: 0.95rem;
+            color: var(--color-text-main);
+            line-height: 1.4;
+        }
+
+        .activity-btn {
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: 0 16px;
+            height: 32px;
+            font-size: var(--font-sm);
+            font-weight: 600;
+            cursor: pointer;
+            align-self: flex-start;
+            transition: background-color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .activity-btn:hover {
+            background-color: #3367D6;
+        }
     </style>
 </head>
 
@@ -10540,6 +10627,11 @@
                 { "icon": "🚗", "text": "List high-priority test drives" }
             ],
             "thinkingSteps": {
+                "last_activity_flora": [
+                    "Searching communication logs for Flora Fleisher...",
+                    "Retrieving most recent interaction...",
+                    "Formatting activity details..."
+                ],
                 "default": [
                     "Analyzing user inquiry...",
                     "Identifying CRM action items...",
@@ -10659,6 +10751,13 @@
                     "Cross-referencing with vehicle availability in inventory...",
                     "Sorting appointments by scheduled time...",
                     "Formatting the priority list for display..."
+                ],
+                "leads_interested_aerovibe": [
+                    "Analyzing request for Aerovibe leads...",
+                    "Querying CRM for recent Aerovibe inquiries...",
+                    "Found 5 matches in the last 30 days.",
+                    "Compiling contact details and deal status...",
+                    "Generating list view."
                 ]
             },
             "thinkingSummaries": {
@@ -10678,11 +10777,14 @@
                 "create_deal_test_drive": "I've identified and assigned these tasks to an T-ONE agent…",
                 "List high-priority test drives": "I've retrieved today's high-priority test drive appointments and sorted them by scheduled time for your review.",
                 "equity_alert": "Analyzed Curtis Gable's equity position. He has $4,200 in positive equity on his 2023 Nebula Nimbus, making him an ideal candidate for an upgrade.",
-                "buy_back": "I've formulated a buy-back strategy for Tony Smehrik's 2022 Lunar Blitz. Since we have zero similar units in stock, I recommend a 102% KBB offer plus a loyalty credit."
+                "buy_back": "I've formulated a buy-back strategy for Tony Smehrik's 2022 Lunar Blitz. Since we have zero similar units in stock, I recommend a 102% KBB offer plus a loyalty credit.",
+                "leads_interested_aerovibe": "I've identified 5 leads who have expressed interest in the Aerovibe."
             },
             "aiResponses": {
+                "leads_interested_aerovibe": `<p>Here are the leads Interested in Aerovibe:</p><div class="compact-list-container"><div class="compact-list-item"><div class="avatar-circle avatar-pink">MD</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Matilda Dayton</span><span class="item-id">#C01</span></div><div class="item-sub-row">+1 (311) 555-2368 • matildadayton@tmail.com</div></div><div class="item-meta-info"><span class="meta-date">10:30 AM</span><span class="deal-badge badge-grey">Source: Internet</span></div></div><div class="compact-list-item"><div class="avatar-circle avatar-green">CG</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Curtis Gable</span><span class="item-id">#C02</span></div><div class="item-sub-row">+1 (555) 555-2368 • curtisgable@tmail.com</div></div><div class="item-meta-info"><span class="meta-date">Yesterday</span><span class="deal-badge badge-grey">Source: Walk-In</span></div></div><div class="compact-list-item"><div class="avatar-circle avatar-grey">TS</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Tony Smehrik</span><span class="item-id">#C03</span></div><div class="item-sub-row">+1 (715) 555-0100 • tonysmehrik@tmail.com</div></div><div class="item-meta-info"><span class="meta-date">Nov 12</span><span class="deal-badge badge-grey">Source: Internet</span></div></div><div class="compact-list-item"><div class="avatar-circle avatar-blue">AD</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Arista Delgato</span><span class="item-id">#C04</span></div><div class="item-sub-row">+1 (775) 555-0101 • aristadelgato@tmail.com</div></div><div class="item-meta-info"><span class="meta-date">Oct 24</span><span class="deal-badge badge-grey">Source: Phone</span></div></div><div class="compact-list-item"><div class="avatar-circle avatar-orange">FF</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Flora Fleisher</span><span class="item-id">#C05</span></div><div class="item-sub-row">+1 (642) 555-0199 • florafleisher@tmail.com</div></div><div class="item-meta-info"><span class="meta-date">Sep 28</span><span class="deal-badge badge-grey">Source: Walk-In</span></div></div></div>`,
+                "last_activity_flora": `<p style="margin-bottom: 8px; color: var(--color-text-main);">Last activity for Flora Fleisher:</p><div class="activity-card"><div class="activity-top"><div class="activity-content"><div class="activity-header-row"><span class="activity-title">Text Message <span class="activity-type-suffix">(Incoming)</span></span><span class="activity-time">Yesterday at 4:30pm</span></div><div class="activity-text">She asked about pricing for a white Limited trim</div></div></div><div><button class="activity-btn">View conversation</button></div></div>`,
                 "ryan_clarify": `<p>Please select the correct Ryan to proceed:</p><div class="compact-list-container"><div class="compact-list-item" onclick="selectRyan(2)"><div class="avatar-circle avatar-pink">RC</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan Carter</span><span class="item-id">#891</span></div><div class="item-sub-row">(512) 555-3421 • r.carter@techstart.io</div></div><div class="item-meta-info"><span class="meta-date">12:30 PM</span><span class="deal-badge badge-grey">2 Deals</span></div></div><div class="compact-list-item" onclick="selectRyan(4)"><div class="avatar-circle avatar-green">RW</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan Washington</span><span class="item-id">#554</span></div><div class="item-sub-row">(202) 555-7743 • rwashington@state.gov</div></div><div class="item-meta-info"><span class="meta-date">Yesterday</span><span class="deal-badge badge-grey">1 Deal</span></div></div><div class="compact-list-item" onclick="selectRyan(3)"><div class="avatar-circle avatar-grey">RO</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan O'Connell</span><span class="item-id">#112</span></div><div class="item-sub-row">(617) 555-9982 • ryan.oc@consulting.net</div></div><div class="item-meta-info"><span class="meta-date">Nov 12</span><span class="deal-badge badge-grey">1 Deal</span></div></div><div class="compact-list-item" onclick="selectRyan(1)"><div class="avatar-circle avatar-blue">RM</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan Miller</span><span class="item-id">#402</span></div><div class="item-sub-row">(312) 555-0192 • ryan.miller@gmail.com</div></div><div class="item-meta-info"><span class="meta-date">Oct 24</span><span class="deal-badge badge-grey">2 Deals</span></div></div><div class="compact-list-item" onclick="selectRyan(5)"><div class="avatar-circle avatar-orange">RL</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan Lee</span><span class="item-id">#339</span></div><div class="item-sub-row">(415) 555-6621 • ryan@leedesign.studio</div></div><div class="item-meta-info"><span class="meta-date">Sep 28</span><span class="deal-badge badge-grey">3 Deals</span></div></div></div>`,
-                "ryan_details": `<p style="margin-bottom: 16px; font-size: 0.875rem; color: var(--color-text-main);">I've found 2 open deals for <strong>Ryan Carter</strong>:</p><div class="premium-deals-grid"><div class="premium-deal-card" style="border: 1px solid var(--color-border-muted); border-radius: 4px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.05);"><div style="padding: 12px;"><div style="display: flex; gap: 12px; align-items: center; margin-bottom: 8px;"><div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(0, 191, 165, 0.08); color: var(--color-primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17h12"></path></svg></div><div><div style="font-weight: 700; color: var(--color-text-heading); font-size: 0.85rem; line-height: 1.2; padding-bottom:4px;">#DEAL-4521</div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">2024 Tesla Model Y</div></div></div><div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 4px; padding: 8px 0; border-bottom: 1px solid #f1f3f4;"><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Salesperson</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Sarah Jenkins</div></div><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Type</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Finance</div></div><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Status</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Quote</div></div></div><div style="display: flex; justify-content: space-between; align-items: center;"><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500; padding-top:4px;">Last Updated</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Dec 21, 2025</div></div><button class="open-btn-compact" style="font-size: 14px; padding: 0 20px; border-radius: 2px; font-weight: 600; height: 32px;">View</button></div></div></div><div class="premium-deal-card" style="border: 1px solid var(--color-border-muted); border-radius: 4px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.05);"><div style="padding: 12px;\"><div style="display: flex; gap: 12px; align-items: center; margin-bottom: 8px;\"><div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(0, 0, 0, 0.04); color: #5f6368; display: flex; align-items: center; justify-content: center; flex-shrink: 0;\"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17h12"></path></svg></div><div><div style="font-weight: 700; color: var(--color-text-heading); font-size: 0.85rem; line-height: 1.2; padding-bottom:4px;">#DEAL-9920</div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">2021 Ford F-150</div></div></div><div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 4px; padding: 8px 0; border-bottom: 1px solid #f1f3f4;"><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Salesperson</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Mike Ross</div></div><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Type</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Lease</div></div><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Status</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Booked</div></div></div><div style="display: flex; justify-content: space-between; align-items: center;"><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500; padding-top:4px;">Last Updated</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Dec 12, 2025</div></div><button class="open-btn-compact" style="font-size: 14px; padding: 0 20px; border-radius: 2px; font-weight: 600; height: 32px;">View</button></div></div></div></div>`,
+                "ryan_details": `<p style="margin-bottom: 16px; font-size: 0.875rem; color: var(--color-text-main);">I've found 2 open deals for <strong>Ryan Carter</strong>:</p><div class="premium-deals-grid"><div class="premium-deal-card" style="border: 1px solid var(--color-border-muted); border-radius: 4px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.05);"><div style="padding: 12px;"><div style="display: flex; gap: 12px; align-items: center; margin-bottom: 8px;"><div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(0, 191, 165, 0.08); color: var(--color-primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17h12"></path></svg></div><div><div style="font-weight: 700; color: var(--color-text-heading); font-size: 0.85rem; line-height: 1.2; padding-bottom:4px;">#DEAL-4521</div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">2024 Tesla Model Y</div></div></div><div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 4px; padding: 8px 0; border-bottom: 1px solid #f1f3f4;"><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Salesperson</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Flora Fleisher</div></div><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Type</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Finance</div></div><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Status</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Quote</div></div></div><div style="display: flex; justify-content: space-between; align-items: center;"><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500; padding-top:4px;">Last Updated</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Dec 21, 2025</div></div><button class="open-btn-compact" style="font-size: 14px; padding: 0 20px; border-radius: 2px; font-weight: 600; height: 32px;">View</button></div></div></div><div class="premium-deal-card" style="border: 1px solid var(--color-border-muted); border-radius: 4px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.05);"><div style="padding: 12px;\"><div style="display: flex; gap: 12px; align-items: center; margin-bottom: 8px;\"><div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(0, 0, 0, 0.04); color: #5f6368; display: flex; align-items: center; justify-content: center; flex-shrink: 0;\"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17h12"></path></svg></div><div><div style="font-weight: 700; color: var(--color-text-heading); font-size: 0.85rem; line-height: 1.2; padding-bottom:4px;">#DEAL-9920</div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">2021 Ford F-150</div></div></div><div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 4px; padding: 8px 0; border-bottom: 1px solid #f1f3f4;"><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Salesperson</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Curtis Gable</div></div><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Type</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Lease</div></div><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Status</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Booked</div></div></div><div style="display: flex; justify-content: space-between; align-items: center;"><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500; padding-top:4px;">Last Updated</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Dec 12, 2025</div></div><button class="open-btn-compact" style="font-size: 14px; padding: 0 20px; border-radius: 2px; font-weight: 600; height: 32px;">View</button></div></div></div></div>`,
                 "Summarize recent hot leads": `<p style="margin-bottom: 16px; font-size: 0.875rem; color: var(--color-text-main);">Here is a summary of the active leads</p>
                                 <div class="compact-list-container">
                                     <style>
@@ -10833,7 +10935,7 @@
                                             </div>
                                             <div style="flex: 1; min-width: 0;">
                                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
-                                                    <div style="font-size: 0.9rem; font-weight: 600; color: #111827;">09:30 AM • Sarah Jenkins</div>
+                                                    <div style="font-size: 0.9rem; font-weight: 600; color: #111827;">09:30 AM • Flora Fleisher</div>
                                                 </div>
                                                 <div style="font-size: 0.8rem; color: #6B7280;">2023 AeroVibe</div>
                                             </div>
@@ -11269,7 +11371,7 @@ John</div>
                             <div style="display: flex; gap: 12px; align-items: center;">
                                  <div style="width: 36px; height: 36px; background: #FCE7F3; color: #9D174D; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; border-radius: 36px; flex-shrink: 0;">SJ</div>
                                  <div>
-                                    <div style="font-weight: 600; color: var(--color-text-heading); font-size: 0.85rem; line-height: 1; padding-bottom:4px;">Sarah Jenkins</div>
+                                    <div style="font-weight: 600; color: var(--color-text-heading); font-size: 0.85rem; line-height: 1; padding-bottom:4px;">Flora Fleisher</div>
                                     <div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Active</div>
                                 </div>
                             </div>
@@ -11308,7 +11410,7 @@ John</div>
                                     </div>
                                     <div class="item-main-info" style="margin-left: 0;">
                                         <div class="item-name-row">
-                                            <span class="item-name" style="color: #444F5C;">Sarah Jenkins</span>
+                                            <span class="item-name" style="color: #444F5C;">Flora Fleisher</span>
                                         </div>
                                         <div class="item-sub-row" style="color: #4B5563;">Requested a quote yesterday</div>
                                     </div>
@@ -11322,7 +11424,7 @@ John</div>
                                     </div>
                                     <div class="item-main-info" style="margin-left: 0;">
                                         <div class="item-name-row">
-                                            <span class="item-name" style="color: #444F5C;">Mike Ross</span>
+                                            <span class="item-name" style="color: #444F5C;">Curtis Gable</span>
                                         </div>
                                         <div class="item-sub-row" style="color: #4B5563;">Missed follow-up yesterday</div>
                                     </div>
@@ -11480,10 +11582,10 @@ John</div>
                                                 <!-- Row 1: Name + Urgent + Button -->
                                                 <div style="display: flex; justify-content: space-between; align-items: center; height: 24px; margin-bottom: 2px;">
                                                     <div style="display: flex; align-items: center; gap: 8px;">
-                                                        <span style="font-size: 0.9rem; font-weight: 600; color: #111827;">Sarah Jenkins</span>
+                                                        <span style="font-size: 0.9rem; font-weight: 600; color: #111827;">Flora Fleisher</span>
                                                         <span style="background: #FEF2F2; color: #DC2626; padding: 1px 8px; border-radius: 99px; font-size: 0.7rem; font-weight: 600; border: 1px solid #FECACA;">Urgent</span>
                                                     </div>
-                                                    <div class="follow-up-action follow-up-btn-styled" onclick="showFollowUpContext('Sarah Jenkins')">
+                                                    <div class="follow-up-action follow-up-btn-styled" onclick="showFollowUpContext('Flora Fleisher')">
                                                         Ask follow up <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
                                                     </div>
                                                 </div>
@@ -14381,20 +14483,30 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
 
             // 0. Specific Matches (High Priority)
             if (window.CreateDealFlow && window.CreateDealFlow.matches(text)) return 'create_deal_test_drive';
+            if (lower.includes('show') && lower.includes('leads') && lower.includes('aerovibe')) return 'leads_interested_aerovibe';
+            if (lower.includes('last activity') && lower.includes('flora fleisher')) return 'last_activity_flora';
             if (lower.includes('flora fleisher')) return 'sarah_brief';
+            if (lower.includes('white aerovibes') && (lower.includes('arriving') || lower.includes('soon'))) return 'white_aerovibes_check';
             if (lower.includes('aerovibe') || lower.includes('2023 aerovibe')) return 'vehicle_inquiry';
             if (lower.includes('stock availability') || lower.includes('inventory')) return '/inventory-check';
             if (lower.includes('nebula nimbus') || lower.includes('2023 nebula nimbus')) return 'safety_tech_query';
             if (lower.includes("trade-in") && lower.includes("worth more")) return 'tradein_objection';
             if (lower.includes('customers needing quotes') || lower.includes('quote customers')) return 'quote_customers';
             if (lower.includes('confirming') && lower.includes('appointment') && (lower.includes('draft') || lower.includes('text'))) return 'confirm_sms';
-            if (lower.includes('confirming') && lower.includes('appointment') && (lower.includes('draft') || lower.includes('text'))) return 'confirm_sms';
+
+
+            if (lower.includes('remind me') && lower.includes('trade-in') && (lower.includes('status') || lower.includes('check'))) return 'tradein_reminder';
 
             // 1. High-Fidelity Action: Summarize Leads
             if (lower.includes('summarize') && (lower.includes('leads') || lower.includes('hot'))) {
                 return 'Summarize recent hot leads';
             }
             if (lower === 'summarize') return 'Summarize recent hot leads';
+
+            // 1.5 Leads Interested in Tacomas/AeroVibes
+            if (lower.includes('leads') && (lower.includes('tacoma') || lower.includes('aerovibe'))) {
+                return 'tacoma_leads';
+            }
 
             // 2. Specialized Flow: Ryan / Deals
             if (lower.includes('ryan')) {
@@ -15247,7 +15359,7 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
 
                         let responseHTML = AI_DATA.aiResponses[logicKey] || AI_DATA.aiResponses[userText] || AI_DATA.aiResponsesDefault.replace('{logicKey}', logicKey);
 
-                        if (['vehicle_inquiry', 'ryan_details', 'safety_tech_query', 'List high-priority test drives', '/schedule-drive', 'equity_alert', 'buy_back', '/inventory-check'].includes(logicKey)) {
+                        if (['vehicle_inquiry', 'ryan_details', 'tacoma_leads', 'safety_tech_query', 'List high-priority test drives', '/schedule-drive', 'equity_alert', 'buy_back', '/inventory-check'].includes(logicKey)) {
                             try {
                                 const res = await fetch('marketing-data-formats.csv');
                                 if (res.ok) {
@@ -15262,6 +15374,55 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
                                             const vVin = parts[3];
                                             responseHTML = `<p style="margin-bottom: 16px; font-size: 0.875rem; color: var(--color-text-main);">Here are the matching vehicles found in inventory:</p><div class="compact-list-container" style="max-height: 400px; overflow-y: auto;"><div class="compact-list-item" style="align-items: flex-start; padding: 16px;"><div class="vehicle-icon-wrapper avatar-circle" style="background: #F3F4F6; margin-top: 4px; color: #4B5563; flex-shrink: 0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17h12"></path></svg></div><div class="item-main-info" style="flex: 1; margin-right: 16px; min-width: 0;"><div class="item-name-row" style="margin-bottom: 4px;"><span class="item-name">${vName}</span></div><div class="item-sub-row" style="color: #6B7280; font-size: 0.8rem;"><span style="text-decoration: underline;">${vVin}</span> <span style="margin: 0 6px;">•</span> 12 days on lot <span style="margin: 0 6px;">•</span> White</div></div><div class="item-right-info" style="text-align: right; font-size: 0.85rem; color: #6B7280; flex-shrink: 0;"><div style="margin-bottom: 4px;">Available</div><div style="font-weight: 600; color: #111827; font-size: 14px;">$42,500</div></div></div></div>`;
                                         }
+                                    } else if (logicKey === 'tacoma_leads') {
+                                        // Hardcoded customer data as per requirements
+                                        // Flora Fleisher (from CSV), Alex Parker (from CSV), Joshua Wright (from CSV)
+                                        // Source is hardcoded as requested.
+
+                                        // Using some colors from CSS vars indirectly or hardcoded for the avatar backgrounds
+                                        const c1 = { name: "Flora Fleisher", id: "#891", phone: "(642) 555-0199", email: "florafleisher@tmail.com", source: "Internet", initials: "FF", color: "#FFEBEE", text: "#D32F2F" };
+                                        const c2 = { name: "Alex Parker", id: "#554", phone: "(715) 555-0110", email: "alexparker@tmail.com", source: "Phone-up", initials: "AP", color: "#E8F5E9", text: "#2E7D32" };
+                                        const c3 = { name: "Joshua Wright", id: "#112", phone: "(715) 555-0179", email: "joshuawright@tmail.com", source: "Walk-In", initials: "JW", color: "#F3F4F6", text: "#4B5563" };
+
+                                        const time1 = "12:30 PM";
+                                        const time2 = "Yesterday";
+                                        const time3 = "Nov 12";
+
+                                        const createCompactItem = (c, time) => `
+                                            <div class="compact-list-item" style="padding: 16px; border-bottom: 1px solid var(--color-border-muted); display: flex; align-items: flex-start; gap: 12px;">
+                                                <div style="width: 40px; height: 40px; border-radius: 50%; background: ${c.color}; color: ${c.text}; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 1rem; flex-shrink: 0;">
+                                                    ${c.initials}
+                                                </div>
+                                                <div style="flex: 1; min-width: 0;">
+                                                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                                        <div style="font-weight: 500; color: #202124; font-size: 14px;">
+                                                            ${c.name} <span style="font-weight: 400; color: #9CA3AF; margin-left: 4px; font-size: 0.85rem;">${c.id}</span>
+                                                        </div>
+                                                        <div style="font-size: 0.8rem; color: #9CA3AF;">
+                                                            ${time}
+                                                        </div>
+                                                    </div>
+                                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2px;">
+                                                        <div style="font-size: 0.85rem; color: var(--color-text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                            ${c.phone} • ${c.email}
+                                                        </div>
+                                                        <div style="font-size: 0.8rem; color: #6B7280; font-weight: 500; flex-shrink: 0; margin-left: 8px;">
+                                                            Source : ${c.source}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        `;
+
+                                        responseHTML = `
+                                            <p style="margin-bottom: 16px; font-size: 0.875rem; color: var(--color-text-main);">I found 3 leads interested in <strong>AeroVibes</strong>:</p>
+                                            <div class="compact-list-container" style="background: #fff; border: 1px solid var(--color-border-muted); border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                                                ${createCompactItem(c1, time1)}
+                                                ${createCompactItem(c2, time2)}
+                                                ${createCompactItem(c3, time3)}
+                                            </div>
+                                        `;
+
                                     } else if (logicKey === 'ryan_details') {
                                         const v1 = lines.find(l => l.startsWith('Vehicle,1,'))?.split(',') || [];
                                         const v2 = lines.find(l => l.startsWith('Vehicle,2,'))?.split(',') || [];
@@ -15381,6 +15542,116 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
                             }
                         }
 
+                        if (logicKey === 'tradein_reminder') {
+                            responseHTML = `
+                                            <div style="font-weight: 500; color: var(--color-text-main); font-size: 14px; margin-bottom: 8px;">All set! Task has been created:</div>
+                                            <div class="task-card completed" style="padding: 12px; background: #fff; border: 1px solid var(--color-border-muted); border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; flex-direction: row; align-items: stretch; gap: 12px; max-width: 380px;">
+                                                <div style="width: 48px; background: #EBF4FF; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <rect x="9" y="3" width="6" height="6" rx="1"></rect>
+                                                        <rect x="3" y="15" width="6" height="6" rx="1"></rect>
+                                                        <rect x="15" y="15" width="6" height="6" rx="1"></rect>
+                                                        <path d="M12 9v3"></path>
+                                                        <path d="M6 15v-3h12v3"></path>
+                                                    </svg>
+                                                </div>
+                                                <div style="flex: 1; display: flex; flex-direction: column;">
+                                                    <div style="font-weight: 400; color: var(--color-text-heading); font-size: 14px; margin-bottom: 4px;">Check Flora's Trade-In Status</div>
+                                                    <div style="display: flex; align-items: center; gap: 8px; color: var(--color-text-muted); font-size: 13px; margin-bottom: 4px;">
+                                                        <div style="display: flex; align-items: center; gap: 4px;">
+                                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                                            <span>Tomorrow</span>
+                                                        </div>
+                                                        <span style="color: #D1D5DB;">•</span>
+                                                        <div style="display: flex; align-items: center; gap: 4px;">
+                                                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                                            <span>10:00AM</span>
+                                                        </div>
+                                                    </div>
+                                                    <div style="display: flex; gap: 12px; margin-top: 4px;">
+                                                        <div style="font-weight: 600; color: #3B82F6; font-size: 14px; cursor: pointer;">Edit</div>
+                                                        <div style="font-weight: 600; color: #3B82F6; font-size: 14px; cursor: pointer;">Delete</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        `;
+                        }
+
+                        if (logicKey === 'white_aerovibes_check') {
+                            responseHTML = `
+                                <div style="font-weight: 500; color: var(--color-text-main); font-size: 14px; margin-bottom: 8px;">I found 3 White AeroVibes that match your criteria:</div>
+                                <div class="compact-list-container" style="background: #fff; border: 1px solid var(--color-border-muted); border-radius: 8px; overflow: hidden;">
+                                    <!-- Row 1 -->
+                                    <div class="compact-list-item" style="padding: 12px; cursor: default; border-bottom: 1px solid var(--color-border-muted);">
+                                        <div style="display: flex; width: 100%; align-items: center;">
+                                            <div class="avatar-circle" style="width: 40px; height: 40px; background: #F3F4F6; color: #4B5563; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin-right: 12px;">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle></svg>
+                                            </div>
+                                            <div style="flex: 1; min-width: 0;">
+                                                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                                    <div>
+                                                         <div style="font-size: 0.9rem; font-weight: 600; color: #111827;">2023 AeroVibe SR5</div>
+                                                         <div style="font-size: 0.8rem; color: #6B7280; margin-top: 2px;">
+                                                             <span style="text-decoration: underline; color: #4B5563;">Stock 1234</span> • Arriving Tuesday • White
+                                                         </div>
+                                                    </div>
+                                                    <div style="text-align: right;">
+                                                        <div style="font-size: 0.8rem; color: #6B7280; font-weight: 500;">Available</div>
+                                                        <div style="font-size: 16px; font-weight: 600; color: #111827;">$42,500</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Row 2 -->
+                                    <div class="compact-list-item" style="padding: 12px; cursor: default; border-bottom: 1px solid var(--color-border-muted);">
+                                        <div style="display: flex; width: 100%; align-items: center;">
+                                             <div class="avatar-circle" style="width: 40px; height: 40px; background: #F3F4F6; color: #4B5563; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin-right: 12px;">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle></svg>
+                                            </div>
+                                            <div style="flex: 1; min-width: 0;">
+                                                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                                    <div>
+                                                         <div style="font-size: 0.9rem; font-weight: 600; color: #111827;">2024 AeroVibe TRD</div>
+                                                         <div style="font-size: 0.8rem; color: #6B7280; margin-top: 2px;">
+                                                             <span style="text-decoration: underline; color: #4B5563;">Stock 5748</span> • Arriving on 10 Feb • White
+                                                         </div>
+                                                    </div>
+                                                    <div style="text-align: right;">
+                                                        <div style="font-size: 0.8rem; color: #6B7280; font-weight: 500;">Pending</div>
+                                                        <div style="font-size: 16px; font-weight: 600; color: #111827;">$45,200</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Row 3 -->
+                                    <div class="compact-list-item" style="padding: 12px; cursor: default;">
+                                        <div style="display: flex; width: 100%; align-items: center;">
+                                             <div class="avatar-circle" style="width: 40px; height: 40px; background: #F3F4F6; color: #4B5563; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin-right: 12px;">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle></svg>
+                                            </div>
+                                            <div style="flex: 1; min-width: 0;">
+                                                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                                    <div>
+                                                         <div style="font-size: 0.9rem; font-weight: 600; color: #111827;">2024 AeroVibe Limited</div>
+                                                         <div style="font-size: 0.8rem; color: #6B7280; margin-top: 2px;">
+                                                             <span style="text-decoration: underline; color: #4B5563;">Stock: 4875</span> • Arriving 12 Feb • White
+                                                         </div>
+                                                    </div>
+                                                    <div style="text-align: right;">
+                                                        <div style="font-size: 0.8rem; color: #6B7280; font-weight: 500;">Arriving</div>
+                                                        <div style="font-size: 16px; font-weight: 600; color: #111827;">$46,900</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+
+
                         if (responseHTML.includes('{{YESTERDAY}}')) {
                             const d = new Date();
                             d.setDate(d.getDate() - 1);
@@ -15396,6 +15667,12 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
                         }
 
 
+
+                        if (logicKey === 'tradein_reminder' || logicKey === 'white_aerovibes_check') {
+                            sourcesData.count = 0;
+                            sourcesData.contextItems = [];
+                            sourcesData.attachmentItems = [];
+                        }
 
                         await typeWriter(contentBody, responseHTML, currentController, sourcesData);
 
