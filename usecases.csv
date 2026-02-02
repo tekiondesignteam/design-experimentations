@@ -20,3 +20,7 @@ Confirm Appointment SMS,Draft a tailored SMS to confirm an upcoming test drive o
 Lead Closure Probability,Predict the likelihood of a lead closing within the next 30 days based on behavioral data.,📈,Decide,lead_closure_probability,How likely is this lead to close in the next 30 days?
 Best Next Step Advice,Get AI-recommended next actions and follow-up timing for a specific lead.,💡,Decide,best_next_step,Suggest the best next step and when I should follow up.
 Deal Pricing Comparison,Compare a current deal's pricing and incentives against historical benchmarks.,⚖️,Decide,deal_pricing_comparison,Compare this vehicle's pricing and incentives to similar deals we've closed recently.
+Leads Interested in Aerovibe,Show a list of leads who have expressed interest in the Aerovibe model.,👥,Ask,leads_interested_aerovibe,Show leads interested in Aerovibe
+Last Activity Flora,Retrieve the most recent interaction history for Flora Fleisher.,🕒,Ask,last_activity_flora,What was the last activity with Flora Fleisher?
+White Aerovibes Check,Check for incoming inventory of White Aerovibe vehicles.,🚚,Ask,white_aerovibes_check,Any white Aerovibes arriving soon?
+Trade-in Reminder,Set a reminder to follow up on a trade-in evaluation or status.,⏰,Execute,tradein_reminder,Remind me to check trade-in status
