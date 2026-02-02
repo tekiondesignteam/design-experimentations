@@ -429,7 +429,7 @@
 
         async function loadUsecases() {
             try {
-                const response = await fetch('usecases.csv');
+                const response = await fetch('usecases.csv?v=' + new Date().getTime());
                 if (!response.ok) throw new Error('Fetch failed. Ensure you are running a local server.');
                 const csvData = await response.text();
                 usecases = parseCSV(csvData);
