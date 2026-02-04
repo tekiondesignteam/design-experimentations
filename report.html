@@ -10,7 +10,7 @@
         :root {
             /* --- TOKENS --- */
             /* Colors */
-            --color-primary: #4285F4;
+            --color-primary: #25C8A5;
             --color-text-on-primary: #FFFFFF;
             --color-danger: #EF4444;
 
@@ -29,10 +29,11 @@
             --color-border-muted: #E8E9EB;
             --color-border-hover: #969AA3;
 
-            --gradient-brand: linear-gradient(38deg, #2157F5 0%, #3C6DFF 50%, #47FF97 100%);
-            --gradient-primary: linear-gradient(94deg, rgba(147, 124, 249, 0.2) 1.61%, rgba(123, 235, 236, 0.2) 107.91%), #FFFFFF;
+            --gradient-brand: linear-gradient(100deg, #25C8A5 0%, #1B90B4 50%, #1A6CC4 100%);
+            --gradient-primary: linear-gradient(99deg, #E7F7F9 0%, #FBF8F2 100%), #FFFFFF;
             --gradient-surface: linear-gradient(94deg, rgba(123, 235, 236, 0.40) 0%, rgba(147, 124, 249, 0.40) 98.94%), #FFFFFF;
-            --gradient-ai: linear-gradient(320deg, #2157F5 8.61%, #258DFF 39.1%, #86FFBB 92.21%), #FFFFFF;
+            /* --gradient-surface Not changed yet from the final branding */
+            --gradient-ai: linear-gradient(100deg, #1A6CC4 0%, #1B90B4 50%, #25C8A5 100%), #FFFFFF;
 
             /* Dimensions */
             --header-height: 44px;
@@ -111,9 +112,9 @@
             --font-lg: 1.1rem;
             --font-xl: 1.6rem;
 
-            /* Aurora Glow Colors */
-            --aurora-color-1: rgba(134, 255, 187, 0.5);
-            --aurora-color-2: rgba(37, 141, 255, 0.5);
+            /* Aurora Glow Colors, 2 Commented out as per final branding guideline */
+            --aurora-color-1: #E7F7F9;
+            --aurora-color-2: #FBF8F2;
             --aurora-color-3: rgba(33, 87, 245, 0.5);
             --aurora-color-4: rgba(37, 141, 255, 0.25);
         }
@@ -185,8 +186,6 @@
                     transparent 0%,
                     var(--aurora-color-1) 30%,
                     var(--aurora-color-2) 50%,
-                    var(--aurora-color-3) 70%,
-                    var(--aurora-color-4) 85%,
                     transparent 100%);
             opacity: 0;
             pointer-events: none;
