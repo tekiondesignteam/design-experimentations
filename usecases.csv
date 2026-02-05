@@ -24,3 +24,6 @@ Leads Interested in Aerovibe,Show a list of leads who have expressed interest in
 Last Activity Flora,Retrieve the most recent interaction history for Flora Fleisher.,🕒,Ask,last_activity_flora,What was the last activity with Flora Fleisher?
 White Aerovibes Check,Check for incoming inventory of White Aerovibe vehicles.,🚚,Ask,white_aerovibes_check,Any white Aerovibes arriving soon?
 Trade-in Reminder,Set a reminder to follow up on a trade-in evaluation or status.,⏰,Execute,tradein_reminder,Remind me to check trade-in status
+Automate Sales Opportunities,Set up automatic generation of sales opportunities report.,⚙️,Execute,automate_sales_opportunities,Automate sales opportunities report for me everyday
+Confirm Sales Opp Automation,Finalize the sales opportunities report with specific details.,📧,Execute,automate_sales_opp_confirmed,1. pdf 2. 8:15am 3. no 4. Email it to me
+Confirm Weekly Email Report,Schedule a weekly report to be emailed every Monday morning.,📧,Execute,automate_report_confirmed_simple,1.Every Monday 9am 2.Email it to me
