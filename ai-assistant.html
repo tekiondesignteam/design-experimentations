@@ -7788,6 +7788,102 @@
         .activity-btn:hover {
             background-color: #3367D6;
         }
+
+        /* --- PROCESS LOADER --- */
+        .processing-card {
+            padding: 16px;
+            background: #fff;
+            border: 1px solid var(--color-border-muted);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            display: flex;
+            gap: 16px;
+        }
+
+        .spinner-container {
+            width: 48px;
+            height: 48px;
+            background: #EBF4FF;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .spinner-blue {
+            width: 24px;
+            height: 24px;
+            border: 2.5px solid transparent;
+            border-top: 2.5px solid #2563EB;
+            border-right: 2.5px solid #2563EB;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .process-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .process-step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: #6B7280;
+            transition: color 0.3s ease;
+        }
+
+        .process-step.active {
+            color: #111827;
+            font-weight: 500;
+        }
+
+        .step-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .step-icon.waiting {
+            border: 1.5px solid #D1D5DB;
+            background: transparent;
+        }
+
+        .step-icon.active {
+            border: 1.5px solid #2563EB;
+            background: transparent;
+        }
+
+        .step-icon.completed {
+            background: #10B981;
+            border: none;
+            color: white;
+        }
+
+        .step-icon.completed svg {
+            width: 10px;
+            height: 10px;
+            stroke-width: 3;
+        }
     </style>
 </head>
 
@@ -10219,6 +10315,26 @@
                     "Found 5 matches in the last 30 days.",
                     "Compiling contact details and deal status...",
                     "Generating list view."
+                ],
+                "automate_sales_opportunities": [
+                    "Analyzing automation request...",
+                    "Identifying report type: Sales Opportunities...",
+                    "Checking report parameters...",
+                    "Asking for clarification details..."
+                ],
+                "automate_sales_opp_confirmed": [
+                    "Reading automation details...",
+                    "Format: PDF",
+                    "Schedule: 8:15 AM",
+                    "Delivery: Email",
+                    "Configuring automation rules...",
+                    "Saving task..."
+                ],
+                "automate_report_confirmed_simple": [
+                    "Analyzing request for Monthly Appointment Report...",
+                    "Setting schedule: Every Monday 9am...",
+                    "Setting delivery: Email...",
+                    "Creating automation task..."
                 ]
             },
             "thinkingSummaries": {
@@ -10805,6 +10921,15 @@
                         <div class="report-name">Monthly Appointment Performance Report - December 2025</div>
                         <div class="report-meta"><a href="report.html" target="_blank" class="report-view-link">View</a></div>
                     </div>
+                </div>
+                <div style="height: 1px; background-color: var(--color-border-muted); margin: 16px 0;"></div>
+                <div style="font-size: 0.95rem; color: var(--color-text-main);">
+                    <p style="margin-bottom: 8px; font-size:15px; font-weight:600; color: var(--color-text-heading)">  ⚙️ Do you want to automate this report?</p>
+                    <p style="margin-bottom: 8px;">Just tell me this:</p>
+                    <ol style="margin: 0; padding-left: 20px; list-style-type: decimal;">
+                        <li>When should I send it?</li>
+                        <li>Where to send it (On ARC, email, SMS)?</li>
+                    </ol>
                 </div>`,
                 "safety_tech_query": `<p>Loading safety and tech data...</p>`,
                 "confirm_sms": `<div class="sms-draft-container">
@@ -11163,6 +11288,9 @@ Dean</div>
                 "How likely is this lead to close in the next 30 days?": `<p>Based on Flora's active engagement (3 website visits in 48h) and recent text response, there is an <strong>85% probability</strong> of this lead closing within the next 30 days.</p><div style="margin-top:12px; padding:10px; background:rgba(0,191,165,0.05); border-radius:6px; border:1px solid rgba(0,191,165,0.2);"><span style="font-weight:600; color:var(--color-primary);">AI Insight:</span> She is currently comparing your offer with a competitor's AeroVibe inventory. Focus on her specific requirement to differentiate.</div>`,
                 "Suggest the best next step and when I should follow up.": `<p><strong>Recommended Next Step:</strong> Send a walk-around video of the 2023 AeroVibe emphasizing the interior durability and safety features.</p><p><strong>Follow-up Timeline:</strong> If no response to the 10:00 AM test drive confirmation, follow up today at 3:30 PM via text.</p>`,
                 "Compare this vehicle's pricing and incentives to similar deals we've closed recently.": `<p>This 2023 AeroVibe is priced at <strong>$44,500</strong>. Recent similar closures (last 90 days) averaged <strong>$43,800</strong> with a $500 loyalty rebate.</p><div class="ai-list-item"><span class="ai-list-number">1.</span><span><strong>Deal #4491:</strong> Sold for $43,750 (Dec 12)</span></div><div class="ai-list-item"><span class="ai-list-number">2.</span><span><strong>Deal #4485:</strong> Sold for $44,100 (Nov 28)</span></div><p style="margin-top:8px;">Your current margin is healthy, but we have room for a $400 'first-time buyer' concession if needed to close Flora.</p>`,
+                "automate_sales_opportunities": `<p>Alright ! Before I set this up, I just need a few quick details:</p><ol style="margin-left: 20px; line-height: 1.6;"><li>Which file format?</li><li>What time should I send it?</li><li>Should I send it even on weekends?</li><li>Where should it be delivered (On ARC, email, SMS)?</li></ol>`,
+                "automate_report_confirmed_simple": `<div style="font-weight: 500; color: var(--color-text-main); font-size: 14px; margin-bottom: 8px;">All set! Task has been created:</div><div class="task-card completed" style="padding: 12px; background: #fff; border: 1px solid var(--color-border-muted); border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; flex-direction: row; align-items: stretch; gap: 12px; max-width: 380px;"><div style="width: 48px; background: #EBF4FF; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="6" rx="1"></rect><rect x="3" y="15" width="6" height="6" rx="1"></rect><rect x="15" y="15" width="6" height="6" rx="1"></rect><path d="M12 9v3"></path><path d="M6 15v-3h12v3"></path></svg></div><div style="flex: 1; display: flex; flex-direction: column;"><div style="font-weight: 600; color: var(--color-text-heading); font-size: 14px; margin-bottom: 4px;">Automated: Monthly Appointment Report</div><div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px; color: var(--color-text-muted); font-size: 13px; margin-bottom: 4px;"><div style="display: flex; align-items: center; gap: 4px;"><span>Every Monday @ 9:00 am</span></div><span style="color: #D1D5DB;">•</span><span>Email</span></div><div style="display: flex; gap: 12px; margin-top: 4px;"><div style="font-weight: 600; color: #3B82F6; font-size: 14px; cursor: pointer;">Edit</div><div style="font-weight: 600; color: #3B82F6; font-size: 14px; cursor: pointer;">Delete</div></div></div></div>`,
+                "automate_sales_opp_confirmed": `<div style="font-weight: 500; color: var(--color-text-main); font-size: 14px; margin-bottom: 8px;">All set! Task has been created:</div><div class="task-card completed" style="padding: 12px; background: #fff; border: 1px solid var(--color-border-muted); border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; flex-direction: row; align-items: stretch; gap: 12px; max-width: 380px;"><div style="width: 48px; background: #EBF4FF; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="6" rx="1"></rect><rect x="3" y="15" width="6" height="6" rx="1"></rect><rect x="15" y="15" width="6" height="6" rx="1"></rect><path d="M12 9v3"></path><path d="M6 15v-3h12v3"></path></svg></div><div style="flex: 1; display: flex; flex-direction: column;"><div style="font-weight: 600; color: var(--color-text-heading); font-size: 14px; margin-bottom: 4px;">Automated: Sales Opportunities Report</div><div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px; color: var(--color-text-muted); font-size: 13px; margin-bottom: 4px;"><div style="display: flex; align-items: center; gap: 4px;"><span>Daily @ 8:15 am</span></div><span style="color: #D1D5DB;">•</span><span>PDF</span><span style="color: #D1D5DB;">•</span><span>Email</span></div><div style="display: flex; gap: 12px; margin-top: 4px;"><div style="font-weight: 600; color: #3B82F6; font-size: 14px; cursor: pointer;">Edit</div><div style="font-weight: 600; color: #3B82F6; font-size: 14px; cursor: pointer;">Delete</div></div></div></div>`,
             },
             "searchOverrides": {
                 "isTestDriveQuery": {
@@ -13933,6 +14061,105 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
             }
         }
 
+        function showAutomationProcess(container, finalHTML, reportName = 'Hot Leads Report') {
+            // 1. Render Processing Card
+            container.innerHTML = `
+        <div class="processing-card">
+            <div class="spinner-container">
+                 <div class="spinner-blue"></div>
+            </div>
+            
+            <div style="flex: 1;">
+                <div style="font-weight: 600; color: var(--color-text-heading); font-size: 14px;">
+                    Creating Automation for "${reportName}"
+                </div>
+                
+                <div class="process-steps">
+                    <div class="process-step" id="proc-step-1">
+                        <div class="step-icon waiting"></div>
+                        <span class="step-text">Fetching report format</span>
+                    </div>
+                     <div class="process-step" id="proc-step-2">
+                        <div class="step-icon waiting"></div>
+                        <span class="step-text">Creating parameters</span>
+                    </div>
+                     <div class="process-step" id="proc-step-3">
+                        <div class="step-icon waiting"></div>
+                        <span class="step-text">Setting rules</span>
+                    </div>
+                     <div class="process-step" id="proc-step-4">
+                        <div class="step-icon waiting"></div>
+                        <span class="step-text">Scheduling Report</span>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 16px; margin-top: 16px; font-size: 0.85rem; font-weight: 600;">
+                    <span style="color: #6B7280; cursor: pointer;">Stop</span>
+                    <span style="color: #2563EB; cursor: pointer;">Notify when done</span>
+                </div>
+            </div>
+        </div>
+    `;
+
+            // 2. Animate Steps
+            const steps = [1, 2, 3, 4];
+            let currentStep = 0;
+
+            function runStep() {
+                if (currentStep >= steps.length) {
+                    // Done -> Show Final Card
+                    setTimeout(() => {
+                        container.innerHTML = finalHTML;
+
+                        const textWrapper = container.closest('.ai-text-wrapper');
+                        if (textWrapper) renderActionIcons(textWrapper);
+
+                        const messageList = document.querySelector('.chat-messages');
+                        if (messageList) messageList.scrollTop = messageList.scrollHeight;
+
+                        // Reset Send Button
+                        if (typingController) {
+                            typingController = null;
+                            if (btnSend) {
+                                btnSend.innerHTML = btnSendIcon; // Variable btnSendIcon must be available in scope
+                                btnSend.classList.remove('stop');
+                                btnSend.classList.remove('active');
+                            }
+                            updateSendButton();
+                        }
+                    }, 800);
+                    return;
+                }
+
+                const stepId = `proc-step-${steps[currentStep]}`;
+                const stepEl = container.querySelector('#' + stepId);
+                if (!stepEl) return;
+                const iconEl = stepEl.querySelector('.step-icon');
+
+                // 1. Mark current as active
+                stepEl.classList.add('active');
+                iconEl.classList.remove('waiting');
+                iconEl.classList.add('active');
+
+                // Simulate work
+                setTimeout(() => {
+                    // 2. Mark as completed
+                    iconEl.classList.remove('active');
+                    iconEl.classList.add('completed');
+                    iconEl.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+                    stepEl.classList.remove('active');
+
+                    // Move to next
+                    currentStep++;
+                    runStep();
+                }, 800);
+            }
+
+            // Start the sequence
+            runStep();
+        }
+
+        // Main Logic Function
         function getLogicKey(text) {
             // Normalize text: lowercase, replace non-breaking spaces, trim, and collapse multiple spaces
             const lower = text.toLowerCase().replace(/\u00a0/g, ' ').trim().replace(/\s+/g, ' ');
@@ -13954,6 +14181,10 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
             if (lower.includes("trade-in") && lower.includes("worth more")) return 'tradein_objection';
             if (lower.includes('customers needing quotes') || lower.includes('quote customers')) return 'quote_customers';
             if (lower.includes('confirming') && lower.includes('appointment') && (lower.includes('draft') || lower.includes('text'))) return 'confirm_sms';
+
+            if (lower.includes('sales opportunities') && lower.includes('automate') && lower.includes('report')) return 'automate_sales_opportunities';
+            if (lower.includes('pdf') && lower.includes('8:15') && (lower.includes('no') || lower.includes('email'))) return 'automate_sales_opp_confirmed';
+            if (lower.includes('9am') && lower.includes('monday') && lower.includes('email')) return 'automate_report_confirmed_simple';
 
 
             if (lower.includes('remind me') && lower.includes('trade-in') && (lower.includes('status') || lower.includes('check'))) return 'tradein_reminder';
@@ -14816,6 +15047,20 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
                         textWrapper.appendChild(aiContent);
 
                         let responseHTML = AI_DATA.aiResponses[logicKey] || AI_DATA.aiResponses[userText] || AI_DATA.aiResponsesDefault.replace('{logicKey}', logicKey);
+
+                        if (logicKey === 'automate_report_confirmed_simple') {
+                            showAutomationProcess(contentBody, responseHTML, 'Monthly Appointment Report');
+                            return;
+                        }
+
+                        if (logicKey === 'automate_sales_opp_confirmed') {
+                            showAutomationProcess(contentBody, responseHTML, 'Sales Opportunities Report');
+                            // Update sources logic same as above
+                            if (sourcesData.count > 0 || sourcesData.attachmentItems.length > 0) {
+                                // optional source pill logic
+                            }
+                            return;
+                        }
 
                         if (['vehicle_inquiry', 'ryan_details', 'safety_tech_query', 'List high-priority test drives', '/schedule-drive', 'equity_alert', 'buy_back', '/inventory-check'].includes(logicKey)) {
                             try {
@@ -15988,7 +16233,10 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
                     'leads_interested_aerovibe': 'Show leads interested in Aerovibe',
                     'last_activity_flora': 'What was the last activity with Flora Fleisher?',
                     'white_aerovibes_check': 'Any white Aerovibes arriving soon?',
-                    'tradein_reminder': 'Remind me to check trade-in status'
+                    'tradein_reminder': 'Remind me to check trade-in status',
+                    'automate_sales_opportunities': 'Automate sales opportunities report for me everyday ',
+                    'automate_sales_opp_confirmed': '1. pdf 2. 8:15am 3. no 4. Email it to me',
+                    'automate_report_confirmed_simple': '1. Every Monday 9am 2. Email it to me'
                 };
 
                 const prompt = actionMap[action] || decodeURIComponent(action);
