@@ -1,0 +1,77 @@
+Section,Attribute,Value,Phone,Email
+
+# DEALERSHIP INFORMATION
+Dealership,Name,Tachyon Motors,,
+Dealership,Address,12 Main Street Pleasanton CA 94588,,
+Dealership,Phone,1-833-835-4662,,
+Dealership,Email,dealership@tachyonmotors.com,,
+
+# DEALERSHIP EMPLOYEES
+Employee,1,William Florez,+1 (555) 755-2099,w.florez@tachyonmotors.com
+Employee,2,Celine Morris,+1 (775) 555-8569,c.morris@tachyonmotors.com
+Employee,3,Mario McSriff,+1 (555) 755-4646,m.mcsriff@tachyonmotors.com
+Employee,4,Mike Truk,+1 (555) 755-2102,m.truk@tachyonmotors.com
+Employee,5,Raynta Adams,+1 (555) 755-2202,r.adams@tachyonmotors.com
+Employee,6,Selena Kansas,+1 (555) 755-2885,s.kansas@tachyonmotors.com
+Employee,7,Eleanor Lindsey,+1 (555) 755-1052,e.lindsey@tachyonmotors.com
+Employee,8,Dean Wesrey,+1 (755) 555-2106,d.wesrey@tachyonmotors.com
+Employee,9,Todd Bonzales,+1 (555) 755-2107,t.bonzales@tachyonmotors.com
+Employee,10,Willie Dustice,+1 (575) 755-2000,e.dustice@tachyonmotors.com
+Employee,11,Carlos Elliott,+1 (555) 755-2109,c.elliott@tachyonmotors.com
+Employee,12,Ryan Carter,,
+Employee,13,Jimmy Dsouza,,
+Employee,14,Paul McMohan,,
+
+# CUSTOMERS
+Customer,1,Matilda Dayton,+1 (311) 555-2368,matildadayton@tmail.com
+Customer,2,Curtis Gable,+1 (555) 555-2368,curtisgable@tmail.com
+Customer,3,Tony Smehrik,+1 (715) 555-0100,tonysmehrik@tmail.com
+Customer,4,Arista Delgato,+1 (775) 555-0101,aristadelgato@tmail.com
+Customer,5,Flora Fleisher,+1 (642) 555-0199,florafleisher@tmail.com
+Customer,6,Mike Sernandez,+1 (869) 555-0189,mikesernandez@tmail.com
+Customer,7,Shakil Omar,+1 (444) 555-0159,shakilomar@tmail.com
+Customer,8,Deshaun Williams,+1 (323) 555-0199,deshaunwilliams@tmail.com
+Customer,9,Jerome Hendrix,+1 (963) 555-0106,jeromehendriz@tmail.com
+Customer,10,Vincent Lamar,+1 (852) 555-0157,vincentlamar@tmail.com
+Customer,11,Brandon Davis,+1 (741) 555-0168,brandondavis@tmail.com
+Customer,12,Joshua Wright,+1 (715) 555-0179,joshuawright@tmail.com
+Customer,13,Alex Parker,+1 (715) 555-0110,alexparker@tmail.com
+Customer,14,Samuel Wilson,+1 (715) 555-0111,samuelwilson@tmail.com
+Customer,15,Ann Taylor,,
+
+# VEHICLE SERVICES AND PRICES
+Service,1,Replace engine air filter,$34.95,
+Service,2,Cabin Filter,$39.95,
+Service,3,Wiper blades,$39.99,
+Service,4,Rear wiper blades,$16.99,
+Service,5,Front brake pads,$89.95,
+Service,6,Front rotors (each),$115.65,
+Service,7,Rear brake shoes,$135.00,
+Service,8,Rear brake drums,$158.80,
+
+# DEALERSHIP VEHICLES
+Vehicle,1,2023 Nebula Nimbus,1HGCM82633A004352,
+Vehicle,2,2022 Lunar Blitz,2FTRX18W1XCA12345,
+Vehicle,3,2023 Galactic Mirage,3N1BC13E78L246897,
+Vehicle,4,2023 Stealth Nebula,1FTSW21R08EC56789,
+Vehicle,5,2023 AeroVibe,4T1BF1FK5GU185432,
+Vehicle,6,2023 Quantum Shift,JH4KA4650MC012345,
+Vehicle,7,2022 Electric Phantom,1C4RJFBG6LC543210,
+Vehicle,8,2023 Lunar Flare,5YJSA1E27HF234567,
+Vehicle,9,2020 Event Horizon,KMHCT4AE7EU789654,
+Vehicle,10,2018 Alpha Quadrant,SALWR2RV0KA123456,
+
+# OEM DEALERSHIPS
+OEM_Dealership,1,Tachyon Motors,,
+OEM_Dealership,2,Innovation Motors,,
+OEM_Dealership,3,Pleasanton Motors,,
+OEM_Dealership,4,Cinnci Motors,,
+OEM_Dealership,5,Nebula Motors,,
+OEM_Dealership,6,Lunar Automotive,,
+OEM_Dealership,7,Tekion EV,,
+OEM_Dealership,8,Solarion,,
+OEM_Dealership,9,Eventa Motors,,
+
+# FORMATTING STANDARDS
+Format,Date,MM/DD/YYYY,,
+Format,Time,12h format,"3:35am or 12:21pm",
