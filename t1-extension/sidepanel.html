@@ -7940,7 +7940,7 @@
                                         </svg>
                                     </button>
                                     <div class="menu-dropdown" id="chatDropdown">
-                                        <button class="menu-item" onclick="togglePinFromHeader()">
+                                        <button class="menu-item" data-onclick="togglePinFromHeader()">
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                                 <line x1="12" y1="17" x2="12" y2="22"></line>
                                                 <path
@@ -7949,14 +7949,14 @@
                                             </svg>
                                             <span id="headerPinText">Pin Chat</span>
                                         </button>
-                                        <button class="menu-item" onclick="openRenameModalFromHeader()">
+                                        <button class="menu-item" data-onclick="openRenameModalFromHeader()">
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                                 <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z">
                                                 </path>
                                             </svg>
                                             Rename
                                         </button>
-                                        <button class="menu-item danger" onclick="openDeleteModalFromHeader()">
+                                        <button class="menu-item danger" data-onclick="openDeleteModalFromHeader()">
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                                 <polyline points="3 6 5 6 21 6"></polyline>
                                                 <path
@@ -7983,10 +7983,10 @@
                                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                                     </svg>
                                     <input type="text" class="history-search-input" id="historySearchInput"
-                                        placeholder="Search chats..." oninput="filterHistoryList(this.value)">
+                                        placeholder="Search chats..." data-oninput="filterHistoryList(this.value)">
                                 </div>
 
-                                <div class="history-nav-item new-chat" onclick="resetChat(); toggleHistory(false);">
+                                <div class="history-nav-item new-chat" data-onclick="resetChat(); toggleHistory(false);">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path>
                                         <path d="M8 12h8"></path>
@@ -8034,7 +8034,8 @@
                                 <!-- Suggestions List -->
                                 <div class="suggestions-list content-aligner" id="suggestionsList"
                                     style="flex-shrink:0;">
-                                    <div class="suggestion-item" onclick="startChat('What should I focus on today?')">
+                                    <div class="suggestion-item" data-action="startChat"
+                                        data-prompt="What should I focus on today?">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round">
                                             <path
@@ -8043,7 +8044,8 @@
                                         </svg>
                                         <span>What should I focus on today?</span>
                                     </div>
-                                    <div class="suggestion-item" onclick="startChat('Summarize recent hot leads')">
+                                    <div class="suggestion-item" data-action="startChat"
+                                        data-prompt="Summarize recent hot leads">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round">
                                             <path
@@ -8052,7 +8054,8 @@
                                         </svg>
                                         <span>Summarize recent hot leads</span>
                                     </div>
-                                    <div class="suggestion-item" onclick="startChat('List high-priority test drives')">
+                                    <div class="suggestion-item" data-action="startChat"
+                                        data-prompt="List high-priority test drives">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round">
                                             <path
@@ -8194,7 +8197,7 @@
                                                         messages
                                                         will be overwritten</div>
                                                 </div>
-                                                <button class="editing-close-btn" onclick="cancelEditMode()">
+                                                <button class="editing-close-btn" data-onclick="cancelEditMode()">
                                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
                                                         stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                                         stroke-linejoin="round">
@@ -8208,7 +8211,7 @@
                                             <div class="input-context-row" id="contextRow">
                                                 <!-- Context Pill -->
                                                 <div class="unified-pill empty unified-pill-compact"
-                                                    id="unifiedContextPill" onclick="showContextMenu(event)">
+                                                    id="unifiedContextPill" data-onclick="showContextMenu(event)">
                                                     <div class="pill-part main">
                                                         <span>Add Context</span>
                                                     </div>
@@ -8235,7 +8238,7 @@
                                         <div id="datetimeMenu" class="popup-menu">
                                             <div class="popup-header">
                                                 <span>Available Slots</span>
-                                                <button onclick="closeAllMenus()">
+                                                <button data-onclick="closeAllMenus()">
                                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
                                                         stroke="#969AA3" stroke-width="2">
                                                         <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -8246,7 +8249,7 @@
                                             <div class="popup-search-wrapper">
                                                 <input type="text" class="popup-search-input" id="datetimeSearch"
                                                     placeholder="Search slots..."
-                                                    oninput="renderDateTimeList(this.value)">
+                                                    data-oninput="renderDateTimeList(this.value)">
                                             </div>
                                             <div class="popup-list" id="datetimeList"></div>
                                         </div>
@@ -8256,7 +8259,7 @@
                                         <div class="popup-header">
                                             <span>Prompt Templates</span>
                                             <button style="border:none; background:transparent; cursor:pointer;"
-                                                onclick="closePromptSheet()">
+                                                data-onclick="closePromptSheet()">
                                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
                                                     stroke="#969AA3" stroke-width="2">
                                                     <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -8267,15 +8270,15 @@
 
                                         <div class="prompt-filters">
                                             <button class="filter-pill active"
-                                                onclick="filterPrompts(this, 'CRM')">CRM</button>
+                                                data-onclick="filterPrompts(this, 'CRM')">CRM</button>
                                             <button class="filter-pill"
-                                                onclick="filterPrompts(this, 'Sales')">Sales</button>
+                                                data-onclick="filterPrompts(this, 'Sales')">Sales</button>
                                             <button class="filter-pill"
-                                                onclick="filterPrompts(this, 'Service')">Service</button>
+                                                data-onclick="filterPrompts(this, 'Service')">Service</button>
                                             <button class="filter-pill"
-                                                onclick="filterPrompts(this, 'Parts')">Parts</button>
+                                                data-onclick="filterPrompts(this, 'Parts')">Parts</button>
                                             <button class="filter-pill"
-                                                onclick="filterPrompts(this, 'Accounting')">Accounting</button>
+                                                data-onclick="filterPrompts(this, 'Accounting')">Accounting</button>
                                         </div>
 
                                         <div class="popup-list" id="promptList"></div>
@@ -8286,7 +8289,7 @@
                                         <div class="popup-header">
                                             <div class="popup-header-left">
                                                 <button id="btnContextBack" style="display:none;"
-                                                    onclick="goBackContext()">
+                                                    data-onclick="goBackContext()">
                                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
                                                         stroke="currentColor" stroke-width="2">
                                                         <line x1="19" y1="12" x2="5" y2="12"></line>
@@ -8296,7 +8299,7 @@
                                                 </button>
                                                 <span id="contextTitle">Add Context</span>
                                             </div>
-                                            <button onclick="closeAllMenus()">
+                                            <button data-onclick="closeAllMenus()">
                                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
                                                     stroke="#969AA3" stroke-width="2">
                                                     <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -8312,7 +8315,7 @@
                                     <div id="customerMenu" class="popup-menu">
                                         <div class="popup-header">
                                             <span>Customers</span>
-                                            <button onclick="closeAllMenus()">
+                                            <button data-onclick="closeAllMenus()">
                                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
                                                     stroke="#969AA3" stroke-width="2">
                                                     <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -8323,7 +8326,7 @@
                                         <div class="popup-search-wrapper">
                                             <input type="text" class="popup-search-input" id="customerSearch"
                                                 placeholder="Search customers..."
-                                                oninput="renderCustomerList(this.value)">
+                                                data-oninput="renderCustomerList(this.value)">
                                         </div>
                                         <div class="popup-list" id="customerList"></div>
                                     </div>
@@ -8331,7 +8334,7 @@
                                     <div id="vehicleMenu" class="popup-menu">
                                         <div class="popup-header">
                                             <span>Vehicles</span>
-                                            <button onclick="closeAllMenus()">
+                                            <button data-onclick="closeAllMenus()">
                                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
                                                     stroke="#969AA3" stroke-width="2">
                                                     <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -8342,7 +8345,7 @@
                                         <div class="popup-search-wrapper">
                                             <input type="text" class="popup-search-input" id="vehicleSearch"
                                                 placeholder="Search vehicles..."
-                                                oninput="renderVehicleList(this.value)">
+                                                data-oninput="renderVehicleList(this.value)">
                                         </div>
                                         <div class="popup-list" id="vehicleList"></div>
                                     </div>
@@ -8350,7 +8353,7 @@
                                     <div id="vinMenu" class="popup-menu">
                                         <div class="popup-header">
                                             <span>VIN</span>
-                                            <button onclick="closeAllMenus()">
+                                            <button data-onclick="closeAllMenus()">
                                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
                                                     stroke="#969AA3" stroke-width="2">
                                                     <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -8360,7 +8363,7 @@
                                         </div>
                                         <div class="popup-search-wrapper">
                                             <input type="text" class="popup-search-input" id="vinSearch"
-                                                placeholder="Search VINs..." oninput="renderVinList(this.value)">
+                                                placeholder="Search VINs..." data-oninput="renderVinList(this.value)">
                                         </div>
                                         <div class="popup-list" id="vinList"></div>
                                     </div>
@@ -8378,8 +8381,8 @@
                             <div class="modal-title">Rename Chat</div>
                             <input type="text" class="modal-input" id="renameInput" placeholder="Enter new name...">
                             <div class="modal-actions">
-                                <button class="modal-btn secondary" onclick="closeModals()">Cancel</button>
-                                <button class="modal-btn primary" onclick="saveRename()">Save</button>
+                                <button class="modal-btn secondary" data-onclick="closeModals()">Cancel</button>
+                                <button class="modal-btn primary" data-onclick="saveRename()">Save</button>
                             </div>
                         </div>
                     </div>
@@ -8393,8 +8396,8 @@
                                 this
                                 conversation? This action cannot be undone.</p>
                             <div class="modal-actions">
-                                <button class="modal-btn secondary" onclick="closeModals()">Cancel</button>
-                                <button class="modal-btn danger" onclick="confirmDelete()">Delete</button>
+                                <button class="modal-btn secondary" data-onclick="closeModals()">Cancel</button>
+                                <button class="modal-btn danger" data-onclick="confirmDelete()">Delete</button>
                             </div>
                         </div>
                     </div>
@@ -8410,7 +8413,7 @@
                                     </svg>
                                     Applied Filters (2)
                                 </div>
-                                <button class="detail-modal-close" onclick="closeFilterModal()">&times;</button>
+                                <button class="detail-modal-close" data-onclick="closeFilterModal()">&times;</button>
                             </div>
                             <div class="detail-modal-content" id="filterModalContent">
                                 <!-- Content will be populated dynamically -->
@@ -8430,7 +8433,7 @@
                                     </svg>
                                     Sources
                                 </div>
-                                <button class="detail-modal-close" onclick="closeSourcesModal()">
+                                <button class="detail-modal-close" data-onclick="closeSourcesModal()">
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                         stroke-width="2">
                                         <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -8455,7 +8458,7 @@
                                 </div>
                             </div>
                             <div class="modal-actions" style="margin-top: var(--space-xl);">
-                                <button class="modal-btn secondary" onclick="closeVoiceModal()">Cancel</button>
+                                <button class="modal-btn secondary" data-onclick="closeVoiceModal()">Cancel</button>
                             </div>
                         </div>
                     </div>
@@ -8468,21 +8471,21 @@
                     <!-- Header with Tabs -->
                     <div class="search-results-header">
                         <div class="search-tabs">
-                            <button class="search-tab" onclick="switchSearchTab('dms-customer')">DMS
+                            <button class="search-tab" data-onclick="switchSearchTab('dms-customer')">DMS
                                 Customer</button>
-                            <button class="search-tab" onclick="switchSearchTab('repair-order')">Repair
+                            <button class="search-tab" data-onclick="switchSearchTab('repair-order')">Repair
                                 Order</button>
-                            <button class="search-tab" onclick="switchSearchTab('service-appointment')">Service
+                            <button class="search-tab" data-onclick="switchSearchTab('service-appointment')">Service
                                 Appointment</button>
-                            <button class="search-tab" onclick="switchSearchTab('vehicle-profile')">Vehicle
+                            <button class="search-tab" data-onclick="switchSearchTab('vehicle-profile')">Vehicle
                                 Profile</button>
-                            <button class="search-tab" onclick="switchSearchTab('crm-contacts')">CRM
+                            <button class="search-tab" data-onclick="switchSearchTab('crm-contacts')">CRM
                                 Contacts</button>
-                            <button class="search-tab active" onclick="switchSearchTab('crm-leads')">CRM
+                            <button class="search-tab active" data-onclick="switchSearchTab('crm-leads')">CRM
                                 Leads</button>
-                            <button class="search-tab" onclick="switchSearchTab('vehicle-inventory')">Vehicle
+                            <button class="search-tab" data-onclick="switchSearchTab('vehicle-inventory')">Vehicle
                                 Inventory</button>
-                            <button class="search-tab" onclick="switchSearchTab('deals')">Deals</button>
+                            <button class="search-tab" data-onclick="switchSearchTab('deals')">Deals</button>
                         </div>
                     </div>
 
@@ -8493,12 +8496,12 @@
                             <div class="filters-card">
                                 <div class="filters-header">
                                     <h3>Filters</h3>
-                                    <button onclick="clearAllFilters()">Clear all</button>
+                                    <button data-onclick="clearAllFilters()">Clear all</button>
                                 </div>
 
                                 <div class="filter-group">
                                     <label>Salesperson</label>
-                                    <select id="filterSalesperson" onchange="applyFilters()">
+                                    <select id="filterSalesperson" data-onchange="applyFilters()">
                                         <option value="">All</option>
                                         <option value="sophia">Sophia Mitchell</option>
                                         <option value="benjamin">Benjamin Parker</option>
@@ -8510,7 +8513,7 @@
 
                                 <div class="filter-group">
                                     <label>Lead Status</label>
-                                    <select id="filterLeadStatus" onchange="applyFilters()">
+                                    <select id="filterLeadStatus" data-onchange="applyFilters()">
                                         <option value="">All</option>
                                         <option value="new">New</option>
                                         <option value="contacted">Contacted</option>
@@ -8522,19 +8525,19 @@
                                 <div class="filter-group">
                                     <label>Stock#</label>
                                     <input type="text" id="filterStock" placeholder="Enter stock#"
-                                        oninput="applyFilters()">
+                                        data-oninput="applyFilters()">
                                 </div>
 
                                 <div class="filter-group">
                                     <label>Year</label>
                                     <input type="text" id="filterYear" placeholder="Enter year"
-                                        oninput="applyFilters()">
+                                        data-oninput="applyFilters()">
                                 </div>
 
                                 <div class="filter-group" style="margin-bottom: 0;">
                                     <label>Make</label>
                                     <input type="text" id="filterMake" placeholder="Enter make"
-                                        oninput="applyFilters()">
+                                        data-oninput="applyFilters()">
                                 </div>
                             </div>
                         </aside>
@@ -8549,7 +8552,7 @@
                                         <div class="banner-subtitle">T-ONE can summarize these results or provide
                                             comparative insights.</div>
                                     </div>
-                                    <button class="initiate-chat-btn" onclick="switchToAIFromSearch()">
+                                    <button class="initiate-chat-btn" data-onclick="switchToAIFromSearch()">
                                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
                                             <path
@@ -8617,7 +8620,7 @@
                                             that better match your intent.</div>
                                     </div>
                                 </div>
-                                <button class="refine-banner-btn" onclick="showRefineEnhancedInput()">Refine
+                                <button class="refine-banner-btn" data-onclick="showRefineEnhancedInput()">Refine
                                     Results</button>
                             </div>
 
@@ -9059,20 +9062,20 @@
 
                                 <!-- Pagination -->
                                 <div class="search-pagination">
-                                    <button class="pagination-btn" onclick="goToPage(1)" disabled>
+                                    <button class="pagination-btn" data-onclick="goToPage(1)" disabled>
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round">
                                             <path d="M15 18l-6-6 6-6" />
                                         </svg>
                                     </button>
-                                    <button class="pagination-btn active" onclick="goToPage(1)">1</button>
-                                    <button class="pagination-btn" onclick="goToPage(2)">2</button>
-                                    <button class="pagination-btn" onclick="goToPage(3)">3</button>
-                                    <button class="pagination-btn" onclick="goToPage(4)">4</button>
-                                    <button class="pagination-btn" onclick="goToPage(5)">5</button>
+                                    <button class="pagination-btn active" data-onclick="goToPage(1)">1</button>
+                                    <button class="pagination-btn" data-onclick="goToPage(2)">2</button>
+                                    <button class="pagination-btn" data-onclick="goToPage(3)">3</button>
+                                    <button class="pagination-btn" data-onclick="goToPage(4)">4</button>
+                                    <button class="pagination-btn" data-onclick="goToPage(5)">5</button>
                                     <span class="pagination-ellipsis">...</span>
-                                    <button class="pagination-btn" onclick="goToPage(8)">8</button>
-                                    <button class="pagination-btn" onclick="goToPage(2)">
+                                    <button class="pagination-btn" data-onclick="goToPage(8)">8</button>
+                                    <button class="pagination-btn" data-onclick="goToPage(2)">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round">
                                             <path d="M9 18l6-6-6-6" />
@@ -9084,7 +9087,7 @@
                             <!-- Lead Detail Full Page View -->
                             <div class="lead-detail-page" id="leadDetailPage">
                                 <div class="lead-detail-header">
-                                    <button class="lead-back-btn" onclick="closeLeadDetail()">
+                                    <button class="lead-back-btn" data-onclick="closeLeadDetail()">
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
                                             stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                             stroke-linejoin="round">

@@ -1,11 +1,11 @@
 const panel = document.getElementById('chatPanel');
 const mainContent = document.getElementById('mainContent');
-const btnMinimize = document.getElementById('btnMinimize');
-const btnRestoreMin = document.getElementById('btnRestoreMin');
-const btnCloseMin = document.getElementById('btnCloseMin');
-const btnFull = document.getElementById('btnFull');
-const btnDock = document.getElementById('btnDock');
-const btnClose = document.getElementById('btnClose');
+// const btnMinimize = document.getElementById('btnMinimize'); // DELETED - Element doesn't exist
+// const btnRestoreMin = document.getElementById('btnRestoreMin'); // DELETED - Element doesn't exist
+// const btnCloseMin = document.getElementById('btnCloseMin'); // DELETED - Element doesn't exist
+// const btnFull = document.getElementById('btnFull'); // DELETED - Element doesn't exist
+// const btnDock = document.getElementById('btnDock'); // DELETED - Element doesn't exist
+// const btnClose = document.getElementById('btnClose'); // DELETED - Element doesn't exist
 const navAiToggle = document.getElementById('navAiToggle');
 
 // Mobile FAB
@@ -59,8 +59,8 @@ const phItem1 = document.getElementById('phItem1');
 const phItem2 = document.getElementById('phItem2');
 
 // Menu Elements
-const globalContextMenu = document.getElementById('globalContextMenu');
-const pinText = document.getElementById('pinText');
+// const globalContextMenu = document.getElementById('globalContextMenu'); // COMMENTED OUT - Element doesn't exist yet
+const pinText = document.getElementById('pinText'); // Element doesn't exist - will be null
 
 const btnChatMenu = document.getElementById('btnChatMenu');
 const chatDropdown = document.getElementById('chatDropdown');
@@ -1774,6 +1774,25 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
     }
 })();
 
+// ========================================
+// HELPER FUNCTIONS
+// ========================================
+
+// Cancel Edit Mode - exits editing state and clears input
+function cancelEditMode() {
+    if (editingMessageBubble) {
+        editingMessageBubble.classList.remove('is-editing');
+    }
+    editingMessageBubble = null;
+    const editingBanner = document.getElementById('editingBanner');
+    const mainInput = document.getElementById('mainInput');
+    if (editingBanner) editingBanner.classList.remove('visible');
+    if (mainInput) {
+        mainInput.innerText = '';
+        updateSendButton();
+    }
+}
+
 // Set Search Mode (AI vs Normal Search)
 function setSearchMode(mode) {
     const switchEl = document.getElementById('searchModeSwitch');
@@ -2773,10 +2792,10 @@ const datetimeList = document.getElementById('datetimeList');
 
 // History & Overlay Elements
 const historyOverlay = document.getElementById('historyOverlay');
-const historySearchBtn = document.getElementById('historySearchBtn');
-const historySearchWrapper = document.getElementById('historySearchWrapper');
+// const historySearchBtn = document.getElementById('historySearchBtn'); // DELETED - Element doesn't exist
+// const historySearchWrapper = document.getElementById('historySearchWrapper'); // DELETED - Element doesn't exist
 const historySearchInput = document.getElementById('historySearchInput');
-const historyNewChatBtn = document.getElementById('historyNewChatBtn');
+// const historyNewChatBtn = document.getElementById('historyNewChatBtn'); // DELETED - Element doesn't exist
 
 // History Toggle Function (Moved up to avoid TDZ)
 function toggleHistory(forceOpen = null) {
@@ -3365,35 +3384,69 @@ function checkEmptyHistory() {
 }
 
 // --- MENU LOGIC ---
+// Store original parent for restoring later
+let chatDropdownOriginalParent = null;
+
 window.showItemMenu = function (e, btn) {
     e.stopPropagation();
     currentItem = btn.closest('.history-item');
 
-    const isPinned = currentItem.classList.contains('is-pinned');
-    pinText.innerText = isPinned ? 'Unpin Chat' : 'Pin Chat';
+    if (currentItem && chatDropdown && headerPinText) {
+        const isPinned = currentItem.classList.contains('is-pinned');
+        headerPinText.innerText = isPinned ? 'Unpin Chat' : 'Pin Chat';
 
-    const rect = btn.getBoundingClientRect();
-    globalContextMenu.style.top = (rect.bottom + 5) + 'px';
-    globalContextMenu.style.left = (rect.left - 120) + 'px';
-    globalContextMenu.classList.add('visible');
+        // Store original parent if not already stored
+        if (!chatDropdownOriginalParent) {
+            chatDropdownOriginalParent = chatDropdown.parentElement;
+        }
 
-    chatDropdown.classList.remove('visible');
+        // Move dropdown to body to escape stacking context
+        document.body.appendChild(chatDropdown);
+
+        // Position the dropdown near the clicked button using fixed positioning
+        const rect = btn.getBoundingClientRect();
+        chatDropdown.style.position = 'fixed';
+        chatDropdown.style.top = (rect.bottom + 5) + 'px';
+        chatDropdown.style.left = (rect.left - 120) + 'px';
+        chatDropdown.style.zIndex = '9999'; // Ensure it's above history-sheet
+        chatDropdown.classList.add('visible');
+    }
 };
 
 window.openRenameModalFromHeader = function () {
-    currentItem = getActiveHistoryItem();
+    // Use currentItem if set (from kebab menu), otherwise get active item (from header menu)
+    if (!currentItem) {
+        currentItem = getActiveHistoryItem();
+    }
     openRenameModal();
 }
 
 window.openDeleteModalFromHeader = function () {
-    currentItem = getActiveHistoryItem();
+    // Use currentItem if set (from kebab menu), otherwise get active item (from header menu)
+    if (!currentItem) {
+        currentItem = getActiveHistoryItem();
+    }
     openDeleteModal();
 }
 
 window.togglePinFromHeader = function () {
-    currentItem = getActiveHistoryItem();
+    // Use currentItem if set (from kebab menu), otherwise get active item (from header menu)
+    if (!currentItem) {
+        currentItem = getActiveHistoryItem();
+    }
     if (currentItem) togglePin();
-    chatDropdown.classList.remove('visible');
+
+    if (chatDropdown) {
+        // Restore dropdown to original parent before closing
+        if (chatDropdownOriginalParent && chatDropdown.parentElement !== chatDropdownOriginalParent) {
+            chatDropdownOriginalParent.appendChild(chatDropdown);
+            chatDropdown.style.position = '';
+            chatDropdown.style.top = '';
+            chatDropdown.style.left = '';
+            chatDropdown.style.zIndex = '';
+        }
+        chatDropdown.classList.remove('visible');
+    }
 };
 
 // --- HELPER: Sort History List (Pinned First) ---
@@ -3433,8 +3486,9 @@ window.togglePin = function () {
         currentItem.classList.add('is-pinned');
     }
     sortHistoryList();
-    globalContextMenu.classList.remove('visible');
+    // globalContextMenu.classList.remove('visible'); // COMMENTED OUT - element doesn't exist yet
     checkEmptyHistory();
+    currentItem = null; // Reset currentItem after toggling pin
 };
 
 // --- CONTEXT LOGIC (MULTI-SELECT) ---
@@ -3647,8 +3701,19 @@ window.openRenameModal = function () {
     }
     renameInput.value = initialName;
     renameModal.classList.add('visible');
-    globalContextMenu.classList.remove('visible');
-    chatDropdown.classList.remove('visible');
+    // globalContextMenu.classList.remove('visible'); // COMMENTED OUT - element doesn't exist yet
+
+    if (chatDropdown) {
+        // Restore dropdown to original parent before closing
+        if (chatDropdownOriginalParent && chatDropdown.parentElement !== chatDropdownOriginalParent) {
+            chatDropdownOriginalParent.appendChild(chatDropdown);
+            chatDropdown.style.position = '';
+            chatDropdown.style.top = '';
+            chatDropdown.style.left = '';
+            chatDropdown.style.zIndex = '';
+        }
+        chatDropdown.classList.remove('visible');
+    }
     renameInput.focus();
 };
 
@@ -3678,8 +3743,19 @@ window.saveRename = function () {
 
 window.openDeleteModal = function () {
     deleteModal.classList.add('visible');
-    globalContextMenu.classList.remove('visible');
-    chatDropdown.classList.remove('visible');
+    // globalContextMenu.classList.remove('visible'); // COMMENTED OUT - element doesn't exist yet
+
+    if (chatDropdown) {
+        // Restore dropdown to original parent before closing
+        if (chatDropdownOriginalParent && chatDropdown.parentElement !== chatDropdownOriginalParent) {
+            chatDropdownOriginalParent.appendChild(chatDropdown);
+            chatDropdown.style.position = '';
+            chatDropdown.style.top = '';
+            chatDropdown.style.left = '';
+            chatDropdown.style.zIndex = '';
+        }
+        chatDropdown.classList.remove('visible');
+    }
 };
 
 window.confirmDelete = function () {
@@ -3706,6 +3782,7 @@ window.closeModals = function () {
     deleteModal.classList.remove('visible');
     const voiceModal = document.getElementById('voiceModal');
     if (voiceModal) voiceModal.classList.remove('visible');
+    currentItem = null; // Reset currentItem after modal closes
 };
 
 // --- LAZY LOADING HISTORY ---
@@ -4198,30 +4275,64 @@ btnHeaderNewChat.onclick = () => {
     resetChat();
 };
 
-btnChatMenu.onclick = (e) => {
-    e.stopPropagation();
-    const item = getActiveHistoryItem();
-    if (item) {
-        const isPinned = item.classList.contains('is-pinned');
-        headerPinText.innerText = isPinned ? 'Unpin Chat' : 'Pin Chat';
-    } else {
-        headerPinText.innerText = 'Pin Chat';
-    }
-    chatDropdown.classList.toggle('visible');
-    globalContextMenu.classList.remove('visible');
-};
+if (btnChatMenu) {
+    btnChatMenu.onclick = (e) => {
+        e.stopPropagation();
+        const item = getActiveHistoryItem();
+        if (headerPinText) {
+            if (item && item.classList) {
+                const isPinned = item.classList.contains('is-pinned');
+                headerPinText.innerText = isPinned ? 'Unpin Chat' : 'Pin Chat';
+            } else {
+                headerPinText.innerText = 'Pin Chat';
+            }
+        }
+        if (chatDropdown) {
+            // Restore dropdown to original parent if it was moved
+            if (chatDropdownOriginalParent && chatDropdown.parentElement !== chatDropdownOriginalParent) {
+                chatDropdownOriginalParent.appendChild(chatDropdown);
+            }
+
+            // Clear inline positioning styles to use default CSS positioning
+            chatDropdown.style.position = '';
+            chatDropdown.style.top = '';
+            chatDropdown.style.left = '';
+            chatDropdown.style.zIndex = '';
+            chatDropdown.classList.toggle('visible');
+        }
+        // globalContextMenu.classList.remove('visible'); // COMMENTED OUT - element doesn't exist yet
+    };
+}
 
 document.addEventListener('click', (e) => {
     const inputBorderWrapper = document.querySelector('.input-border-wrapper');
     if (inputBorderWrapper && !inputBorderWrapper.contains(e.target)) {
         closeAllMenus();
     }
-    if (!globalContextMenu.contains(e.target) && !e.target.closest('.history-item-menu-btn')) {
-        globalContextMenu.classList.remove('visible');
+    // COMMENTED OUT - globalContextMenu element doesn't exist yet
+    // if (!globalContextMenu.contains(e.target) && !e.target.closest('.history-item-menu-btn')) {
+    //     globalContextMenu.classList.remove('visible');
+    // }
+
+    // Null-safety check before using chatDropdown and btnChatMenu
+    if (chatDropdown && btnChatMenu) {
+        if (!chatDropdown.contains(e.target) &&
+            !btnChatMenu.contains(e.target) &&
+            !e.target.closest('.history-item-menu-btn')) {
+
+            // Restore dropdown to original parent before closing
+            if (chatDropdownOriginalParent && chatDropdown.parentElement !== chatDropdownOriginalParent) {
+                chatDropdownOriginalParent.appendChild(chatDropdown);
+                chatDropdown.style.position = '';
+                chatDropdown.style.top = '';
+                chatDropdown.style.left = '';
+                chatDropdown.style.zIndex = '';
+            }
+
+            chatDropdown.classList.remove('visible');
+        }
     }
-    if (!chatDropdown.contains(e.target) && !btnChatMenu.contains(e.target)) {
-        chatDropdown.classList.remove('visible');
-    }
+
     // Close custom selects
     if (!e.target.closest('.custom-select-container')) {
         document.querySelectorAll('.custom-select-container').forEach(c => {
@@ -4615,7 +4726,7 @@ function startChat(userText, logicKey, attachmentHTML = '') {
                 <span class="history-text">${historyTitle}</span>
             </div>
             <div class="history-item-actions">
-                <button class="history-item-menu-btn" onclick="showItemMenu(event, this)">
+                <button class="history-item-menu-btn" data-onclick="showItemMenu(event, this)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
                 </button>
             </div>
@@ -4840,8 +4951,8 @@ async function startAIResponse(userText, logicKey, attachmentHTML = '') {
     // --- AURORA GLOW EFFECT ---
     // Activate aurora effect when AI starts thinking
     if (panel) panel.classList.add('aurora-active');
-    const mobileHandle = document.getElementById('mobileSheetHandle');
-    if (mobileHandle) mobileHandle.classList.add('aurora-active');
+    // const mobileHandle = document.getElementById('mobileSheetHandle'); // COMMENTED OUT - element doesn't exist
+    // if (mobileHandle) mobileHandle.classList.add('aurora-active');
 
 
     // Start the sequence
@@ -4876,7 +4987,7 @@ async function startAIResponse(userText, logicKey, attachmentHTML = '') {
                 // Remove aurora effect only if this task is still active
                 if (currentController === typingController) {
                     if (panel) panel.classList.remove('aurora-active');
-                    if (mobileHandle) mobileHandle.classList.remove('aurora-active');
+                    // if (mobileHandle) mobileHandle.classList.remove('aurora-active'); // DELETED - element doesn't exist
                 }
 
                 // Always stop the blink for THIS specific response row
@@ -5379,8 +5490,8 @@ window.handleNotifyReport = function (btn) {
         btnSend.classList.remove('stop');
     }
     if (panel) panel.classList.remove('aurora-active');
-    const mobileHandle = document.getElementById('mobileSheetHandle');
-    if (mobileHandle) mobileHandle.classList.remove('aurora-active');
+    // const mobileHandle = document.getElementById('mobileSheetHandle'); // COMMENTED OUT - element doesn't exist
+    // if (mobileHandle) mobileHandle.classList.remove('aurora-active');
 
     // Find thinking avatar and stop blink
     const allAvatars = document.querySelectorAll('.ai-avatar');
@@ -5489,8 +5600,8 @@ function resetChat() {
 
     // Remove aurora glow
     if (panel) panel.classList.remove('aurora-active');
-    const mobileHandle = document.getElementById('mobileSheetHandle');
-    if (mobileHandle) mobileHandle.classList.remove('aurora-active');
+    // const mobileHandle = document.getElementById('mobileSheetHandle'); // COMMENTED OUT - element doesn't exist
+    // if (mobileHandle) mobileHandle.classList.remove('aurora-active');
 
     if (panel && !panel.classList.contains('state-closed')) {
         mainInput.focus();
@@ -5617,13 +5728,13 @@ window.openMainView = function (viewId) {
     if (typeof rotatePlaceholder === 'function') rotatePlaceholder();
 }
 
-// FAB Button for New Chat
-if (historyNewChatBtn) {
-    historyNewChatBtn.onclick = () => {
-        resetChat();
-        toggleHistory(false);
-    };
-}
+// FAB Button for New Chat - DELETED (element doesn't exist)
+// if (historyNewChatBtn) {
+//     historyNewChatBtn.onclick = () => {
+//         resetChat();
+//         toggleHistory(false);
+//     };
+// }
 
 // Tab Switching Function
 window.switchHistoryTab = function (tabName) {
@@ -5646,25 +5757,25 @@ mainContent.onclick = () => {
     }
 };
 
-// Window Controls
+// Window Controls - DELETED all window control buttons (elements don't exist)
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('btnMinimize').onclick = () => setState('minimized');
-    document.getElementById('btnRestoreMin').onclick = () => setState('docked');
-    document.getElementById('btnCloseMin').onclick = () => {
-        // Disable transition for instant close from minimized state
-        panel.style.transition = 'none';
-        setState('closed');
-        // Re-enable transition after a brief delay
-        setTimeout(() => {
-            panel.style.transition = '';
-        }, 50);
-    };
-    document.getElementById('btnFull').onclick = () => setState('fullscreen');
-    document.getElementById('btnDock').onclick = () => setState('docked');
-    document.getElementById('btnClose').onclick = () => setState('closed');
+    // document.getElementById('btnMinimize').onclick = () => setState('minimized'); // DELETED
+    // document.getElementById('btnRestoreMin').onclick = () => setState('docked'); // DELETED
+    // document.getElementById('btnCloseMin').onclick = () => { // DELETED
+    //     // Disable transition for instant close from minimized state
+    //     panel.style.transition = 'none';
+    //     setState('closed');
+    //     // Re-enable transition after a brief delay
+    //     setTimeout(() => {
+    //         panel.style.transition = '';
+    //     }, 50);
+    // };
+    // document.getElementById('btnFull').onclick = () => setState('fullscreen'); // DELETED
+    // document.getElementById('btnDock').onclick = () => setState('docked'); // DELETED
+    // document.getElementById('btnClose').onclick = () => setState('closed'); // DELETED
 
-    // Open the panel by default
-    setState('docked');
+    // Open the panel by default - DISABLED to prevent automatic state-docked class
+    // setState('docked');
 
     // Initial mobile check
     if (mobileFab && window.innerWidth <= 768 && panel.classList.contains('state-closed')) {
@@ -5785,7 +5896,7 @@ function populateDummyHistory() {
                 <span class="history-text">${title}</span>
             </div>
             <div class="history-item-actions">
-                <button class="history-item-menu-btn" onclick="showItemMenu(event, this)">
+                <button class="history-item-menu-btn" data-onclick="showItemMenu(event, this)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="1"></circle>
                         <circle cx="12" cy="5" r="1"></circle>
@@ -5838,8 +5949,8 @@ function setState(state) {
     }
 
     if (mainContent) mainContent.classList.remove('pushed-by-dock', 'full-hidden');
-    if (btnFull) btnFull.style.display = 'flex';
-    if (btnDock) btnDock.style.display = 'none';
+    // if (btnFull) btnFull.style.display = 'flex'; // DELETED - Element doesn't exist
+    // if (btnDock) btnDock.style.display = 'none'; // DELETED - Element doesn't exist
 
     // Ensure history overlay is gone if we change main state
     if (historySheet && historySheet.classList.contains('open')) {
@@ -5891,8 +6002,8 @@ function setState(state) {
         panel.style.transform = '';
 
         mainContent.classList.add('full-hidden');
-        if (btnFull) btnFull.style.display = 'none';
-        if (btnDock) btnDock.style.display = 'flex';
+        // if (btnFull) btnFull.style.display = 'none'; // DELETED - Element doesn't exist
+        // if (btnDock) btnDock.style.display = 'flex'; // DELETED - Element doesn't exist
         panel.style.left = '';
         mainInput.focus();
     }
@@ -5932,34 +6043,34 @@ if (historyOverlay) {
     historyOverlay.onclick = () => toggleHistory(false);
 }
 
-// Search UI Logic
-if (historySearchBtn && historySearchWrapper && historySearchInput) {
-    historySearchBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (historySearchWrapper.classList.contains('active')) {
-            historySearchWrapper.classList.remove('active');
-            historySearchInput.value = '';
-            filterHistoryList('');
-        } else {
-            historySearchWrapper.classList.add('active');
-            historySearchInput.focus();
-        }
-    });
-
-    // (Duplicate handler removed)
-
-    historySearchInput.addEventListener('input', (e) => {
-        filterHistoryList(e.target.value);
-    });
-
-    document.addEventListener('click', (e) => {
-        if (historySearchWrapper.classList.contains('active') && !historySearchWrapper.contains(e.target)) {
-            historySearchWrapper.classList.remove('active');
-            historySearchInput.value = '';
-            filterHistoryList('');
-        }
-    });
-}
+// Search UI Logic - DELETED (historySearchBtn and historySearchWrapper elements don't exist)
+// if (historySearchBtn && historySearchWrapper && historySearchInput) {
+//     historySearchBtn.addEventListener('click', (e) => {
+//         e.stopPropagation();
+//         if (historySearchWrapper.classList.contains('active')) {
+//             historySearchWrapper.classList.remove('active');
+//             historySearchInput.value = '';
+//             filterHistoryList('');
+//         } else {
+//             historySearchWrapper.classList.add('active');
+//             historySearchInput.focus();
+//         }
+//     });
+//
+//     // (Duplicate handler removed)
+//
+//     historySearchInput.addEventListener('input', (e) => {
+//         filterHistoryList(e.target.value);
+//     });
+//
+//     document.addEventListener('click', (e) => {
+//         if (historySearchWrapper.classList.contains('active') && !historySearchWrapper.contains(e.target)) {
+//             historySearchWrapper.classList.remove('active');
+//             historySearchInput.value = '';
+//             filterHistoryList('');
+//         }
+//     });
+// }
 
 
 
@@ -5971,51 +6082,51 @@ function startPlaceholderRotation() {
     placeholderInterval = setInterval(rotatePlaceholder, 3000);
 }
 
-// Mobile Bottom Sheet Resize Logic
-const mobileSheetHandle = document.getElementById('mobileSheetHandle');
-let isResizingSheet = false;
-let startY, startHeight;
-
-mobileSheetHandle.addEventListener('mousedown', startResizing);
-mobileSheetHandle.addEventListener('touchstart', startResizing, { passive: false });
-
-function startResizing(e) {
-    if (window.innerWidth > 768) return;
-    isResizingSheet = true;
-    startY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
-    startHeight = chatPanel.offsetHeight;
-    chatPanel.classList.add('resizing');
-
-    document.addEventListener('mousemove', handleResizing);
-    document.addEventListener('touchmove', handleResizing, { passive: false });
-    document.addEventListener('mouseup', stopResizing);
-    document.addEventListener('touchend', stopResizing);
-
-    if (e.cancelable) e.preventDefault();
-}
-
-function handleResizing(e) {
-    if (!isResizingSheet) return;
-    const currentY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
-    const dy = startY - currentY;
-    const newHeight = startHeight + dy;
-
-    // Min height 480px, Max 95vh
-    if (newHeight >= 480 && newHeight <= window.innerHeight * 0.95) {
-        chatPanel.style.height = newHeight + 'px';
-    }
-
-    if (e.cancelable) e.preventDefault();
-}
-
-function stopResizing() {
-    isResizingSheet = false;
-    chatPanel.classList.remove('resizing');
-    document.removeEventListener('mousemove', handleResizing);
-    document.removeEventListener('touchmove', handleResizing);
-    document.removeEventListener('mouseup', stopResizing);
-    document.removeEventListener('touchend', stopResizing);
-}
+// Mobile Bottom Sheet Resize Logic - DELETED (mobileSheetHandle element doesn't exist)
+// const mobileSheetHandle = document.getElementById('mobileSheetHandle');
+// let isResizingSheet = false;
+// let startY, startHeight;
+//
+// mobileSheetHandle.addEventListener('mousedown', startResizing);
+// mobileSheetHandle.addEventListener('touchstart', startResizing, { passive: false });
+//
+// function startResizing(e) {
+//     if (window.innerWidth > 768) return;
+//     isResizingSheet = true;
+//     startY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+//     startHeight = chatPanel.offsetHeight;
+//     chatPanel.classList.add('resizing');
+//
+//     document.addEventListener('mousemove', handleResizing);
+//     document.addEventListener('touchmove', handleResizing, { passive: false });
+//     document.addEventListener('mouseup', stopResizing);
+//     document.addEventListener('touchend', stopResizing);
+//
+//     if (e.cancelable) e.preventDefault();
+// }
+//
+// function handleResizing(e) {
+//     if (!isResizingSheet) return;
+//     const currentY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+//     const dy = startY - currentY;
+//     const newHeight = startHeight + dy;
+//
+//     // Min height 480px, Max 95vh
+//     if (newHeight >= 480 && newHeight <= window.innerHeight * 0.95) {
+//         chatPanel.style.height = newHeight + 'px';
+//     }
+//
+//     if (e.cancelable) e.preventDefault();
+// }
+//
+// function stopResizing() {
+//     isResizingSheet = false;
+//     chatPanel.classList.remove('resizing');
+//     document.removeEventListener('mousemove', handleResizing);
+//     document.removeEventListener('touchmove', handleResizing);
+//     document.removeEventListener('mouseup', stopResizing);
+//     document.removeEventListener('touchend', stopResizing);
+// }
 
 
 
@@ -6272,20 +6383,6 @@ window.enterEditMode = function (btn) {
     }
 };
 
-window.cancelEditMode = function () {
-    if (editingMessageBubble) {
-        editingMessageBubble.classList.remove('is-editing');
-    }
-    editingMessageBubble = null;
-    const editingBanner = document.getElementById('editingBanner');
-    const mainInput = document.getElementById('mainInput');
-    if (editingBanner) editingBanner.classList.remove('visible');
-    if (mainInput) {
-        mainInput.innerText = '';
-        updateSendButton();
-    }
-};
-
 // Report toast logic removed
 
 
@@ -6352,20 +6449,110 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Use event delegation on document body to handle all clicks
+    // Use event delegation on document body to handle all clicks (CSP-compliant)
     document.body.addEventListener('click', function (event) {
+        const target = event.target.closest('[data-onclick]');
+
+        if (target) {
+            const onclickAttr = target.getAttribute('data-onclick');
+
+            if (onclickAttr) {
+                // Prevent default behavior
+                event.preventDefault();
+
+                // Execute the onclick code
+                try {
+                    executeOnclick(onclickAttr, target, event);
+                } catch (error) {
+                    console.error('Error executing data-onclick handler:', error, onclickAttr);
+                }
+            }
+        }
+    });
+
+    // Handle oninput events (CSP-compliant)
+    document.body.addEventListener('input', function (event) {
         const target = event.target;
-        const onclickAttr = target.getAttribute('onclick');
+        const oninputAttr = target.getAttribute('data-oninput');
 
-        if (onclickAttr) {
-            // Prevent default behavior
-            event.preventDefault();
-
-            // Execute the onclick code
+        if (oninputAttr) {
             try {
-                executeOnclick(onclickAttr, target, event);
+                executeOnclick(oninputAttr, target, event);
             } catch (error) {
-                console.error('Error executing onclick handler:', error, onclickAttr);
+                console.error('Error executing data-oninput handler:', error, oninputAttr);
+            }
+        }
+    });
+
+    // Handle onchange events (CSP-compliant)
+    document.body.addEventListener('change', function (event) {
+        const target = event.target;
+        const onchangeAttr = target.getAttribute('data-onchange');
+
+        if (onchangeAttr) {
+            try {
+                executeOnclick(onchangeAttr, target, event);
+            } catch (error) {
+                console.error('Error executing data-onchange handler:', error, onchangeAttr);
+            }
+        }
+    });
+
+    // CSP-compliant event handlers using data attributes
+    // Handle suggestion items
+    document.addEventListener('click', function (event) {
+        const suggestionItem = event.target.closest('.suggestion-item[data-action="startChat"]');
+        if (suggestionItem) {
+            const prompt = suggestionItem.getAttribute('data-prompt');
+            if (prompt && typeof startChat === 'function') {
+                startChat(prompt);
+            }
+        }
+
+        // Handle all data-action attributes (CSP-compliant alternative to onclick)
+        const actionElement = event.target.closest('[data-action]');
+        if (actionElement) {
+            const action = actionElement.getAttribute('data-action');
+            const param = actionElement.getAttribute('data-param');
+
+            // Map of action names to functions
+            const actionMap = {
+                'togglePinFromHeader': togglePinFromHeader,
+                'openRenameModalFromHeader': openRenameModalFromHeader,
+                'openDeleteModalFromHeader': openDeleteModalFromHeader,
+                'resetChatAndHistory': () => { resetChat(); toggleHistory(false); },
+                'cancelEditMode': cancelEditMode,
+                'showContextMenu': showContextMenu,
+                'closeAllMenus': closeAllMenus,
+                'closePromptSheet': closePromptSheet,
+                'filterPrompts': (el) => filterPrompts(el, el.getAttribute('data-param')),
+                'goBackContext': goBackContext,
+                'closeModals': closeModals,
+                'saveRename': saveRename,
+                'confirmDelete': confirmDelete,
+                'closeFilterModal': closeFilterModal,
+                'closeSourcesModal': closeSourcesModal,
+                'closeVoiceModal': closeVoiceModal,
+                'switchSearchTab': (el) => switchSearchTab(el.getAttribute('data-param')),
+                'clearAllFilters': clearAllFilters,
+                'switchToAIFromSearch': switchToAIFromSearch,
+                'showRefineEnhancedInput': showRefineEnhancedInput,
+                'goToPage': (el) => goToPage(parseInt(el.getAttribute('data-param'))),
+                'closeLeadDetail': closeLeadDetail
+            };
+
+            if (actionMap[action]) {
+                event.preventDefault();
+                if (typeof actionMap[action] === 'function') {
+                    // Pass the element itself for actions that need it (like filterPrompts)
+                    if (action === 'filterPrompts' || action === 'switchSearchTab' || action === 'goToPage') {
+                        actionMap[action](actionElement);
+                    } else if (action === 'showContextMenu') {
+                        actionMap[action](event);
+                    } else {
+                        actionMap[action]();
+                    }
+                }
             }
         }
     });
