@@ -5872,6 +5872,19 @@ document.addEventListener('click', function (e) {
     }
 });
 
+window.closeVoiceModal = function () {
+    const modal = document.getElementById('voiceModal');
+    if (modal) modal.classList.remove('visible');
+};
+
+// Close modal on overlay click
+document.addEventListener('click', function (e) {
+    const voiceModal = document.getElementById('voiceModal');
+    if (voiceModal && e.target === voiceModal) {
+        closeVoiceModal();
+    }
+});
+
 
 // Populate Dummy History
 function populateDummyHistory() {
