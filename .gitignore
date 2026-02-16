@@ -9,6 +9,8 @@ Thumbs.db
 
 # AI Assistant
 ai-guide.md
+.agents/*
+.agent/*
 
 # IDEs and Editors
 .vscode/
