@@ -846,7 +846,7 @@ Great speaking with you! I have you down for Tuesday at 10 AM to drive the 2023 
 See you then!
 Dean</div>
                 <div class="sms-draft-actions">
-                    <button class="sms-btn-send" onclick="sendSMS(this)">Send</button>
+                    <button class="sms-btn-send" data-onclick="sendSMS(this)">Send</button>
                 </div>
             </div>
             <div class="sms-draft-note">Note: Once you send this message, it cannot be undone.</div>
@@ -3293,11 +3293,11 @@ function renderContextPills() {
             }
 
             pill.innerHTML = `
-                    <div class="pill-part content" onclick="showContextMenu(event)">
+                    <div class="pill-part content" data-onclick="showContextMenu(event)">
                         ${contentHTML}
                     </div>
                     <div class="pill-divider"></div>
-                    <div class="pill-part close" onclick="clearContext(event)">
+                    <div class="pill-part close" data-onclick="clearContext(event)">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                     </div>
                 `;
@@ -3558,6 +3558,25 @@ window.fillInput = function (text) {
 
 
 // --- ATTACHMENT LOGIC ---
+window.removeFileAttachment = function (element, event) {
+    if (event) event.stopPropagation();
+
+    // Remove the attachment pill
+    element.parentElement.remove();
+
+    // Hide attachment area if empty
+    if (attachmentArea && attachmentArea.children.length === 0) {
+        attachmentArea.style.display = 'none';
+        // Also hide context row if no contexts are selected
+        if (contextRow && selectedContexts.size === 0) {
+            contextRow.style.display = 'none';
+        }
+    }
+
+    // Update send button state
+    updateSendButton();
+};
+
 btnAttach.onclick = () => {
     fileInput.click();
 };
@@ -3582,7 +3601,7 @@ fileInput.onchange = (e) => {
                 <polyline points="10 9 9 9 8 9"></polyline>
             </svg>
             <span>${file.name}</span>
-            <span class="attachment-remove" onclick="this.parentElement.remove(); if(attachmentArea && attachmentArea.children.length === 0) { attachmentArea.style.display='none'; if(contextRow && selectedContexts.size === 0) contextRow.style.display='none'; } updateSendButton(); event.stopPropagation();">
+            <span class="attachment-remove" data-onclick="removeFileAttachment(this, event)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px;">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
                     <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -4940,7 +4959,7 @@ async function startAIResponse(userText, logicKey, attachmentHTML = '') {
                             <div class="delay-desc">We'll notify you as soon as the report is generated.</div>
                         </div>
                     </div>
-                    <button class="notify-btn" onclick="handleNotifyReport(this)">Notify me when ready</button>
+                    <button class="notify-btn" data-onclick="handleNotifyReport(this)">Notify me when ready</button>
                 `;
                 textWrapper.appendChild(delayCard);
                 scrollToBottom();
@@ -6569,7 +6588,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 'showQuoteCustomers': showQuoteCustomers,
                 'copyMessageText': (el) => copyMessageText(el),
                 'enterEditMode': (el) => enterEditMode(el),
-                'showFollowUpContext': showFollowUpContext
+                'showFollowUpContext': showFollowUpContext,
+                'clearContext': (el, event) => clearContext(event),
+                'removeFileAttachment': (el, event) => removeFileAttachment(el, event),
+                'handleNotifyReport': (el) => handleNotifyReport(el),
+                'sendSMS': (el) => sendSMS(el)
             };
 
             if (actionMap[action]) {
