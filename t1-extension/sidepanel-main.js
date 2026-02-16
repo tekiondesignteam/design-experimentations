@@ -814,13 +814,13 @@ const AI_DATA = {
         "tradein_objection": `<p style="margin-bottom: 12px; color: var(--color-text-main);">Here is a suggested approach:</p><div style="background: #F9FAFB; padding: 12px; border-left: 3px solid #E5E7EB; margin-bottom: 12px; font-style: italic; color: #374151; font-size: 0.95rem; line-height: 1.5;">"I understand you’ve seen higher numbers online. Those are often retail prices, not trade-in values. Let me show you the reconditioning costs and market average for this specific VIN to clarify the difference."</div><div style="display: flex; gap: 8px; align-items: start; background: #ECFDF5; padding: 12px; border-radius: 6px; font-size: 0.9rem;"><span style="font-weight: 600; color: #059669; flex-shrink: 0;">Tip:</span><span style="color: #065F46; line-height: 1.4;">Shift the focus to the tax savings she gets by trading in vs. selling privately.</span></div>`,
 
         "appointment_report": `<p>The <strong>Monthly Appointment Performance Report</strong> for December 2025 is now ready:</p>
-        <div class="report-download-card" id="report-card-latest">
+        <div class="report-download-card" id="report-card-latest" data-onclick="openReportDynamic()">
             <div class="report-icon-box">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display: block;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
             </div>
             <div class="report-info">
                 <div class="report-name">Monthly Appointment Performance Report - December 2025</div>
-                <div class="report-meta"><a href="report.html" target="_blank" class="report-view-link">View</a></div>
+                <div class="report-meta"><a href="#" class="report-view-link" data-onclick="openReportDynamic()">View</a></div>
             </div>
         </div>
         <div style="height: 1px; background-color: var(--color-border-muted); margin: 16px 0;"></div>
@@ -5468,6 +5468,36 @@ window.showFollowUpContext = function (name) {
     document.getElementById('mainInput').focus();
 };
 
+window.openReportDynamic = function () {
+    const fallbackFileUrl = 'file:///Users/sougata/Projects/design-experimentations/report.html';
+
+    // Try to get the current active tab's URL to determine the environment
+    if (typeof chrome !== 'undefined' && chrome.tabs) {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            let reportUrl = fallbackFileUrl;
+
+            if (tabs && tabs[0] && tabs[0].url) {
+                try {
+                    const currentUrl = new URL(tabs[0].url);
+                    // If the current tab is on localhost or a real website (http/https)
+                    if (currentUrl.protocol === 'http:' || currentUrl.protocol === 'https:') {
+                        reportUrl = `${currentUrl.origin}/report.html`;
+                    }
+                } catch (e) {
+                    // If URL parsing fails, use fallback
+                    console.log('URL parsing failed, using fallback');
+                }
+            }
+
+            // Open the report in a new tab
+            chrome.tabs.create({ url: reportUrl });
+        });
+    } else {
+        // Fallback if chrome.tabs is not available
+        window.open(fallbackFileUrl, '_blank');
+    }
+};
+
 window.handleNotifyReport = function (btn) {
     const card = btn.closest('.ai-delay-card');
     if (!card) return;
@@ -6592,7 +6622,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 'clearContext': (el, event) => clearContext(event),
                 'removeFileAttachment': (el, event) => removeFileAttachment(el, event),
                 'handleNotifyReport': (el) => handleNotifyReport(el),
-                'sendSMS': (el) => sendSMS(el)
+                'sendSMS': (el) => sendSMS(el),
+                'openReportDynamic': () => openReportDynamic()
             };
 
             if (actionMap[action]) {
