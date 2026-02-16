@@ -146,3 +146,20 @@
 .notify-btn:hover {
     opacity: 0.9 !important;
 }
+
+/* --- OPEN BUTTON COMPACT --- */
+.open-btn-compact {
+    background: #4285f4 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 2px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    font-family: inherit !important;
+}
+
+.open-btn-compact:hover {
+    background: #3367D6 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
