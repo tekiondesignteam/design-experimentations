@@ -261,7 +261,7 @@ const AI_DATA = {
     "aiResponses": {
         "leads_interested_aerovibe": `<p>Here are the leads Interested in Aerovibe:</p><div class="compact-list-container"><div class="compact-list-item"><div class="avatar-circle avatar-pink">MD</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Matilda Dayton</span><span class="item-id">#C01</span></div><div class="item-sub-row">+1 (311) 555-2368 • matildadayton@tmail.com</div></div><div class="item-meta-info"><span class="meta-date">10:30 AM</span><span class="deal-badge badge-grey">Source: Internet</span></div></div><div class="compact-list-item"><div class="avatar-circle avatar-green">CG</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Curtis Gable</span><span class="item-id">#C02</span></div><div class="item-sub-row">+1 (555) 555-2368 • curtisgable@tmail.com</div></div><div class="item-meta-info"><span class="meta-date">Yesterday</span><span class="deal-badge badge-grey">Source: Walk-In</span></div></div><div class="compact-list-item"><div class="avatar-circle avatar-grey">TS</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Tony Smehrik</span><span class="item-id">#C03</span></div><div class="item-sub-row">+1 (715) 555-0100 • tonysmehrik@tmail.com</div></div><div class="item-meta-info"><span class="meta-date">Nov 12</span><span class="deal-badge badge-grey">Source: Internet</span></div></div><div class="compact-list-item"><div class="avatar-circle avatar-blue">AD</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Arista Delgato</span><span class="item-id">#C04</span></div><div class="item-sub-row">+1 (775) 555-0101 • aristadelgato@tmail.com</div></div><div class="item-meta-info"><span class="meta-date">Oct 24</span><span class="deal-badge badge-grey">Source: Phone</span></div></div><div class="compact-list-item"><div class="avatar-circle avatar-orange">FF</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Flora Fleisher</span><span class="item-id">#C05</span></div><div class="item-sub-row">+1 (642) 555-0199 • florafleisher@tmail.com</div></div><div class="item-meta-info"><span class="meta-date">Sep 28</span><span class="deal-badge badge-grey">Source: Walk-In</span></div></div></div>`,
         "last_activity_flora": `<p style="margin-bottom: 8px; color: var(--color-text-main);">Last activity for Flora Fleisher:</p><div class="activity-card"><div class="activity-top"><div class="activity-content"><div class="activity-header-row"><span class="activity-title">Text Message <span class="activity-type-suffix">(Incoming)</span></span><span class="activity-time">Yesterday at 4:30pm</span></div><div class="activity-text">She asked about pricing for a white AeroVibe Limited trim</div></div></div><div><button class="activity-btn">View conversation</button></div></div>`,
-        "ryan_clarify": `<p>Please select the correct Ryan to proceed:</p><div class="compact-list-container"><div class="compact-list-item" onclick="selectRyan(2)"><div class="avatar-circle avatar-pink">RC</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan Carter</span><span class="item-id">#891</span></div><div class="item-sub-row">(512) 555-3421 • r.carter@techstart.io</div></div><div class="item-meta-info"><span class="meta-date">12:30 PM</span><span class="deal-badge badge-grey">2 Deals</span></div></div><div class="compact-list-item" onclick="selectRyan(4)"><div class="avatar-circle avatar-green">RW</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan Washington</span><span class="item-id">#554</span></div><div class="item-sub-row">(202) 555-7743 • rwashington@state.gov</div></div><div class="item-meta-info"><span class="meta-date">Yesterday</span><span class="deal-badge badge-grey">1 Deal</span></div></div><div class="compact-list-item" onclick="selectRyan(3)"><div class="avatar-circle avatar-grey">RO</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan O'Connell</span><span class="item-id">#112</span></div><div class="item-sub-row">(617) 555-9982 • ryan.oc@consulting.net</div></div><div class="item-meta-info"><span class="meta-date">Nov 12</span><span class="deal-badge badge-grey">1 Deal</span></div></div><div class="compact-list-item" onclick="selectRyan(1)"><div class="avatar-circle avatar-blue">RM</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan Miller</span><span class="item-id">#402</span></div><div class="item-sub-row">(312) 555-0192 • ryan.miller@gmail.com</div></div><div class="item-meta-info"><span class="meta-date">Oct 24</span><span class="deal-badge badge-grey">2 Deals</span></div></div><div class="compact-list-item" onclick="selectRyan(5)"><div class="avatar-circle avatar-orange">RL</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan Lee</span><span class="item-id">#339</span></div><div class="item-sub-row">(415) 555-6621 • ryan@leedesign.studio</div></div><div class="item-meta-info"><span class="meta-date">Sep 28</span><span class="deal-badge badge-grey">3 Deals</span></div></div></div>`,
+        "ryan_clarify": `<p>Please select the correct Ryan to proceed:</p><div class="compact-list-container"><div class="compact-list-item" data-onclick="selectRyan()" data-param="2"><div class="avatar-circle avatar-pink">RC</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan Carter</span><span class="item-id">#891</span></div><div class="item-sub-row">(512) 555-3421 • r.carter@techstart.io</div></div><div class="item-meta-info"><span class="meta-date">12:30 PM</span><span class="deal-badge badge-grey">2 Deals</span></div></div><div class="compact-list-item" data-onclick="selectRyan()" data-param="4"><div class="avatar-circle avatar-green">RW</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan Washington</span><span class="item-id">#554</span></div><div class="item-sub-row">(202) 555-7743 • rwashington@state.gov</div></div><div class="item-meta-info"><span class="meta-date">Yesterday</span><span class="deal-badge badge-grey">1 Deal</span></div></div><div class="compact-list-item" data-onclick="selectRyan()" data-param="3"><div class="avatar-circle avatar-grey">RO</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan O'Connell</span><span class="item-id">#112</span></div><div class="item-sub-row">(617) 555-9982 • ryan.oc@consulting.net</div></div><div class="item-meta-info"><span class="meta-date">Nov 12</span><span class="deal-badge badge-grey">1 Deal</span></div></div><div class="compact-list-item" data-onclick="selectRyan()" data-param="1"><div class="avatar-circle avatar-blue">RM</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan Miller</span><span class="item-id">#402</span></div><div class="item-sub-row">(312) 555-0192 • ryan.miller@gmail.com</div></div><div class="item-meta-info"><span class="meta-date">Oct 24</span><span class="deal-badge badge-grey">2 Deals</span></div></div><div class="compact-list-item" data-onclick="selectRyan()" data-param="5"><div class="avatar-circle avatar-orange">RL</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan Lee</span><span class="item-id">#339</span></div><div class="item-sub-row">(415) 555-6621 • ryan@leedesign.studio</div></div><div class="item-meta-info"><span class="meta-date">Sep 28</span><span class="deal-badge badge-grey">3 Deals</span></div></div></div>`,
         "ryan_details": `<p style="margin-bottom: 16px; font-size: 0.875rem; color: var(--color-text-main);">I've found 2 open deals for <strong>Ryan Carter</strong>:</p><div class="premium-deals-grid"><div class="premium-deal-card" style="border: 1px solid var(--color-border-muted); border-radius: 4px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.05);"><div style="padding: 12px;"><div style="display: flex; gap: 12px; align-items: center; margin-bottom: 8px;"><div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(0, 191, 165, 0.08); color: var(--color-primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17h12"></path></svg></div><div><div style="font-weight: 700; color: var(--color-text-heading); font-size: 0.85rem; line-height: 1.2; padding-bottom:4px;">#DEAL-4521</div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">2024 Tesla Model Y</div></div></div><div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 4px; padding: 8px 0; border-bottom: 1px solid #f1f3f4;"><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Salesperson</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Flora Fleisher</div></div><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Type</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Finance</div></div><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Status</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Quote</div></div></div><div style="display: flex; justify-content: space-between; align-items: center;"><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500; padding-top:4px;">Last Updated</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Dec 21, 2025</div></div><button class="open-btn-compact" style="font-size: 14px; padding: 0 20px; border-radius: 2px; font-weight: 600; height: 32px;">View</button></div></div></div><div class="premium-deal-card" style="border: 1px solid var(--color-border-muted); border-radius: 4px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.05);"><div style="padding: 12px;\"><div style="display: flex; gap: 12px; align-items: center; margin-bottom: 8px;\"><div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(0, 0, 0, 0.04); color: #5f6368; display: flex; align-items: center; justify-content: center; flex-shrink: 0;\"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17h12"></path></svg></div><div><div style="font-weight: 700; color: var(--color-text-heading); font-size: 0.85rem; line-height: 1.2; padding-bottom:4px;">#DEAL-9920</div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">2021 Ford F-150</div></div></div><div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 4px; padding: 8px 0; border-bottom: 1px solid #f1f3f4;"><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Salesperson</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Curtis Gable</div></div><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Type</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Lease</div></div><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Status</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Booked</div></div></div><div style="display: flex; justify-content: space-between; align-items: center;"><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500; padding-top:4px;">Last Updated</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Dec 12, 2025</div></div><button class="open-btn-compact" style="font-size: 14px; padding: 0 20px; border-radius: 2px; font-weight: 600; height: 32px;">View</button></div></div></div></div>`,
         "Summarize recent hot leads": `<p style="margin-bottom: 16px; font-size: 0.875rem; color: var(--color-text-main);">Here is a summary of the active leads</p>
                         <div class="compact-list-container">
@@ -338,7 +338,7 @@ const AI_DATA = {
                                                 <span style="font-size: 0.9rem; font-weight: 600; color: #111827;">John Doe</span>
                                                 <span style="background: #EFF6FF; color: #2563EB; padding: 1px 8px; border-radius: 99px; font-size: 0.7rem; font-weight: 600; border: 1px solid #DBEAFE;">Hot</span>
                                             </div>
-                                            <div class="follow-up-action follow-up-btn-styled" onclick="showFollowUpContext('John Doe')">
+                                            <div class="follow-up-action follow-up-btn-styled" data-onclick="showFollowUpContext('John Doe')">
                                                 Ask follow up <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
                                             </div>
                                         </div>
@@ -363,7 +363,7 @@ const AI_DATA = {
                                                 <span style="font-size: 0.9rem; font-weight: 600; color: #111827;">Sarah Smith</span>
                                                 <span style="background: #FFF7ED; color: #EA580C; padding: 1px 8px; border-radius: 99px; font-size: 0.7rem; font-weight: 600; border: 1px solid #FFEDD5;">Top Priority</span>
                                             </div>
-                                            <div class="follow-up-action follow-up-btn-styled" onclick="showFollowUpContext('Sarah Smith')">
+                                            <div class="follow-up-action follow-up-btn-styled" data-onclick="showFollowUpContext('Sarah Smith')">
                                                 Ask follow up <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
                                             </div>
                                         </div>
@@ -388,7 +388,7 @@ const AI_DATA = {
                                                 <span style="font-size: 0.9rem; font-weight: 600; color: #111827;">Mike Johnson</span>
                                                 <span style="background: #F3F4F6; color: #374151; padding: 1px 8px; border-radius: 99px; font-size: 0.7rem; font-weight: 600; border: 1px solid #E5E7EB;">Lease End</span>
                                             </div>
-                                            <div class="follow-up-action follow-up-btn-styled" onclick="showFollowUpContext('Mike Johnson')">
+                                            <div class="follow-up-action follow-up-btn-styled" data-onclick="showFollowUpContext('Mike Johnson')">
                                                 Ask follow up <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
                                             </div>
                                         </div>
@@ -709,7 +709,7 @@ const AI_DATA = {
                             <span style="font-size: 0.9rem; font-weight: 600; color: #111827;">John Doe</span>
                             <span style="background: #EFF6FF; color: #2563EB; padding: 1px 8px; border-radius: 99px; font-size: 0.7rem; font-weight: 600; border: 1px solid #DBEAFE;">Hot</span>
                         </div>
-                        <div class="follow-up-action follow-up-btn-styled" onclick="showFollowUpContext('John Doe')">
+                        <div class="follow-up-action follow-up-btn-styled" data-onclick="showFollowUpContext('John Doe')">
                             Ask follow up <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
                         </div>
                     </div>
@@ -734,7 +734,7 @@ const AI_DATA = {
                             <span style="font-size: 0.9rem; font-weight: 600; color: #111827;">Sarah Smith</span>
                             <span style="background: #FFF7ED; color: #EA580C; padding: 1px 8px; border-radius: 99px; font-size: 0.7rem; font-weight: 600; border: 1px solid #FFEDD5;">Top Priority</span>
                         </div>
-                        <div class="follow-up-action follow-up-btn-styled" onclick="showFollowUpContext('Sarah Smith')">
+                        <div class="follow-up-action follow-up-btn-styled" data-onclick="showFollowUpContext('Sarah Smith')">
                             Ask follow up <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
                         </div>
                     </div>
@@ -759,7 +759,7 @@ const AI_DATA = {
                             <span style="font-size: 0.9rem; font-weight: 600; color: #111827;">Mike Johnson</span>
                             <span style="background: #F3F4F6; color: #374151; padding: 1px 8px; border-radius: 99px; font-size: 0.7rem; font-weight: 600; border: 1px solid #E5E7EB;">Lease End</span>
                         </div>
-                        <div class="follow-up-action follow-up-btn-styled" onclick="showFollowUpContext('Mike Johnson')">
+                        <div class="follow-up-action follow-up-btn-styled" data-onclick="showFollowUpContext('Mike Johnson')">
                             Ask follow up <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
                         </div>
                     </div>
@@ -890,7 +890,7 @@ Dean</div>
         </div>`,
         "focus_today": `<div style="font-weight: 600; font-size: 0.875rem; color: #111827; margin-bottom: 12px;">Today's Priorities</div>
                 <div class="compact-list-container">
-                    <div class="compact-list-item" style="cursor: pointer; display: flex; align-items: flex-start; justify-content: space-between;" onclick="showQuoteCustomers()">
+                    <div class="compact-list-item" style="cursor: pointer; display: flex; align-items: flex-start; justify-content: space-between;" data-onclick="showQuoteCustomers()">
                         <div style="display: flex; align-items: center;">
                             <div style="display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 8px; background: #FEF2F2; margin-right: 12px; color: #DC2626;">
                               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
@@ -1072,7 +1072,7 @@ Dean</div>
                                                 <span style="font-size: 0.9rem; font-weight: 600; color: #111827;">Flora Fleisher</span>
                                                 <span style="background: #FEF2F2; color: #DC2626; padding: 1px 8px; border-radius: 99px; font-size: 0.7rem; font-weight: 600; border: 1px solid #FECACA;">Urgent</span>
                                             </div>
-                                            <div class="follow-up-action follow-up-btn-styled" onclick="showFollowUpContext('Flora Fleisher')">
+                                            <div class="follow-up-action follow-up-btn-styled" data-onclick="showFollowUpContext('Flora Fleisher')">
                                                 Ask follow up <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
                                             </div>
                                         </div>
@@ -1099,7 +1099,7 @@ Dean</div>
                                                 <span style="font-size: 0.9rem; font-weight: 600; color: #111827;">Jolly Chloe</span>
                                                 <span style="background: #FEF2F2; color: #DC2626; padding: 1px 8px; border-radius: 99px; font-size: 0.7rem; font-weight: 600; border: 1px solid #FECACA;">Urgent</span>
                                             </div>
-                                            <div class="follow-up-action follow-up-btn-styled" onclick="showFollowUpContext('Jolly Chloe')">
+                                            <div class="follow-up-action follow-up-btn-styled" data-onclick="showFollowUpContext('Jolly Chloe')">
                                                 Ask follow up <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
                                             </div>
                                         </div>
@@ -1123,7 +1123,7 @@ Dean</div>
                                             <div style="display: flex; align-items: center; gap: 8px;">
                                                 <span style="font-size: 0.9rem; font-weight: 600; color: #111827;">Mill Austen</span>
                                             </div>
-                                            <div class="follow-up-action follow-up-btn-styled" onclick="showFollowUpContext('Mill Austen')">
+                                            <div class="follow-up-action follow-up-btn-styled" data-onclick="showFollowUpContext('Mill Austen')">
                                                 Ask follow up <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
                                             </div>
                                         </div>
@@ -1147,7 +1147,7 @@ Dean</div>
                                             <div style="display: flex; align-items: center; gap: 8px;">
                                                 <span style="font-size: 0.9rem; font-weight: 600; color: #111827;">Robert Williams</span>
                                             </div>
-                                            <div class="follow-up-action follow-up-btn-styled" onclick="showFollowUpContext('Robert Williams')">
+                                            <div class="follow-up-action follow-up-btn-styled" data-onclick="showFollowUpContext('Robert Williams')">
                                                 Ask follow up <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
                                             </div>
                                         </div>
@@ -1171,7 +1171,7 @@ Dean</div>
                                             <div style="display: flex; align-items: center; gap: 8px;">
                                                 <span style="font-size: 0.9rem; font-weight: 600; color: #111827;">Emily Stone</span>
                                             </div>
-                                            <div class="follow-up-action follow-up-btn-styled" onclick="showFollowUpContext('Emily Stone')">
+                                            <div class="follow-up-action follow-up-btn-styled" data-onclick="showFollowUpContext('Emily Stone')">
                                                 Ask follow up <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
                                             </div>
                                         </div>
@@ -1515,7 +1515,7 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
                                 <span style="font-size: 0.9rem; font-weight: 600; color: #111827;">${cust.name}</span>
                                 <span style="background: ${tag.bg}; color: ${tag.color}; padding: 1px 8px; border-radius: 99px; font-size: 0.7rem; font-weight: 600; border: 1px solid ${tag.border};">${tag.label}</span>
                             </div>
-                            <div class="follow-up-action follow-up-btn-styled" onclick="showFollowUpContext('${cust.name.replace(/'/g, "\\'")}')">
+                            <div class="follow-up-action follow-up-btn-styled" data-onclick="showFollowUpContext('${cust.name.replace(/'/g, "\\'")}')">
                                 Ask follow up <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
                             </div>
                         </div>
@@ -1541,7 +1541,7 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
 
         const focusHtml = `<div style="font-weight: 600; font-size: 0.875rem; color: #111827; margin-bottom: 12px;">Today's Priorities</div>
                 <div class="compact-list-container">
-                    <div class="compact-list-item" style="cursor: pointer; display: flex; align-items: flex-start; justify-content: space-between;" onclick="showQuoteCustomers()">
+                    <div class="compact-list-item" style="cursor: pointer; display: flex; align-items: flex-start; justify-content: space-between;" data-onclick="showQuoteCustomers()">
                         <div style="display: flex; align-items: center;">
                             <div style="display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 8px; background: #FEF2F2; margin-right: 12px; color: #DC2626;">
                               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
@@ -1745,7 +1745,7 @@ The Script Fix: Provide one specific, high-converting talk track or text-templat
                                                 <span style="font-size: 0.9rem; font-weight: 600; color: #111827;">${cust.name}</span>
                                                 ${isUrgent ? '<span style="background: #FEF2F2; color: #DC2626; padding: 1px 8px; border-radius: 99px; font-size: 0.7rem; font-weight: 600; border: 1px solid #FECACA;">Urgent</span>' : ''}
                                             </div>
-                                            <div class="follow-up-action follow-up-btn-styled" onclick="showFollowUpContext('${cust.name.replace(/'/g, "\\'")}')">
+                                            <div class="follow-up-action follow-up-btn-styled" data-onclick="showFollowUpContext('${cust.name.replace(/'/g, "\\'")}')">
                                                 Ask follow up <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
                                             </div>
                                         </div>
@@ -2798,7 +2798,7 @@ const historySearchInput = document.getElementById('historySearchInput');
 // const historyNewChatBtn = document.getElementById('historyNewChatBtn'); // DELETED - Element doesn't exist
 
 // History Toggle Function (Moved up to avoid TDZ)
-function toggleHistory(forceOpen = null) {
+window.toggleHistory = function (forceOpen = null) {
     if (!historySheet || !historyOverlay) return;
     let isOpen;
     if (forceOpen === true) {
@@ -2816,7 +2816,7 @@ function toggleHistory(forceOpen = null) {
     } else {
         historyOverlay.classList.remove('visible');
     }
-}
+};
 
 
 
@@ -4762,12 +4762,12 @@ function startChat(userText, logicKey, attachmentHTML = '') {
     // Add Actions
     bubbleContent += `
         <div class="user-message-actions">
-            <button class="user-message-action-btn" title="Edit" onclick="enterEditMode(this)">
+            <button class="user-message-action-btn" title="Edit" data-onclick="enterEditMode(this)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                 </svg>
             </button>
-            <button class="user-message-action-btn" title="Copy" onclick="copyMessageText(this)">
+            <button class="user-message-action-btn" title="Copy" data-onclick="copyMessageText(this)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -5430,7 +5430,7 @@ window.showFollowUpContext = function (name) {
             <path d="M4 4v7a4 4 0 0 0 4 4h12"></path>
         </svg>
         <span>${name}</span>
-        <span class="attachment-remove" onclick="this.parentElement.remove(); if(attachmentArea && attachmentArea.children.length === 0) { if(attachmentArea) attachmentArea.style.display='none'; } event.stopPropagation();">
+        <span class="attachment-remove" data-onclick="this.parentElement.remove(); if(attachmentArea && attachmentArea.children.length === 0) { if(attachmentArea) attachmentArea.style.display='none'; } event.stopPropagation();">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px;">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -5565,7 +5565,7 @@ document.addEventListener('click', function (e) {
     }
 });
 
-function resetChat() {
+window.resetChat = function () {
     cancelEditMode();
     saveCurrentSession();
     // Clear all highlights
@@ -5589,6 +5589,13 @@ function resetChat() {
     mainInput.innerHTML = '';
     updateSendButton();
 
+    // Clear attachment area
+    const attachmentArea = document.getElementById('attachmentArea');
+    if (attachmentArea) {
+        attachmentArea.innerHTML = '';
+        attachmentArea.style.display = 'none';
+    }
+
     // STOP ANY STREAMING
     if (typingController) {
         typingController.stopped = true;
@@ -5606,7 +5613,7 @@ function resetChat() {
     if (panel && !panel.classList.contains('state-closed')) {
         mainInput.focus();
     }
-}
+};
 
 const roleGuidelines = AI_DATA.roleGuidelines;
 
@@ -6427,11 +6434,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Parse arguments
                     const args = [];
                     if (argsStr) {
-                        // Handle simple cases: strings, numbers, 'this', 'event'
+                        // Handle simple cases: strings, numbers, booleans, 'this', 'event'
                         if (argsStr === 'this') {
                             args.push(element);
                         } else if (argsStr === 'event') {
                             args.push(event);
+                        } else if (argsStr === 'true' || argsStr === 'false') {
+                            // Boolean argument
+                            args.push(argsStr === 'true');
                         } else if (argsStr.startsWith("'") || argsStr.startsWith('"')) {
                             // String argument - remove quotes
                             args.push(argsStr.slice(1, -1));
@@ -6446,6 +6456,9 @@ document.addEventListener('DOMContentLoaded', function () {
                                     args.push(element);
                                 } else if (arg === 'event') {
                                     args.push(event);
+                                } else if (arg === 'true' || arg === 'false') {
+                                    // Boolean argument
+                                    args.push(arg === 'true');
                                 } else if (arg.startsWith("'") || arg.startsWith('"')) {
                                     args.push(arg.slice(1, -1));
                                 } else if (!isNaN(arg)) {
@@ -6551,7 +6564,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 'switchToAIFromSearch': switchToAIFromSearch,
                 'showRefineEnhancedInput': showRefineEnhancedInput,
                 'goToPage': (el) => goToPage(parseInt(el.getAttribute('data-param'))),
-                'closeLeadDetail': closeLeadDetail
+                'closeLeadDetail': closeLeadDetail,
+                'selectRyan': (el) => selectRyan(el.getAttribute('data-param')),
+                'showQuoteCustomers': showQuoteCustomers,
+                'copyMessageText': (el) => copyMessageText(el),
+                'enterEditMode': (el) => enterEditMode(el),
+                'showFollowUpContext': showFollowUpContext
             };
 
             if (actionMap[action]) {
