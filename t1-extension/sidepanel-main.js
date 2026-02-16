@@ -5473,8 +5473,8 @@ window.handleNotifyReport = function (btn) {
     if (!card) return;
 
     card.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 10px; color: var(--color-text-main); font-size: 0.875rem; font-weight: 500;">
-            <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--color-primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+        <div style="display: flex; align-items: center; gap: 10px; color: #444F5C; font-size: 0.875rem; font-weight: 500;">
+            <div style="width: 24px; height: 24px; border-radius: 50%; background: #4285f4; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" style="width:12px;height:12px;">
                     <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
@@ -5482,9 +5482,9 @@ window.handleNotifyReport = function (btn) {
             We'll notify when the report is generated.
         </div>
     `;
-    card.style.padding = '14px 16px';
-    card.style.background = 'rgba(0, 191, 165, 0.04)';
-    card.style.borderColor = 'var(--color-primary)';
+    card.style.setProperty('padding', '14px 16px', 'important');
+    card.style.setProperty('background', 'rgba(0, 191, 165, 0.04)', 'important');
+    card.style.setProperty('border-color', '#4285f4', 'important');
 
     // Also collapse the thinking section to give it a "backgrounded" feel
     const aiRow = btn.closest('.ai-message-row');
