@@ -146,6 +146,10 @@ document.addEventListener('DOMContentLoaded', function () {
   const options = document.querySelectorAll('.ask-before-acting-option');
   const label = document.querySelector('.ask-before-acting-label');
 
+  // Store the selected mode globally so it can be accessed by AI response logic
+  // @ts-ignore
+  window.agentActionMode = 'ask'; // Default: "Ask before acting"
+
   if (btn && dropdown && options.length && label) {
     // Toggle dropdown on button click
     btn.addEventListener('click', function (e) {
@@ -174,6 +178,12 @@ document.addEventListener('DOMContentLoaded', function () {
         // Update button label
         const selectedText = this.querySelector('span').textContent;
         label.textContent = selectedText;
+
+        // Store the selected mode value
+        const selectedValue = this.getAttribute('data-value');
+        // @ts-ignore
+        window.agentActionMode = selectedValue;
+        console.log('Agent action mode changed to:', selectedValue);
 
         // Close dropdown
         dropdown.classList.remove('visible');

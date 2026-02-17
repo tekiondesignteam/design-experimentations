@@ -3885,7 +3885,11 @@ function scrollToBottom() {
 }
 
 window.toggleThoughts = function (el) {
-    const container = el.closest('.reasoning-container');
+    // Try to find either reasoning-container or agents-steps-reasoning-container
+    let container = el.closest('.reasoning-container');
+    if (!container) {
+        container = el.closest('.agents-steps-reasoning-container');
+    }
     if (container) {
         container.classList.toggle('expanded');
     }
@@ -4860,11 +4864,15 @@ async function startAIResponse(userText, logicKey, attachmentHTML = '') {
     textWrapper.className = 'ai-text-wrapper';
 
     // --- REASONING COMPONENT ---
+    // Check agent action mode to determine which reasoning component to use
+    const agentMode = window.agentActionMode || 'ask';
+    const useAgentSteps = (agentMode === 'ask' || agentMode === 'auto');
+
     const reasoningContainer = document.createElement('div');
-    reasoningContainer.className = 'reasoning-container expanded';
+    reasoningContainer.className = useAgentSteps ? 'agents-steps-reasoning-container expanded' : 'reasoning-container expanded';
 
     const reasoningHeader = document.createElement('div');
-    reasoningHeader.className = 'reasoning-header';
+    reasoningHeader.className = useAgentSteps ? 'agents-steps-reasoning-header' : 'reasoning-header';
     reasoningHeader.onclick = () => window.toggleThoughts(reasoningHeader);
     reasoningHeader.innerHTML = `
         <span class="status-text" style="font-weight:500">Thinking...</span>
@@ -4873,16 +4881,16 @@ async function startAIResponse(userText, logicKey, attachmentHTML = '') {
     `;
 
     const reasoningSummaryWrapper = document.createElement('div');
-    reasoningSummaryWrapper.className = 'reasoning-summary-wrapper';
+    reasoningSummaryWrapper.className = useAgentSteps ? 'agents-steps-reasoning-summary-wrapper' : 'reasoning-summary-wrapper';
     reasoningSummaryWrapper.onclick = () => window.toggleThoughts(reasoningSummaryWrapper);
     reasoningSummaryWrapper.innerHTML = `
-        <div class="reasoning-summary"></div>
+        <div class="${useAgentSteps ? 'agents-steps-reasoning-summary' : 'reasoning-summary'}"></div>
         <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
     `;
-    const reasoningSummary = reasoningSummaryWrapper.querySelector('.reasoning-summary');
+    const reasoningSummary = reasoningSummaryWrapper.querySelector(useAgentSteps ? '.agents-steps-reasoning-summary' : '.reasoning-summary');
 
     const reasoningContent = document.createElement('div');
-    reasoningContent.className = 'reasoning-content';
+    reasoningContent.className = useAgentSteps ? 'agents-steps-reasoning-content' : 'reasoning-content';
 
 
     reasoningContainer.appendChild(reasoningHeader);
@@ -4925,6 +4933,57 @@ async function startAIResponse(userText, logicKey, attachmentHTML = '') {
 
     const isLongReport = (logicKey === 'appointment_report');
 
+    // Helper function to get icon SVG for action type
+    const getActionIcon = (type) => {
+        const icons = {
+            'click': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9h.01M9 12h.01M9 15h.01M12 9h.01M12 12h.01M12 15h.01M15 9h.01M15 12h.01M15 15h.01M7 21h10a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2z"></path></svg>',
+            'typing': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M9 16h6"></path></svg>',
+            'scrolling': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"></path></svg>',
+            'reading': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>',
+            'screenshot': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>',
+            'wait': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>',
+            'opening-tab': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>'
+        };
+        return icons[type] || icons['click'];
+    };
+
+    // Helper function to create an action step
+    const createActionStep = async (text, type = 'click', parentElement) => {
+        const actionStep = document.createElement('div');
+        actionStep.className = `action-step type-${type} active`;
+
+        const iconWrapper = document.createElement('div');
+        iconWrapper.className = 'action-step-icon';
+        iconWrapper.innerHTML = getActionIcon(type);
+
+        const textSpan = document.createElement('span');
+        textSpan.className = 'action-step-text';
+
+        const cursor = document.createElement('span');
+        cursor.className = 'cursor';
+
+        actionStep.appendChild(iconWrapper);
+        actionStep.appendChild(textSpan);
+        textSpan.appendChild(cursor);
+        parentElement.appendChild(actionStep);
+
+        parentElement.scrollTop = parentElement.scrollHeight;
+        scrollToBottom();
+
+        // Type out the text
+        const charDelay = 15;
+        for (let j = 0; j < text.length; j++) {
+            if (currentController.stopped) break;
+            textSpan.insertBefore(document.createTextNode(text[j]), cursor);
+            await new Promise(r => setTimeout(r, charDelay));
+        }
+        cursor.remove();
+        actionStep.classList.remove('active');
+        actionStep.classList.add('completed');
+
+        await new Promise(r => setTimeout(r, 300));
+    };
+
     const runSteps = async () => {
         const totalSteps = thinkingSteps.length;
         for (let i = 0; i < totalSteps; i++) {
@@ -4957,6 +5016,57 @@ async function startAIResponse(userText, logicKey, attachmentHTML = '') {
             cursor.remove();
             stepRow.classList.remove('active');
             stepRow.classList.add('completed');
+
+            // If using agent steps mode, add action steps after each reasoning step
+            if (useAgentSteps) {
+                await new Promise(r => setTimeout(r, 400));
+
+                // All 7 action types - ensuring each type appears at least once
+                const allActionTypes = [
+                    { text: 'Clicking on the search button', type: 'click' },
+                    { text: 'Typing "user authentication" in search field', type: 'typing' },
+                    { text: 'Scrolling to view results', type: 'scrolling' },
+                    { text: 'Reading file: auth.js', type: 'reading' },
+                    { text: 'Taking screenshot of current state', type: 'screenshot' },
+                    { text: 'Waiting for 2 seconds', type: 'wait' },
+                    { text: 'Opening new tab with documentation', type: 'opening-tab' }
+                ];
+
+                // Additional varied actions for randomness
+                const extraActions = [
+                    { text: 'Clicking on navigation menu', type: 'click' },
+                    { text: 'Typing query in input field', type: 'typing' },
+                    { text: 'Scrolling down the page', type: 'scrolling' },
+                    { text: 'Reading component code', type: 'reading' },
+                    { text: 'Capturing visual state', type: 'screenshot' },
+                    { text: 'Waiting for page load', type: 'wait' },
+                    { text: 'Opening settings panel', type: 'opening-tab' }
+                ];
+
+                // Combine all actions
+                const allActions = [...allActionTypes, ...extraActions];
+
+                // Strategy: Distribute all 7 action types across all reasoning steps
+                // Calculate how many actions to show per step to ensure all 7 types appear
+                let actionsToShow = [];
+
+                // Always include the action type corresponding to this step index (cycling through all 7)
+                const guaranteedActionIndex = i % 7;
+                actionsToShow.push(allActionTypes[guaranteedActionIndex]);
+
+                // Add 1-2 more random actions for variety
+                const numExtra = Math.floor(Math.random() * 2) + 1;
+                for (let e = 0; e < numExtra; e++) {
+                    const randomAction = allActions[Math.floor(Math.random() * allActions.length)];
+                    actionsToShow.push(randomAction);
+                }
+
+                // Create the action steps
+                for (const action of actionsToShow) {
+                    if (currentController.stopped) break;
+                    await createActionStep(action.text, action.type, reasoningContent);
+                }
+            }
 
             if (i < totalSteps - 1) {
                 // Ensure total thinking takes ~60s for long reports
@@ -5016,16 +5126,20 @@ async function startAIResponse(userText, logicKey, attachmentHTML = '') {
 
         updateThinkingPart('.timer', el => el.textContent = `${finalTime}s`);
         updateThinkingPart('.status-text', el => el.textContent = 'Thought for');
-        updateThinkingPart('.reasoning-summary', el => {
+
+        // Update summary for both reasoning types
+        const summarySelector = useAgentSteps ? '.agents-steps-reasoning-summary' : '.reasoning-summary';
+        updateThinkingPart(summarySelector, el => {
             el.textContent = AI_DATA.thinkingSummaries[logicKey] || AI_DATA.thinkingSummaries.default;
         });
 
         // Step 1: Collapse steps first
-        updateThinkingPart('.reasoning-container', el => el.classList.remove('expanded'));
+        const containerSelector = useAgentSteps ? '.agents-steps-reasoning-container' : '.reasoning-container';
+        updateThinkingPart(containerSelector, el => el.classList.remove('expanded'));
 
         // Step 2: After collapse, show summary and start typing AI response
         setTimeout(async () => {
-            updateThinkingPart('.reasoning-container', el => el.classList.add('finished'));
+            updateThinkingPart(containerSelector, el => el.classList.add('finished'));
 
             // Small delay before starting the main response
             setTimeout(async () => {

@@ -3197,6 +3197,230 @@
             padding-top: 1px;
         }
 
+        /* --- AGENTS STEPS REASONING COMPONENT (Copy of Reasoning Component) --- */
+        .agents-steps-reasoning-container {
+            width: 100%;
+            margin-bottom: 2px;
+            font-size: 0.8rem;
+        }
+
+        .agents-steps-reasoning-header {
+            padding-top: 4px !important;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            cursor: pointer;
+            user-select: none;
+            padding: var(--space-sm) 0px 0px 0px;
+            color: var(--color-text-muted);
+            transition: color var(--transition-speed-normal);
+            width: fit-content;
+        }
+
+        .agents-steps-reasoning-header:hover {
+            color: var(--color-text-main);
+        }
+
+        .agents-steps-reasoning-container.finished .agents-steps-reasoning-header .chevron {
+            display: none;
+        }
+
+        .agents-steps-reasoning-container:not(.finished) .status-text {
+            background: var(--gradient-ai);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% 200%;
+            animation: gradient-shift 3s ease infinite;
+            font-weight: 600;
+        }
+
+        .agents-steps-reasoning-container.finished .agents-steps-reasoning-summary-wrapper {
+            max-height: 100px;
+            opacity: 1;
+            margin-top: 4px;
+        }
+
+        .agents-steps-reasoning-summary-wrapper {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            cursor: pointer;
+            padding: 0;
+            transition: max-height 0.5s ease, opacity 0.5s ease, margin 0.5s ease;
+        }
+
+        .agents-steps-reasoning-summary-wrapper:hover .agents-steps-reasoning-summary {
+            color: var(--color-text-main);
+        }
+
+        .agents-steps-reasoning-summary-wrapper:hover .chevron {
+            opacity: 0.8;
+        }
+
+        .agents-steps-reasoning-summary {
+            flex: 1;
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            transition: color 0.2s;
+        }
+
+        .agents-steps-reasoning-pills {
+            display: flex;
+            gap: 8px;
+            margin-top: 6px;
+            padding: 2px;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease;
+        }
+
+        .agents-steps-reasoning-container.finished .agents-steps-reasoning-pills {
+            max-height: 100px;
+            opacity: 1;
+            margin-bottom: 4px;
+            overflow: visible;
+        }
+
+        .agents-steps-reasoning-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 100px;
+            background: #fff;
+            color: var(--color-text-muted);
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid var(--color-border-muted);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+        }
+
+        .agents-steps-reasoning-pill:hover {
+            background: var(--color-bg-subtle, #f9f9f9);
+            color: var(--color-text-main);
+            border-color: rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .agents-steps-reasoning-pill svg {
+            width: 14px;
+            height: 14px;
+            opacity: 0.8;
+            flex-shrink: 0;
+        }
+
+        .agents-steps-reasoning-container.expanded .chevron {
+            transform: rotate(180deg);
+        }
+
+        .agents-steps-reasoning-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-left: 2px;
+            padding-left: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .agents-steps-reasoning-container.expanded .agents-steps-reasoning-content {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 8px;
+            padding-bottom: 8px;
+        }
+
+        /* --- ACTION STEPS (for agents-steps-reasoning-content) --- */
+        .action-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            color: var(--color-text-muted);
+            font-size: 0.8rem;
+            line-height: 1.5;
+            transition: color 0.3s;
+            margin-bottom: 6px;
+            margin-left: 20px;
+        }
+
+        .action-step-icon {
+            flex-shrink: 0;
+            width: 16px;
+            height: 16px;
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-step-icon svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .action-step-text {
+            flex: 1;
+            opacity: 0;
+            animation: fadeIn 0.2s forwards;
+            padding-top: 1px;
+        }
+
+        .action-step.active {
+            color: var(--color-text-main);
+        }
+
+        .action-step.active .action-step-icon {
+            color: #25C8A5;
+        }
+
+        .action-step.completed .action-step-icon {
+            opacity: 0.7;
+        }
+
+        /* Action type specific colors */
+        .action-step.type-click .action-step-icon {
+            color: #3B82F6;
+        }
+
+        .action-step.type-typing .action-step-icon {
+            color: #8B5CF6;
+        }
+
+        .action-step.type-scrolling .action-step-icon {
+            color: #10B981;
+        }
+
+        .action-step.type-reading .action-step-icon {
+            color: #F59E0B;
+        }
+
+        .action-step.type-screenshot .action-step-icon {
+            color: #EC4899;
+        }
+
+        .action-step.type-wait .action-step-icon {
+            color: #06B6D4;
+        }
+
+        .action-step.type-opening-tab .action-step-icon {
+            color: #6366F1;
+        }
+
         .cursor {
             display: inline-block;
             width: 4px;
