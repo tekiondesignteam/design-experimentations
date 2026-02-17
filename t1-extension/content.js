@@ -14,7 +14,7 @@ const PREFIX = 'myext-';
  */
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log('Content script received message:', message);
-  
+
   if (message.type === 'SHOW_TOAST') {
     showToast(message.message);
     sendResponse({ success: true });
@@ -25,8 +25,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       hideOverlay();
     }
     sendResponse({ success: true });
+  } else if (message.type === 'GET_SELECTED_TEXT') {
+    // Get currently selected text
+    const selectedText = getSelectedText();
+    sendResponse({ text: selectedText });
   }
-  
+
   // Return true to indicate we'll send a response asynchronously
   return true;
 });
@@ -38,15 +42,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 function showToast(message) {
   // Create container if it doesn't exist
   let container = document.getElementById(`${PREFIX}toast-container`);
-  
+
   if (!container) {
     container = document.createElement('div');
     container.id = `${PREFIX}toast-container`;
     document.body.appendChild(container);
-    
+
     // Attach Shadow DOM to isolate styles
     const shadow = container.attachShadow({ mode: 'open' });
-    
+
     // Create style element
     const style = document.createElement('style');
     style.textContent = `
@@ -95,23 +99,23 @@ function showToast(message) {
         }
       }
     `;
-    
+
     shadow.appendChild(style);
   }
-  
+
   const shadow = container.shadowRoot;
-  
+
   // Create toast element
   const toast = document.createElement('div');
   toast.className = 'toast';
   toast.textContent = message;
-  
+
   shadow.appendChild(toast);
-  
+
   // Auto-remove after 3 seconds
   setTimeout(() => {
     toast.remove();
-    
+
     // Remove container if no more toasts
     if (shadow.children.length <= 1) { // Only style element remains
       container.remove();
@@ -125,15 +129,15 @@ function showToast(message) {
 function showOverlay() {
   // Remove existing overlay if present
   hideOverlay();
-  
+
   // Create overlay container
   const container = document.createElement('div');
   container.id = `${PREFIX}overlay-container`;
   document.body.appendChild(container);
-  
+
   // Attach Shadow DOM
   const shadow = container.attachShadow({ mode: 'open' });
-  
+
   // Create style element
   const style = document.createElement('style');
   style.textContent = `
@@ -188,18 +192,18 @@ function showOverlay() {
       }
     }
   `;
-  
+
   shadow.appendChild(style);
-  
+
   // Create overlay element
   const overlay = document.createElement('div');
   overlay.className = 'overlay';
-  
+
   // Add shimmer effect
   const shimmer = document.createElement('div');
   shimmer.className = 'shimmer';
   overlay.appendChild(shimmer);
-  
+
   shadow.appendChild(overlay);
 }
 
@@ -241,4 +245,80 @@ function hideOverlay() {
  */
 
 console.log('T1 Extension content script loaded');
+
+// --- TEXT SELECTION DETECTION ---
+let lastSelectedText = '';
+
+/**
+ * Get currently selected text
+ */
+function getSelectedText() {
+  const selection = window.getSelection();
+  if (selection && selection.toString().trim().length > 0) {
+    return selection.toString().trim();
+  }
+  return '';
+}
+
+/**
+ * Listen for text selection with mouse
+ */
+document.addEventListener('mouseup', () => {
+  console.log('Mouseup event fired');
+  const selectedText = getSelectedText();
+  console.log('Selected text:', selectedText);
+
+  // Only send if text is selected and different from last time
+  if (selectedText && selectedText !== lastSelectedText) {
+    lastSelectedText = selectedText;
+    console.log('Sending TEXT_SELECTED message with text:', selectedText);
+
+    // Send selected text to the extension
+    chrome.runtime.sendMessage({
+      type: 'TEXT_SELECTED',
+      text: selectedText
+    }, (response) => {
+      if (chrome.runtime.lastError) {
+        console.error('Error sending message:', chrome.runtime.lastError);
+      } else {
+        console.log('Message sent successfully');
+      }
+    });
+  } else if (!selectedText && lastSelectedText) {
+    // Text was deselected
+    lastSelectedText = '';
+    console.log('Sending TEXT_SELECTED message with empty text');
+    chrome.runtime.sendMessage({
+      type: 'TEXT_SELECTED',
+      text: ''
+    });
+  }
+});
+
+/**
+ * Listen for text selection with keyboard
+ */
+document.addEventListener('keyup', (e) => {
+  // Check if it's a selection-related key
+  if (e.shiftKey || e.key === 'ArrowLeft' || e.key === 'ArrowRight' ||
+    e.key === 'ArrowUp' || e.key === 'ArrowDown' ||
+    (e.ctrlKey && e.key === 'a') || (e.metaKey && e.key === 'a')) {
+
+    const selectedText = getSelectedText();
+
+    if (selectedText && selectedText !== lastSelectedText) {
+      lastSelectedText = selectedText;
+      chrome.runtime.sendMessage({
+        type: 'TEXT_SELECTED',
+        text: selectedText
+      });
+    } else if (!selectedText && lastSelectedText) {
+      lastSelectedText = '';
+      chrome.runtime.sendMessage({
+        type: 'TEXT_SELECTED',
+        text: ''
+      });
+    }
+  }
+});
 

@@ -5814,6 +5814,134 @@ window.showFollowUpContext = function (name) {
     document.getElementById('mainInput').focus();
 };
 
+// --- SELECTED TEXT CONTEXT PILL ---
+let selectedTextData = null;
+
+window.showSelectedTextContext = function (text) {
+    console.log('showSelectedTextContext called with:', text);
+    const contextRow = document.getElementById('contextRow');
+    const attachmentArea = document.getElementById('attachmentArea');
+
+    console.log('contextRow:', contextRow, 'attachmentArea:', attachmentArea);
+
+    // Remove any existing selected text pill
+    const existingPill = attachmentArea?.querySelector('[data-type="selected-text"]');
+    if (existingPill) {
+        existingPill.remove();
+    }
+
+    if (!text || text.trim().length === 0) {
+        selectedTextData = null;
+        // Hide attachmentArea if empty
+        if (attachmentArea && attachmentArea.children.length === 0) {
+            attachmentArea.style.display = 'none';
+        }
+        return;
+    }
+
+    // Store the full text
+    selectedTextData = text;
+
+    // Truncate text if too long
+    const maxLength = 50;
+    const displayText = text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+
+    // Create pill matching context chip UI
+    const pill = document.createElement('span');
+    pill.className = 'attachment-pill';
+    pill.setAttribute('data-type', 'selected-text');
+    pill.setAttribute('data-persistent', 'true');
+    pill.setAttribute('title', text); // Full text on hover
+    pill.innerHTML = `
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+        </svg>
+        <span>${displayText}</span>
+        <span class="attachment-remove" onclick="window.removeSelectedTextPill(); event.stopPropagation();">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px;">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </span>
+    `;
+
+    console.log('Created pill:', pill);
+
+    // Insert into attachmentArea
+    if (attachmentArea) {
+        attachmentArea.style.display = 'flex';
+        attachmentArea.appendChild(pill);
+        console.log('Pill appended to attachmentArea');
+    }
+    if (contextRow) contextRow.style.display = 'flex';
+};
+
+window.removeSelectedTextPill = function () {
+    const attachmentArea = document.getElementById('attachmentArea');
+    const pill = attachmentArea?.querySelector('[data-type="selected-text"]');
+    if (pill) {
+        pill.remove();
+    }
+    selectedTextData = null;
+
+    // Hide attachmentArea if empty
+    if (attachmentArea && attachmentArea.children.length === 0) {
+        attachmentArea.style.display = 'none';
+    }
+};
+
+// Listen for messages from content script about text selection
+// REMOVED: This was creating duplicate pills. The TEXT_SELECTED message is now handled in sidepanel.js
+// chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+//     console.log('Side panel received message:', message);
+//     if (message.type === 'TEXT_SELECTED') {
+//         console.log('TEXT_SELECTED message received with text:', message.text);
+//         window.showSelectedTextContext(message.text);
+//     }
+// });
+
+// Check for selected text when side panel opens or tab changes
+async function checkForSelectedText() {
+    try {
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        if (!tab || !tab.id) return;
+
+        // Skip chrome:// and other restricted URLs
+        if (tab.url?.startsWith('chrome://') || tab.url?.startsWith('edge://') ||
+            tab.url?.startsWith('chrome-extension://')) {
+            return;
+        }
+
+        // Request selected text from the active tab
+        chrome.tabs.sendMessage(tab.id, { type: 'GET_SELECTED_TEXT' }, (response) => {
+            if (chrome.runtime.lastError) {
+                // Tab might not have content script injected
+                return;
+            }
+            if (response && response.text) {
+                window.showSelectedTextContext(response.text);
+            }
+        });
+    } catch (error) {
+        console.log('Could not check for selected text:', error);
+    }
+}
+
+// Listen for tab changes
+chrome.tabs.onActivated.addListener(() => {
+    checkForSelectedText();
+});
+
+// Check for selected text on load
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        checkForSelectedText();
+    });
+} else {
+    // DOM is already loaded
+    checkForSelectedText();
+}
+
 window.openReportDynamic = function () {
     const fallbackFileUrl = 'file:///Users/sougata/Projects/design-experimentations/report.html';
 

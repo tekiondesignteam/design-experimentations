@@ -132,11 +132,51 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   updateStatus('Side panel loaded and ready');
+
+  // Set up selected text pill close button
+  const selectedTextClose = document.getElementById('selectedTextClose');
+  if (selectedTextClose) {
+    selectedTextClose.addEventListener('click', () => {
+      const pill = document.getElementById('selectedTextPill');
+      const content = document.getElementById('selectedTextContent');
+      if (pill && content) {
+        pill.style.display = 'none';
+        content.textContent = '';
+      }
+    });
+  }
 });
 
 // Make functions globally available for console testing
 window.sendToast = sendToast;
 window.sendOverlay = sendOverlay;
+
+// Listen for messages from the background script (forwarded from content script)
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  console.log('Side panel received message:', message);
+
+  if (message.type === 'TEXT_SELECTED') {
+    console.log('Text selected on page:', message.text);
+
+    // Update the selected text pill
+    const pill = document.getElementById('selectedTextPill');
+    const content = document.getElementById('selectedTextContent');
+
+    if (pill && content) {
+      if (message.text) {
+        // Show the pill with selected text
+        content.textContent = message.text;
+        pill.style.display = 'inline-flex';
+      } else {
+        // Hide the pill when text is deselected
+        pill.style.display = 'none';
+        content.textContent = '';
+      }
+    }
+  }
+
+  return true;
+});
 
 // Main initialization
 document.addEventListener('DOMContentLoaded', function () {

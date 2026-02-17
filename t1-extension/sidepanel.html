@@ -4798,6 +4798,58 @@
             background-color: #BFDBFE;
         }
 
+        /* Selected Text Pill */
+        .selected-text-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background-color: #F0F9FF;
+            border: 1px solid #BAE6FD;
+            border-radius: var(--radius-xs);
+            padding: 2px 6px 2px 8px;
+            font-size: 0.75rem;
+            color: #161616;
+            height: 24px;
+            max-width: 200px;
+            transition: all 0.2s;
+        }
+
+        .selected-text-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0284C7;
+            flex-shrink: 0;
+        }
+
+        .selected-text-content {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: 500;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .selected-text-close {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            color: #969AA3;
+            cursor: pointer;
+            padding: 2px;
+            border-radius: 3px;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .selected-text-close:hover {
+            background-color: rgba(229, 62, 62, 0.1);
+            color: #E53E3E;
+        }
+
         /* --- TABLE SKELETON (Prefixed to avoid collisions) --- */
         .table-skeleton-container {
             width: 100%;
@@ -8665,6 +8717,26 @@
                                                     <div class="pill-part content">
                                                         <span id="currentTabTitle">Loading...</span>
                                                     </div>
+                                                </div>
+                                                <!-- Selected Text Pill -->
+                                                <div class="selected-text-pill" id="selectedTextPill"
+                                                    style="display: none;">
+                                                    <div class="selected-text-icon">
+                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                                            stroke="currentColor" stroke-width="2.5"
+                                                            stroke-linecap="round" stroke-linejoin="round">
+                                                            <path d="M4 7V4h16v3M9 20h6M12 4v16" />
+                                                        </svg>
+                                                    </div>
+                                                    <span class="selected-text-content" id="selectedTextContent"></span>
+                                                    <button class="selected-text-close" id="selectedTextClose">
+                                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                                            stroke="currentColor" stroke-width="2"
+                                                            stroke-linecap="round" stroke-linejoin="round">
+                                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                        </svg>
+                                                    </button>
                                                 </div>
                                                 <div id="attachmentArea" class="attachment-area">
                                                 </div>

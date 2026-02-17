@@ -9,7 +9,7 @@
 // Set up side panel behavior when the extension is installed
 chrome.runtime.onInstalled.addListener(() => {
   console.log('T1 Extension installed');
-  
+
   // Configure the side panel to open when the extension icon is clicked
   // This is the recommended approach for Manifest V3
   chrome.sidePanel
@@ -24,4 +24,25 @@ chrome.runtime.onInstalled.addListener(() => {
  * - If setPanelBehavior fails, the panel can still be opened manually via
  *   the extension icon, but it won't auto-open on click.
  */
+
+// Listen for messages from content scripts
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  console.log('Background received message:', message);
+
+  if (message.type === 'TEXT_SELECTED') {
+    console.log('Text selected:', message.text);
+
+    // Forward the message to the side panel
+    // The side panel will receive this via chrome.runtime.onMessage
+    chrome.runtime.sendMessage({
+      type: 'TEXT_SELECTED',
+      text: message.text
+    }).catch((error) => {
+      // This is expected if the side panel isn't open
+      console.log('Could not send to side panel (may not be open):', error.message);
+    });
+  }
+
+  return true;
+});
 
