@@ -244,6 +244,14 @@ const AI_DATA = {
             "Setting schedule: Every Monday 9am...",
             "Setting delivery: Email...",
             "Creating automation task..."
+        ],
+        "ymm_inventory_check": [
+            "Analyzing Year/Make/Model (YMM) query...",
+            "Accessing Tekion inventory database...",
+            "Filtering vehicles by matching YMM criteria...",
+            "Categorizing by New vs Used status...",
+            "Checking availability status (retail-ready, in transit, on hold)...",
+            "Compiling inventory summary..."
         ]
     },
     "thinkingSummaries": {
@@ -265,7 +273,8 @@ const AI_DATA = {
         "equity_alert": "Analyzed Curtis Gable's equity position. He has $4,200 in positive equity on his 2023 Nebula Nimbus, making him an ideal candidate for an upgrade.",
         "buy_back": "I've formulated a buy-back strategy for Tony Smehrik's 2022 Lunar Blitz. Since we have zero similar units in stock, I recommend a 102% KBB offer plus a loyalty credit.",
         "leads_interested_aerovibe": "I've identified 5 leads who have expressed interest in the Aerovibe.",
-        "leads_interest_this_car": "I've found 5 leads who have shown interest in this vehicle."
+        "leads_interest_this_car": "I've found 5 leads who have shown interest in this vehicle.",
+        "ymm_inventory_check": "I've queried the Tekion inventory system and found 12 vehicles matching this Year/Make/Model. Breakdown includes New vs Used status and availability details."
     },
     "aiResponses": {
         "leads_interested_aerovibe": `<p>Here are the leads Interested in Aerovibe:</p><div class="compact-list-container"><div class="compact-list-item"><div class="avatar-circle avatar-pink">MD</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Matilda Dayton</span><span class="item-id">#C01</span></div><div class="item-sub-row">+1 (311) 555-2368 • matildadayton@tmail.com</div></div><div class="item-meta-info"><span class="meta-date">10:30 AM</span><span class="deal-badge badge-grey">Source: Internet</span></div></div><div class="compact-list-item"><div class="avatar-circle avatar-green">CG</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Curtis Gable</span><span class="item-id">#C02</span></div><div class="item-sub-row">+1 (555) 555-2368 • curtisgable@tmail.com</div></div><div class="item-meta-info"><span class="meta-date">Yesterday</span><span class="deal-badge badge-grey">Source: Walk-In</span></div></div><div class="compact-list-item"><div class="avatar-circle avatar-grey">TS</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Tony Smehrik</span><span class="item-id">#C03</span></div><div class="item-sub-row">+1 (715) 555-0100 • tonysmehrik@tmail.com</div></div><div class="item-meta-info"><span class="meta-date">Nov 12</span><span class="deal-badge badge-grey">Source: Internet</span></div></div><div class="compact-list-item"><div class="avatar-circle avatar-blue">AD</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Arista Delgato</span><span class="item-id">#C04</span></div><div class="item-sub-row">+1 (775) 555-0101 • aristadelgato@tmail.com</div></div><div class="item-meta-info"><span class="meta-date">Oct 24</span><span class="deal-badge badge-grey">Source: Phone</span></div></div><div class="compact-list-item"><div class="avatar-circle avatar-orange">FF</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Flora Fleisher</span><span class="item-id">#C05</span></div><div class="item-sub-row">+1 (642) 555-0199 • florafleisher@tmail.com</div></div><div class="item-meta-info"><span class="meta-date">Sep 28</span><span class="deal-badge badge-grey">Source: Walk-In</span></div></div></div>`,
@@ -1202,6 +1211,9 @@ Dean</div>
         "automate_sales_opportunities": `<p>Alright ! Before I set this up, I just need a few quick details:</p><ol style="margin-left: 20px; line-height: 1.6;"><li>Which file format?</li><li>What time should I send it?</li><li>Should I send it even on weekends?</li><li>Where should it be delivered (On ARC, email, SMS)?</li></ol>`,
         "automate_report_confirmed_simple": `<div style="font-weight: 500; color: var(--color-text-main); font-size: 14px; margin-bottom: 8px;">All set! Task has been created:</div><div class="task-card completed" style="padding: 12px; background: #fff; border: 1px solid var(--color-border-muted); border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; flex-direction: row; align-items: stretch; gap: 12px; max-width: 380px;"><div style="width: 48px; background: #EBF4FF; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="6" rx="1"></rect><rect x="3" y="15" width="6" height="6" rx="1"></rect><rect x="15" y="15" width="6" height="6" rx="1"></rect><path d="M12 9v3"></path><path d="M6 15v-3h12v3"></path></svg></div><div style="flex: 1; display: flex; flex-direction: column;"><div style="font-weight: 600; color: var(--color-text-heading); font-size: 14px; margin-bottom: 4px;">Automated: Monthly Appointment Report</div><div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px; color: var(--color-text-muted); font-size: 13px; margin-bottom: 4px;"><div style="display: flex; align-items: center; gap: 4px;"><span>Every Monday @ 9:00 am</span></div><span style="color: #D1D5DB;">•</span><span>Email</span></div><div style="display: flex; gap: 12px; margin-top: 4px;"><div style="font-weight: 600; color: #3B82F6; font-size: 14px; cursor: pointer;">Edit</div><div style="font-weight: 600; color: #3B82F6; font-size: 14px; cursor: pointer;">Delete</div></div></div></div>`,
         "automate_sales_opp_confirmed": `<div style="font-weight: 500; color: var(--color-text-main); font-size: 14px; margin-bottom: 8px;">All set! Task has been created:</div><div class="task-card completed" style="padding: 12px; background: #fff; border: 1px solid var(--color-border-muted); border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; flex-direction: row; align-items: stretch; gap: 12px; max-width: 380px;"><div style="width: 48px; background: #EBF4FF; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="6" rx="1"></rect><rect x="3" y="15" width="6" height="6" rx="1"></rect><rect x="15" y="15" width="6" height="6" rx="1"></rect><path d="M12 9v3"></path><path d="M6 15v-3h12v3"></path></svg></div><div style="flex: 1; display: flex; flex-direction: column;"><div style="font-weight: 600; color: var(--color-text-heading); font-size: 14px; margin-bottom: 4px;">Automated: Sales Opportunities Report</div><div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px; color: var(--color-text-muted); font-size: 13px; margin-bottom: 4px;"><div style="display: flex; align-items: center; gap: 4px;"><span>Daily @ 8:15 am</span></div><span style="color: #D1D5DB;">•</span><span>PDF</span><span style="color: #D1D5DB;">•</span><span>Email</span></div><div style="display: flex; gap: 12px; margin-top: 4px;"><div style="font-weight: 600; color: #3B82F6; font-size: 14px; cursor: pointer;">Edit</div><div style="font-weight: 600; color: #3B82F6; font-size: 14px; cursor: pointer;">Delete</div></div></div></div>`,
+        "ymm_inventory_check": `<p style="margin-bottom: 16px; font-size: 0.875rem; color: var(--color-text-main); line-height: 1.6;">Tekion currently shows <strong>12 vehicles</strong> matching this Year/Make/Model (YMM) in inventory.</p>
+<p style="margin-bottom: 16px; font-size: 0.875rem; color: var(--color-text-main); line-height: 1.6;">Of those, <strong>8 are New</strong> and <strong>4 are Used</strong>. In terms of availability, <strong>9 are retail-ready</strong>, <strong>2 are in transit</strong>, and <strong>1 is currently on hold</strong>. All units are accounted for in the active inventory and reflect the latest sync in the system.</p>
+<p style="margin-bottom: 0; font-size: 0.875rem; color: var(--color-text-main); line-height: 1.6;">If you need a breakdown by trim, color, stock number, lot location, or pricing tier, I can pull that next.</p>`
     },
     "searchOverrides": {
         "isTestDriveQuery": {
@@ -4210,6 +4222,7 @@ function getLogicKey(text) {
 
     // 0. Specific Matches (High Priority)
     if (window.CreateDealFlow && window.CreateDealFlow.matches(text)) return 'create_deal_test_drive';
+    if ((lower.includes('how many') || lower.includes('how many vehicles')) && lower.includes('ymm') && lower.includes('inventory')) return 'ymm_inventory_check';
     if ((lower.includes('how many leads') || lower.includes('which leads')) && (lower.includes('interest') || lower.includes('interested')) && lower.includes('this car')) return 'leads_interest_this_car';
     if (lower.includes('show') && lower.includes('leads') && lower.includes('aerovibe')) return 'leads_interested_aerovibe';
     if (lower.includes('last activity') && lower.includes('flora fleisher')) return 'last_activity_flora';
@@ -5154,6 +5167,42 @@ async function startAIResponse(userText, logicKey, attachmentHTML = '') {
                     else if (i === 5) {
                         await createActionStep('Formatting data for display', 'click', reasoningContent);
                     }
+                }
+                // Special handling for "ymm_inventory_check" query
+                else if (logicKey === 'ymm_inventory_check') {
+                    // First reasoning step: Open Tekion inventory page
+                    if (i === 0) {
+                        await createActionStep(
+                            'Opening Tekion inventory system',
+                            'opening-tab',
+                            reasoningContent,
+                            { url: 'file:///Users/muskaana/Documents/GitHub/design-experimentations/lead-details.html' }
+                        );
+                    }
+                    // Second reasoning step: Access inventory database
+                    else if (i === 1) {
+                        await createActionStep('Navigating to inventory module', 'click', reasoningContent);
+                        await createActionStep('Loading vehicle database', 'wait', reasoningContent);
+                    }
+                    // Third reasoning step: Filter by YMM
+                    else if (i === 2) {
+                        await createActionStep('Applying YMM filter criteria', 'typing', reasoningContent);
+                        await createActionStep('Executing inventory query', 'click', reasoningContent);
+                    }
+                    // Fourth reasoning step: Categorize results
+                    else if (i === 3) {
+                        await createActionStep('Scrolling through inventory records', 'scrolling', reasoningContent);
+                        await createActionStep('Analyzing vehicle status data', 'reading', reasoningContent);
+                    }
+                    // Fifth reasoning step: Check availability
+                    else if (i === 4) {
+                        await createActionStep('Capturing inventory snapshot', 'screenshot', reasoningContent);
+                        await createActionStep('Categorizing by New/Used status', 'reading', reasoningContent);
+                    }
+                    // Sixth reasoning step: Compile summary
+                    else if (i === 5) {
+                        await createActionStep('Compiling inventory summary', 'click', reasoningContent);
+                    }
                 } else {
                     // Default action steps for other queries
                     // All 7 action types - ensuring each type appears at least once
@@ -5381,6 +5430,27 @@ async function startAIResponse(userText, logicKey, attachmentHTML = '') {
                         // Fallback if tab wasn't opened yet
                         webSources.push({
                             title: 'Tekion Leads Page',
+                            url: 'file:///Users/muskaana/Documents/GitHub/design-experimentations/lead-details.html',
+                            tabId: null,
+                            favicon: 'https://tekiondesignteam.github.io/design-experimentations/favicon.ico'
+                        });
+                    }
+                }
+                // Special handling for ymm_inventory_check - use web sources only
+                else if (logicKey === 'ymm_inventory_check') {
+                    // Add the opened tab as a web source
+                    if (window.openedSourceTabs && window.openedSourceTabs.length > 0) {
+                        const tabSource = window.openedSourceTabs[window.openedSourceTabs.length - 1];
+                        webSources.push({
+                            title: 'Tekion Inventory System',
+                            url: 'file:///Users/muskaana/Documents/GitHub/design-experimentations/lead-details.html',
+                            tabId: tabSource.tabId,
+                            favicon: 'https://tekiondesignteam.github.io/design-experimentations/favicon.ico'
+                        });
+                    } else {
+                        // Fallback if tab wasn't opened yet
+                        webSources.push({
+                            title: 'Tekion Inventory System',
                             url: 'file:///Users/muskaana/Documents/GitHub/design-experimentations/lead-details.html',
                             tabId: null,
                             favicon: 'https://tekiondesignteam.github.io/design-experimentations/favicon.ico'
