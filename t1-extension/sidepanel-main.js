@@ -3169,6 +3169,20 @@ function getIconForType(type) {
     return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`;
 }
 
+function getIconForItem(item) {
+    // If item has a favicon URL, use it with globe fallback
+    if (item.favIconUrl) {
+        return `<img src="${item.favIconUrl}" width="16" height="16" style="border-radius: 2px; flex-shrink: 0;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">` +
+            `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="display: none;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path></svg>`;
+    }
+    // For page type items without favicon, use globe icon
+    if (item.type === 'page') {
+        return `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path></svg>`;
+    }
+    // Otherwise use the default icon for the type
+    return getIconForType(item.type);
+}
+
 const iconSquare = `<svg class="context-checkbox" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>`;
 const iconChecked = `<svg class="context-checkbox" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>`;
 
@@ -3196,13 +3210,13 @@ function renderContextList(filter = "") {
         div.className = `popup-item context-row-item ${isSelected ? 'selected' : ''}`;
         let rightContent = '';
         if (item.isCurrent) {
-            rightContent = `<span class="muted-tag">Current Page</span>`;
+            rightContent = `<span class="muted-tag">Current Tab</span>`;
         }
         div.innerHTML = `
             <div class="popup-item-left-group">
                 ${isSelected ? iconChecked : iconSquare}
-                ${getIconForType(item.type)}
-                <span>${item.label}</span>
+                ${getIconForItem(item)}
+                <span title="${item.label}">${item.label}</span>
             </div>
             <div class="popup-item-right">
                 ${rightContent}
@@ -3282,9 +3296,21 @@ function renderContextPills() {
                 const maxChars = isFullscreen ? 25 : 8;
                 const truncateAt = isFullscreen ? 23 : 8;
                 const displayLabel = label.length > maxChars ? label.substring(0, truncateAt) + '...' : label;
+
+                // Get icon - use favicon if available, otherwise use globe for page type
+                let iconHTML = '';
+                if (item && item.favIconUrl) {
+                    iconHTML = `<img src="${item.favIconUrl}" width="14" height="14" style="border-radius: 2px; flex-shrink: 0;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">` +
+                        `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display: none;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path></svg>`;
+                } else if (item && item.type === 'page') {
+                    iconHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path></svg>`;
+                } else {
+                    iconHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`;
+                }
+
                 contentHTML = `
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                        <span>${displayLabel}</span>
+                        ${iconHTML}
+                        <span title="${label}">${displayLabel}</span>
                     `;
             } else {
                 contentHTML = `

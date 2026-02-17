@@ -187,9 +187,10 @@ document.addEventListener('DOMContentLoaded', function () {
     try {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
       if (tab && tab.title) {
-        // Update AI_DATA.leadsItem.label with the current tab title
+        // Update AI_DATA.leadsItem.label with the current tab title and favicon
         if (typeof AI_DATA !== 'undefined' && AI_DATA.leadsItem) {
           AI_DATA.leadsItem.label = tab.title;
+          AI_DATA.leadsItem.favIconUrl = tab.favIconUrl || '';
 
           // Re-render the context pills to show the updated label
           if (typeof renderContextPills === 'function') {
@@ -213,11 +214,12 @@ document.addEventListener('DOMContentLoaded', function () {
   // Stop checking after 5 seconds
   setTimeout(() => clearInterval(checkAIData), 5000);
 
-  // Listen for tab updates (title changes)
+  // Listen for tab updates (title changes or favicon changes)
   chrome.tabs.onUpdated.addListener((_tabId, changeInfo, tab) => {
-    if (changeInfo.title && tab.active) {
+    if ((changeInfo.title || changeInfo.favIconUrl) && tab.active) {
       if (typeof AI_DATA !== 'undefined' && AI_DATA.leadsItem) {
-        AI_DATA.leadsItem.label = changeInfo.title;
+        if (changeInfo.title) AI_DATA.leadsItem.label = changeInfo.title;
+        if (changeInfo.favIconUrl) AI_DATA.leadsItem.favIconUrl = changeInfo.favIconUrl;
         if (typeof renderContextPills === 'function') {
           renderContextPills();
         }
@@ -232,6 +234,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (tab && tab.title) {
         if (typeof AI_DATA !== 'undefined' && AI_DATA.leadsItem) {
           AI_DATA.leadsItem.label = tab.title;
+          AI_DATA.leadsItem.favIconUrl = tab.favIconUrl || '';
           if (typeof renderContextPills === 'function') {
             renderContextPills();
           }
@@ -261,7 +264,8 @@ document.addEventListener('DOMContentLoaded', function () {
             id: `tab-${tab.id}`,
             label: tab.title || 'Untitled',
             type: 'page',
-            tabId: tab.id
+            tabId: tab.id,
+            favIconUrl: tab.favIconUrl || '' // Store favicon URL
           }));
 
         console.log('Tab items created:', tabItems);

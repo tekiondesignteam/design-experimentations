@@ -705,6 +705,57 @@
             height: var(--header-height);
         }
 
+        /* Gradient border at bottom of nav-header */
+        .nav-header::before {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(100deg, #25C8A5 0%, #1B90B4 50%, #1A6CC4 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+
+        .aurora-active .nav-header::before {
+            opacity: 1;
+        }
+
+        /* Thinking gradient shadow below nav-header */
+        .nav-header::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 0;
+            width: 200%;
+            height: 12px;
+            background: linear-gradient(100deg, #25C8A5 0%, #1B90B4 50%, #1A6CC4 100%);
+            filter: blur(8px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+            pointer-events: none;
+            mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+        }
+
+        .aurora-active .nav-header::after {
+            opacity: 0.5;
+            animation: gradientSlide 3s linear infinite;
+        }
+
+        @keyframes gradientSlide {
+            0% {
+                transform: translateX(-50%);
+            }
+
+            100% {
+                transform: translateX(0%);
+            }
+        }
+
         .action-btn {
             background: transparent;
             border: none;
@@ -3684,6 +3735,16 @@
             align-items: center;
             gap: var(--space-10);
             flex: 1;
+            min-width: 0;
+            /* Allow flex item to shrink below content size */
+        }
+
+        .popup-item-left-group>span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+            min-width: 0;
         }
 
         /* Right side container for muted text */
@@ -4485,6 +4546,15 @@
             font-weight: 500;
             padding-left: 8px;
             padding-right: 8px;
+            min-width: 0;
+            /* Allow flex item to shrink */
+        }
+
+        .pill-part.content>span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
         }
 
         /* Close part specific */
