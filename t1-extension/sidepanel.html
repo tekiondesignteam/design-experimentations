@@ -4160,6 +4160,109 @@
             stroke-width: var(--stroke-normal);
         }
 
+        /* Ask Before Acting Button */
+        .ask-before-acting-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 8px;
+            background-color: transparent;
+            border: 1px solid #E5E5E5;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .ask-before-acting-btn:hover {
+            background-color: #F7FAFC;
+        }
+
+        .ask-before-acting-label {
+            font-family: 'Proxima Nova', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 16px;
+            color: #444F5C;
+            white-space: nowrap;
+        }
+
+        .dropdown-arrow-icon {
+            width: 12px;
+            height: 12px;
+            color: #444F5C;
+            flex-shrink: 0;
+        }
+
+        .dropdown-arrow-icon path {
+            stroke-width: 1px;
+        }
+
+        /* Ask Before Acting Dropdown Container */
+        .ask-before-acting-container {
+            position: relative;
+        }
+
+        /* Ask Before Acting Dropdown Menu */
+        .ask-before-acting-dropdown {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            background: white;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            display: none;
+            flex-direction: column;
+            min-width: 180px;
+            z-index: var(--z-top);
+            margin-bottom: 4px;
+        }
+
+        .ask-before-acting-dropdown.visible {
+            display: flex;
+        }
+
+        .ask-before-acting-option {
+            padding: var(--space-10) var(--space-lg);
+            font-size: var(--font-sm);
+            cursor: pointer;
+            color: #444F5C;
+            text-align: left;
+            background: none;
+            border: none;
+            transition: background var(--transition-speed-normal);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--space-sm);
+            font-family: 'Proxima Nova', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        .ask-before-acting-option:hover {
+            background: var(--color-bg-hover);
+            color: var(--color-text-heading);
+        }
+
+        .ask-before-acting-option:first-child {
+            border-radius: var(--radius-md) var(--radius-md) 0 0;
+        }
+
+        .ask-before-acting-option:last-child {
+            border-radius: 0 0 var(--radius-md) var(--radius-md);
+        }
+
+        .ask-before-acting-option .tick-icon {
+            width: 16px;
+            height: 16px;
+            color: #7BEBEC;
+            flex-shrink: 0;
+            opacity: 0;
+        }
+
+        .ask-before-acting-option.active .tick-icon {
+            opacity: 1;
+        }
+
         .disclaimer-text {
             font-size: 11px;
             color: #969AA3;
@@ -8166,6 +8269,58 @@
                                                     </svg>
                                                 </button>
                                                 <input type="file" id="fileInput" style="display: none;" multiple />
+
+                                                <!-- Ask Before Acting Dropdown -->
+                                                <div class="ask-before-acting-container">
+                                                    <!-- Dropdown Menu -->
+                                                    <div class="ask-before-acting-dropdown"
+                                                        id="askBeforeActingDropdown">
+                                                        <button class="ask-before-acting-option" data-value="observe">
+                                                            <span>Observe only</span>
+                                                            <svg class="tick-icon" viewBox="0 0 16 16" fill="none">
+                                                                <path d="M3 8L6.5 11.5L13 5" stroke="currentColor"
+                                                                    stroke-width="2" stroke-linecap="round"
+                                                                    stroke-linejoin="round" />
+                                                            </svg>
+                                                        </button>
+                                                        <button class="ask-before-acting-option" data-value="suggest">
+                                                            <span>Suggest only</span>
+                                                            <svg class="tick-icon" viewBox="0 0 16 16" fill="none">
+                                                                <path d="M3 8L6.5 11.5L13 5" stroke="currentColor"
+                                                                    stroke-width="2" stroke-linecap="round"
+                                                                    stroke-linejoin="round" />
+                                                            </svg>
+                                                        </button>
+                                                        <button class="ask-before-acting-option active"
+                                                            data-value="ask">
+                                                            <span>Ask before acting</span>
+                                                            <svg class="tick-icon" viewBox="0 0 16 16" fill="none">
+                                                                <path d="M3 8L6.5 11.5L13 5" stroke="currentColor"
+                                                                    stroke-width="2" stroke-linecap="round"
+                                                                    stroke-linejoin="round" />
+                                                            </svg>
+                                                        </button>
+                                                        <button class="ask-before-acting-option" data-value="auto">
+                                                            <span>Act automatically</span>
+                                                            <svg class="tick-icon" viewBox="0 0 16 16" fill="none">
+                                                                <path d="M3 8L6.5 11.5L13 5" stroke="currentColor"
+                                                                    stroke-width="2" stroke-linecap="round"
+                                                                    stroke-linejoin="round" />
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+
+                                                    <!-- Button -->
+                                                    <button class="ask-before-acting-btn" id="btnAskBeforeActing"
+                                                        title="Ask before acting">
+                                                        <span class="ask-before-acting-label">Ask before acting</span>
+                                                        <svg class="dropdown-arrow-icon" viewBox="0 0 10 6" fill="none">
+                                                            <path d="M1 1L5 5L9 1" stroke="currentColor"
+                                                                stroke-width="1.5" stroke-linecap="round"
+                                                                stroke-linejoin="round" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
                                             </div>
                                             <div class="toolbar-right">
                                                 <div class="toolbar-divider"></div>
@@ -8212,10 +8367,9 @@
                                             <!-- Row 1: Context & Attachments Area -->
                                             <div class="input-context-row" id="contextRow">
                                                 <!-- Context Pill -->
-                                                <div class="unified-pill empty unified-pill-compact"
-                                                    id="unifiedContextPill" data-onclick="showContextMenu(event)">
-                                                    <div class="pill-part main">
-                                                        <span>Add Context</span>
+                                                <div class="unified-pill unified-pill-compact" id="unifiedContextPill">
+                                                    <div class="pill-part content">
+                                                        <span id="currentTabTitle">Loading...</span>
                                                     </div>
                                                 </div>
                                                 <div id="attachmentArea" class="attachment-area">
