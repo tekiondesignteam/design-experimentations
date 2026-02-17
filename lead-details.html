@@ -1937,6 +1937,85 @@
             cursor: pointer;
             z-index: 10;
         }
+
+        /* Collapsed State for Leads Panel */
+        .leads-panel.collapsed {
+            width: 54px;
+            transition: width 0.3s ease;
+            align-items: center;
+        }
+
+        .leads-panel.collapsed .leads-panel-header {
+            padding: 16px 0;
+            width: 100%;
+            align-items: center;
+        }
+
+        .leads-panel.collapsed .leads-header-top {
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            width: 100%;
+            margin-bottom: 24px;
+        }
+
+        .leads-panel.collapsed .leads-title-row {
+            font-size: 0;
+            /* Hide text */
+            margin: 0;
+            padding: 0;
+            gap: 0;
+        }
+
+        .leads-panel.collapsed .leads-external-link {
+            display: none;
+        }
+
+        /* Ensure Back Arrow stays visible and positioned */
+        .leads-panel.collapsed .leads-back-arrow {
+            display: block;
+            margin: 0;
+        }
+
+        .leads-panel.collapsed .leads-menu-icon {
+            /* Floating effect */
+            background-color: #FFFFFF;
+            border-radius: 50%;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
+            padding: 6px;
+            width: 36px;
+            height: 36px;
+            /* Adjust size for the floating circle effect */
+            fill: #444F5C;
+        }
+
+        .leads-panel.collapsed .leads-stats-row {
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .leads-panel.collapsed .leads-stat-pill {
+            flex-direction: column;
+            background: transparent;
+            padding: 0;
+            border-radius: 0;
+            font-size: 13px;
+            gap: 8px;
+            text-align: center;
+        }
+
+        .leads-panel.collapsed .leads-stat-pill img {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Hide other elements */
+        .leads-panel.collapsed .leads-tools-row,
+        .leads-panel.collapsed .leads-search-row,
+        .leads-panel.collapsed .leads-count,
+        .leads-panel.collapsed .leads-list {
+            display: none;
+        }
     </style>
 </head>
 
@@ -3261,6 +3340,11 @@
 
         // Initialize Data
         initLeadData();
+    </script>
+    <script>
+        document.querySelector('.leads-menu-icon').addEventListener('click', function () {
+            document.querySelector('.leads-panel').classList.toggle('collapsed');
+        });
     </script>
 </body>
 
