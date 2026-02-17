@@ -3342,9 +3342,28 @@
         initLeadData();
     </script>
     <script>
-        document.querySelector('.leads-menu-icon').addEventListener('click', function () {
-            document.querySelector('.leads-panel').classList.toggle('collapsed');
+        const leadsPanel = document.querySelector('.leads-panel');
+        const menuIcon = document.querySelector('.leads-menu-icon');
+
+        // Toggle functionality
+        menuIcon.addEventListener('click', function () {
+            leadsPanel.classList.toggle('collapsed');
         });
+
+        // Auto-collapse on small screens (media query)
+        const mediaQuery = window.matchMedia('(max-width: 1200px)');
+
+        function handleScreenChange(e) {
+            if (e.matches) {
+                leadsPanel.classList.add('collapsed');
+            } else {
+                leadsPanel.classList.remove('collapsed');
+            }
+        }
+
+        // Initial check and listener
+        handleScreenChange(mediaQuery);
+        mediaQuery.addEventListener('change', handleScreenChange);
     </script>
 </body>
 
