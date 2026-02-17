@@ -217,6 +217,14 @@ const AI_DATA = {
             "Compiling contact details and deal status...",
             "Generating list view."
         ],
+        "leads_interest_this_car": [
+            "Identifying the current vehicle context...",
+            "Accessing Tekion CRM database...",
+            "Querying lead records for this specific vehicle...",
+            "Found 5 leads with active interest...",
+            "Retrieving contact information and engagement history...",
+            "Compiling results for display..."
+        ],
         "automate_sales_opportunities": [
             "Analyzing automation request...",
             "Identifying report type: Sales Opportunities...",
@@ -256,10 +264,12 @@ const AI_DATA = {
         "List high-priority test drives": "I've retrieved today's high-priority test drive appointments and sorted them by scheduled time for your review.",
         "equity_alert": "Analyzed Curtis Gable's equity position. He has $4,200 in positive equity on his 2023 Nebula Nimbus, making him an ideal candidate for an upgrade.",
         "buy_back": "I've formulated a buy-back strategy for Tony Smehrik's 2022 Lunar Blitz. Since we have zero similar units in stock, I recommend a 102% KBB offer plus a loyalty credit.",
-        "leads_interested_aerovibe": "I've identified 5 leads who have expressed interest in the Aerovibe."
+        "leads_interested_aerovibe": "I've identified 5 leads who have expressed interest in the Aerovibe.",
+        "leads_interest_this_car": "I've found 5 leads who have shown interest in this vehicle."
     },
     "aiResponses": {
         "leads_interested_aerovibe": `<p>Here are the leads Interested in Aerovibe:</p><div class="compact-list-container"><div class="compact-list-item"><div class="avatar-circle avatar-pink">MD</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Matilda Dayton</span><span class="item-id">#C01</span></div><div class="item-sub-row">+1 (311) 555-2368 • matildadayton@tmail.com</div></div><div class="item-meta-info"><span class="meta-date">10:30 AM</span><span class="deal-badge badge-grey">Source: Internet</span></div></div><div class="compact-list-item"><div class="avatar-circle avatar-green">CG</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Curtis Gable</span><span class="item-id">#C02</span></div><div class="item-sub-row">+1 (555) 555-2368 • curtisgable@tmail.com</div></div><div class="item-meta-info"><span class="meta-date">Yesterday</span><span class="deal-badge badge-grey">Source: Walk-In</span></div></div><div class="compact-list-item"><div class="avatar-circle avatar-grey">TS</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Tony Smehrik</span><span class="item-id">#C03</span></div><div class="item-sub-row">+1 (715) 555-0100 • tonysmehrik@tmail.com</div></div><div class="item-meta-info"><span class="meta-date">Nov 12</span><span class="deal-badge badge-grey">Source: Internet</span></div></div><div class="compact-list-item"><div class="avatar-circle avatar-blue">AD</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Arista Delgato</span><span class="item-id">#C04</span></div><div class="item-sub-row">+1 (775) 555-0101 • aristadelgato@tmail.com</div></div><div class="item-meta-info"><span class="meta-date">Oct 24</span><span class="deal-badge badge-grey">Source: Phone</span></div></div><div class="compact-list-item"><div class="avatar-circle avatar-orange">FF</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Flora Fleisher</span><span class="item-id">#C05</span></div><div class="item-sub-row">+1 (642) 555-0199 • florafleisher@tmail.com</div></div><div class="item-meta-info"><span class="meta-date">Sep 28</span><span class="deal-badge badge-grey">Source: Walk-In</span></div></div></div>`,
+        "leads_interest_this_car": `<p>Here are the 5 leads who have shown interest in this vehicle:</p><div class="compact-list-container"><div class="compact-list-item"><div class="avatar-circle avatar-pink">MD</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Matilda Dayton</span><span class="item-id">#C01</span></div><div class="item-sub-row">+1 (311) 555-2368 • matildadayton@tmail.com</div></div><div class="item-meta-info"><span class="meta-date">Today</span><span class="deal-badge badge-grey">Source: Internet</span></div></div><div class="compact-list-item"><div class="avatar-circle avatar-green">CG</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Curtis Gable</span><span class="item-id">#C02</span></div><div class="item-sub-row">+1 (555) 555-2368 • curtisgable@tmail.com</div></div><div class="item-meta-info"><span class="meta-date">Yesterday</span><span class="deal-badge badge-grey">Source: Walk-In</span></div></div><div class="compact-list-item"><div class="avatar-circle avatar-grey">TS</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Tony Smehrik</span><span class="item-id">#C03</span></div><div class="item-sub-row">+1 (715) 555-0100 • tonysmehrik@tmail.com</div></div><div class="item-meta-info"><span class="meta-date">Jan 25</span><span class="deal-badge badge-grey">Source: Internet</span></div></div><div class="compact-list-item"><div class="avatar-circle avatar-blue">AD</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Arista Delgato</span><span class="item-id">#C04</span></div><div class="item-sub-row">+1 (775) 555-0101 • aristadelgato@tmail.com</div></div><div class="item-meta-info"><span class="meta-date">Jan 23</span><span class="deal-badge badge-grey">Source: Phone</span></div></div><div class="compact-list-item"><div class="avatar-circle avatar-orange">FF</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Flora Fleisher</span><span class="item-id">#C05</span></div><div class="item-sub-row">+1 (642) 555-0199 • florafleisher@tmail.com</div></div><div class="item-meta-info"><span class="meta-date">Jan 20</span><span class="deal-badge badge-grey">Source: Walk-In</span></div></div></div>`,
         "last_activity_flora": `<p style="margin-bottom: 8px; color: var(--color-text-main);">Last activity for Flora Fleisher:</p><div class="activity-card"><div class="activity-top"><div class="activity-content"><div class="activity-header-row"><span class="activity-title">Text Message <span class="activity-type-suffix">(Incoming)</span></span><span class="activity-time">Yesterday at 4:30pm</span></div><div class="activity-text">She asked about pricing for a white AeroVibe Limited trim</div></div></div><div><button class="activity-btn">View conversation</button></div></div>`,
         "ryan_clarify": `<p>Please select the correct Ryan to proceed:</p><div class="compact-list-container"><div class="compact-list-item" data-onclick="selectRyan()" data-param="2"><div class="avatar-circle avatar-pink">RC</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan Carter</span><span class="item-id">#891</span></div><div class="item-sub-row">(512) 555-3421 • r.carter@techstart.io</div></div><div class="item-meta-info"><span class="meta-date">12:30 PM</span><span class="deal-badge badge-grey">2 Deals</span></div></div><div class="compact-list-item" data-onclick="selectRyan()" data-param="4"><div class="avatar-circle avatar-green">RW</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan Washington</span><span class="item-id">#554</span></div><div class="item-sub-row">(202) 555-7743 • rwashington@state.gov</div></div><div class="item-meta-info"><span class="meta-date">Yesterday</span><span class="deal-badge badge-grey">1 Deal</span></div></div><div class="compact-list-item" data-onclick="selectRyan()" data-param="3"><div class="avatar-circle avatar-grey">RO</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan O'Connell</span><span class="item-id">#112</span></div><div class="item-sub-row">(617) 555-9982 • ryan.oc@consulting.net</div></div><div class="item-meta-info"><span class="meta-date">Nov 12</span><span class="deal-badge badge-grey">1 Deal</span></div></div><div class="compact-list-item" data-onclick="selectRyan()" data-param="1"><div class="avatar-circle avatar-blue">RM</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan Miller</span><span class="item-id">#402</span></div><div class="item-sub-row">(312) 555-0192 • ryan.miller@gmail.com</div></div><div class="item-meta-info"><span class="meta-date">Oct 24</span><span class="deal-badge badge-grey">2 Deals</span></div></div><div class="compact-list-item" data-onclick="selectRyan()" data-param="5"><div class="avatar-circle avatar-orange">RL</div><div class="item-main-info"><div class="item-name-row"><span class="item-name">Ryan Lee</span><span class="item-id">#339</span></div><div class="item-sub-row">(415) 555-6621 • ryan@leedesign.studio</div></div><div class="item-meta-info"><span class="meta-date">Sep 28</span><span class="deal-badge badge-grey">3 Deals</span></div></div></div>`,
         "ryan_details": `<p style="margin-bottom: 16px; font-size: 0.875rem; color: var(--color-text-main);">I've found 2 open deals for <strong>Ryan Carter</strong>:</p><div class="premium-deals-grid"><div class="premium-deal-card" style="border: 1px solid var(--color-border-muted); border-radius: 4px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.05);"><div style="padding: 12px;"><div style="display: flex; gap: 12px; align-items: center; margin-bottom: 8px;"><div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(0, 191, 165, 0.08); color: var(--color-primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17h12"></path></svg></div><div><div style="font-weight: 700; color: var(--color-text-heading); font-size: 0.85rem; line-height: 1.2; padding-bottom:4px;">#DEAL-4521</div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">2024 Tesla Model Y</div></div></div><div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 4px; padding: 8px 0; border-bottom: 1px solid #f1f3f4;"><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Salesperson</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Flora Fleisher</div></div><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Type</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Finance</div></div><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Status</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Quote</div></div></div><div style="display: flex; justify-content: space-between; align-items: center;"><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500; padding-top:4px;">Last Updated</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Dec 21, 2025</div></div><button class="open-btn-compact" style="font-size: 14px; padding: 0 20px; border-radius: 2px; font-weight: 600; height: 32px;">View</button></div></div></div><div class="premium-deal-card" style="border: 1px solid var(--color-border-muted); border-radius: 4px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.05);"><div style="padding: 12px;\"><div style="display: flex; gap: 12px; align-items: center; margin-bottom: 8px;\"><div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(0, 0, 0, 0.04); color: #5f6368; display: flex; align-items: center; justify-content: center; flex-shrink: 0;\"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17h12"></path></svg></div><div><div style="font-weight: 700; color: var(--color-text-heading); font-size: 0.85rem; line-height: 1.2; padding-bottom:4px;">#DEAL-9920</div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">2021 Ford F-150</div></div></div><div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 4px; padding: 8px 0; border-bottom: 1px solid #f1f3f4;"><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Salesperson</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Curtis Gable</div></div><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Type</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Lease</div></div><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500;">Status</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Booked</div></div></div><div style="display: flex; justify-content: space-between; align-items: center;"><div><div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 500; padding-top:4px;">Last Updated</div><div style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-main);">Dec 12, 2025</div></div><button class="open-btn-compact" style="font-size: 14px; padding: 0 20px; border-radius: 2px; font-weight: 600; height: 32px;">View</button></div></div></div></div>`,
@@ -4200,6 +4210,7 @@ function getLogicKey(text) {
 
     // 0. Specific Matches (High Priority)
     if (window.CreateDealFlow && window.CreateDealFlow.matches(text)) return 'create_deal_test_drive';
+    if ((lower.includes('how many leads') || lower.includes('which leads')) && (lower.includes('interest') || lower.includes('interested')) && lower.includes('this car')) return 'leads_interest_this_car';
     if (lower.includes('show') && lower.includes('leads') && lower.includes('aerovibe')) return 'leads_interested_aerovibe';
     if (lower.includes('last activity') && lower.includes('flora fleisher')) return 'last_activity_flora';
     if (lower.includes('flora fleisher')) return 'sarah_brief';
@@ -4948,7 +4959,7 @@ async function startAIResponse(userText, logicKey, attachmentHTML = '') {
     };
 
     // Helper function to create an action step
-    const createActionStep = async (text, type = 'click', parentElement) => {
+    const createActionStep = async (text, type = 'click', parentElement, metadata = {}) => {
         const actionStep = document.createElement('div');
         actionStep.className = `action-step type-${type} active`;
 
@@ -4969,6 +4980,93 @@ async function startAIResponse(userText, logicKey, attachmentHTML = '') {
 
         parentElement.scrollTop = parentElement.scrollHeight;
         scrollToBottom();
+
+        // If this is an opening-tab action with a URL, actually open the tab
+        if (type === 'opening-tab' && metadata.url) {
+            const tab = await chrome.tabs.create({ url: metadata.url, active: false });
+            // Store the tab ID and URL for sources
+            if (!window.openedSourceTabs) window.openedSourceTabs = [];
+            window.openedSourceTabs.push({
+                tabId: tab.id,
+                url: metadata.url,
+                title: metadata.title || 'Tekion CRM'
+            });
+
+            // Start animating the tab title with sparkle between favicon and title
+            if (!window.aiTabAnimations) window.aiTabAnimations = {};
+
+            // Wait for tab to load and get its original title
+            await new Promise((resolve) => {
+                const listener = (tabId, changeInfo) => {
+                    if (tabId === tab.id && changeInfo.status === 'complete') {
+                        chrome.tabs.onUpdated.removeListener(listener);
+                        resolve();
+                    }
+                };
+                chrome.tabs.onUpdated.addListener(listener);
+                setTimeout(resolve, 3000); // Timeout after 3 seconds
+            });
+
+            // Get the original title
+            const updatedTab = await chrome.tabs.get(tab.id);
+            const originalTitle = updatedTab.title || 'Tekion CRM';
+
+            // Animate the tab title with sparkle between favicon and title
+            let frame = 0;
+            const frames = ['✦', '✧']; // Filled and outlined sparkle only
+            const animationInterval = setInterval(async () => {
+                try {
+                    const sparkle = frames[frame % frames.length];
+                    await chrome.scripting.executeScript({
+                        target: { tabId: tab.id },
+                        func: (title, sparkle) => {
+                            // Add sparkle between favicon and title
+                            document.title = `${sparkle} ${title}`;
+
+                            // Ensure favicon stays as globe icon
+                            let link = document.querySelector("link[rel~='icon']");
+                            if (!link) {
+                                link = document.createElement('link');
+                                link.rel = 'shortcut icon';
+                                link.type = 'image/svg+xml';
+                                document.head.appendChild(link);
+                            }
+
+                            // Set globe icon as favicon if not already set
+                            if (!link.dataset.hasGlobeIcon) {
+                                // Store original favicon
+                                if (link.href && !link.href.startsWith('data:')) {
+                                    link.dataset.originalHref = link.href;
+                                }
+
+                                // Set grey globe SVG as favicon (Chrome's default style)
+                                const globeSvg = `
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                                        <circle cx="8" cy="8" r="7" fill="#9AA0A6" opacity="0.3"/>
+                                        <path d="M8 1 C4.1 1 1 4.1 1 8 C1 11.9 4.1 15 8 15 C11.9 15 15 11.9 15 8 C15 4.1 11.9 1 8 1 Z M8 2 C9.3 2 10.5 2.5 11.4 3.3 L10.8 3.8 C10.3 3.4 9.7 3.2 9 3.2 C8.5 3.2 8.1 3.3 7.7 3.5 L7.2 3.2 C7.8 2.5 7.9 2.2 8 2 Z M3.3 4.6 C3.8 3.8 4.5 3.2 5.4 2.8 L5.8 3.3 C5.3 3.6 4.9 4 4.6 4.5 L3.3 4.6 Z M2.5 7 L3.8 7 C3.8 6.5 3.9 6 4.1 5.6 L3 5.2 C2.7 5.8 2.5 6.4 2.5 7 Z M8 13.5 C5 13.5 2.5 11 2.5 8 C2.5 7.8 2.5 7.6 2.5 7.5 L4 7.5 C4 7.7 4 7.8 4 8 C4 9.4 4.6 10.6 5.5 11.5 L4.5 12.5 C3.8 11.9 3.1 11.1 2.7 10.2 L3.8 9.8 C4.1 10.4 4.5 10.9 5 11.3 L5.5 10.8 C5.1 10.4 4.8 9.9 4.6 9.3 L5.8 9 C6 9.6 6.4 10.1 6.9 10.5 L7.5 9.8 C7.1 9.5 6.8 9 6.6 8.5 L8 8.5 L8 13.5 Z M8 8 L6.5 8 C6.5 7.2 6.7 6.5 7 5.9 L8 6.5 L8 8 Z M8 6 L6.8 5.3 C7.2 4.8 7.7 4.4 8 4.2 L8 6 Z M13.5 8 C13.5 11 11 13.5 8 13.5 L8 11.5 C9.9 11.5 11.5 9.9 11.5 8 L13.5 8 Z M11 8 C11 9.7 9.7 11 8 11 L8 9 L9.5 9 C9.5 9.3 9.4 9.6 9.2 9.8 L10 10.5 C10.6 9.9 11 9 11 8 Z M8.5 8 L8.5 6.8 L9.8 7.5 C9.6 7.7 9.3 7.9 9 8 L8.5 8 Z M10.5 7 L8.5 5.8 L8.5 4.5 C9.5 4.7 10.3 5.3 10.8 6.2 L10.5 7 Z M12.7 11.4 C12.2 12.2 11.5 12.8 10.6 13.2 L10.2 12.7 C10.7 12.4 11.1 12 11.4 11.5 L12.7 11.4 Z M13.5 9 L12.2 9 C12.2 9.5 12.1 10 11.9 10.4 L13 10.8 C13.3 10.2 13.5 9.6 13.5 9 Z" fill="#5F6368"/>
+                                    </svg>
+                                `;
+                                const encoded = btoa(unescape(encodeURIComponent(globeSvg)));
+                                link.href = `data:image/svg+xml;base64,${encoded}`;
+                                link.dataset.hasGlobeIcon = 'true';
+                            }
+                        },
+                        args: [originalTitle, sparkle]
+                    });
+                    frame++;
+                } catch (error) {
+                    // Tab might be closed, stop animation
+                    clearInterval(animationInterval);
+                    if (window.aiTabAnimations) delete window.aiTabAnimations[tab.id];
+                }
+            }, 400); // Update every 400ms
+
+            // Store animation info for cleanup
+            window.aiTabAnimations[tab.id] = {
+                interval: animationInterval,
+                originalTitle: originalTitle
+            };
+        }
 
         // Type out the text
         const charDelay = 15;
@@ -5021,50 +5119,88 @@ async function startAIResponse(userText, logicKey, attachmentHTML = '') {
             if (useAgentSteps) {
                 await new Promise(r => setTimeout(r, 400));
 
-                // All 7 action types - ensuring each type appears at least once
-                const allActionTypes = [
-                    { text: 'Clicking on the search button', type: 'click' },
-                    { text: 'Typing "user authentication" in search field', type: 'typing' },
-                    { text: 'Scrolling to view results', type: 'scrolling' },
-                    { text: 'Reading file: auth.js', type: 'reading' },
-                    { text: 'Taking screenshot of current state', type: 'screenshot' },
-                    { text: 'Waiting for 2 seconds', type: 'wait' },
-                    { text: 'Opening new tab with documentation', type: 'opening-tab' }
-                ];
+                // Special handling for "leads_interest_this_car" query
+                if (logicKey === 'leads_interest_this_car') {
+                    // First reasoning step: Open Tekion website
+                    if (i === 0) {
+                        await createActionStep(
+                            'Opening Tekion website',
+                            'opening-tab',
+                            reasoningContent,
+                            { url: 'file:///Users/muskaana/Documents/GitHub/design-experimentations/lead-details.html' }
+                        );
+                    }
+                    // Second reasoning step: Access CRM
+                    else if (i === 1) {
+                        await createActionStep('Navigating to CRM database', 'click', reasoningContent);
+                        await createActionStep('Authenticating user session', 'wait', reasoningContent);
+                    }
+                    // Third reasoning step: Query leads
+                    else if (i === 2) {
+                        await createActionStep('Typing vehicle ID in search field', 'typing', reasoningContent);
+                        await createActionStep('Executing database query', 'click', reasoningContent);
+                    }
+                    // Fourth reasoning step: Found leads
+                    else if (i === 3) {
+                        await createActionStep('Scrolling through lead records', 'scrolling', reasoningContent);
+                        await createActionStep('Reading lead details', 'reading', reasoningContent);
+                    }
+                    // Fifth reasoning step: Retrieve contact info
+                    else if (i === 4) {
+                        await createActionStep('Capturing lead data snapshot', 'screenshot', reasoningContent);
+                        await createActionStep('Extracting contact information', 'reading', reasoningContent);
+                    }
+                    // Sixth reasoning step: Compile results
+                    else if (i === 5) {
+                        await createActionStep('Formatting data for display', 'click', reasoningContent);
+                    }
+                } else {
+                    // Default action steps for other queries
+                    // All 7 action types - ensuring each type appears at least once
+                    const allActionTypes = [
+                        { text: 'Clicking on the search button', type: 'click' },
+                        { text: 'Typing "user authentication" in search field', type: 'typing' },
+                        { text: 'Scrolling to view results', type: 'scrolling' },
+                        { text: 'Reading file: auth.js', type: 'reading' },
+                        { text: 'Taking screenshot of current state', type: 'screenshot' },
+                        { text: 'Waiting for 2 seconds', type: 'wait' },
+                        { text: 'Opening new tab with documentation', type: 'opening-tab' }
+                    ];
 
-                // Additional varied actions for randomness
-                const extraActions = [
-                    { text: 'Clicking on navigation menu', type: 'click' },
-                    { text: 'Typing query in input field', type: 'typing' },
-                    { text: 'Scrolling down the page', type: 'scrolling' },
-                    { text: 'Reading component code', type: 'reading' },
-                    { text: 'Capturing visual state', type: 'screenshot' },
-                    { text: 'Waiting for page load', type: 'wait' },
-                    { text: 'Opening settings panel', type: 'opening-tab' }
-                ];
+                    // Additional varied actions for randomness
+                    const extraActions = [
+                        { text: 'Clicking on navigation menu', type: 'click' },
+                        { text: 'Typing query in input field', type: 'typing' },
+                        { text: 'Scrolling down the page', type: 'scrolling' },
+                        { text: 'Reading component code', type: 'reading' },
+                        { text: 'Capturing visual state', type: 'screenshot' },
+                        { text: 'Waiting for page load', type: 'wait' },
+                        { text: 'Opening settings panel', type: 'opening-tab' }
+                    ];
 
-                // Combine all actions
-                const allActions = [...allActionTypes, ...extraActions];
+                    // Combine all actions
+                    const allActions = [...allActionTypes, ...extraActions];
 
-                // Strategy: Distribute all 7 action types across all reasoning steps
-                // Calculate how many actions to show per step to ensure all 7 types appear
-                let actionsToShow = [];
+                    // Strategy: Distribute all 7 action types across all reasoning steps
+                    // Calculate how many actions to show per step to ensure all 7 types appear
+                    let actionsToShow = [];
 
-                // Always include the action type corresponding to this step index (cycling through all 7)
-                const guaranteedActionIndex = i % 7;
-                actionsToShow.push(allActionTypes[guaranteedActionIndex]);
+                    // Always include the action type corresponding to this step index (cycling through all 7)
+                    const guaranteedActionIndex = i % 7;
+                    actionsToShow.push(allActionTypes[guaranteedActionIndex]);
 
-                // Add 1-2 more random actions for variety
-                const numExtra = Math.floor(Math.random() * 2) + 1;
-                for (let e = 0; e < numExtra; e++) {
-                    const randomAction = allActions[Math.floor(Math.random() * allActions.length)];
-                    actionsToShow.push(randomAction);
-                }
+                    // Add 1-2 more random actions for variety
+                    const numExtra = Math.floor(Math.random() * 2) + 1;
+                    for (let e = 0; e < numExtra; e++) {
+                        const randomAction = allActions[Math.floor(Math.random() * allActions.length)];
+                        actionsToShow.push(randomAction);
+                    }
 
-                // Create the action steps
-                for (const action of actionsToShow) {
-                    if (currentController.stopped) break;
-                    await createActionStep(action.text, action.type, reasoningContent);
+                    // Create the action steps
+                    for (const action of actionsToShow) {
+                        if (currentController.stopped) break;
+                        await createActionStep(action.text, action.type, reasoningContent);
+                    }
                 }
             }
 
@@ -5147,6 +5283,43 @@ async function startAIResponse(userText, logicKey, attachmentHTML = '') {
                 if (currentController === typingController) {
                     if (panel) panel.classList.remove('aurora-active');
                     // if (mobileHandle) mobileHandle.classList.remove('aurora-active'); // DELETED - element doesn't exist
+
+                    // Stop tab title animations and restore original titles
+                    if (window.aiTabAnimations) {
+                        for (const [tabId, animationData] of Object.entries(window.aiTabAnimations)) {
+                            // Clear the animation interval
+                            clearInterval(animationData.interval);
+
+                            // Restore original title and favicon
+                            try {
+                                await chrome.scripting.executeScript({
+                                    target: { tabId: parseInt(tabId) },
+                                    func: (originalTitle) => {
+                                        // Restore title
+                                        document.title = originalTitle;
+
+                                        // Restore original favicon
+                                        const link = document.querySelector("link[rel~='icon']");
+                                        if (link && link.dataset.hasGlobeIcon) {
+                                            if (link.dataset.originalHref) {
+                                                // Restore the original favicon
+                                                link.href = link.dataset.originalHref;
+                                                delete link.dataset.originalHref;
+                                            } else {
+                                                // No original favicon, remove the globe icon
+                                                link.remove();
+                                            }
+                                            delete link.dataset.hasGlobeIcon;
+                                        }
+                                    },
+                                    args: [animationData.originalTitle]
+                                });
+                            } catch (error) {
+                                console.log('Could not restore tab title:', tabId, error);
+                            }
+                        }
+                        window.aiTabAnimations = {};
+                    }
                 }
 
                 // Always stop the blink for THIS specific response row
@@ -5188,15 +5361,43 @@ async function startAIResponse(userText, logicKey, attachmentHTML = '') {
                 }
 
                 let contextLabels = [];
-                if (typeof selectedContexts !== 'undefined' && selectedContexts.size > 0) {
-                    const allItems = [...dmsContextItems, AI_DATA.leadsItem];
-                    selectedContexts.forEach(id => {
-                        const item = allItems.find(i => i.id === id);
-                        if (item) contextLabels.push(item.label);
-                    });
+                let webSources = [];
+
+                // Special handling for leads_interest_this_car - use web sources only
+                if (logicKey === 'leads_interest_this_car') {
+                    // Add the car name as a context item for the filter pill
+                    contextLabels.push('2025 Cadillac CT4 Sport Dublin CA | Dublin Buick GMC 1G6DC5RK2S0115179');
+
+                    // Add the opened tab as a web source
+                    if (window.openedSourceTabs && window.openedSourceTabs.length > 0) {
+                        const tabSource = window.openedSourceTabs[window.openedSourceTabs.length - 1];
+                        webSources.push({
+                            title: 'Tekion Leads Page',
+                            url: 'file:///Users/muskaana/Documents/GitHub/design-experimentations/lead-details.html',
+                            tabId: tabSource.tabId,
+                            favicon: 'https://tekiondesignteam.github.io/design-experimentations/favicon.ico'
+                        });
+                    } else {
+                        // Fallback if tab wasn't opened yet
+                        webSources.push({
+                            title: 'Tekion Leads Page',
+                            url: 'file:///Users/muskaana/Documents/GitHub/design-experimentations/lead-details.html',
+                            tabId: null,
+                            favicon: 'https://tekiondesignteam.github.io/design-experimentations/favicon.ico'
+                        });
+                    }
+                } else {
+                    // For other queries, use selected contexts
+                    if (typeof selectedContexts !== 'undefined' && selectedContexts.size > 0) {
+                        const allItems = [...dmsContextItems, AI_DATA.leadsItem];
+                        selectedContexts.forEach(id => {
+                            const item = allItems.find(i => i.id === id);
+                            if (item) contextLabels.push(item.label);
+                        });
+                    }
                 }
 
-                let totalSources = attachmentItems.length + contextLabels.length;
+                let totalSources = attachmentItems.length + contextLabels.length + webSources.length;
 
                 // Inject Relevant context if none present for specific queries
                 if (totalSources === 0) {
@@ -5209,10 +5410,15 @@ async function startAIResponse(userText, logicKey, attachmentHTML = '') {
                     } else if (logicKey === 'Summarize recent hot leads') {
                         contextLabels = ['Lead Management System', 'High Intent Signals'];
                     }
-                    totalSources = contextLabels.length;
+                    totalSources = contextLabels.length + webSources.length;
                 }
 
-                const sourcesData = { count: totalSources, contextItems: contextLabels, attachmentItems: attachmentItems };
+                const sourcesData = {
+                    count: totalSources,
+                    contextItems: contextLabels,
+                    attachmentItems: attachmentItems,
+                    webSources: webSources
+                };
 
                 // Content Body for Typewriter
                 const contentBody = document.createElement('div');
@@ -6001,6 +6207,18 @@ window.toggleSourcesPopover = function (event, element, data) {
 
     // Prepare Data
     const allSources = [];
+
+    // Add web sources from opened tabs
+    if (data.webSources && data.webSources.length > 0) {
+        data.webSources.forEach(ws => allSources.push({
+            title: ws.title,
+            type: 'Web',
+            url: ws.url,
+            tabId: ws.tabId,
+            favicon: ws.favicon
+        }));
+    }
+
     if (data.contextItems) data.contextItems.forEach(i => allSources.push({ title: i, type: 'Record' }));
     if (data.attachmentItems) data.attachmentItems.forEach(i => allSources.push({ title: i, type: 'File' }));
 
@@ -6027,19 +6245,38 @@ window.toggleSourcesPopover = function (event, element, data) {
             const isLast = index === allSources.length - 1;
             const borderStyle = isLast ? '' : 'border-bottom: 1px solid var(--color-border); padding-bottom: 12px; margin-bottom: 12px;';
 
-            // Generate Fake URL
-            const slug = source.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-            const url = source.type === 'File'
-                ? `https://crm.example.com/storage/attachments/${slug}.pdf`
-                : `https://crm.example.com/records/${slug}`;
+            // Generate URL based on type
+            let url;
+            if (source.type === 'Web') {
+                url = source.url;
+            } else {
+                const slug = source.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+                url = source.type === 'File'
+                    ? `https://crm.example.com/storage/attachments/${slug}.pdf`
+                    : `https://crm.example.com/records/${slug}`;
+            }
+
+            // Add favicon for web sources
+            const faviconHTML = source.type === 'Web' && source.favicon
+                ? `<img src="${source.favicon}" style="width: 16px; height: 16px; margin-right: 8px; flex-shrink: 0;" onerror="this.style.display='none'">`
+                : '';
+
+            // Add data attributes for web sources
+            const dataAttrs = source.type === 'Web' && source.tabId
+                ? `data-tab-id="${source.tabId}" data-source-type="web"`
+                : '';
+
+            const cursorStyle = source.type === 'Web' && source.tabId ? 'cursor: pointer;' : '';
 
             html += `
-            <div style="${borderStyle}; display: flex; gap: 8px;">
+            <div class="source-item" style="${borderStyle}; display: flex; gap: 8px; ${cursorStyle}" ${dataAttrs}>
                 <div style="font-weight: 500; color: var(--color-text-heading); min-width: 14px; font-size: 0.95rem;">
                     ${index + 1}.
                 </div>
                 <div style="flex: 1; min-width: 0;">
-                    <div style="font-weight: 600; font-size: 0.95rem; color: var(--color-text-heading); margin-bottom: 2px;">${source.title}</div>
+                    <div style="font-weight: 600; font-size: 0.95rem; color: var(--color-text-heading); margin-bottom: 2px; display: flex; align-items: center;">
+                        ${faviconHTML}${source.title}
+                    </div>
                     <div style="font-size: 0.85rem; color: var(--color-text-muted); text-decoration: underline; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;" title="${url}">
                         ${url}
                     </div>
@@ -6050,6 +6287,17 @@ window.toggleSourcesPopover = function (event, element, data) {
     }
 
     content.innerHTML = html;
+
+    // Add click handlers for web sources
+    content.querySelectorAll('.source-item[data-source-type="web"]').forEach(item => {
+        item.addEventListener('click', function () {
+            const tabId = parseInt(this.getAttribute('data-tab-id'));
+            if (tabId) {
+                chrome.tabs.update(tabId, { active: true });
+                window.closeSourcesModal();
+            }
+        });
+    });
 
     // Show modal
     modal.classList.add('visible');
@@ -6456,6 +6704,7 @@ window.handleUrlParams = function () {
             'best_next_step': 'Suggest the best next step and when I should follow up.',
             'deal_pricing_comparison': 'Compare this vehicle\'s pricing and incentives to similar deals we\'ve closed recently.',
             'leads_interested_aerovibe': 'Show leads interested in Aerovibe',
+            'leads_interest_this_car': 'How many leads have shown interest in this car?',
             'last_activity_flora': 'What was the last activity with Flora Fleisher?',
             'white_aerovibes_check': 'Any white Aerovibes arriving soon?',
             'tradein_reminder': 'Remind me to check trade-in status',
