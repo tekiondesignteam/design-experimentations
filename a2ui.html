@@ -346,7 +346,7 @@ input[type=range]{width:100%;accent-color:var(--amber);cursor:pointer;}
 .tl-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;}
 .tl-cycle{background:rgba(232,168,56,.1);border:1px solid rgba(232,168,56,.25);color:var(--amber);font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;padding:.2rem .55rem;border-radius:100px;}
 .tl-track{display:flex;position:relative;}
-.tl-track::before{content:'';position:absolute;top:14px;left:14px;right:14px;height:1px;background:linear-gradient(90deg,var(--amber),var(--coral));z-index:0;}
+.tl-track::before{display:none;}
 .tnode{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;z-index:1;}
 .tdot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:#1A1008;margin-bottom:.6rem;box-shadow:0 0 0 3px var(--card);transition:transform .2s;}
 .tnode:hover .tdot{transform:scale(1.15);}
@@ -430,10 +430,10 @@ const wait = ms => new Promise(r=>setTimeout(r,ms));
 
 function append(html) {
   const d=document.createElement('div'); d.innerHTML=html;
-  const el=d.firstElementChild; chat.appendChild(el); scroll(); return el;
+  const el=d.firstElementChild; chat.appendChild(el); scroll(el); return el;
 }
-const show=(el,d=0)=>d===0?requestAnimationFrame(()=>el.classList.add('show')):setTimeout(()=>{el.classList.add('show');scroll();},d);
-function scroll(){chat.scrollTo({top:chat.scrollHeight,behavior:'smooth'});}
+const show=(el,d=0)=>d===0?requestAnimationFrame(()=>el.classList.add('show')):setTimeout(()=>{el.classList.add('show');scroll(el);},d);
+function scroll(el){if(el){setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),60);}else{chat.scrollTo({top:chat.scrollHeight,behavior:'smooth'});}}
 
 const msgHTML=(txt,t)=>`<div class="mrow"><div class="mav">✦</div><div class="mbody"><div class="mmeta"><span class="mname">Tekion Design Assistant</span><span class="mtime">${t}</span></div><div class="mtext">${txt}</div></div></div>`;
 const wHTML=inner=>`<div class="wrow"><div class="wspc"></div><div class="wwrap">${inner}</div></div>`;
@@ -828,38 +828,55 @@ const W7=`<div class="wcard">
 </div>`;
 
 const W8=`<div class="wcard">
-  <div class="tl-wrap">
-    <div class="tl-hd"><div class="wh-t" style="font-family:'Playfair Display',serif">Brief drops. Two weeks. Showcase.</div><div class="tl-cycle">↺ Bi-weekly</div></div>
-    <div class="tl-track" style="max-width:480px;margin:0 auto;">
-      <div class="tnode"><div class="tdot" style="background:var(--amber)">1</div><div class="tweek" style="color:var(--amber)">Day 1</div><div class="tlabel">Brief drops</div><div class="tdetail">Pick a direction.<br>Two weeks to explore.</div></div>
-      <div class="tnode"><div class="tdot" style="background:var(--green)">2</div><div class="tweek" style="color:var(--green)">Day 14</div><div class="tlabel">Showcase</div><div class="tdetail">Present your concept.<br>Get feedback. Go again.</div></div>
+  <div class="whdr">
+    <div class="wh-t">One sprint. One concept. One demo day.</div>
+    <div class="wh-s">This runs every two weeks, aligned to our sprint cycle. Demo day date will be shared soon.</div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--bdr);">
+    <div style="background:var(--card);padding:1.25rem 1.4rem;">
+      <div style="font-size:1.6rem;margin-bottom:.65rem;">🧭</div>
+      <div style="font-family:'Playfair Display',serif;font-size:.95rem;font-weight:800;margin-bottom:.3rem;">Explore</div>
+      <div style="font-size:.77rem;color:var(--mut);line-height:1.6;">Pick a direction from the brief. Start sketching the moment you want to solve.</div>
     </div>
-    <div class="tl-repeat"><span style="font-size:1rem;color:var(--amber)">↺</span><span>Day 15: same brief, fresh cycle. The topic stays open until we've fully explored it.</span></div>
+    <div style="background:var(--card);padding:1.25rem 1.4rem;">
+      <div style="font-size:1.6rem;margin-bottom:.65rem;">🛠</div>
+      <div style="font-family:'Playfair Display',serif;font-size:.95rem;font-weight:800;margin-bottom:.3rem;">Design</div>
+      <div style="font-size:.77rem;color:var(--mut);line-height:1.6;">Build it in Figma or Figma Make. One concept minimum, more is encouraged.</div>
+    </div>
+    <div style="background:var(--card);padding:1.25rem 1.4rem;">
+      <div style="font-size:1.6rem;margin-bottom:.65rem;">🎤</div>
+      <div style="font-family:'Playfair Display',serif;font-size:.95rem;font-weight:800;margin-bottom:.3rem;">Present</div>
+      <div style="font-size:.77rem;color:var(--mut);line-height:1.6;">Walk the team through your widget on demo day. Date coming soon from DesignOps.</div>
+    </div>
+  </div>
+  <div style="padding:1rem 1.4rem;display:flex;align-items:center;gap:.65rem;border-top:1px solid var(--bdr);">
+    <span style="font-size:1rem;color:var(--amber);">↺</span>
+    <span style="font-size:.78rem;color:var(--mut);">Sprint ends, demo day runs, new cycle starts. Same brief, fresh take every two weeks.</span>
   </div>
 </div>`;
 
 const W9=`<div class="wcard">
-  <div class="whdr"><div class="wh-t">How to get involved</div><div class="wh-s">No formal submission. Just let the DesignOps team know you're in.</div></div>
+  <div class="whdr"><div class="wh-t">How to get involved</div><div class="wh-s">There's no formal submission yet. We'll keep it lightweight, but structured.</div></div>
   <div style="display:flex;flex-direction:column;gap:0;">
     <div style="display:flex;gap:.85rem;align-items:flex-start;padding:1.1rem 1.4rem;border-bottom:1px solid var(--bdr);">
       <div style="width:32px;height:32px;border-radius:8px;background:rgba(232,168,56,.1);border:1px solid rgba(232,168,56,.2);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;margin-top:.05rem;">✦</div>
       <div>
-        <div style="font-size:.88rem;font-weight:600;margin-bottom:.2rem;">Ping the DesignOps team</div>
-        <div style="font-size:.77rem;color:var(--mut);line-height:1.6;">Drop a message in <strong>#component-showcase</strong> on Slack to say you're participating. Just a line on what direction you're exploring is enough.</div>
+        <div style="font-size:.88rem;font-weight:600;margin-bottom:.2rem;">Let DesignOps know you're in</div>
+        <div style="font-size:.77rem;color:var(--mut);line-height:1.6;">The DesignOps team will share a short form for you to fill in with your concept details and the direction you're exploring.</div>
       </div>
     </div>
     <div style="display:flex;gap:.85rem;align-items:flex-start;padding:1.1rem 1.4rem;border-bottom:1px solid var(--bdr);">
       <div style="width:32px;height:32px;border-radius:8px;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.2);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;margin-top:.05rem;">💬</div>
       <div>
         <div style="font-size:.88rem;font-weight:600;margin-bottom:.2rem;">Share what you're working on</div>
-        <div style="font-size:.77rem;color:var(--mut);line-height:1.6;">What's the widget? What moment does it solve? Which category are you going for? No deck needed. A quick note or early Figma link is plenty.</div>
+        <div style="font-size:.77rem;color:var(--mut);line-height:1.6;">Use the form to add a quick description of your widget, the moment it solves, and any early Figma links or notes.</div>
       </div>
     </div>
     <div style="display:flex;gap:.85rem;align-items:flex-start;padding:1.1rem 1.4rem;">
       <div style="width:32px;height:32px;border-radius:8px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.2);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;margin-top:.05rem;">🎤</div>
       <div>
-        <div style="font-size:.88rem;font-weight:600;margin-bottom:.2rem;">Present on Day 14</div>
-        <div style="font-size:.77rem;color:var(--mut);line-height:1.6;">Walk the team through your concept. The goal is conversation, not a polished presentation. Bring questions, bring rough ideas, bring anything that moves.</div>
+        <div style="font-size:.88rem;font-weight:600;margin-bottom:.2rem;">Get ready to present</div>
+        <div style="font-size:.77rem;color:var(--mut);line-height:1.6;">We'll announce the next showcase date soon. Use the time to refine your idea so you're ready to walk the team through it when your slot comes up.</div>
       </div>
     </div>
   </div>
@@ -919,8 +936,8 @@ const STEPS=[
   {msgs:[{t:"Six real moments, all live. Click the tabs and interact with them.",d:0}],w:W5,wD:600,chips:[{l:"What's the brief?",s:5}],cD:1200},
   {msgs:[{t:"Open-ended on purpose. Mix directions freely, and submit more than one concept.",d:0}],w:W6,wD:600,chips:[{l:"How will entries be judged?",s:6}],cD:1100},
   {msgs:[{t:"Four things. The first is the most important.",d:0}],w:W7,wD:500,chips:[{l:"What's the timeline?",s:7}],cD:1000},
-  {msgs:[{t:"Two weeks per cycle. Same brief, fresh round.",d:0}],w:W8,wD:500,chips:[{l:"How do I get involved?",s:8}],cD:1000},
-  {msgs:[{t:"No formal submission. Just loop in the DesignOps team and show up on Day 14.",d:0}],w:W9,wD:500,chips:[{l:"Where can I learn more about A2UI?",s:9},{l:"One more thing →",s:10}],cD:1100},
+  {msgs:[{t:"It runs every sprint. Explore, design, present. Demo day date will be shared by DesignOps.",d:0}],w:W8,wD:500,chips:[{l:"How do I get involved?",s:8}],cD:1000},
+  {msgs:[{t:"How to get involved — there's no formal submission yet. We'll keep it lightweight, but structured.",d:0}],w:W9,wD:500,chips:[{l:"Where can I learn more about A2UI?",s:9},{l:"One more thing →",s:10}],cD:1100},
   {msgs:[{t:"Best starting points, from the official spec to the designer's guide.",d:0}],w:W10,wD:500,chips:[{l:"One more thing →",s:10}],cD:1000},
   {msgs:[],w:W11,wD:300,chips:[],cD:0},
 ];
