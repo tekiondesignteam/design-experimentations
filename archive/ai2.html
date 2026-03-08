@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI-Native Dealership Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Fragment+Mono&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script>
@@ -29,6 +29,7 @@
   @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
   @keyframes shimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
   /* mobile */
   @media (max-width: 767px) {
@@ -42,6 +43,13 @@
     }
     .alert-split > div { border-right: none !important; }
     .main-wrap { padding: 20px 16px 40px !important; }
+    .carryover-grid { grid-template-columns: 1fr !important; }
+    .bucket-grid { grid-template-columns: 1fr 1fr !important; row-gap: 16px !important; }
+    .bucket-item { padding: 0 8px !important; }
+    .bucket-item-0 { padding-left: 0 !important; }
+    .bucket-item-1 { border-right: none !important; }
+    .bucket-item-2 { padding-left: 0 !important; border-right: 1px solid #F0F0F0 !important; }
+    .bucket-item-3 { border-right: none !important; }
   }
 
   /* tablet */
@@ -55,7 +63,7 @@
 <script type="text/babel">
 const { useState, useEffect, useRef } = React;
 
-const mono = "'Fragment Mono', monospace";
+const mono = sans;
 const sans = "'Manrope', sans-serif";
 
 const NARRATIVE = "Your morning has 3 things that need you. A recall, an absent rep, and a delayed delivery. The good news: 4 carryover deals and 5 appointments give you a real shot at closing the gap on target.";
@@ -82,19 +90,29 @@ const AUTO_RESOLVED = [
 ];
 
 const DEALS = [
-  { id: 1, customer: "Daniel Thompson", vehicle: "RAV4 XLE", heat: 62, day: 3, last: "18h ago", rep: "Emily Carter", fin: "pending", gross: 3200, note: "Waiting on trade payoff" },
-  { id: 2, customer: "Lisa Rodriguez", vehicle: "Camry SE", heat: 78, day: 1, last: "2h ago", rep: "Jason Lee", fin: "approved", gross: 2800, note: "Returning at noon to sign" },
-  { id: 3, customer: "Mark Henderson", vehicle: "Tacoma SR5", heat: 45, day: 4, last: "26h ago", rep: "Chris Walker", fin: "pending", gross: 4100, note: "No response to last 2 calls" },
-  { id: 4, customer: "Jennifer Patel", vehicle: "Highlander Ltd", heat: 0, day: 2, last: "4h ago", rep: "Emily Carter", fin: "approved", gross: 5200, note: "RECALL HOLD" },
-  { id: 5, customer: "Kevin Brooks", vehicle: "Corolla LE", heat: 88, day: 0, last: "30m ago", rep: "Marcus Green", fin: "approved", gross: 1800, note: "Closing paperwork in progress" },
+  { id: 1, customer: "Daniel Thompson", vehicle: "2024 RAV4 XLE",       day: 3, last: "18h ago", rep: "Emily Carter",  fin: "pending",  gross: 3200, status: "waiting_third_party",   blocker: "Trade payoff pending",          cta: null,      ini: "DT", color: "#6B7280" },
+  { id: 2, customer: "Lisa Rodriguez",  vehicle: "2024 Camry SE",        day: 1, last: "2h ago",  rep: "Jason Lee",     fin: "approved", gross: 2800, status: "ready_to_close",        blocker: "Returning at noon to sign",      cta: "confirm", ini: "LR", color: "#2563EB" },
+  { id: 3, customer: "Mark Henderson",  vehicle: "2024 Tacoma SR5",      day: 4, last: "26h ago", rep: "Chris Walker",  fin: "pending",  gross: 4100, status: "customer_unresponsive", blocker: "No response to last 2 calls",    cta: "call",    ini: "MH", color: "#DC2626" },
+  { id: 4, customer: "Jennifer Patel",  vehicle: "2024 Highlander XLE",  day: 2, last: "4h ago",  rep: "Emily Carter",  fin: "approved", gross: 5200, status: "on_hold",               blocker: "Recall hold — unit pulled",      cta: null,      ini: "JP", color: "#7C3AED" },
+  { id: 5, customer: "Kevin Brooks",    vehicle: "2024 Corolla LE",      day: 0, last: "30m ago", rep: "Marcus Green",  fin: "approved", gross: 1800, status: "ready_to_close",        blocker: "Closing paperwork in progress",  cta: "confirm", ini: "KB", color: "#059669" },
+  { id: 6, customer: "Rachel Kim",      vehicle: "2024 Venza XLE",       day: 2, last: "6h ago",  rep: "Jason Lee",     fin: "pending",  gross: 3600, status: "waiting_third_party",   blocker: "Finance review pending",         cta: null,      ini: "RK", color: "#D97706" },
+  { id: 7, customer: "Tom Vasquez",     vehicle: "2024 Tacoma TRD",      day: 1, last: "5h ago",  rep: "Chris Walker",  fin: "pending",  gross: 4800, status: "customer_unresponsive", blocker: "Left voicemail, awaiting reply",  cta: "call",    ini: "TV", color: "#DC2626" },
+  { id: 8, customer: "Amanda White",    vehicle: "2024 RAV4 Hybrid",     day: 3, last: "12h ago", rep: "Marcus Green",  fin: "approved", gross: 2400, status: "ready_to_close",        blocker: "Confirmed 3 PM appointment",     cta: "confirm", ini: "AW", color: "#059669" },
 ];
 
 const APPTS = [
-  { time: "9:30", p: "AM", customer: "Michael Davis", vehicle: "RAV4 XLE", type: "Test Drive", rep: "Chris Walker", mine: true },
-  { time: "11:00", p: "AM", customer: "Sarah Lopez", vehicle: "Corolla LE", type: "Sales", rep: "Jason Lee", mine: false },
-  { time: "1:30", p: "PM", customer: "Robert Nguyen", vehicle: "Camry SE", type: "Sales", rep: "Marcus Green", mine: true },
-  { time: "4:00", p: "PM", customer: "Angela Brooks", vehicle: "Highlander XLE", type: "Test Drive", rep: "Chris Walker", mine: true },
-  { time: "5:30", p: "PM", customer: "Tom Richards", vehicle: "Tacoma TRD", type: "Sales", rep: "Jason Lee", mine: false },
+  { time: "9:30",  p: "AM", customer: "Michael Davis",   vehicle: "2024 RAV4 XLE",       type: "Test Drive", rep: "Chris Walker",  mine: true },
+  { time: "9:30",  p: "AM", customer: "Sarah Lopez",     vehicle: "2024 Corolla LE",     type: "Sales",      rep: "Jason Lee",    mine: false },
+  { time: "10:00", p: "AM", customer: "Robert Nguyen",   vehicle: "2024 Camry SE",       type: "Sales",      rep: "Marcus Green", mine: true },
+  { time: "10:00", p: "AM", customer: "Angela Brooks",   vehicle: "2024 Highlander XLE", type: "Test Drive", rep: "Chris Walker", mine: true },
+  { time: "10:30", p: "AM", customer: "Tom Richards",    vehicle: "2024 Tacoma TRD",     type: "Sales",      rep: "Jason Lee",    mine: false },
+  { time: "10:30", p: "AM", customer: "Diana Morales",   vehicle: "2024 Venza XLE",      type: "Sales",      rep: "Marcus Green", mine: false },
+  { time: "11:00", p: "AM", customer: "Kevin Foster",    vehicle: "2024 RAV4 Hybrid",    type: "Test Drive", rep: "Chris Walker", mine: true },
+  { time: "11:00", p: "AM", customer: "Priya Shah",      vehicle: "2024 Camry Hybrid",   type: "Sales",      rep: "Jason Lee",    mine: false },
+  { time: "11:15", p: "AM", customer: "James Okafor",    vehicle: "2024 Tacoma SR5",     type: "Test Drive", rep: "Marcus Green", mine: false },
+  { time: "11:15", p: "AM", customer: "Linda Chen",      vehicle: "2024 Corolla Cross",  type: "Sales",      rep: "Chris Walker", mine: true },
+  { time: "11:30", p: "AM", customer: "Marcus Bell",     vehicle: "2024 RAV4 XLE",       type: "Sales",      rep: "Jason Lee",    mine: false },
+  { time: "11:30", p: "AM", customer: "Sofia Reyes",     vehicle: "2024 Highlander Ltd", type: "Test Drive", rep: "Marcus Green", mine: true },
 ];
 
 const LEADS = [
@@ -161,7 +179,7 @@ function B({ children, sx = {}, delay = 0 }) {
   return (<div style={{ background: "#FFF", borderRadius: 8, border: "1px solid #EBEBEB", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02)", opacity: v ? 1 : 0, transform: v ? "translateY(0)" : "translateY(6px)", transition: "opacity 0.3s ease, transform 0.3s ease", display: "flex", flexDirection: "column", ...sx }}>{children}</div>);
 }
 
-function Bp({ children, sx = {} }) { return <div style={{ padding: 16, flex: 1, ...sx }}>{children}</div>; }
+function Bp({ children, sx = {} }) { return <div style={{ padding: 12, flex: 1, ...sx }}>{children}</div>; }
 function ListItem({ children, last }) { return <div style={{ padding: "9px 0", borderBottom: last ? "none" : "1px solid #F5F5F5" }}>{children}</div>; }
 
 function App() {
@@ -176,6 +194,16 @@ function App() {
   const [showHuddleScript, setShowHuddleScript] = useState("idle");
   const [huddleExpanded, setHuddleExpanded] = useState(true);
   const [sourcesModal, setSourcesModal] = useState(false);
+  const [showModifyModal, setShowModifyModal] = useState(false);
+  const [modifySteps, setModifySteps] = useState([]);
+  const [modifyPrompt, setModifyPrompt] = useState("");
+  const [modifyPromptFocused, setModifyPromptFocused] = useState(false);
+  const [modifyThinking, setModifyThinking] = useState(false);
+  const [modifyApplied, setModifyApplied] = useState(false);
+  const [newStepText, setNewStepText] = useState("");
+  const [addingStep, setAddingStep] = useState(false);
+  const [dragItem, setDragItem] = useState(null);
+  const [dragOverItem, setDragOverItem] = useState(null);
 
   const CITATIONS = {
     1: { type: "rep", name: "Jason Lee", ini: "JL", c: "#2563EB", id: "Rep #JL-204", detail: "RAV4 XLE sold at MSRP $38,400", sub: "68 days on lot, 0% discount", metric: "1 Unit Sold" },
@@ -218,13 +246,28 @@ function App() {
   };
   const dismissExecution = (id) => { setAccepted(p => new Set([...p, id])); setExecuting(null); setCompletedSteps([]); setExecutionDone(false); setAlertIndex(0); setShowAllSteps(null); };
 
-  const carryover = DEALS.filter(d => d.day >= 1 && d.heat > 0).sort((a, b) => a.heat - b.heat);
-  const chips = [
-    { label: "Deals closing today", icon: "\u{1F525}", q: "Which deals have the best chance of closing today and what do I need to do?" },
-    { label: "Finance blockers", icon: "\u231B", q: "What deals are stuck waiting on finance approval and what are the stips?" },
-    { label: "Team performance", icon: "\u{1F465}", q: "How is each rep performing this month and who needs coaching?" },
-    { label: "Aged inventory", icon: "\u{1F4E6}", q: "Show me units sitting over 45 days and recommend pricing adjustments" },
+  const [chipSet, setChipSet] = useState(0);
+  const ALL_CHIPS = [
+    [
+      { label: "Deals closing today",  icon: "\u{1F525}", q: "Which deals have the best chance of closing today and what do I need to do?" },
+      { label: "Finance blockers",     icon: "\u231B",    q: "What deals are stuck waiting on finance approval and what are the stips?" },
+      { label: "Team performance",     icon: "\u{1F465}", q: "How is each rep performing this month and who needs coaching?" },
+      { label: "Aged inventory",       icon: "\u{1F4E6}", q: "Show me units sitting over 45 days and recommend pricing adjustments" },
+    ],
+    [
+      { label: "Carryover at risk",    icon: "\u26A0\uFE0F", q: "Which carryover deals are at risk of going cold and what's the best next action?" },
+      { label: "Today's appointments", icon: "\u{1F4C5}", q: "Summarize today's appointments and flag any conflicts or prep needed" },
+      { label: "Recall impact",        icon: "\u{1F6A8}", q: "Which active deals or inventory are affected by open recalls right now?" },
+      { label: "Morning priorities",   icon: "\u2600\uFE0F", q: "What are the top 3 things I need to handle before noon today?" },
+    ],
+    [
+      { label: "Lost deals this week", icon: "\u{1F4C9}", q: "Which deals fell through this week and what were the main reasons?" },
+      { label: "Incoming leads",       icon: "\u{1F4E5}", q: "Show me overnight and this morning's leads and who has been assigned" },
+      { label: "F&I opportunities",    icon: "\u{1F4B0}", q: "Which approved deals have the best back-end opportunity today?" },
+      { label: "Lot coverage gaps",    icon: "\u{1F697}", q: "Are there any segments or price points we're missing on the lot right now?" },
+    ],
   ];
+  const chips = ALL_CHIPS[chipSet];
 
   return (
     <div style={{ minHeight: "100vh", background: "#FFFFFF", fontFamily: sans, color: "#18181B", opacity: loaded ? 1 : 0, transition: "opacity 0.4s" }}>
@@ -260,7 +303,7 @@ function App() {
       <main className="main-wrap" style={{ maxWidth: 860, margin: "0 auto", padding: "32px 24px 48px" }}>
 
         {/* logo above greeting */}
-        <div style={{ marginBottom: 8 }}>
+        <div style={{ marginBottom: 4 }}>
           <svg width="32" height="32" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M3.90234 12.1417C4.35913 11.3507 5.37099 11.0796 6.1621 11.5362C6.95276 11.993 7.22378 13.004 6.76757 13.795C6.31077 14.5862 5.299 14.8573 4.50781 14.4005C3.71688 13.9436 3.44577 12.9327 3.90234 12.1417Z" fill="url(#lg0)"/>
             <path d="M9.85253 11.5362C10.6436 11.0795 11.6554 11.3507 12.1123 12.1417C12.5687 12.9327 12.2976 13.9436 11.5068 14.4005C10.7156 14.8573 9.70386 14.5862 9.24706 13.795C8.79076 13.0039 9.06163 11.9929 9.85253 11.5362Z" fill="url(#lg1)"/>
@@ -275,11 +318,12 @@ function App() {
               <linearGradient id="lg4" x1="1" y1="2" x2="16.8697" y2="5.1208" gradientUnits="userSpaceOnUse"><stop stopColor="#25C8A5"/><stop offset="0.5" stopColor="#1B90B4"/><stop offset="1" stopColor="#1A6CC4"/></linearGradient>
             </defs>
           </svg>
+          <div style={{ fontSize: 11, fontWeight: 500, color: "#C0C0C0", marginTop: 6 }}>Data as of 9:00 AM</div>
         </div>
 
         {/* greeting */}
-        <h1 style={{ fontSize: 24, fontWeight: 700, letterSpacing: "-0.02em", color: "#18181B" }}>Good morning, Mike.</h1>
-        <p style={{ fontSize: 14, fontWeight: 500, color: "#6B7280", lineHeight: 1.65, margin: "6px 0 20px", maxWidth: 720 }}>{NARRATIVE}</p>
+        <h1 style={{ fontSize: 24, fontWeight: 700, letterSpacing: "-0.02em", color: "#18181B", marginBottom: 6 }}>Good morning, Mike.</h1>
+        <p style={{ fontSize: 14, fontWeight: 500, color: "#6B7280", lineHeight: 1.65, margin: "0 0 20px", maxWidth: 720 }}>3 things need your attention — a stop-sale recall, Emily out with 4 open deals, and a delayed delivery. AI already handled 2 items before you opened this. You have 8 carryover deals and 12 appointments today.</p>
 
         {/* prompt bar */}
         <div style={{ marginBottom: 20 }}>
@@ -317,13 +361,20 @@ function App() {
               </button>
             </div>
           </div>
-          <div style={{ display: "flex", gap: 6, marginTop: 8, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: 6, marginTop: 8, flexWrap: "wrap", alignItems: "center" }}>
             {chips.map((ch, ci) => (
-              <button key={ci} onClick={() => { setPromptQuery(ch.q); setPromptFocused(true); promptRef.current?.focus(); }} style={{ display: "flex", alignItems: "center", gap: 5, padding: "5px 11px", borderRadius: 4, background: "#FFF", border: "1px solid #EBEBEB", fontSize: 11, fontWeight: 600, color: "#6B7280", cursor: "pointer", fontFamily: sans, whiteSpace: "nowrap", transition: "all 0.15s" }}
+              <button key={`${chipSet}-${ci}`} onClick={() => { setPromptQuery(ch.q); setPromptFocused(true); promptRef.current?.focus(); }} style={{ display: "flex", alignItems: "center", gap: 5, padding: "5px 11px", borderRadius: 4, background: "#FFF", border: "1px solid #EBEBEB", fontSize: 11, fontWeight: 600, color: "#6B7280", cursor: "pointer", fontFamily: sans, whiteSpace: "nowrap", transition: "all 0.15s" }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = "#C0C0C0"; e.currentTarget.style.color = "#18181B"; e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)"; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = "#EBEBEB"; e.currentTarget.style.color = "#6B7280"; e.currentTarget.style.boxShadow = "none"; }}
               ><span style={{ fontSize: 12 }}>{ch.icon}</span>{ch.label}</button>
             ))}
+            <button onClick={() => setChipSet(s => (s + 1) % ALL_CHIPS.length)} style={{ display: "flex", alignItems: "center", gap: 5, padding: "2px 0", background: "transparent", border: "none", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: sans, whiteSpace: "nowrap", marginLeft: "auto", textDecoration: "underline", textUnderlineOffset: 3, textDecorationColor: "rgba(74,124,247,0.4)" }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                <defs><linearGradient id="shuffle-grad" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse"><stop stopColor="#4A7CF7"/><stop offset="1" stopColor="#A855F7"/></linearGradient></defs>
+                <path d="M16 3h5v5" stroke="url(#shuffle-grad)"/><path d="M21 3l-7 7" stroke="url(#shuffle-grad)"/><path d="M16 21h5v-5" stroke="url(#shuffle-grad)"/><path d="M21 21l-7-7" stroke="url(#shuffle-grad)"/><path d="M3 7h3a4 4 0 0 1 4 4 4 4 0 0 0 4 4h2" stroke="url(#shuffle-grad)"/><path d="M3 17h3a4 4 0 0 0 4-4 4 4 0 0 1 4-4h2" stroke="url(#shuffle-grad)"/>
+              </svg>
+              <span style={{ background: aiGrad, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>New suggestions</span>
+            </button>
           </div>
         </div>
 
@@ -344,12 +395,15 @@ function App() {
               {total >= 2 && <div style={{ position: "absolute", bottom: -4, left: 8, right: 8, height: 20, background: "#FAFAFA", borderRadius: 8, border: "1px solid #EBEBEB", zIndex: 1 }} />}
               <B delay={80} sx={{ position: "relative", zIndex: 2, overflow: "visible" }}>
                 <div className="alert-split" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0, height: 240 }}>
-                  <div style={{ padding: 16, borderRight: "1px solid #F0F0F0", opacity: executing === cur.id ? 0.4 : 1, transition: "opacity 0.4s" }}>
+                  <div style={{ padding: 12, borderRight: "1px solid #F0F0F0", opacity: executing === cur.id ? 0.4 : 1, transition: "opacity 0.4s" }}>
                     <div style={{ fontSize: 15, fontWeight: 700, color: "#18181B", lineHeight: 1.4, marginBottom: 6 }}>{cur.why}</div>
                     <div style={{ fontSize: 13, fontWeight: 500, color: "#6B7280", lineHeight: 1.55 }}>{cur.context}</div>
                   </div>
-                  <div style={{ padding: 16, background: executing === cur.id ? (executionDone ? "#F0FDF9" : "#F8FAFC") : "#F8FAFC", transition: "background 0.4s" }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6, color: executing === cur.id ? (executionDone ? "#15803D" : "#2563EB") : "#2563EB" }}>{executing === cur.id ? (executionDone ? "Actions Completed" : "Running Actions...") : "Recommendation"}</div>
+                  <div style={{ padding: 12, background: executing === cur.id ? (executionDone ? "#F0FDF9" : "#F8FAFC") : "#F8FAFC", transition: "background 0.4s" }}>
+                    <Row sx={{ justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                      <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: executing === cur.id ? (executionDone ? "#15803D" : "#2563EB") : "#2563EB" }}>{executing === cur.id ? (executionDone ? "Actions Completed" : "Running Actions...") : "Recommendation"}</div>
+                      {!executing && <span onClick={() => { setModifySteps([...cur.steps]); setModifyPrompt(""); setModifyApplied(false); setShowModifyModal(true); }} style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF", cursor: "pointer", display: "flex", alignItems: "center", gap: 3, textDecoration: "underline", textUnderlineOffset: 2 }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Modify</span>}
+                    </Row>
                     <div style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.4, marginBottom: 10, color: executing === cur.id && executionDone ? "#15803D" : "#18181B" }}>{cur.action}</div>
 
                     {cur.steps.slice(0, 5).map((step, sti) => {
@@ -371,7 +425,7 @@ function App() {
                     )}
                   </div>
                 </div>
-                <div style={{ padding: "10px 16px 12px", borderTop: "1px solid #F0F0F0", background: "#FAFAFA", borderRadius: "0 0 8px 8px" }}>
+                <div style={{ padding: "10px 12px 12px", borderTop: "1px solid #F0F0F0", background: "#FAFAFA", borderRadius: "0 0 8px 8px" }}>
                   {executing === cur.id ? (<div>
                     <Row sx={{ justifyContent: "space-between", marginBottom: 6 }}>
                       <span style={{ fontSize: 12, fontWeight: 600, color: executionDone ? "#15803D" : "#2563EB" }}>{executionDone ? "All actions completed" : `Executing step ${Math.min(completedSteps.length+1, cur.steps.length)} of ${cur.steps.length}...`}</span>
@@ -405,10 +459,9 @@ function App() {
                     </div>}
                   </div>) : (<>
                     <Row sx={{ justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
-                      <Row className="alert-act" sx={{ gap: 6 }}>
+                      <Row className="alert-act" sx={{ gap: 8 }}>
                         <Btn primary onClick={() => runExecution(cur)}>Go ahead</Btn>
-                        <Btn>Modify</Btn>
-                        <span onClick={() => { setAccepted(p => new Set([...p, cur.id])); setAlertIndex(0); setShowAllSteps(null); }} style={{ fontSize: 13, fontWeight: 600, color: "#9CA3AF", cursor: "pointer", padding: "5px 4px", textDecoration: "underline", textUnderlineOffset: 2 }}>Skip</span>
+                        <span onClick={() => { setAccepted(p => new Set([...p, cur.id])); setAlertIndex(0); setShowAllSteps(null); }} style={{ fontSize: 13, fontWeight: 600, color: "#9CA3AF", cursor: "pointer", padding: "5px 4px", textDecoration: "underline", textUnderlineOffset: 2, marginLeft: 8 }}>Skip</span>
                       </Row>
                       {total > 1 && <Row sx={{ gap: 4 }}>
                         <button onClick={() => { setAlertIndex(i => Math.max(i-1,0)); setShowAllSteps(null); }} disabled={si===0} style={{ width: 28, height: 28, borderRadius: 4, border: "1px solid #EBEBEB", background: si===0 ? "transparent" : "#FFF", color: si===0 ? "#D4D4D4" : "#374151", cursor: si===0 ? "default" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontFamily: sans }}>{"\u2039"}</button>
@@ -459,69 +512,68 @@ function App() {
               backgroundClip: "text",
             }}>AI handled {visible.length} {visible.length === 1 ? "item" : "items"} for you this morning</div>
             <div style={{ fontSize: 13, fontWeight: 500, color: "#9CA3AF", marginBottom: 12 }}>Automated actions completed before you opened the dashboard</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+
+            {/* single card */}
+            <div style={{ background: "#FFF", borderRadius: 8, border: "1px solid #EBEBEB", boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02)", overflow: "hidden" }}>
               {visible.map((ar, ai) => {
                 const isOpen = expandedAuto === ar.id;
                 return (
-                <div key={ar.id} style={{
-                  background: "#FFF", borderRadius: 8, border: "1px solid #EBEBEB",
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02)",
-                  opacity: 0, animation: `fadeSlideIn 0.3s ease ${ai * 0.1}s forwards`,
-                }}>
-                  <div style={{ padding: 16, display: "flex", alignItems: "center", gap: 16 }}>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      {/* title */}
-                      <div style={{ fontSize: 13, fontWeight: 700, color: "#18181B" }}>{ar.rule}</div>
-
-                      {/* description with accent bar */}
-                      <div style={{ display: "flex", gap: 10, marginTop: 8 }}>
-                        <div style={{ width: 3, borderRadius: 2, background: aiGrad, flexShrink: 0, opacity: 0.6 }} />
-                        <div style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", lineHeight: 1.55 }}>{ar.summary}</div>
-                      </div>
-
-                      {/* meta row */}
-                      <Row sx={{ gap: 10, marginTop: 10 }}>
-                        <span style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF", fontFamily: mono }}>{ar.time}</span>
-                        <span style={{ fontSize: 11, fontWeight: 500, color: "#D4D4D4" }}>{"\u2022"}</span>
-                        <span style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF" }}>{ar.actions}</span>
-                      </Row>
-                    </div>
-
-                    <Btn onClick={() => setExpandedAuto(isOpen ? null : ar.id)} sx={{ flexShrink: 0, padding: "5px 12px", fontSize: 12 }}>{isOpen ? "Hide" : "View"}</Btn>
-                  </div>
-
-                  {/* expanded steps */}
-                  {isOpen && (
-                    <div style={{ padding: "0 16px 16px", borderTop: "1px solid #F3F4F6" }}>
-                      <div style={{ marginTop: 12 }}>
-                        {ar.steps.map((step, si) => (
-                          <Row key={si} sx={{ gap: 8, padding: "5px 0", borderBottom: si < ar.steps.length - 1 ? "1px solid #F5F5F5" : "none" }}>
-                            <div style={{ width: 18, height: 18, borderRadius: 4, flexShrink: 0, background: `${ar.accentColor}10`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 800, color: ar.accentColor, fontFamily: mono }}>{si + 1}</div>
-                            <span style={{ fontSize: 12, fontWeight: 500, color: "#374151", lineHeight: 1.45 }}>{step}</span>
+                  <div key={ar.id} style={{ borderBottom: ai < visible.length - 1 ? "1px solid #F5F5F5" : "none" }}>
+                    <div style={{ display: "flex", alignItems: "stretch", minHeight: 64 }}>
+                      {/* content with internal strip */}
+                      <div style={{ flex: 1, minWidth: 0, padding: "12px 12px", display: "flex", gap: 10, alignItems: "stretch" }}>
+                        {/* accent strip — internal */}
+                        <div style={{ width: 3, borderRadius: 2, background: aiGrad, flexShrink: 0 }} />
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          {/* title row: title + meta on same line */}
+                          <Row sx={{ gap: 10, marginBottom: 5, flexWrap: "wrap" }}>
+                            <div style={{ fontSize: 13, fontWeight: 700, color: "#18181B" }}>{ar.rule}</div>
+                            <Row sx={{ gap: 5 }}>
+                              <span style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF" }}>{ar.actions}</span>
+                              <span style={{ fontSize: 11, color: "#D4D4D4" }}>{"\u2022"}</span>
+                              <span style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF" }}>{ar.time}</span>
+                            </Row>
                           </Row>
-                        ))}
-                      </div>
-
-                      {/* reversibility + actions */}
-                      <div style={{ marginTop: 12, padding: "10px 12px", borderRadius: 6, background: "#FFFBEB", border: "1px solid #FDE68A" }}>
-                        <div style={{ fontSize: 11, fontWeight: 500, color: "#92400E", lineHeight: 1.5 }}>
-                          {ar.sent} {ar.sent === 1 ? "action" : "actions"} already sent ({ar.sentChannels}) and cannot be reversed.
-                          {ar.reversible > 0 && ` ${ar.reversible} system ${ar.reversible === 1 ? "change" : "changes"} can still be undone.`}
+                          <div style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", lineHeight: 1.55 }}>{ar.summary}</div>
                         </div>
                       </div>
 
-                      <Row sx={{ gap: 8, marginTop: 10 }}>
-                        {ar.reversible > 0 && (
-                          <Btn sx={{ fontSize: 11, padding: "5px 12px", color: "#92400E" }} onClick={() => setUndoneAuto(p => new Set([...p, ar.id]))}>
-                            Undo {ar.reversible} reversible {ar.reversible === 1 ? "action" : "actions"}
-                          </Btn>
-                        )}
-                        <Btn sx={{ fontSize: 11, padding: "5px 12px" }}>Stop Automation</Btn>
-                      </Row>
+                      {/* View button — centered vertically */}
+                      <div style={{ display: "flex", alignItems: "center", padding: "0 12px", flexShrink: 0 }}>
+                        <Btn onClick={() => setExpandedAuto(isOpen ? null : ar.id)} sx={{ padding: "5px 12px", fontSize: 12 }}>{isOpen ? "Hide" : "View"}</Btn>
+                      </div>
                     </div>
-                  )}
-                </div>
-              );})}
+
+                    {/* expanded steps */}
+                    {isOpen && (
+                      <div style={{ padding: "0 12px 12px 15px", borderTop: "1px solid #F3F4F6" }}>
+                        <div style={{ marginTop: 12 }}>
+                          {ar.steps.map((step, si) => (
+                            <Row key={si} sx={{ gap: 8, padding: "5px 0", borderBottom: si < ar.steps.length - 1 ? "1px solid #F5F5F5" : "none" }}>
+                              <div style={{ width: 18, height: 18, borderRadius: 4, flexShrink: 0, background: "#EFF6FF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 800, color: "#2563EB" }}>{si + 1}</div>
+                              <span style={{ fontSize: 12, fontWeight: 500, color: "#374151", lineHeight: 1.45 }}>{step}</span>
+                            </Row>
+                          ))}
+                        </div>
+                        <div style={{ marginTop: 12, padding: "10px 12px", borderRadius: 6, background: "#FFFBEB", border: "1px solid #FDE68A" }}>
+                          <div style={{ fontSize: 11, fontWeight: 500, color: "#92400E", lineHeight: 1.5 }}>
+                            {ar.sent} {ar.sent === 1 ? "action" : "actions"} already sent ({ar.sentChannels}) and cannot be reversed.
+                            {ar.reversible > 0 && ` ${ar.reversible} system ${ar.reversible === 1 ? "change" : "changes"} can still be undone.`}
+                          </div>
+                        </div>
+                        <Row sx={{ gap: 8, marginTop: 10 }}>
+                          {ar.reversible > 0 && (
+                            <Btn sx={{ fontSize: 11, padding: "5px 12px", color: "#92400E" }} onClick={() => setUndoneAuto(p => new Set([...p, ar.id]))}>
+                              Undo {ar.reversible} reversible {ar.reversible === 1 ? "action" : "actions"}
+                            </Btn>
+                          )}
+                          <Btn sx={{ fontSize: 11, padding: "5px 12px" }}>Stop Automation</Btn>
+                        </Row>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>);
         })()}
@@ -534,7 +586,7 @@ function App() {
           <div style={{ gridColumn: "1 / -1" }}>
             <B delay={170}>
               {/* persistent header */}
-              <div style={{ padding: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div style={{ padding: 12, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <Row sx={{ gap: 10 }}>
                   <div style={{ width: 32, height: 32, borderRadius: 6, background: "#F3F0FF", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
@@ -551,10 +603,7 @@ function App() {
                   <span style={{ fontSize: 11, fontWeight: 600, color: "#7C3AED", flexShrink: 0 }}>Generating...</span>
                 )}
                 {showHuddleScript === "ready" && (
-                  <span onClick={() => setHuddleExpanded(e => !e)} style={{ fontSize: 12, fontWeight: 600, color: "#9CA3AF", cursor: "pointer", flexShrink: 0, transition: "color 0.15s" }}
-                    onMouseEnter={e => e.currentTarget.style.color = "#374151"}
-                    onMouseLeave={e => e.currentTarget.style.color = "#9CA3AF"}
-                  >{huddleExpanded ? "Hide" : "Show"}</span>
+                  <Btn onClick={() => setHuddleExpanded(e => !e)} sx={{ flexShrink: 0, fontSize: 12, padding: "5px 12px" }}>{huddleExpanded ? "Hide" : "Show"}</Btn>
                 )}
               </div>
 
@@ -567,14 +616,11 @@ function App() {
                   animation: "shimmer 1.8s ease-in-out infinite",
                 });
                 const sections = [
-                  { titleW: "38%", lines: ["92%", "70%"] },
-                  { titleW: "48%", lines: ["95%", "60%"] },
-                  { titleW: "32%", lines: ["90%", "88%", "45%"] },
-                  { titleW: "42%", lines: ["94%", "55%"] },
-                  { titleW: "36%", lines: ["88%", "50%"] },
+                  { titleW: "30%", lines: ["88%", "65%"] },
+                  { titleW: "38%", lines: ["92%", "55%"] },
                 ];
                 return (
-                  <div style={{ padding: "0 16px 16px", borderTop: "1px solid #F3F4F6" }}>
+                  <div style={{ padding: "0 12px 12px", borderTop: "1px solid #F3F4F6" }}>
                     <div style={{ paddingTop: 14, display: "flex", flexDirection: "column", gap: 18 }}>
                       {sections.map((s, si) => (
                         <div key={si} style={{ opacity: 1 - si * 0.08 }}>
@@ -594,78 +640,66 @@ function App() {
 
               {/* ready script */}
               {showHuddleScript === "ready" && huddleExpanded && (
-                <div style={{ padding: "0 16px 16px" }}>
-                  <div style={{ borderTop: "1px solid #F3F4F6", paddingTop: 14, display: "flex", flexDirection: "column", gap: 18 }}>
-
-                    {/* Wins */}
-                    <div>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: "#18181B", marginBottom: 8 }}>Good morning, team. Quick wins from yesterday.</div>
-                      <div style={{ display: "flex", flexDirection: "column", gap: 6, paddingLeft: 2 }}>
-                        {[
-                          { name: "Jason", text: "Moved the aged RAV4, 68 days, full sticker. No discount. That's how it's done." },
-                          { name: "Chris", text: "Held 3 points on back-end for the Tacoma. Clean F&I." },
-                          { name: "Marcus", text: "Converted the overnight TrueCar lead same morning. Fast hands." },
-                        ].map((w, i) => (
-                          <div key={i} style={{ fontSize: 13, fontWeight: 500, color: "#374151", lineHeight: 1.6 }}>
-                            <span style={{ fontWeight: 700 }}>{w.name}</span> &middot; {w.text}
+                <div style={{ padding: "0 12px 12px" }}>
+                  <div style={{ paddingTop: 14, display: "flex", flexDirection: "column", gap: 12 }}>
+                    {[
+                      {
+                        label: "🏆 Wins", color: "#D97706",
+                        items: [
+                          <><span style={{ fontWeight: 700 }}>Jason</span> — moved aged RAV4 at full sticker, 68 days, zero discount.</>,
+                          <><span style={{ fontWeight: 700 }}>Chris</span> — held 3 back-end points on the Tacoma. Clean F&amp;I.</>,
+                          <><span style={{ fontWeight: 700 }}>Marcus</span> — converted an overnight TrueCar lead same morning.</>,
+                        ]
+                      },
+                      {
+                        label: "👥 Coverage", color: "#2563EB",
+                        items: [
+                          <><span style={{ fontWeight: 700 }}>Emily is out.</span> Walker takes Thompson + Henderson. Lee takes Rodriguez. Patel deal holds until tomorrow. AI already notified everyone.</>,
+                          <><span style={{ fontWeight: 700 }}>Marcus</span> arriving at 10 AM — Davis moved to Walker at 9:30.</>,
+                        ]
+                      },
+                      {
+                        label: "📅 Today", color: "#059669",
+                        items: [
+                          <>5 appointments — Lopez delivery pushed to 4 PM (PDI delay, loaner arranged)</>,
+                          <>Rodriguez returning at noon to sign · Brooks closing paperwork now</>,
+                          <><span style={{ fontWeight: 700 }}>Recall:</span> Patel's Highlander pulled. Push Venza XLE at $46,200 as swap.</>,
+                        ]
+                      },
+                      {
+                        label: "📦 Inventory", color: "#7C3AED",
+                        items: [
+                          <>2 Venza XLEs at <span style={{ fontWeight: 700, color: "#D97706" }}>60+ days</span> — steer walk-ins there today</>,
+                          <>Tacoma SR5 at <span style={{ fontWeight: 700, color: "#DC2626" }}>72 days</span>, Henderson stalled — land any Tacoma interest on this unit</>,
+                        ]
+                      },
+                      {
+                        label: "🎯 Coaching", color: "#374151",
+                        items: [
+                          <><span style={{ fontWeight: 700 }}>Lee</span> — riding along on Lopez test drive. Keep the streak going.</>,
+                          <><span style={{ fontWeight: 700 }}>Green</span> — great overnight response. Keep it under 4 hours.</>,
+                        ]
+                      },
+                    ].map((section, si) => (
+                      <div key={si} style={{ display: "flex", gap: 10 }}>
+                        <div style={{ width: 3, borderRadius: 2, background: section.color, flexShrink: 0, opacity: 0.45, alignSelf: "stretch" }} />
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontSize: 11, fontWeight: 700, color: section.color, marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.04em" }}>{section.label}</div>
+                          <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                            {section.items.map((item, ii) => (
+                              <div key={ii} style={{ fontSize: 13, fontWeight: 500, color: "#374151", lineHeight: 1.6, display: "flex", gap: 6 }}>
+                                <span style={{ color: "#D4D4D4", flexShrink: 0 }}>·</span>
+                                <span>{item}</span>
+                              </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Coverage */}
-                    <div>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: "#18181B", marginBottom: 8 }}>Coverage today.</div>
-                      <div style={{ display: "flex", flexDirection: "column", gap: 4, paddingLeft: 2 }}>
-                        <div style={{ fontSize: 13, fontWeight: 500, color: "#374151", lineHeight: 1.6 }}><span style={{ fontWeight: 700 }}>Emily</span> is out. 4 open deals need coverage.</div>
-                        <div style={{ fontSize: 13, fontWeight: 500, color: "#6B7280", lineHeight: 1.6, paddingLeft: 12 }}>
-                          <span style={{ fontWeight: 600, color: "#374151" }}>Walker</span> picks up Thompson + Henderson<br />
-                          <span style={{ fontWeight: 600, color: "#374151" }}>Lee</span> picks up Rodriguez<br />
-                          <span style={{ fontWeight: 600, color: "#374151" }}>Patel deal</span> is on hold until Emily's back tomorrow
                         </div>
-                        <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", paddingLeft: 12, marginTop: 2 }}>AI already reassigned and notified everyone.</div>
                       </div>
-                    </div>
+                    ))}
 
-                    {/* Board */}
-                    <div>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: "#18181B", marginBottom: 8 }}>Today's board. 5 appointments.</div>
-                      <div style={{ display: "flex", flexDirection: "column", gap: 3, paddingLeft: 2 }}>
-                        {[
-                          { time: "9:30", name: "Davis", type: "Test drive", rep: "Walker", note: "RAV4 XLE" },
-                          { time: "11:00", name: "Lopez", type: "Delivery", rep: "Lee", note: "should be clean" },
-                          { time: "1:30", name: "Nguyen", type: "Return visit", rep: "Green", note: "close opportunity" },
-                          { time: "4:00", name: "Brooks", type: "Referral", rep: "Walker", note: "high intent" },
-                          { time: "5:30", name: "Richards", type: "Phone lead", rep: "Lee", note: "needs OTD confirmed" },
-                        ].map((a, i) => (
-                          <div key={i} style={{ display: "flex", gap: 8, fontSize: 13, fontWeight: 500, color: "#374151", lineHeight: 1.6 }}>
-                            <span style={{ fontFamily: mono, fontWeight: 700, color: "#9CA3AF", minWidth: 38, flexShrink: 0 }}>{a.time}</span>
-                            <span><span style={{ fontWeight: 700 }}>{a.name}</span> · {a.type} · {a.rep} · <span style={{ color: "#6B7280" }}>{a.note}</span></span>
-                          </div>
-                        ))}
-                      </div>
+                    <div style={{ paddingTop: 8, borderTop: "1px solid #F3F4F6" }}>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: "#18181B" }}>Let's have a good day. Floor's open.</div>
                     </div>
-
-                    {/* Inventory */}
-                    <div>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: "#18181B", marginBottom: 8 }}>Inventory watch.</div>
-                      <div style={{ display: "flex", flexDirection: "column", gap: 4, paddingLeft: 2 }}>
-                        <div style={{ fontSize: 13, fontWeight: 500, color: "#374151", lineHeight: 1.6 }}>Highlander recall pulled one unit. Patel's deal is affected.</div>
-                        <div style={{ fontSize: 13, fontWeight: 500, color: "#374151", lineHeight: 1.6 }}>Two Venza XLEs sitting <span style={{ fontWeight: 700, color: "#D97706" }}>60+ days</span>. Push walk-ins there.</div>
-                        <div style={{ fontSize: 13, fontWeight: 500, color: "#374151", lineHeight: 1.6 }}>Tacoma at <span style={{ fontWeight: 700, color: "#DC2626" }}>72 days</span>. Henderson has it but nothing's moving. If you get Tacoma interest, land them on that unit.</div>
-                      </div>
-                    </div>
-
-                    {/* Coaching */}
-                    <div>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: "#18181B", marginBottom: 8 }}>One-on-ones.</div>
-                      <div style={{ display: "flex", flexDirection: "column", gap: 4, paddingLeft: 2 }}>
-                        <div style={{ fontSize: 13, fontWeight: 500, color: "#374151", lineHeight: 1.6 }}><span style={{ fontWeight: 700 }}>Lee</span> · Yesterday broke the streak. I'm riding along on the Lopez test drive. Let's keep this going.</div>
-                        <div style={{ fontSize: 13, fontWeight: 500, color: "#374151", lineHeight: 1.6 }}><span style={{ fontWeight: 700 }}>Green</span> · Great job on the overnight lead. Keep response time under 4 hours.</div>
-                      </div>
-                    </div>
-
-                    <div style={{ fontSize: 13, fontWeight: 700, color: "#18181B" }}>Let's have a good day. Floor's open.</div>
                   </div>
 
                   {/* toolbar */}
@@ -688,25 +722,18 @@ function App() {
                         onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#9CA3AF"; }}
                       ><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>
                     </Row>
-                    <button onClick={() => setSourcesModal(true)} style={{
-                      display: "flex", alignItems: "center", gap: 6, padding: "6px 12px",
-                      borderRadius: 20, border: "1px solid #EBEBEB", background: "#FFF",
-                      fontSize: 12, fontWeight: 600, color: "#374151", cursor: "pointer",
-                      fontFamily: sans, transition: "all 0.15s",
-                    }}
+                    <button onClick={() => setSourcesModal(true)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 12px", borderRadius: 20, border: "1px solid #EBEBEB", background: "#FFF", fontSize: 12, fontWeight: 600, color: "#374151", cursor: "pointer", fontFamily: sans, transition: "all 0.15s" }}
                       onMouseEnter={e => { e.currentTarget.style.borderColor = "#C0C0C0"; e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)"; }}
-                      onMouseLeave={e => { e.currentTarget.style.borderColor = "#EBEBEB"; e.currentTarget.style.boxShadow = "none"; }}
-                    >
+                      onMouseLeave={e => { e.currentTarget.style.borderColor = "#EBEBEB"; e.currentTarget.style.boxShadow = "none"; }}>
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
                       {Object.keys(CITATIONS).length} Sources
                     </button>
                   </div>
 
-                  {/* disclaimer */}
                   <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid #F3F4F6" }}>
                     <span style={{ fontSize: 11, fontWeight: 500, color: "#9CA3AF", lineHeight: 1.5 }}>
                       <span style={{ display: "inline-flex", alignItems: "center", padding: "1px 5px", borderRadius: 3, background: "#F3F0FF", color: "#7C3AED", fontSize: 9, fontWeight: 700, letterSpacing: "0.03em", marginRight: 6, verticalAlign: "middle", lineHeight: 1.4 }}>AI</span>
-                      Generated at 9:02 AM. This script was generated by AI based on your dealership data. Review before sharing with your team. Numbers and recommendations may not reflect real-time changes.
+                      Generated at 9:02 AM. Review before sharing with your team.
                     </span>
                   </div>
                 </div>
@@ -753,132 +780,168 @@ function App() {
             </div>
           )}
 
-          {/* Appointments */}
-          <B delay={180}><Bp sx={{ paddingBottom: 10 }}>
-            {/* header with segment tabs */}
+          {/* ── ROW 2 col 1: Carryover Deals ── */}
+          <B delay={180}><Bp>
             <Row sx={{ justifyContent: "space-between", marginBottom: 12 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Appointments</div>
+              <Row sx={{ gap: 6, alignItems: "baseline" }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Carryover Deals</div>
+                <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>{DEALS.length}</span>
+              </Row>
               <button style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid #E5E7EB", background: "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = "#C0C0C0"; e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)"; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.boxShadow = "none"; }}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
               </button>
             </Row>
-
-
             {(() => {
-              const filtered = apptTab === "my" ? APPTS.filter(a => a.mine) : APPTS;
-              const typeColor = { "Test Drive": "#D97706", "Sales": "#2563EB" };
-              return (<div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                {filtered.map((a, i) => {
-                  const c = typeColor[a.type] || "#6B7280";
-                  return (
-                    <div key={i} style={{ display: "flex", gap: 0, alignItems: "stretch" }}>
-                      <div style={{ width: 52, flexShrink: 0, paddingTop: 9, paddingRight: 12 }}>
-                        <div style={{ fontSize: 12, fontWeight: 800, color: "#18181B", fontFamily: mono, lineHeight: 1 }}>{a.time}</div>
-                        <div style={{ fontSize: 10, fontWeight: 600, color: "#C0C0C0", marginTop: 3 }}>{a.p}</div>
+              const statusColor = {
+                ready_to_close:        "#10B981",
+                customer_unresponsive: "#DC2626",
+                waiting_third_party:   "#F59E0B",
+                on_hold:               "#D4D4D4",
+              };
+              const ctaLabel = { call: "Call", confirm: "Confirm" };
+              return (
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  {DEALS.slice(0, 5).map((d, i) => {
+                    const barColor = statusColor[d.status];
+                    return (
+                      <div key={d.id} style={{ display: "flex", alignItems: "flex-start", padding: "8px 0", borderBottom: i < 4 ? "1px solid #F5F5F5" : "none" }}>
+                        {/* avatar */}
+                        <div style={{ width: 32, height: 32, borderRadius: "50%", flexShrink: 0, background: `${d.color}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: d.color, marginRight: 10 }}>{d.ini}</div>
+                        {/* center content */}
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: 13, fontWeight: 700, color: "#18181B", marginBottom: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.customer}</div>
+                          <div style={{ display: "flex", gap: 6, alignItems: "center", overflow: "hidden" }}>
+                            <span style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", whiteSpace: "nowrap", flexShrink: 0 }}>{d.vehicle}</span>
+                            <span style={{ fontSize: 11, color: "#D4D4D4", flexShrink: 0 }}>|</span>
+                            <span style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{d.blocker}</span>
+                          </div>
+                        </div>
+                        {/* right: rep + day badge */}
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", flexShrink: 0, marginLeft: 10, gap: 3 }}>
+                          <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>{d.rep.split(" ")[0]}</span>
+                          <div style={{
+                            minWidth: 34, height: 20, borderRadius: 4, padding: "0 7px",
+                            background: d.day >= 6 ? "#FEF2F2" : d.day >= 3 ? "#FFFBEB" : "#F0FDF4",
+                            display: "flex", alignItems: "center", justifyContent: "center",
+                            fontSize: 10, fontWeight: 700,
+                            color: d.day >= 6 ? "#DC2626" : d.day >= 3 ? "#A16207" : "#15803D",
+                          }}>{d.day === 0 ? "New" : `${d.day}d`}</div>
+                        </div>
                       </div>
-                      <div style={{ width: 3, borderRadius: 2, background: c, flexShrink: 0 }} />
-                      <div style={{ flex: 1, padding: "8px 12px", borderRadius: "0 6px 6px 0", background: `${c}08` }}>
-                        <Row sx={{ justifyContent: "space-between", gap: 6 }}>
-                          <span style={{ fontSize: 13, fontWeight: 600, color: "#18181B" }}>{a.customer}</span>
-                          <span style={{ fontSize: 10, fontWeight: 600, color: c, flexShrink: 0 }}>{a.rep.split(" ")[0]}</span>
-                        </Row>
-                        <div style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", marginTop: 2 }}>{a.vehicle} &middot; {a.type}</div>
-                      </div>
-                    </div>
-                  );
-                })}
-                {filtered.length === 0 && <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", padding: "12px 0", textAlign: "center" }}>No appointments</div>}
-              </div>);
+                    );
+                  })}
+                </div>
+              );
             })()}
           </Bp></B>
 
-          {/* Carryover Deals */}
-          <B delay={210}><Bp sx={{ paddingBottom: 8 }}>
-            <Row sx={{ justifyContent: "space-between", marginBottom: 10 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Carryover Deals</div>
+          {/* ── ROW 2 col 2: Appointments ── */}
+          <B delay={200}><Bp>
+            <Row sx={{ justifyContent: "space-between", marginBottom: 12 }}>
+              <Row sx={{ gap: 6, alignItems: "baseline" }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Appointments</div>
+                <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>{APPTS.length}</span>
+              </Row>
               <button style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid #E5E7EB", background: "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = "#C0C0C0"; e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)"; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.boxShadow = "none"; }}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
               </button>
             </Row>
-            {carryover.map((d,i) => <ListItem key={d.id} last={i===carryover.length-1}><Row sx={{ gap: 10 }}><div style={{ width: 30, height: 30, borderRadius: 6, flexShrink: 0, background: heatBg(d.heat), display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15 }}>{heatIcon(d.heat)}</div><div style={{ flex: 1, minWidth: 0 }}><Row sx={{ gap: 6 }}><span style={{ fontSize: 13, fontWeight: 600 }}>{d.customer}</span><Tag bg={heatBg(d.heat)} c={heatC(d.heat)} sx={{ fontSize: 10 }}>{heatLabel(d.heat)}</Tag></Row><div style={{ fontSize: 11, fontWeight: 500, color: "#9CA3AF", marginTop: 2 }}>{d.vehicle} &middot; Day {d.day} &middot; {d.last}</div></div><Btn sx={{ padding: "4px 10px", fontSize: 11 }}>Call</Btn></Row></ListItem>)}
+            {(() => {
+              const typeColor = { "Test Drive": "#D97706", "Sales": "#2563EB" };
+              const appts = APPTS.slice(0, 5);
+              const groups = [];
+              appts.forEach(a => {
+                const last = groups[groups.length - 1];
+                if (last && last.time === a.time) { last.items.push(a); }
+                else { groups.push({ time: a.time, p: a.p, items: [a] }); }
+              });
+              return (
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  {groups.map((g, gi) => (
+                    <div key={gi} style={{ borderBottom: gi < groups.length - 1 ? "1px solid #F0F0F0" : "none", padding: "8px 0" }}>
+                      <div style={{ display: "flex", gap: 0, alignItems: "flex-start" }}>
+                        {/* time column */}
+                        <div style={{ width: 52, flexShrink: 0, paddingTop: 4, paddingRight: 12 }}>
+                          <div style={{ fontSize: 12, fontWeight: 800, color: "#18181B", lineHeight: 1 }}>{g.time}</div>
+                          <div style={{ fontSize: 10, fontWeight: 600, color: "#C0C0C0", marginTop: 3 }}>{g.p}</div>
+                        </div>
+                        {/* appointments in slot */}
+                        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4 }}>
+                          {g.items.map((a, ai) => {
+                            const c = typeColor[a.type] || "#6B7280";
+                            return (
+                              <div key={ai} style={{ display: "flex", alignItems: "stretch" }}>
+                                <div style={{ width: 3, borderRadius: 2, background: c, flexShrink: 0 }} />
+                                <div style={{ flex: 1, padding: "4px 10px", borderRadius: "0 6px 6px 0", background: `${c}08` }}>
+                                  <Row sx={{ justifyContent: "space-between", gap: 6 }}>
+                                    <span style={{ fontSize: 13, fontWeight: 600, color: "#18181B" }}>{a.customer}</span>
+                                    <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", flexShrink: 0 }}>{a.rep.split(" ")[0]}</span>
+                                  </Row>
+                                  <div style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", marginTop: 3 }}>{a.vehicle} &middot; {a.type}</div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
           </Bp></B>
 
-          {/* Inventory Health */}
-          <B delay={240}><Bp sx={{ paddingBottom: 16 }}>
-            {/* header */}
+          {/* ── ROW 3 col 1: Inventory Health ── */}
+          <B delay={220}><Bp>
             <Row sx={{ justifyContent: "space-between", marginBottom: 14 }}>
               <div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Inventory Health</div>
               <button style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid #E5E7EB", background: "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = "#C0C0C0"; e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)"; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.boxShadow = "none"; }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M7 17L17 7"/><path d="M7 7h10v10"/>
-                </svg>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
               </button>
             </Row>
-
-            {/* top stats: total on-lot + in-transit as secondary */}
             <div style={{ marginBottom: 16 }}>
               <Row sx={{ alignItems: "baseline", gap: 8, marginBottom: 4, justifyContent: "space-between" }}>
-                <div style={{ fontSize: 28, fontWeight: 800, color: "#18181B", letterSpacing: "-0.03em", fontFamily: mono }}>247</div>
+                <Row sx={{ alignItems: "baseline", gap: 8 }}>
+                  <div style={{ fontSize: 28, fontWeight: 800, color: "#18181B", letterSpacing: "-0.03em", fontFamily: mono }}>247</div>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF" }}>vehicles</div>
+                </Row>
                 <Tag bg="#EFF6FF" c="#1D4ED8" sx={{ fontSize: 10 }}>+18 in transit</Tag>
               </Row>
-              <div style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF" }}>On Lot</div>
             </div>
-
-            {/* age buckets */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 0 }}>
+            <div className="bucket-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "0 1px", marginTop: 20 }}>
               {[
-                { label: "0–30d",  value: "142", pct: "58%", delta: "+12", up: false, color: "#10B981", deltaColor: "#6B7280" },
-                { label: "31–45d", value: "61",  pct: "25%", delta: "+3",  up: false, color: "#F59E0B", deltaColor: "#6B7280" },
-                { label: "46–60d", value: "30",  pct: "12%", delta: "-2",  up: false, color: "#F97316", deltaColor: "#059669" },
-                { label: "60d+",   value: "14",  pct: "5%",  delta: "+1",  up: true,  color: "#DC2626", deltaColor: "#DC2626" },
+                { label: "0\u201330d",  value: "142", pct: "58%", delta: "+12", color: "#10B981", deltaColor: "#6B7280" },
+                { label: "31\u201345d", value: "61",  pct: "25%", delta: "+3",  color: "#F59E0B", deltaColor: "#6B7280" },
+                { label: "46\u201360d", value: "30",  pct: "12%", delta: "-2",  color: "#F97316", deltaColor: "#059669" },
+                { label: "60d+",         value: "14",  pct: "5%",  delta: "+1",  color: "#DC2626", deltaColor: "#DC2626" },
               ].map((col, ci) => (
-                <div key={ci} style={{
-                  borderRight: ci < 3 ? "1px solid #F0F0F0" : "none",
-                  paddingRight: ci < 3 ? 12 : 0,
-                  paddingLeft: ci > 0 ? 12 : 0,
-                }}>
+                <div key={ci} className={`bucket-item bucket-item-${ci}`} style={{ padding: "0 12px", borderRight: ci < 3 ? "1px solid #F0F0F0" : "none" }}>
                   <div style={{ fontSize: 10, fontWeight: 600, color: "#9CA3AF", marginBottom: 6 }}>{col.label}</div>
-                  <div style={{ fontSize: 20, fontWeight: 800, color: "#18181B", letterSpacing: "-0.02em", fontFamily: mono, marginBottom: 2 }}>{col.value}</div>
+                  <div style={{ fontSize: 20, fontWeight: 800, color: "#18181B", letterSpacing: "-0.02em", marginBottom: 2 }}>{col.value}</div>
                   <div style={{ fontSize: 11, fontWeight: 700, color: col.color, marginBottom: 10 }}>{col.pct}</div>
-                  <Row sx={{ gap: 3 }}>
-                    <span style={{ fontSize: 10, fontWeight: 600, color: col.deltaColor }}>{col.delta} vs last wk</span>
-                    {col.up && (
-                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke={col.deltaColor} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M7 17L17 7"/><path d="M7 7h10v10"/>
-                      </svg>
-                    )}
-                  </Row>
+                  <span style={{ fontSize: 10, fontWeight: 600, color: col.deltaColor }}>{col.delta} vs last wk</span>
                 </div>
               ))}
             </div>
-
-            {/* unified proportional progress bar */}
             <div style={{ display: "flex", borderRadius: 3, overflow: "hidden", height: 4, marginTop: 12, gap: 1 }}>
-              {[
-                { pct: 58, color: "#10B981" },
-                { pct: 25, color: "#F59E0B" },
-                { pct: 12, color: "#F97316" },
-                { pct: 5,  color: "#DC2626" },
-              ].map((seg, i) => (
+              {[{ pct: 58, color: "#10B981" }, { pct: 25, color: "#F59E0B" }, { pct: 12, color: "#F97316" }, { pct: 5, color: "#DC2626" }].map((seg, i) => (
                 <div key={i} style={{ width: `${seg.pct}%`, background: seg.color, borderRadius: i === 0 ? "3px 0 0 3px" : i === 3 ? "0 3px 3px 0" : 0 }} />
               ))}
             </div>
-
-            {/* AI insight — below buckets, no bg */}
             <div style={{ display: "flex", gap: 8, marginTop: 14, alignItems: "flex-start" }}>
               <div style={{ width: 3, borderRadius: 2, background: aiGrad, flexShrink: 0, alignSelf: "stretch" }} />
-              <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", lineHeight: 1.55 }}>31 units past 45d — ~$1,240/day in floorplan. Avg days on lot up 3 days vs last week.</span>
+              <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", lineHeight: 1.6 }}>31 units past 45d (~$1,240/day in floorplan).<br/>Avg. days on lot up 3 days vs last week.</span>
             </div>
           </Bp></B>
 
-          {/* Today's Board */}
-          <B delay={270}><Bp sx={{ paddingBottom: 8 }}>
+          {/* ── ROW 3 col 2: Today's Board ── */}
+          <B delay={250}><Bp>
             <Row sx={{ justifyContent: "space-between", marginBottom: 10 }}>
               <div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Today's Board</div>
               <button style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid #E5E7EB", background: "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}
@@ -903,6 +966,126 @@ function App() {
         </div>
 
       </main>
+
+      {/* Modify Modal */}
+      {showModifyModal && (<>
+        <div onClick={() => { setShowModifyModal(false); setModifyPrompt(""); setModifyApplied(false); }} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.3)", zIndex: 49, backdropFilter: "blur(2px)" }} />
+        <div style={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 520, maxWidth: "92vw", maxHeight: "88vh", background: "#FFF", borderRadius: 12, boxShadow: "0 20px 48px rgba(0,0,0,0.18), 0 6px 16px rgba(0,0,0,0.08)", zIndex: 50, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+          {/* header */}
+          <div style={{ padding: "16px 20px 14px", borderBottom: "1px solid #F0F0F0", flexShrink: 0 }}>
+            <Row sx={{ justifyContent: "space-between", alignItems: "center" }}>
+              <Row sx={{ gap: 8 }}>
+                <div style={{ width: 28, height: 28, borderRadius: 6, background: aiGrad, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </div>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: "#18181B" }}>Modify with AI</div>
+                  <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 1 }}>Describe what to change — AI will update the steps</div>
+                </div>
+              </Row>
+              <span onClick={() => { setShowModifyModal(false); setModifyPrompt(""); setModifyApplied(false); }} style={{ width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 6, background: "#F3F4F6", cursor: "pointer", fontSize: 14, color: "#6B7280", fontWeight: 600 }}>{"\u2715"}</span>
+            </Row>
+          </div>
+
+          {/* AI prompt */}
+          <div style={{ padding: "14px 20px 12px", borderBottom: "1px solid #F5F5F5", flexShrink: 0, background: modifyPromptFocused ? "#FAFBFF" : "#FFF", transition: "background 0.3s" }}>
+            <div style={{ borderRadius: 8, border: modifyPromptFocused ? "1.5px solid rgba(74,124,247,0.4)" : "1.5px solid #E5E7EB", boxShadow: modifyPromptFocused ? "0 0 0 3px rgba(74,124,247,0.08)" : "none", transition: "all 0.25s", background: "#FFF", padding: "10px 12px", display: "flex", alignItems: "flex-start", gap: 10 }}>
+              <textarea
+                value={modifyPrompt}
+                onChange={e => { setModifyPrompt(e.target.value); setModifyApplied(false); }}
+                onFocus={() => setModifyPromptFocused(true)}
+                onBlur={() => setModifyPromptFocused(false)}
+                rows={2}
+                placeholder="e.g. Skip notifying the customer, add a manager approval step first..."
+                style={{ flex: 1, border: "none", outline: "none", background: "transparent", fontSize: 14, fontWeight: 500, color: "#18181B", fontFamily: sans, resize: "none", lineHeight: 1.55, padding: 0 }}
+              />
+              <button
+                onClick={() => { if (!modifyPrompt.trim()) return; setModifyThinking(true); setTimeout(() => { setModifyThinking(false); setModifyApplied(true); }, 1600); }}
+                disabled={!modifyPrompt.trim() || modifyThinking}
+                style={{ flexShrink: 0, padding: "5px 12px", borderRadius: 5, border: "none", background: modifyPrompt.trim() ? aiGrad : "#F3F4F6", color: modifyPrompt.trim() ? "#FFF" : "#9CA3AF", fontSize: 12, fontWeight: 600, cursor: modifyPrompt.trim() ? "pointer" : "default", fontFamily: sans, display: "flex", alignItems: "center", gap: 5, transition: "all 0.2s", marginTop: 1 }}>
+                {modifyThinking ? (<><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ animation: "spin 1s linear infinite" }}><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>Thinking</>) : "Apply"}
+              </button>
+            </div>
+            {!modifyApplied && (
+              <div style={{ display: "flex", gap: 6, marginTop: 8, flexWrap: "wrap" }}>
+                {["Remove customer notification", "Add manager approval first", "Simplify to 2 steps", "Add a loaner car step"].map((s, i) => (
+                  <button key={i} onClick={() => { setModifyPrompt(s); setModifyApplied(false); }}
+                    style={{ padding: "4px 10px", borderRadius: 20, border: "1px solid #E5E7EB", background: "#F9FAFB", fontSize: 12, fontWeight: 600, color: "#6B7280", cursor: "pointer", fontFamily: sans }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = "#A5B4FC"; e.currentTarget.style.color = "#4F46E5"; e.currentTarget.style.background = "#EEF2FF"; }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.color = "#6B7280"; e.currentTarget.style.background = "#F9FAFB"; }}
+                  >{s}</button>
+                ))}
+              </div>
+            )}
+            {modifyApplied && (
+              <Row sx={{ gap: 6, marginTop: 8 }}>
+                <div style={{ width: 16, height: 16, borderRadius: 3, background: "#D1FAE5", display: "flex", alignItems: "center", justifyContent: "center" }}><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#15803D" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                <span style={{ fontSize: 12, fontWeight: 600, color: "#15803D" }}>Steps updated based on your instruction</span>
+                <span onClick={() => { setModifyPrompt(""); setModifyApplied(false); }} style={{ fontSize: 12, fontWeight: 600, color: "#9CA3AF", cursor: "pointer", marginLeft: 4, textDecoration: "underline", textUnderlineOffset: 2 }}>Undo</span>
+              </Row>
+            )}
+          </div>
+
+          {/* Steps */}
+          <div style={{ padding: "14px 20px", overflowY: "auto", flex: 1 }}>
+            <Row sx={{ justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.05em" }}>Steps</div>
+              <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>{modifySteps.length} steps</span>
+            </Row>
+            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              {modifySteps.map((step, i) => {
+                const isDragging = dragItem === i;
+                const isDragOver = dragOverItem === i && dragItem !== i;
+                return (
+                  <div key={i}
+                    draggable
+                    onDragStart={() => setDragItem(i)}
+                    onDragEnter={() => setDragOverItem(i)}
+                    onDragOver={e => e.preventDefault()}
+                    onDrop={() => { if (dragItem === null || dragItem === i) { setDragOverItem(null); return; } const s = [...modifySteps]; const dragged = s.splice(dragItem, 1)[0]; s.splice(i, 0, dragged); setModifySteps(s); setDragItem(null); setDragOverItem(null); }}
+                    onDragEnd={() => { setDragItem(null); setDragOverItem(null); }}
+                    style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", borderRadius: 7, border: isDragOver ? "1.5px solid #4A7CF7" : "1px solid #F0F0F0", background: isDragOver ? "#EEF2FF" : isDragging ? "#F3F4F6" : "#FAFAFA", opacity: isDragging ? 0.45 : 1, cursor: "grab", transition: "border-color 0.12s, background 0.12s, opacity 0.12s" }}>
+                    <div style={{ flexShrink: 0, color: "#C4C4C4", cursor: "grab", display: "flex", alignItems: "center", padding: "0 1px" }}>
+                      <svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor">
+                        <circle cx="3" cy="2" r="1.2"/><circle cx="7" cy="2" r="1.2"/>
+                        <circle cx="3" cy="7" r="1.2"/><circle cx="7" cy="7" r="1.2"/>
+                        <circle cx="3" cy="12" r="1.2"/><circle cx="7" cy="12" r="1.2"/>
+                      </svg>
+                    </div>
+                    <div style={{ width: 20, height: 20, borderRadius: 4, flexShrink: 0, background: "#EFF6FF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: "#2563EB" }}>{i + 1}</div>
+                    <span style={{ flex: 1, fontSize: 14, fontWeight: 500, color: "#374151", lineHeight: 1.45 }}>{step}</span>
+                    <button onClick={() => setModifySteps(modifySteps.filter((_, j) => j !== i))} style={{ width: 24, height: 24, borderRadius: 5, border: "1px solid #FECACA", background: "#FFF5F5", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0 }} onMouseEnter={e => e.currentTarget.style.background = "#FEE2E2"} onMouseLeave={e => e.currentTarget.style.background = "#FFF5F5"}>
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+            {addingStep ? (
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8, padding: "8px 10px", borderRadius: 7, border: "1.5px solid rgba(74,124,247,0.3)", background: "#FAFBFF" }}>
+                <div style={{ width: 20, height: 20, borderRadius: 4, flexShrink: 0, background: "#EFF6FF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: "#2563EB" }}>{modifySteps.length + 1}</div>
+                <input autoFocus value={newStepText} onChange={e => setNewStepText(e.target.value)}
+                  onKeyDown={e => { if (e.key === "Enter" && newStepText.trim()) { setModifySteps([...modifySteps, newStepText.trim()]); setNewStepText(""); setAddingStep(false); } if (e.key === "Escape") { setNewStepText(""); setAddingStep(false); } }}
+                  placeholder="Describe the step..."
+                  style={{ flex: 1, border: "none", outline: "none", background: "transparent", fontSize: 14, fontWeight: 500, color: "#18181B", fontFamily: sans }} />
+                <button onClick={() => { if (newStepText.trim()) { setModifySteps([...modifySteps, newStepText.trim()]); setNewStepText(""); } setAddingStep(false); }} style={{ padding: "3px 10px", borderRadius: 5, border: "none", background: newStepText.trim() ? "#18181B" : "#F3F4F6", color: newStepText.trim() ? "#FFF" : "#9CA3AF", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: sans }}>Add</button>
+                <button onClick={() => { setNewStepText(""); setAddingStep(false); }} style={{ width: 22, height: 22, borderRadius: 4, border: "none", background: "#F3F4F6", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: 12, color: "#9CA3AF" }}>{"\u2715"}</button>
+              </div>
+            ) : (
+              <button onClick={() => setAddingStep(true)} style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 8, padding: "7px 12px", borderRadius: 6, border: "1.5px dashed #D1D5DB", background: "transparent", fontSize: 12, fontWeight: 600, color: "#6B7280", cursor: "pointer", width: "100%", fontFamily: sans }} onMouseEnter={e => { e.currentTarget.style.borderColor = "#9CA3AF"; e.currentTarget.style.color = "#374151"; }} onMouseLeave={e => { e.currentTarget.style.borderColor = "#D1D5DB"; e.currentTarget.style.color = "#6B7280"; }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                Add step
+              </button>
+            )}
+          </div>
+
+          {/* footer */}
+          <div style={{ padding: "12px 20px 16px", borderTop: "1px solid #F5F5F5", background: "#FAFAFA", display: "flex", gap: 8, justifyContent: "flex-end", flexShrink: 0 }}>
+            <Btn onClick={() => { setShowModifyModal(false); setModifyPrompt(""); setModifyApplied(false); }}>Cancel</Btn>
+            <Btn primary onClick={() => { setShowModifyModal(false); setModifyPrompt(""); setModifyApplied(false); }} sx={{ padding: "6px 16px" }}>Save</Btn>
+          </div>
+        </div>
+      </>)}
     </div>
   );
 }
