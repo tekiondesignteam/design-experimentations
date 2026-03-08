@@ -43,6 +43,8 @@
     }
     .alert-split > div { border-right: none !important; }
     .main-wrap { padding: 20px 16px 40px !important; }
+    .title-bar { padding-left: 24px !important; padding-right: 24px !important; }
+    .new-suggestions-btn { margin-left: 0 !important; flex-basis: 100%; }
     .carryover-grid { grid-template-columns: 1fr !important; }
     .bucket-grid { grid-template-columns: 1fr 1fr !important; row-gap: 16px !important; }
     .bucket-item { padding: 0 8px !important; }
@@ -129,6 +131,37 @@ const TEAM = [
   { name: "Marcus Green", ini: "MG", deals: 2, gross: 2900, calls: 8, tasks: "5/7", c: "#7C3AED", on: true },
 ];
 
+const HOT_LEADS = [
+  { id: 1, name: "Kevin Morales",  vehicle: "2024 RAV4 XLE",    src: "Cars.com",   time: "2h ago",  rep: "Chris",  status: "not_contacted" },
+  { id: 2, name: "Rachel Kim",     vehicle: "2024 Highlander",  src: "TrueCar",    time: "4h ago",  rep: "Jason",  status: "contacted",     contactedAt: "1h ago" },
+  { id: 3, name: "Amanda White",   vehicle: "2024 Camry SE",    src: "Website",    time: "9h ago",  rep: "Marcus", status: "contacted",     contactedAt: "6h ago" },
+  { id: 4, name: "Brian Foster",   vehicle: "2024 Tacoma SR5",  src: "Autotrader", time: "3h ago",  rep: "Chris",  status: "not_contacted" },
+  { id: 5, name: "Priya Nair",     vehicle: "2024 RAV4 Hybrid", src: "CarGurus",   time: "6h ago",  rep: "Jason",  status: "contacted",     contactedAt: "3h ago" },
+];
+
+const FINANCE_Q = [
+  { id: 1, customer: "Daniel Thompson", vehicle: "2024 RAV4 XLE",   day: 3, lender: "Toyota Financial", status: "pending_stips", stip: "Proof of income",    gross: 3200, ini: "DT", color: "#2563EB" },
+  { id: 2, customer: "Mark Henderson",  vehicle: "2024 Tacoma SR5", day: 4, lender: "Ally Financial",   status: "pending_stips", stip: "Proof of residence", gross: 4100, ini: "MH", color: "#DC2626" },
+  { id: 3, customer: "Rachel Kim",      vehicle: "2024 Venza XLE",  day: 2, lender: "Chase Auto",       status: "conditional",   stip: "Co-signer required", gross: 3600, ini: "RK", color: "#7C3AED" },
+  { id: 4, customer: "Kevin Brooks",    vehicle: "2024 Corolla LE", day: 0, lender: "Toyota Financial", status: "approved",      stip: null,                 gross: 1800, ini: "KB", color: "#059669" },
+];
+
+const LEAD_SOURCES = [
+  { src: "Walk-in",  volume: 41, contactRate: 100, closeRate: 28, trend: "up" },
+  { src: "Website",  volume: 55, contactRate: 81,  closeRate: 18, trend: "up" },
+  { src: "Cars.com", volume: 47, contactRate: 73,  closeRate: 14, trend: "flat" },
+  { src: "TrueCar",  volume: 30, contactRate: 71,  closeRate: 11, trend: "flat" },
+  { src: "CarGurus", volume: 24, contactRate: 65,  closeRate: 9,  trend: "down" },
+];
+
+const PIPELINE = [
+  { label: "Active",    count: 278, color: "#6B7280" },
+  { label: "Contacted", count: 167, color: "#F59E0B" },
+  { label: "Engaged",   count: 50,  color: "#3B82F6" },
+  { label: "Visited",   count: 30,  color: "#F97316" },
+  { label: "Sold",      count: 15,  color: "#16A34A" },
+];
+
 const FINANCE = [
   { id: 1, customer: "Daniel Thompson", vehicle: "RAV4 XLE", status: "pending", stips: "Proof of income" },
   { id: 2, customer: "Mark Henderson", vehicle: "Tacoma SR5", status: "pending", stips: "Proof of residence" },
@@ -194,6 +227,26 @@ function App() {
   const [showHuddleScript, setShowHuddleScript] = useState("idle");
   const [huddleExpanded, setHuddleExpanded] = useState(true);
   const [sourcesModal, setSourcesModal] = useState(false);
+  const [showWidgetModal, setShowWidgetModal] = useState(false);
+
+  const ALL_WIDGETS = [
+    { id: "huddle",    label: "Morning Huddle",    locked: true },
+    { id: "carryover", label: "Carryover Deals",   locked: false },
+    { id: "appts",     label: "Appointments",      locked: false },
+    { id: "inventory", label: "Inventory Health",  locked: false },
+    { id: "salesfloor",label: "Sales Floor",       locked: false },
+    { id: "leads",     label: "Overnight Leads",   locked: false },
+    { id: "finance",   label: "Finance Approvals", locked: false },
+    { id: "sources",   label: "Lead Sources",      locked: false },
+    { id: "pipeline",  label: "Leads Pipeline",    locked: false },
+  ];
+
+  const [widgetSelected, setWidgetSelected] = useState(new Set(["huddle", "carryover", "appts", "inventory", "salesfloor"]));
+  const [widgetOrder, setWidgetOrder] = useState(ALL_WIDGETS.map(w => w.id));
+  const [widgetDragItem, setWidgetDragItem] = useState(null);
+  const [widgetDragOver, setWidgetDragOver] = useState(null);
+  const [draftSelected, setDraftSelected] = useState(null);
+  const [draftOrder, setDraftOrder] = useState(null);
   const [showModifyModal, setShowModifyModal] = useState(false);
   const [modifySteps, setModifySteps] = useState([]);
   const [modifyPrompt, setModifyPrompt] = useState("");
@@ -249,22 +302,22 @@ function App() {
   const [chipSet, setChipSet] = useState(0);
   const ALL_CHIPS = [
     [
-      { label: "Deals closing today",  icon: "\u{1F525}", q: "Which deals have the best chance of closing today and what do I need to do?" },
-      { label: "Finance blockers",     icon: "\u231B",    q: "What deals are stuck waiting on finance approval and what are the stips?" },
-      { label: "Team performance",     icon: "\u{1F465}", q: "How is each rep performing this month and who needs coaching?" },
-      { label: "Aged inventory",       icon: "\u{1F4E6}", q: "Show me units sitting over 45 days and recommend pricing adjustments" },
+      { label: "Who's closing today?",    icon: "🔥", q: "Which deals are most likely to close today? Give me names, vehicles, and the one thing I need to do for each." },
+      { label: "Stalled deals",           icon: "⏸", q: "Which deals have gone quiet for 24+ hours? Tell me why they stalled and the best way to re-engage each customer." },
+      { label: "Coach someone today",     icon: "🎯", q: "Based on this week's numbers, which rep needs coaching and what specific behavior should I address?" },
+      { label: "Move aged units",         icon: "📦", q: "Which units have been sitting the longest and what's the best action — price drop, incentive, or targeted push?" },
     ],
     [
-      { label: "Carryover at risk",    icon: "\u26A0\uFE0F", q: "Which carryover deals are at risk of going cold and what's the best next action?" },
-      { label: "Today's appointments", icon: "\u{1F4C5}", q: "Summarize today's appointments and flag any conflicts or prep needed" },
-      { label: "Recall impact",        icon: "\u{1F6A8}", q: "Which active deals or inventory are affected by open recalls right now?" },
-      { label: "Morning priorities",   icon: "\u2600\uFE0F", q: "What are the top 3 things I need to handle before noon today?" },
+      { label: "My floor right now",      icon: "👁", q: "Give me a real-time floor status: who's with a customer, who's available, any coverage gaps I need to fill?" },
+      { label: "Protect back-end",        icon: "💰", q: "Which deals closing today have the best F&I opportunity? What products should I push and to whom?" },
+      { label: "Recall exposure",         icon: "🚨", q: "How many active deals and lot units are affected by open recalls? What's my risk and what do I do about each?" },
+      { label: "Best lead to call now",   icon: "📞", q: "Which lead sitting in my pipeline is most likely to buy today if someone calls them right now? Why?" },
     ],
     [
-      { label: "Lost deals this week", icon: "\u{1F4C9}", q: "Which deals fell through this week and what were the main reasons?" },
-      { label: "Incoming leads",       icon: "\u{1F4E5}", q: "Show me overnight and this morning's leads and who has been assigned" },
-      { label: "F&I opportunities",    icon: "\u{1F4B0}", q: "Which approved deals have the best back-end opportunity today?" },
-      { label: "Lot coverage gaps",    icon: "\u{1F697}", q: "Are there any segments or price points we're missing on the lot right now?" },
+      { label: "End of month push",       icon: "📈", q: "Where do I stand vs target? What's the fastest path to close the gap before month end — rank options by ROI." },
+      { label: "Lost deals this week",    icon: "📉", q: "Walk me through deals we lost this week. What were the real reasons and which ones can I still recover?" },
+      { label: "Where is my gross?",      icon: "💵", q: "Break down my gross this month by rep and deal type. Where am I leaving money on the table?" },
+      { label: "Lot gaps right now",      icon: "🚗", q: "What segments or price points am I missing inventory on? Which ones are costing me lost sales today?" },
     ],
   ];
   const chips = ALL_CHIPS[chipSet];
@@ -274,9 +327,9 @@ function App() {
 
       {/* title bar */}
       <div style={{ position: "sticky", top: 0, zIndex: 50, background: "#FFFFFF", borderBottom: "1px solid #F0F0F0", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
-        <div style={{ maxWidth: 860, margin: "0 auto", padding: "0 24px", height: 52, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          {/* hamburger — flush with body left edge */}
-          <button style={{ width: 36, height: 36, borderRadius: 6, border: "none", background: "transparent", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 4, padding: 0, marginLeft: -6, transition: "background 0.15s" }}
+        <div className="title-bar" style={{ padding: "0 24px", height: 52, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          {/* hamburger */}
+          <button style={{ width: 36, height: 36, borderRadius: 6, border: "none", background: "transparent", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 4, padding: 0, transition: "background 0.15s" }}
             onMouseEnter={e => e.currentTarget.style.background = "#F3F4F6"}
             onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
             <span style={{ display: "block", width: 16, height: 1.5, background: "#374151", borderRadius: 2 }} />
@@ -287,16 +340,18 @@ function App() {
           {/* center label */}
           <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em" }}>Home</span>
 
-          {/* history / clock icon — flush with body right edge */}
-          <button style={{ width: 36, height: 36, borderRadius: 6, border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", marginRight: -6, transition: "background 0.15s" }}
-            onMouseEnter={e => e.currentTarget.style.background = "#F3F4F6"}
-            onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M3 3v5h5"/>
-              <path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/>
-              <path d="M12 7v5l4 2"/>
-            </svg>
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+            {/* add widget */}
+            <button onClick={() => { setDraftSelected(new Set(widgetSelected)); setDraftOrder([...widgetOrder]); setShowWidgetModal(true); document.body.style.overflow = "hidden"; }} style={{ width: 36, height: 36, borderRadius: 6, border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.15s" }}
+              onMouseEnter={e => e.currentTarget.style.background = "#F3F4F6"}
+              onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+              title="Add widget">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
+                <path d="M17 14v6M14 17h6"/>
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -318,7 +373,7 @@ function App() {
               <linearGradient id="lg4" x1="1" y1="2" x2="16.8697" y2="5.1208" gradientUnits="userSpaceOnUse"><stop stopColor="#25C8A5"/><stop offset="0.5" stopColor="#1B90B4"/><stop offset="1" stopColor="#1A6CC4"/></linearGradient>
             </defs>
           </svg>
-          <div style={{ fontSize: 11, fontWeight: 500, color: "#C0C0C0", marginTop: 6 }}>Data as of 9:00 AM</div>
+          <div style={{ fontSize: 11, fontWeight: 500, color: "#C0C0C0", marginTop: 6 }}></div>
         </div>
 
         {/* greeting */}
@@ -347,7 +402,7 @@ function App() {
                 onFocus={() => setPromptFocused(true)}
                 onBlur={() => setTimeout(() => setPromptFocused(false), 800)}
                 onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) e.preventDefault(); }}
-                placeholder="Ask · Execute · Decide"
+                placeholder="Ask · Decide · Execute"
                 style={{ flex: 1, border: "none", outline: "none", background: "transparent", fontSize: 14, fontWeight: 500, color: "#18181B", fontFamily: sans, resize: "none", overflow: "hidden", lineHeight: "20px", height: 20, minHeight: 20, maxHeight: 120, padding: 0, margin: 0, display: "block", verticalAlign: "middle" }}
               />
               <button disabled={promptQuery.length === 0} style={{
@@ -368,7 +423,7 @@ function App() {
                 onMouseLeave={e => { e.currentTarget.style.borderColor = "#EBEBEB"; e.currentTarget.style.color = "#6B7280"; e.currentTarget.style.boxShadow = "none"; }}
               ><span style={{ fontSize: 12 }}>{ch.icon}</span>{ch.label}</button>
             ))}
-            <button onClick={() => setChipSet(s => (s + 1) % ALL_CHIPS.length)} style={{ display: "flex", alignItems: "center", gap: 5, padding: "2px 0", background: "transparent", border: "none", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: sans, whiteSpace: "nowrap", marginLeft: "auto", textDecoration: "underline", textUnderlineOffset: 3, textDecorationColor: "rgba(74,124,247,0.4)" }}>
+            <button onClick={() => setChipSet(s => (s + 1) % ALL_CHIPS.length)} className="new-suggestions-btn" style={{ display: "flex", alignItems: "center", gap: 5, padding: "2px 0", background: "transparent", border: "none", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: sans, whiteSpace: "nowrap", marginLeft: "auto", textDecoration: "underline", textUnderlineOffset: 3, textDecorationColor: "rgba(74,124,247,0.4)" }}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
                 <defs><linearGradient id="shuffle-grad" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse"><stop stopColor="#4A7CF7"/><stop offset="1" stopColor="#A855F7"/></linearGradient></defs>
                 <path d="M16 3h5v5" stroke="url(#shuffle-grad)"/><path d="M21 3l-7 7" stroke="url(#shuffle-grad)"/><path d="M16 21h5v-5" stroke="url(#shuffle-grad)"/><path d="M21 21l-7-7" stroke="url(#shuffle-grad)"/><path d="M3 7h3a4 4 0 0 1 4 4 4 4 0 0 0 4 4h2" stroke="url(#shuffle-grad)"/><path d="M3 17h3a4 4 0 0 0 4-4 4 4 0 0 1 4-4h2" stroke="url(#shuffle-grad)"/>
@@ -460,7 +515,7 @@ function App() {
                   </div>) : (<>
                     <Row sx={{ justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
                       <Row className="alert-act" sx={{ gap: 8 }}>
-                        <Btn primary onClick={() => runExecution(cur)}>Go ahead</Btn>
+                        <Btn primary onClick={() => runExecution(cur)}>Take Action</Btn>
                         <span onClick={() => { setAccepted(p => new Set([...p, cur.id])); setAlertIndex(0); setShowAllSteps(null); }} style={{ fontSize: 13, fontWeight: 600, color: "#9CA3AF", cursor: "pointer", padding: "5px 4px", textDecoration: "underline", textUnderlineOffset: 2, marginLeft: 8 }}>Skip</span>
                       </Row>
                       {total > 1 && <Row sx={{ gap: 4 }}>
@@ -781,7 +836,7 @@ function App() {
           )}
 
           {/* ── ROW 2 col 1: Carryover Deals ── */}
-          <B delay={180}><Bp>
+          {widgetSelected.has("carryover") && <B delay={180}><Bp>
             <Row sx={{ justifyContent: "space-between", marginBottom: 12 }}>
               <Row sx={{ gap: 6, alignItems: "baseline" }}>
                 <div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Carryover Deals</div>
@@ -835,10 +890,10 @@ function App() {
                 </div>
               );
             })()}
-          </Bp></B>
+          </Bp></B>}
 
           {/* ── ROW 2 col 2: Appointments ── */}
-          <B delay={200}><Bp>
+          {widgetSelected.has("appts") && <B delay={200}><Bp>
             <Row sx={{ justifyContent: "space-between", marginBottom: 12 }}>
               <Row sx={{ gap: 6, alignItems: "baseline" }}>
                 <div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Appointments</div>
@@ -893,10 +948,10 @@ function App() {
                 </div>
               );
             })()}
-          </Bp></B>
+          </Bp></B>}
 
           {/* ── ROW 3 col 1: Inventory Health ── */}
-          <B delay={220}><Bp>
+          {widgetSelected.has("inventory") && <B delay={220}><Bp>
             <Row sx={{ justifyContent: "space-between", marginBottom: 14 }}>
               <div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Inventory Health</div>
               <button style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid #E5E7EB", background: "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}
@@ -936,32 +991,265 @@ function App() {
             </div>
             <div style={{ display: "flex", gap: 8, marginTop: 14, alignItems: "flex-start" }}>
               <div style={{ width: 3, borderRadius: 2, background: aiGrad, flexShrink: 0, alignSelf: "stretch" }} />
-              <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", lineHeight: 1.6 }}>31 units past 45d (~$1,240/day in floorplan).<br/>Avg. days on lot up 3 days vs last week.</span>
+              <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", lineHeight: 1.6 }}>2026 Tacoma SR5 · 18d supply · 3 units 60d+<br/>2025 Venza XLE · 11d supply · 2 units 45d+</span>
             </div>
-          </Bp></B>
+          </Bp></B>}
 
-          {/* ── ROW 3 col 2: Today's Board ── */}
-          <B delay={250}><Bp>
-            <Row sx={{ justifyContent: "space-between", marginBottom: 10 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Today's Board</div>
+          {/* ── ROW 3 col 2: Sales Floor ── */}
+          {widgetSelected.has("salesfloor") && <B delay={250}><Bp>
+            <Row sx={{ justifyContent: "space-between", marginBottom: 12 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Sales Floor</div>
               <button style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid #E5E7EB", background: "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = "#C0C0C0"; e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)"; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.boxShadow = "none"; }}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
               </button>
             </Row>
-            {TEAM.map((r,i) => <ListItem key={i} last={i===TEAM.length-1}><Row sx={{ gap: 10, opacity: r.on ? 1 : 0.45 }}>
-              <div style={{ width: 32, height: 32, borderRadius: "50%", flexShrink: 0, background: `${r.c}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: r.c }}>{r.ini}</div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <Row sx={{ gap: 6 }}><span style={{ fontSize: 13, fontWeight: 600 }}>{r.name}</span>{!r.on && <Tag bg="#FEF3C7" c="#A16207" sx={{ fontSize: 10 }}>Absent</Tag>}<Dot color={r.on ? "#10B981" : "#D97706"} size={6} /></Row>
-                <Row sx={{ gap: 12, marginTop: 4 }}>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: "#18181B", fontFamily: mono }}>{r.calls}<span style={{ fontWeight: 500, color: "#9CA3AF", fontFamily: sans, fontSize: 10, marginLeft: 3 }}>calls</span></span>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: "#18181B", fontFamily: mono }}>{r.tasks}<span style={{ fontWeight: 500, color: "#9CA3AF", fontFamily: sans, fontSize: 10, marginLeft: 3 }}>tasks</span></span>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: "#18181B", fontFamily: mono }}>{r.deals}<span style={{ fontWeight: 500, color: "#9CA3AF", fontFamily: sans, fontSize: 10, marginLeft: 3 }}>deals</span></span>
-                </Row>
-              </div>
-            </Row></ListItem>)}
-          </Bp></B>
+
+            {/* table header */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 48px 52px 1fr", gap: "0 8px", padding: "6px 0 8px 0", borderBottom: "1px solid #E5E7EB", marginBottom: 2 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#374151" }}>Salesperson</div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#374151", textAlign: "center" }}>Load</div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#374151", textAlign: "center" }}>Leads</div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#374151" }}>Note</div>
+            </div>
+
+            {(() => {
+              const SignalBars = ({ level, color }) => {
+                return (
+                  <div style={{ display: "flex", alignItems: "center", gap: 2, opacity: level === 0 ? 0.3 : 1 }}>
+                    {[1, 2, 3].map(s => (
+                      <div key={s} style={{ width: 10, height: 10, borderRadius: 2, background: s <= level ? color : "#E5E7EB" }} />
+                    ))}
+                  </div>
+                );
+              };
+
+              return [
+                { ini: "CW", name: "Chris",  color: "#059669", load: "Normal",  level: 2, leads: 6,  note: "Balanced mix",        loadColor: "#15803D" },
+                { ini: "JL", name: "Jason",  color: "#2563EB", load: "High",    level: 3, leads: 10, note: "SLA risk · 2 late",    loadColor: "#DC2626" },
+                { ini: "EC", name: "Emily",  color: "#D97706", load: "Absent",  level: 0, leads: 4,  note: "4 hot deals pending",  loadColor: "#9CA3AF" },
+                { ini: "MG", name: "Marcus", color: "#7C3AED", load: "Low",     level: 1, leads: 3,  note: "Extra capacity",       loadColor: "#D97706" },
+              ].map((r, i, arr) => (
+                <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 48px 52px 1fr", gap: "0 8px", padding: "6px 0", borderBottom: i < arr.length - 1 ? "1px solid #F5F5F5" : "none", alignItems: "center" }}>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: "#18181B" }}>{r.name}</span>
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+                    <SignalBars level={r.level} color={r.loadColor} />
+                    <span style={{ fontSize: 9, fontWeight: 700, color: r.loadColor }}>{r.load}</span>
+                  </div>
+                  <div style={{ textAlign: "center" }}>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: "#18181B" }}>{r.leads}</span>
+                  </div>
+                  <span style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.note}</span>
+                </div>
+              ));
+            })()}
+
+            {/* floor insight */}
+            <div style={{ display: "flex", gap: 8, marginTop: 14, alignItems: "flex-start" }}>
+              <div style={{ width: 3, borderRadius: 2, background: aiGrad, flexShrink: 0, alignSelf: "stretch" }} />
+              <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", lineHeight: 1.6 }}>Floor status: Jason is over-loaded, Marcus has spare capacity, and Emily's hot deals need coverage.</span>
+            </div>
+          </Bp></B>}
+
+          {/* ── ROW 5: Overnight Leads + Finance Approvals ── */}
+          {widgetSelected.has("leads") && <B delay={280}><Bp>
+            <Row sx={{ justifyContent: "space-between", marginBottom: 12 }}>
+              <Row sx={{ gap: 5, alignItems: "baseline" }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Overnight Leads</div>
+                <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>{HOT_LEADS.length}</span>
+              </Row>
+              <button style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid #E5E7EB", background: "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "#C0C0C0"; e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.boxShadow = "none"; }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+              </button>
+            </Row>
+            {HOT_LEADS.map((lead, i) => {
+              const ini = lead.name.split(" ").map(n => n[0]).join("").slice(0, 2);
+              const colors = ["#2563EB", "#059669", "#7C3AED", "#D97706", "#DC2626"];
+              const color = colors[i % colors.length];
+              return (
+                <div key={lead.id} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "8px 0", borderBottom: i < HOT_LEADS.length - 1 ? "1px solid #F5F5F5" : "none" }}>
+                  {/* avatar */}
+                  <div style={{ width: 30, height: 30, borderRadius: "50%", flexShrink: 0, background: `${color}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color }}>{ini}</div>
+                  {/* content */}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    {/* line 1: name + badge */}
+                    <div style={{ display: "flex", gap: 6, alignItems: "baseline", marginBottom: 3, overflow: "hidden" }}>
+                      <span style={{ fontSize: 13, fontWeight: 700, color: "#18181B", whiteSpace: "nowrap" }}>{lead.name}</span>
+                      {lead.status === "not_contacted" && (
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "1px 6px", borderRadius: 3, background: "#FEF2F2", fontSize: 10, fontWeight: 700, color: "#DC2626", flexShrink: 0 }}>
+                          <span style={{ width: 4, height: 4, borderRadius: "50%", background: "#DC2626", display: "inline-block" }} />
+                          No contact
+                        </span>
+                      )}
+                    </div>
+                    {/* line 2: carryover style */}
+                    <div style={{ display: "flex", gap: 6, alignItems: "center", overflow: "hidden" }}>
+                      <span style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", whiteSpace: "nowrap", flexShrink: 0 }}>{lead.vehicle}</span>
+                      <span style={{ fontSize: 11, color: "#D4D4D4", flexShrink: 0 }}>|</span>
+                      <span style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{lead.src} · {lead.time}</span>
+                    </div>
+                  </div>
+                  {/* right: rep + status */}
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", flexShrink: 0, gap: 3 }}>
+                    {lead.status === "contacted"
+                      ? <span style={{ fontSize: 10, fontWeight: 600, color: "#15803D", background: "#F0FDF4", padding: "1px 6px", borderRadius: 3 }}>Contacted · {lead.contactedAt}</span>
+                      : <span style={{ fontSize: 10, fontWeight: 600, color: "#9CA3AF", background: "#F3F4F6", padding: "1px 6px", borderRadius: 3 }}>Pending</span>
+                    }
+                    <span style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF" }}>{lead.rep}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </Bp></B>}
+
+          {widgetSelected.has("finance") && <B delay={290}><Bp>
+            <Row sx={{ justifyContent: "space-between", marginBottom: 12 }}>
+              <Row sx={{ gap: 5, alignItems: "baseline" }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Finance Approvals</div>
+                <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>{FINANCE_Q.length}</span>
+              </Row>
+              <Row sx={{ gap: 6 }}>
+                <button style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid #E5E7EB", background: "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = "#C0C0C0"; e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.boxShadow = "none"; }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+                </button>
+              </Row>
+            </Row>
+            {(() => {
+              const finStatus = {
+                pending_stips: { label: "Pending Stips", bg: "#FFFBEB", c: "#A16207" },
+                submitted:     { label: "Submitted",     bg: "#EFF6FF", c: "#2563EB" },
+                approved:      { label: "Approved",      bg: "#F0FDF4", c: "#15803D" },
+                conditional:   { label: "Conditional",   bg: "#F5F3FF", c: "#7C3AED" },
+              };
+              return FINANCE_Q.map((deal, i) => {
+                const st = finStatus[deal.status];
+                return (
+                  <div key={deal.id} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "8px 0", borderBottom: i < FINANCE_Q.length - 1 ? "1px solid #F5F5F5" : "none" }}>
+                    {/* avatar */}
+                    <div style={{ width: 30, height: 30, borderRadius: "50%", flexShrink: 0, background: `${deal.color}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: deal.color, marginTop: 1 }}>{deal.ini}</div>
+                    {/* left: name / vehicle / stip */}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: "#18181B", marginBottom: 3 }}>{deal.customer}</div>
+                      <div style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", marginBottom: deal.stip ? 4 : 0 }}>{deal.vehicle}</div>
+                      {deal.stip && (
+                        <Row sx={{ gap: 4 }}>
+                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#D97706" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                          <span style={{ fontSize: 12, fontWeight: 500, color: "#D97706" }}>Needs: {deal.stip}</span>
+                        </Row>
+                      )}
+                    </div>
+                    {/* right: status pill + lender */}
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", flexShrink: 0, gap: 4 }}>
+                      <span style={{ padding: "2px 8px", borderRadius: 4, background: st.bg, color: st.c, fontSize: 11, fontWeight: 700 }}>{st.label}</span>
+                      <span style={{ fontSize: 11, fontWeight: 500, color: "#9CA3AF" }}>{deal.lender}</span>
+                    </div>
+                  </div>
+                );
+              });
+            })()}
+          </Bp></B>}
+
+          {/* ── ROW 6: Lead Source Performance + Leads Pipeline ── */}
+          {widgetSelected.has("sources") && <B delay={300}><Bp>
+            <Row sx={{ justifyContent: "space-between", marginBottom: 12 }}>
+              <Row sx={{ gap: 5, alignItems: "baseline" }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Lead Sources</div>
+                <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>MTD</span>
+              </Row>
+              <button style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid #E5E7EB", background: "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "#C0C0C0"; e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.boxShadow = "none"; }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+              </button>
+            </Row>
+            {/* col headers */}
+            <div style={{ display: "grid", gridTemplateColumns: "36% 18% 22% 24%", gap: 0, padding: "0 0 6px 0", borderBottom: "1px solid #E5E7EB", marginBottom: 2 }}>
+              {["Source", "Leads", "Contact", "Close %"].map((h, i) => (
+                <div key={i} style={{ fontSize: 11, fontWeight: 700, color: "#374151", textAlign: i > 0 ? "right" : "left", whiteSpace: "nowrap" }}>{h}</div>
+              ))}
+            </div>
+            {(() => {
+              const maxClose = Math.max(...LEAD_SOURCES.map(s => s.closeRate));
+              return LEAD_SOURCES.map((s, i) => (
+                <div key={i} style={{ display: "grid", gridTemplateColumns: "36% 18% 22% 24%", gap: 0, padding: "6px 0", borderBottom: i < LEAD_SOURCES.length - 1 ? "1px solid #F5F5F5" : "none", alignItems: "center" }}>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: "#18181B" }}>{s.src}</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: "#374151", textAlign: "right" }}>{s.volume}</div>
+                  <div style={{ textAlign: "right" }}>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: s.contactRate >= 75 ? "#15803D" : s.contactRate >= 60 ? "#A16207" : "#DC2626" }}>{s.contactRate}%</span>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 3, minWidth: 0, overflow: "hidden" }}>
+                    <span style={{ fontSize: 12, fontWeight: 800, color: "#18181B" }}>{s.closeRate}%</span>
+                    <div style={{ width: 40, height: 3, borderRadius: 2, background: "#F0F0F0", flexShrink: 0 }}>
+                      <div style={{ height: "100%", borderRadius: 2, width: `${(s.closeRate / maxClose) * 100}%`, background: s.closeRate === maxClose ? "#15803D" : aiGrad }} />
+                    </div>
+                  </div>
+                </div>
+              ));
+            })()}
+            <div style={{ display: "flex", gap: 8, marginTop: 12, alignItems: "flex-start" }}>
+              <div style={{ width: 3, borderRadius: 2, background: aiGrad, flexShrink: 0, alignSelf: "stretch" }} />
+              <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", lineHeight: 1.55 }}>Walk-ins closing at 2× third-party leads. Autotrader &amp; CarGurus contact rates down 8pts — check rep follow-up cadence.</span>
+            </div>
+          </Bp></B>}
+
+          {widgetSelected.has("pipeline") && <B delay={310}><Bp>
+            <Row sx={{ justifyContent: "space-between", marginBottom: 12 }}>
+              <Row sx={{ gap: 5, alignItems: "baseline" }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Leads Pipeline</div>
+                <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>MTD</span>
+              </Row>
+              <Row sx={{ gap: 8 }}>
+                <span style={{ fontSize: 11, fontWeight: 700, color: "#15803D", background: "#F0FDF4", padding: "2px 8px", borderRadius: 3 }}>
+                  {((PIPELINE[4].count / PIPELINE[0].count) * 100).toFixed(1)}% lead-to-sale
+                </span>
+                <button style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid #E5E7EB", background: "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = "#C0C0C0"; e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.boxShadow = "none"; }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+                </button>
+              </Row>
+            </Row>
+            {/* waterfall chart */}
+            {(() => {
+              const maxCount = PIPELINE[0].count;
+              const logH = c => Math.round((Math.log(c) / Math.log(maxCount)) * 100);
+              return (
+                <div>
+                  <div style={{ display: "flex", alignItems: "flex-end", gap: 4, height: 160, borderBottom: "1px solid #F0F0F0", marginBottom: 8 }}>
+                    {PIPELINE.map((b, i) => {
+                      const h = logH(b.count);
+                      const prev = i > 0 ? PIPELINE[i - 1] : null;
+                      const dropPct = prev ? Math.round((1 - b.count / prev.count) * 100) : null;
+                      const ghostH = prev ? Math.round((Math.log(prev.count) / Math.log(maxCount)) * 100) - h : 0;
+                      return (
+                        <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "stretch", justifyContent: "flex-end", height: "100%" }}>
+                          {dropPct !== null && <div style={{ textAlign: "center", fontSize: 9, fontWeight: 800, color: dropPct >= 60 ? "#DC2626" : "#D97706", marginBottom: 2 }}>−{dropPct}%</div>}
+                          {ghostH > 0 && <div style={{ height: `${ghostH}%`, background: "#FEF2F2", border: "1px dashed #FECACA", borderRadius: "2px 2px 0 0" }} />}
+                          <div style={{ height: `${h}%`, minHeight: 10, background: b.color, borderRadius: "2px 2px 0 0", display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: 2 }}>
+                            <span style={{ fontSize: 9, fontWeight: 800, color: "#FFF" }}>{b.count}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div style={{ display: "flex", gap: 4 }}>
+                    {PIPELINE.map((b, i) => (
+                      <div key={i} style={{ flex: 1, textAlign: "center", fontSize: 10, fontWeight: 600, color: "#6B7280", lineHeight: 1.3 }}>{b.label}</div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
+            <div style={{ display: "flex", gap: 8, marginTop: 12, alignItems: "flex-start" }}>
+              <div style={{ width: 3, borderRadius: 2, background: aiGrad, flexShrink: 0, alignSelf: "stretch" }} />
+              <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", lineHeight: 1.55 }}>Biggest leak: Contacted → Engaged at 70% drop-off. Top dealers convert 40%+ of contacted leads.</span>
+            </div>
+          </Bp></B>}
 
         </div>
 
@@ -1083,6 +1371,90 @@ function App() {
           <div style={{ padding: "12px 20px 16px", borderTop: "1px solid #F5F5F5", background: "#FAFAFA", display: "flex", gap: 8, justifyContent: "flex-end", flexShrink: 0 }}>
             <Btn onClick={() => { setShowModifyModal(false); setModifyPrompt(""); setModifyApplied(false); }}>Cancel</Btn>
             <Btn primary onClick={() => { setShowModifyModal(false); setModifyPrompt(""); setModifyApplied(false); }} sx={{ padding: "6px 16px" }}>Save</Btn>
+          </div>
+        </div>
+      </>)}
+
+      {/* Widget Manager Modal */}
+      {showWidgetModal && (<>
+        <div onClick={() => { setShowWidgetModal(false); document.body.style.overflow = ""; }} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.3)", zIndex: 49, backdropFilter: "blur(2px)" }} />
+        <div style={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 420, maxWidth: "92vw", maxHeight: "88vh", background: "#FFF", borderRadius: 12, boxShadow: "0 20px 48px rgba(0,0,0,0.18)", zIndex: 50, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+          {/* header */}
+          <div style={{ padding: "16px 20px", borderBottom: "1px solid #F0F0F0", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
+            <div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: "#18181B" }}>Manage Widgets</div>
+              <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 2 }}>Select and reorder widgets on your dashboard</div>
+            </div>
+            <button onClick={() => { setShowWidgetModal(false); document.body.style.overflow = ""; }} style={{ width: 28, height: 28, borderRadius: 6, background: "#F3F4F6", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#6B7280", fontSize: 14, fontWeight: 600 }}>{"\u2715"}</button>
+          </div>
+
+          {/* list */}
+          <div style={{ overflowY: "auto", flex: 1, padding: "8px 0" }}>
+            {(draftOrder || widgetOrder).map((id, i) => {
+              const order = draftOrder || widgetOrder;
+              const widget = ALL_WIDGETS.find(w => w.id === id);
+              const isSelected = (draftSelected || widgetSelected).has(id);
+              const isLocked = widget.locked;
+              const isDragging = widgetDragItem === i;
+              const isDragOver = widgetDragOver === i && widgetDragItem !== i;
+
+              return (
+                <div key={id}
+                  draggable={!isLocked}
+                  onDragStart={() => !isLocked && setWidgetDragItem(i)}
+                  onDragEnter={() => !isLocked && setWidgetDragOver(i)}
+                  onDragOver={e => e.preventDefault()}
+                  onDrop={() => {
+                    if (widgetDragItem === null || widgetDragItem === i) { setWidgetDragOver(null); return; }
+                    const newOrder = [...order];
+                    const dragged = newOrder.splice(widgetDragItem, 1)[0];
+                    newOrder.splice(i, 0, dragged);
+                    setDraftOrder(newOrder);
+                    setWidgetDragItem(null); setWidgetDragOver(null);
+                  }}
+                  onDragEnd={() => { setWidgetDragItem(null); setWidgetDragOver(null); }}
+                  style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 20px", borderBottom: i < order.length - 1 ? "1px solid #F5F5F5" : "none", background: isDragOver ? "#F5F3FF" : isDragging ? "#FAFAFA" : "#FFF", opacity: isDragging ? 0.45 : 1, transition: "background 0.1s", cursor: isLocked ? "default" : "grab" }}>
+
+                  {/* drag handle */}
+                  <div style={{ color: isLocked ? "#E5E7EB" : "#C4C4C4", flexShrink: 0, display: "flex", alignItems: "center" }}>
+                    <svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor">
+                      <circle cx="3" cy="2" r="1.2"/><circle cx="7" cy="2" r="1.2"/>
+                      <circle cx="3" cy="7" r="1.2"/><circle cx="7" cy="7" r="1.2"/>
+                      <circle cx="3" cy="12" r="1.2"/><circle cx="7" cy="12" r="1.2"/>
+                    </svg>
+                  </div>
+
+                  {/* checkbox */}
+                  <div
+                    onClick={() => {
+                      if (isLocked) return;
+                      setDraftSelected(prev => {
+                        const next = new Set(prev);
+                        if (next.has(id)) next.delete(id); else next.add(id);
+                        return next;
+                      });
+                    }}
+                    style={{ width: 18, height: 18, borderRadius: 4, flexShrink: 0, border: isSelected ? "none" : "1.5px solid #D1D5DB", background: isSelected ? (isLocked ? "#E5E7EB" : aiGrad) : "#FFF", display: "flex", alignItems: "center", justifyContent: "center", cursor: isLocked ? "default" : "pointer", transition: "all 0.15s" }}>
+                    {isSelected && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#FFF" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>}
+                  </div>
+
+                  {/* label */}
+                  <div style={{ flex: 1 }}>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: isLocked ? "#9CA3AF" : "#18181B" }}>{widget.label}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* footer */}
+          <div style={{ padding: "12px 20px", borderTop: "1px solid #F0F0F0", background: "#FAFAFA", display: "flex", gap: 8, justifyContent: "flex-end", flexShrink: 0 }}>
+            <Btn onClick={() => { setShowWidgetModal(false); document.body.style.overflow = ""; setDraftSelected(null); setDraftOrder(null); }}>Cancel</Btn>
+            <Btn primary onClick={() => {
+              if (draftSelected) setWidgetSelected(draftSelected);
+              if (draftOrder) setWidgetOrder(draftOrder);
+              setShowWidgetModal(false); document.body.style.overflow = ""; setDraftSelected(null); setDraftOrder(null);
+            }} sx={{ padding: "6px 16px" }}>Save</Btn>
           </div>
         </div>
       </>)}
