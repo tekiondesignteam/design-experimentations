@@ -562,13 +562,28 @@ function App() {
                           </div>
                         </div>
                       ) : (
-                        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 14px", borderRadius: 6, background: "#FFF", border: "1px dashed #D4D4D4" }}>
-                          <div style={{ width: 24, height: 24, borderRadius: 5, flexShrink: 0, background: "#F3F0FF", display: "flex", alignItems: "center", justifyContent: "center" }}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg></div>
+                        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 14px", borderRadius: 8, background: "linear-gradient(99deg, #E7F7F9 0%, #FBF8F2 100%)" }}>
+                          <div style={{ width: 28, height: 28, borderRadius: 6, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M3.90234 12.1417C4.35913 11.3507 5.37099 11.0796 6.1621 11.5362C6.95276 11.993 7.22378 13.004 6.76757 13.795C6.31077 14.5862 5.299 14.8573 4.50781 14.4005C3.71688 13.9436 3.44577 12.9327 3.90234 12.1417Z" fill="url(#elg0)"/>
+                              <path d="M9.85253 11.5362C10.6436 11.0795 11.6554 11.3507 12.1123 12.1417C12.5687 12.9327 12.2976 13.9436 11.5068 14.4005C10.7156 14.8573 9.70386 14.5862 9.24706 13.795C8.79076 13.0039 9.06163 11.9929 9.85253 11.5362Z" fill="url(#elg1)"/>
+                              <path d="M1.82714 6.87897C2.61816 6.42229 3.62997 6.69366 4.08691 7.48444C4.5437 8.27563 4.27262 9.2874 3.48144 9.74421C2.69025 10.201 1.67846 9.92992 1.22167 9.13874C0.765282 8.34764 1.03617 7.3357 1.82714 6.87897Z" fill="url(#elg2)"/>
+                              <path d="M9.84667 2.22175C10.6377 1.76509 11.6495 2.03645 12.1064 2.82721C12.2712 3.11258 12.342 3.42711 12.3271 3.73346C12.2949 4.39469 12.144 5.12681 12.4746 5.70026C12.8057 6.27373 13.5156 6.50978 14.1045 6.81257C14.3772 6.95281 14.6145 7.17081 14.7793 7.45612C15.2361 8.24727 14.9649 9.25905 14.1738 9.71589C13.3826 10.1727 12.3709 9.90162 11.9141 9.11042C11.7494 8.82504 11.6794 8.51051 11.6943 8.20417C11.7266 7.54286 11.8768 6.81076 11.5459 6.23737C11.2147 5.66396 10.5049 5.42789 9.91601 5.12507C9.64334 4.98476 9.40593 4.76682 9.2412 4.48151C8.78485 3.69046 9.05581 2.67851 9.84667 2.22175Z" fill="url(#elg3)"/>
+                              <path d="M4.50781 2.27839C5.2989 1.82171 6.31071 2.0929 6.76757 2.88385C7.22408 3.67496 6.95309 4.68685 6.1621 5.14362C5.37103 5.60035 4.35924 5.32907 3.90234 4.53815C3.44576 3.74699 3.7167 2.73513 4.50781 2.27839Z" fill="url(#elg4)"/>
+                              <defs>
+                                <linearGradient id="elg0" x1="1" y1="2" x2="16.8697" y2="5.1208" gradientUnits="userSpaceOnUse"><stop stopColor="#25C8A5"/><stop offset="0.5" stopColor="#1B90B4"/><stop offset="1" stopColor="#1A6CC4"/></linearGradient>
+                                <linearGradient id="elg1" x1="1" y1="2" x2="16.8697" y2="5.1208" gradientUnits="userSpaceOnUse"><stop stopColor="#25C8A5"/><stop offset="0.5" stopColor="#1B90B4"/><stop offset="1" stopColor="#1A6CC4"/></linearGradient>
+                                <linearGradient id="elg2" x1="1" y1="2" x2="16.8697" y2="5.1208" gradientUnits="userSpaceOnUse"><stop stopColor="#25C8A5"/><stop offset="0.5" stopColor="#1B90B4"/><stop offset="1" stopColor="#1A6CC4"/></linearGradient>
+                                <linearGradient id="elg3" x1="1" y1="2" x2="16.8697" y2="5.1208" gradientUnits="userSpaceOnUse"><stop stopColor="#25C8A5"/><stop offset="0.5" stopColor="#1B90B4"/><stop offset="1" stopColor="#1A6CC4"/></linearGradient>
+                                <linearGradient id="elg4" x1="1" y1="2" x2="16.8697" y2="5.1208" gradientUnits="userSpaceOnUse"><stop stopColor="#25C8A5"/><stop offset="0.5" stopColor="#1B90B4"/><stop offset="1" stopColor="#1A6CC4"/></linearGradient>
+                              </defs>
+                            </svg>
+                          </div>
                           <div style={{ flex: 1 }}>
-                            <div style={{ fontSize: 13, fontWeight: 600, color: "#7C3AED" }}>{cur.why.toLowerCase().includes("recall") ? "Let AI handle recalls like this going forward" : cur.why.toLowerCase().includes("absent") ? "Let AI reassign deals when someone calls in absent" : "Let AI reschedule deliveries when PDI runs late"}</div>
+                            <div style={{ fontSize: 13, fontWeight: 600, color: "#18181B" }}>{cur.why.toLowerCase().includes("recall") ? "Let AI handle recalls like this going forward" : cur.why.toLowerCase().includes("absent") ? "Let AI reassign deals when someone calls in absent" : "Let AI reschedule deliveries when PDI runs late"}</div>
                             <div style={{ fontSize: 11, fontWeight: 500, color: "#9CA3AF" }}>Same steps you just approved, runs automatically. You just get notified.</div>
                           </div>
-                          <Btn onClick={() => setAutomated(p => new Set([...p, cur.sev+cur.why]))} sx={{ flexShrink: 0, background: aiGrad, color: "#FFF", padding: "6px 16px", fontSize: 12, boxShadow: "0 2px 4px rgba(0,0,0,0.08)" }}>Enable</Btn>
+                          <Btn onClick={() => setAutomated(p => new Set([...p, cur.sev+cur.why]))} sx={{ flexShrink: 0, padding: "6px 16px", fontSize: 12 }}>Enable</Btn>
                         </div>
                       )}
                       <Btn primary onClick={() => dismissExecution(cur.id)} sx={{ marginTop: 10, width: "100%", justifyContent: "center", padding: "9px 16px", fontSize: 13 }}>{total > 1 ? `Next (${total-1} remaining)` : "Done"}</Btn>
@@ -862,18 +877,13 @@ function App() {
           {/* Sources Modal */}
           {sourcesModal && (
             <div onClick={() => setSourcesModal(false)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.2)", zIndex: 50, backdropFilter: "blur(2px)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <div onClick={e => e.stopPropagation()} style={{
-                background: "#FFF", borderRadius: 12, width: 480, maxWidth: "92vw", maxHeight: "80vh",
-                boxShadow: "0 20px 60px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.06)",
-                display: "flex", flexDirection: "column",
-                opacity: 0, animation: "fadeSlideIn 0.2s ease forwards",
-              }}>
+              <div onClick={e => e.stopPropagation()} style={{ background: "#FFF", borderRadius: 12, width: 480, maxWidth: "92vw", maxHeight: "80vh", boxShadow: "0 20px 60px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.06)", display: "flex", flexDirection: "column", opacity: 0, animation: "fadeSlideIn 0.2s ease forwards" }}>
                 <div style={{ padding: 16, borderBottom: "1px solid #F3F4F6", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <div>
                     <div style={{ fontSize: 15, fontWeight: 700, color: "#18181B" }}>Sources</div>
                     <div style={{ fontSize: 11, fontWeight: 500, color: "#9CA3AF", marginTop: 2 }}>{Object.keys(CITATIONS).length} data points used to generate this script</div>
                   </div>
-                  <button onClick={() => setSourcesModal(false)} style={{ width: 28, height: 28, borderRadius: 6, border: "none", background: "#F3F4F6", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, color: "#9CA3AF" }}>{"\u2715"}</button>
+                  <button onClick={() => setSourcesModal(false)} style={{ width: 28, height: 28, borderRadius: 6, border: "none", background: "#F3F4F6", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, color: "#9CA3AF" }}>{"✕"}</button>
                 </div>
                 <div style={{ overflowY: "auto", flex: 1 }}>
                   {Object.values(CITATIONS).map((c, i) => (
@@ -881,15 +891,10 @@ function App() {
                       <Row sx={{ gap: 12 }}>
                         <div style={{ width: 36, height: 36, borderRadius: "50%", flexShrink: 0, background: `${c.c}12`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: c.c }}>{c.ini}</div>
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <Row sx={{ gap: 6 }}>
-                            <span style={{ fontSize: 13, fontWeight: 700, color: "#18181B" }}>{c.name}</span>
-                            <span style={{ fontSize: 11, fontWeight: 500, color: "#9CA3AF" }}>{c.id}</span>
-                          </Row>
+                          <Row sx={{ gap: 6 }}><span style={{ fontSize: 13, fontWeight: 700, color: "#18181B" }}>{c.name}</span><span style={{ fontSize: 11, fontWeight: 500, color: "#9CA3AF" }}>{c.id}</span></Row>
                           <div style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", marginTop: 2 }}>{c.detail} &middot; {c.sub}</div>
                         </div>
-                        <div style={{ textAlign: "right", flexShrink: 0 }}>
-                          <div style={{ fontSize: 12, fontWeight: 700, color: c.c, fontFamily: mono }}>{c.metric}</div>
-                        </div>
+                        <div style={{ textAlign: "right", flexShrink: 0 }}><div style={{ fontSize: 12, fontWeight: 700, color: c.c, fontFamily: mono }}>{c.metric}</div></div>
                       </Row>
                     </div>
                   ))}
@@ -898,421 +903,171 @@ function App() {
             </div>
           )}
 
-          {/* ── ROW 2 col 1: Carryover Deals ── */}
-          {widgetSelected.has("carryover") && <B delay={1500}><Bp>
-            <Row sx={{ justifyContent: "space-between", marginBottom: 12 }}>
-              <Row sx={{ gap: 6, alignItems: "baseline" }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Carryover Deals</div>
-                <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>{DEALS.length}</span>
-              </Row>
-              <button style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid #E5E7EB", background: "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}
-                className="icon-btn" onMouseEnter={e => { e.currentTarget.style.borderColor = "#C0C0C0"; e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.boxShadow = "none"; }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
-              </button>
-            </Row>
-            {(() => {
-              const statusColor = {
-                ready_to_close:        "#10B981",
-                customer_unresponsive: "#DC2626",
-                waiting_third_party:   "#F59E0B",
-                on_hold:               "#D4D4D4",
-              };
-              const ctaLabel = { call: "Call", confirm: "Confirm" };
-              return (
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  {DEALS.slice(0, 5).map((d, i) => {
-                    const barColor = statusColor[d.status];
-                    return (
-                      <div key={d.id} style={{ display: "flex", alignItems: "flex-start", padding: "8px 0", borderBottom: i < 4 ? "1px solid #F5F5F5" : "none" }}>
-                        {/* avatar */}
-                        <div style={{ width: 32, height: 32, borderRadius: "50%", flexShrink: 0, background: `${d.color}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: d.color, marginRight: 10 }}>{d.ini}</div>
-                        {/* center content */}
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: 13, fontWeight: 700, color: "#18181B", marginBottom: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.customer}</div>
-                          <div style={{ display: "flex", gap: 6, alignItems: "center", overflow: "hidden" }}>
-                            <span style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", whiteSpace: "nowrap", flexShrink: 0 }}>{d.vehicle}</span>
-                            <span style={{ fontSize: 11, color: "#D4D4D4", flexShrink: 0 }}>|</span>
-                            <span style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{d.blocker}</span>
-                          </div>
-                        </div>
-                        {/* right: rep + day badge */}
-                        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", flexShrink: 0, marginLeft: 10, gap: 3 }}>
-                          <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>{d.rep.split(" ")[0]}</span>
-                          <div style={{
-                            minWidth: 34, height: 20, borderRadius: 4, padding: "0 7px",
-                            background: d.day >= 6 ? "#FEF2F2" : d.day >= 3 ? "#FFFBEB" : "#F0FDF4",
-                            display: "flex", alignItems: "center", justifyContent: "center",
-                            fontSize: 10, fontWeight: 700,
-                            color: d.day >= 6 ? "#DC2626" : d.day >= 3 ? "#A16207" : "#15803D",
-                          }}>{d.day === 0 ? "New" : `${d.day}d`}</div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              );
-            })()}
-          </Bp></B>}
+          {/* Widgets rendered in widgetOrder */}
+          {(() => {
+            const rb = <button style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid #E5E7EB", background: "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }} className="icon-btn" onMouseEnter={e => { e.currentTarget.style.borderColor = "#C0C0C0"; e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)"; }} onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.boxShadow = "none"; }}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></button>;
 
-          {/* ── ROW 2 col 2: Appointments ── */}
-          {widgetSelected.has("appts") && <B delay={1700}><Bp>
-            <Row sx={{ justifyContent: "space-between", marginBottom: 12 }}>
-              <Row sx={{ gap: 6, alignItems: "baseline" }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Appointments</div>
-                <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>{APPTS.length}</span>
-              </Row>
-              <button style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid #E5E7EB", background: "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}
-                className="icon-btn" onMouseEnter={e => { e.currentTarget.style.borderColor = "#C0C0C0"; e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.boxShadow = "none"; }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
-              </button>
-            </Row>
-            {(() => {
-              const typeColor = { "Test Drive": "#D97706", "Sales": "#2563EB" };
-              const appts = APPTS.slice(0, 5);
-              const groups = [];
-              appts.forEach(a => {
-                const last = groups[groups.length - 1];
-                if (last && last.time === a.time) { last.items.push(a); }
-                else { groups.push({ time: a.time, p: a.p, items: [a] }); }
-              });
-              return (
+            const renderWidget = (id, delay) => {
+              if (!widgetSelected.has(id)) return null;
+              if (id === "carryover") return <B key="carryover" delay={delay}><Bp>
+                <Row sx={{ justifyContent: "space-between", marginBottom: 12 }}><Row sx={{ gap: 6, alignItems: "baseline" }}><div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Carryover Deals</div><span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>{DEALS.length}</span></Row>{rb}</Row>
                 <div style={{ display: "flex", flexDirection: "column" }}>
-                  {groups.map((g, gi) => (
-                    <div key={gi} style={{ borderBottom: gi < groups.length - 1 ? "1px solid #F0F0F0" : "none", padding: "8px 0" }}>
-                      <div style={{ display: "flex", gap: 0, alignItems: "flex-start" }}>
-                        {/* time column */}
-                        <div style={{ width: 52, flexShrink: 0, paddingTop: 4, paddingRight: 12 }}>
-                          <div style={{ fontSize: 12, fontWeight: 800, color: "#18181B", lineHeight: 1 }}>{g.time}</div>
-                          <div style={{ fontSize: 10, fontWeight: 600, color: "#C0C0C0", marginTop: 3 }}>{g.p}</div>
-                        </div>
-                        {/* appointments in slot */}
-                        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4 }}>
-                          {g.items.map((a, ai) => {
-                            const c = typeColor[a.type] || "#6B7280";
-                            return (
-                              <div key={ai} style={{ display: "flex", alignItems: "stretch" }}>
-                                <div style={{ width: 3, borderRadius: 2, background: c, flexShrink: 0 }} />
-                                <div style={{ flex: 1, padding: "4px 10px", borderRadius: "0 6px 6px 0", background: `${c}08` }}>
-                                  <Row sx={{ justifyContent: "space-between", gap: 6 }}>
-                                    <span style={{ fontSize: 13, fontWeight: 600, color: "#18181B" }}>{a.customer}</span>
-                                    <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", flexShrink: 0 }}>{a.rep.split(" ")[0]}</span>
-                                  </Row>
-                                  <div style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", marginTop: 3 }}>{a.vehicle} &middot; {a.type}</div>
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
+                  {DEALS.slice(0, 5).map((d, i) => (
+                    <div key={d.id} style={{ display: "flex", alignItems: "flex-start", padding: "8px 0", borderBottom: i < 4 ? "1px solid #F5F5F5" : "none" }}>
+                      <div style={{ width: 32, height: 32, borderRadius: "50%", flexShrink: 0, background: `${d.color}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: d.color, marginRight: 10 }}>{d.ini}</div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: "#18181B", marginBottom: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.customer}</div>
+                        <div style={{ display: "flex", gap: 6, alignItems: "center", overflow: "hidden" }}><span style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", whiteSpace: "nowrap", flexShrink: 0 }}>{d.vehicle}</span><span style={{ fontSize: 11, color: "#D4D4D4", flexShrink: 0 }}>|</span><span style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{d.blocker}</span></div>
+                      </div>
+                      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", flexShrink: 0, marginLeft: 10, gap: 3 }}>
+                        <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>{d.rep.split(" ")[0]}</span>
+                        <div style={{ minWidth: 34, height: 20, borderRadius: 4, padding: "0 7px", background: d.day >= 6 ? "#FEF2F2" : d.day >= 3 ? "#FFFBEB" : "#F0FDF4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: d.day >= 6 ? "#DC2626" : d.day >= 3 ? "#A16207" : "#15803D" }}>{d.day === 0 ? "New" : `${d.day}d`}</div>
                       </div>
                     </div>
                   ))}
                 </div>
-              );
-            })()}
-          </Bp></B>}
+              </Bp></B>;
 
-          {/* ── ROW 3 col 1: Inventory Health ── */}
-          {widgetSelected.has("inventory") && <B delay={1900}><Bp>
-            <Row sx={{ justifyContent: "space-between", marginBottom: 14 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Inventory Health</div>
-              <button style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid #E5E7EB", background: "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}
-                className="icon-btn" onMouseEnter={e => { e.currentTarget.style.borderColor = "#C0C0C0"; e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.boxShadow = "none"; }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
-              </button>
-            </Row>
-            <div style={{ marginBottom: 16 }}>
-              <Row sx={{ alignItems: "baseline", gap: 8, marginBottom: 4, justifyContent: "space-between" }}>
-                <Row sx={{ alignItems: "baseline", gap: 8 }}>
-                  <div style={{ fontSize: 28, fontWeight: 800, color: "#18181B", letterSpacing: "-0.03em", fontFamily: mono }}>247</div>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF" }}>vehicles</div>
-                </Row>
-                <Tag bg="#EFF6FF" c="#1D4ED8" sx={{ fontSize: 10 }}>+18 in transit</Tag>
-              </Row>
-            </div>
-            <div className="bucket-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "0 1px", marginTop: 20 }}>
-              {[
-                { label: "0\u201330d",  value: "142", pct: "58%", delta: "+12", color: "#10B981", deltaColor: "#6B7280" },
-                { label: "31\u201345d", value: "61",  pct: "25%", delta: "+3",  color: "#F59E0B", deltaColor: "#6B7280" },
-                { label: "46\u201360d", value: "30",  pct: "12%", delta: "-2",  color: "#F97316", deltaColor: "#059669" },
-                { label: "60d+",         value: "14",  pct: "5%",  delta: "+1",  color: "#DC2626", deltaColor: "#DC2626" },
-              ].map((col, ci) => (
-                <div key={ci} className={`bucket-item bucket-item-${ci}`} style={{ padding: "0 12px", borderRight: ci < 3 ? "1px solid #F0F0F0" : "none" }}>
-                  <div style={{ fontSize: 10, fontWeight: 600, color: "#9CA3AF", marginBottom: 6 }}>{col.label}</div>
-                  <div style={{ fontSize: 20, fontWeight: 800, color: "#18181B", letterSpacing: "-0.02em", marginBottom: 2 }}>{col.value}</div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: col.color, marginBottom: 10 }}>{col.pct}</div>
-                  <span style={{ fontSize: 10, fontWeight: 600, color: col.deltaColor }}>{col.delta} vs last wk</span>
-                </div>
-              ))}
-            </div>
-            <div style={{ display: "flex", borderRadius: 3, overflow: "hidden", height: 4, marginTop: 12, gap: 1 }}>
-              {[{ pct: 58, color: "#10B981" }, { pct: 25, color: "#F59E0B" }, { pct: 12, color: "#F97316" }, { pct: 5, color: "#DC2626" }].map((seg, i) => (
-                <div key={i} style={{ width: `${seg.pct}%`, background: seg.color, borderRadius: i === 0 ? "3px 0 0 3px" : i === 3 ? "0 3px 3px 0" : 0 }} />
-              ))}
-            </div>
-            <div style={{ display: "flex", gap: 8, marginTop: 14, alignItems: "flex-start" }}>
-              <div style={{ width: 3, borderRadius: 2, background: aiGrad, flexShrink: 0, alignSelf: "stretch" }} />
-              <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", lineHeight: 1.6 }}>2026 Tacoma SR5 · 18d supply · 3 units 60d+<br/>2025 Venza XLE · 11d supply · 2 units 45d+</span>
-            </div>
-          </Bp></B>}
-
-          {/* ── ROW 3 col 2: Sales Floor ── */}
-          {widgetSelected.has("salesfloor") && <B delay={2100}><Bp>
-            <Row sx={{ justifyContent: "space-between", marginBottom: 12 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Sales Floor</div>
-              <button style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid #E5E7EB", background: "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}
-                className="icon-btn" onMouseEnter={e => { e.currentTarget.style.borderColor = "#C0C0C0"; e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.boxShadow = "none"; }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
-              </button>
-            </Row>
-
-            {/* table header */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 48px 52px 1fr", gap: "0 8px", padding: "6px 0 8px 0", borderBottom: "1px solid #E5E7EB", marginBottom: 2 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: "#374151" }}>Salesperson</div>
-              <div style={{ fontSize: 11, fontWeight: 700, color: "#374151", textAlign: "center" }}>Load</div>
-              <div style={{ fontSize: 11, fontWeight: 700, color: "#374151", textAlign: "center" }}>Leads</div>
-              <div style={{ fontSize: 11, fontWeight: 700, color: "#374151" }}>Note</div>
-            </div>
-
-            {(() => {
-              const SignalBars = ({ level, color }) => {
-                return (
-                  <div style={{ display: "flex", alignItems: "center", gap: 2, opacity: level === 0 ? 0.3 : 1 }}>
-                    {[1, 2, 3].map(s => (
-                      <div key={s} style={{ width: 10, height: 10, borderRadius: 2, background: s <= level ? color : "#E5E7EB" }} />
-                    ))}
-                  </div>
-                );
-              };
-
-              return [
-                { ini: "CW", name: "Chris",  color: "#059669", load: "Normal",  level: 2, leads: 6,  note: "Balanced mix",        loadColor: "#15803D" },
-                { ini: "JL", name: "Jason",  color: "#2563EB", load: "High",    level: 3, leads: 10, note: "SLA risk · 2 late",    loadColor: "#DC2626" },
-                { ini: "EC", name: "Emily",  color: "#D97706", load: "Absent",  level: 0, leads: 4,  note: "4 hot deals pending",  loadColor: "#9CA3AF" },
-                { ini: "MG", name: "Marcus", color: "#7C3AED", load: "Low",     level: 1, leads: 3,  note: "Extra capacity",       loadColor: "#D97706" },
-              ].map((r, i, arr) => (
-                <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 48px 52px 1fr", gap: "0 8px", padding: "6px 0", borderBottom: i < arr.length - 1 ? "1px solid #F5F5F5" : "none", alignItems: "center" }}>
-                  <span style={{ fontSize: 13, fontWeight: 600, color: "#18181B" }}>{r.name}</span>
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
-                    <SignalBars level={r.level} color={r.loadColor} />
-                    <span style={{ fontSize: 9, fontWeight: 700, color: r.loadColor }}>{r.load}</span>
-                  </div>
-                  <div style={{ textAlign: "center" }}>
-                    <span style={{ fontSize: 13, fontWeight: 700, color: "#18181B" }}>{r.leads}</span>
-                  </div>
-                  <span style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.note}</span>
-                </div>
-              ));
-            })()}
-
-            {/* floor insight */}
-            <div style={{ display: "flex", gap: 8, marginTop: 14, alignItems: "flex-start" }}>
-              <div style={{ width: 3, borderRadius: 2, background: aiGrad, flexShrink: 0, alignSelf: "stretch" }} />
-              <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", lineHeight: 1.6 }}>Floor status: Jason is over-loaded, Marcus has spare capacity, and Emily's hot deals need coverage.</span>
-            </div>
-          </Bp></B>}
-
-          {/* ── ROW 5: Overnight Leads + Finance Approvals ── */}
-          {widgetSelected.has("leads") && <B delay={2300}><Bp>
-            <Row sx={{ justifyContent: "space-between", marginBottom: 12 }}>
-              <Row sx={{ gap: 5, alignItems: "baseline" }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Overnight Leads</div>
-                <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>{HOT_LEADS.length}</span>
-              </Row>
-              <button style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid #E5E7EB", background: "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}
-                className="icon-btn" onMouseEnter={e => { e.currentTarget.style.borderColor = "#C0C0C0"; e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.boxShadow = "none"; }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
-              </button>
-            </Row>
-            {HOT_LEADS.map((lead, i) => {
-              const ini = lead.name.split(" ").map(n => n[0]).join("").slice(0, 2);
-              const colors = ["#2563EB", "#059669", "#7C3AED", "#D97706", "#DC2626"];
-              const color = colors[i % colors.length];
-              return (
-                <div key={lead.id} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "8px 0", borderBottom: i < HOT_LEADS.length - 1 ? "1px solid #F5F5F5" : "none" }}>
-                  {/* avatar */}
-                  <div style={{ width: 30, height: 30, borderRadius: "50%", flexShrink: 0, background: `${color}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color }}>{ini}</div>
-                  {/* content */}
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    {/* line 1: name + badge */}
-                    <div style={{ display: "flex", gap: 6, alignItems: "baseline", marginBottom: 3, overflow: "hidden" }}>
-                      <span style={{ fontSize: 13, fontWeight: 700, color: "#18181B", whiteSpace: "nowrap" }}>{lead.name}</span>
-                      {lead.status === "not_contacted" && (
-                        <span style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "1px 6px", borderRadius: 3, background: "#FEF2F2", fontSize: 10, fontWeight: 700, color: "#DC2626", flexShrink: 0 }}>
-                          <span style={{ width: 4, height: 4, borderRadius: "50%", background: "#DC2626", display: "inline-block" }} />
-                          No contact
-                        </span>
-                      )}
+              if (id === "appts") return <B key="appts" delay={delay}><Bp>
+                <Row sx={{ justifyContent: "space-between", marginBottom: 12 }}><Row sx={{ gap: 6, alignItems: "baseline" }}><div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Appointments</div><span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>{APPTS.length}</span></Row>{rb}</Row>
+                {(() => {
+                  const typeColor = { "Test Drive": "#D97706", "Sales": "#2563EB" };
+                  const groups = [];
+                  APPTS.slice(0, 5).forEach(a => { const last = groups[groups.length - 1]; if (last && last.time === a.time) last.items.push(a); else groups.push({ time: a.time, p: a.p, items: [a] }); });
+                  return <div style={{ display: "flex", flexDirection: "column" }}>{groups.map((g, gi) => (
+                    <div key={gi} style={{ borderBottom: gi < groups.length - 1 ? "1px solid #F0F0F0" : "none", padding: "8px 0" }}>
+                      <div style={{ display: "flex", gap: 0, alignItems: "flex-start" }}>
+                        <div style={{ width: 52, flexShrink: 0, paddingTop: 4, paddingRight: 12 }}><div style={{ fontSize: 12, fontWeight: 800, color: "#18181B", lineHeight: 1 }}>{g.time}</div><div style={{ fontSize: 10, fontWeight: 600, color: "#C0C0C0", marginTop: 3 }}>{g.p}</div></div>
+                        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4 }}>{g.items.map((a, ai) => { const c = typeColor[a.type] || "#6B7280"; return <div key={ai} style={{ display: "flex", alignItems: "stretch" }}><div style={{ width: 3, borderRadius: 2, background: c, flexShrink: 0 }} /><div style={{ flex: 1, padding: "4px 10px", borderRadius: "0 6px 6px 0", background: `${c}08` }}><Row sx={{ justifyContent: "space-between", gap: 6 }}><span style={{ fontSize: 13, fontWeight: 600, color: "#18181B" }}>{a.customer}</span><span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", flexShrink: 0 }}>{a.rep.split(" ")[0]}</span></Row><div style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", marginTop: 3 }}>{a.vehicle} &middot; {a.type}</div></div></div>; })}</div>
+                      </div>
                     </div>
-                    {/* line 2: carryover style */}
-                    <div style={{ display: "flex", gap: 6, alignItems: "center", overflow: "hidden" }}>
-                      <span style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", whiteSpace: "nowrap", flexShrink: 0 }}>{lead.vehicle}</span>
-                      <span style={{ fontSize: 11, color: "#D4D4D4", flexShrink: 0 }}>|</span>
-                      <span style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{lead.src} · {lead.time}</span>
-                    </div>
-                  </div>
-                  {/* right: rep + status */}
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", flexShrink: 0, gap: 3 }}>
-                    {lead.status === "contacted"
-                      ? <span style={{ fontSize: 10, fontWeight: 600, color: "#15803D", background: "#F0FDF4", padding: "1px 6px", borderRadius: 3 }}>Contacted · {lead.contactedAt}</span>
-                      : <span style={{ fontSize: 10, fontWeight: 600, color: "#9CA3AF", background: "#F3F4F6", padding: "1px 6px", borderRadius: 3 }}>Pending</span>
-                    }
-                    <span style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF" }}>{lead.rep}</span>
-                  </div>
-                </div>
-              );
-            })}
-          </Bp></B>}
+                  ))}</div>;
+                })()}
+              </Bp></B>;
 
-          {widgetSelected.has("finance") && <B delay={2500}><Bp>
-            <Row sx={{ justifyContent: "space-between", marginBottom: 12 }}>
-              <Row sx={{ gap: 5, alignItems: "baseline" }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Finance Approvals</div>
-                <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>{FINANCE_Q.length}</span>
-              </Row>
-              <Row sx={{ gap: 6 }}>
-                <button style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid #E5E7EB", background: "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}
-                  className="icon-btn" onMouseEnter={e => { e.currentTarget.style.borderColor = "#C0C0C0"; e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)"; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.boxShadow = "none"; }}>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
-                </button>
-              </Row>
-            </Row>
-            {(() => {
-              const finStatus = {
-                pending_stips: { label: "Pending Stips", bg: "#FFFBEB", c: "#A16207" },
-                submitted:     { label: "Submitted",     bg: "#EFF6FF", c: "#2563EB" },
-                approved:      { label: "Approved",      bg: "#F0FDF4", c: "#15803D" },
-                conditional:   { label: "Conditional",   bg: "#F5F3FF", c: "#7C3AED" },
-              };
-              return FINANCE_Q.map((deal, i) => {
-                const st = finStatus[deal.status];
-                return (
-                  <div key={deal.id} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "8px 0", borderBottom: i < FINANCE_Q.length - 1 ? "1px solid #F5F5F5" : "none" }}>
-                    {/* avatar */}
-                    <div style={{ width: 30, height: 30, borderRadius: "50%", flexShrink: 0, background: `${deal.color}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: deal.color, marginTop: 1 }}>{deal.ini}</div>
-                    {/* left: name / vehicle / stip */}
+              if (id === "inventory") return <B key="inventory" delay={delay}><Bp>
+                <Row sx={{ justifyContent: "space-between", marginBottom: 14 }}><div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Inventory Health</div>{rb}</Row>
+                <Row sx={{ alignItems: "baseline", gap: 8, marginBottom: 16, justifyContent: "space-between" }}><Row sx={{ alignItems: "baseline", gap: 8 }}><div style={{ fontSize: 28, fontWeight: 800, color: "#18181B", letterSpacing: "-0.03em", fontFamily: mono }}>247</div><div style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF" }}>vehicles</div></Row><Tag bg="#EFF6FF" c="#1D4ED8" sx={{ fontSize: 10 }}>+18 in transit</Tag></Row>
+                <div className="bucket-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "0 1px", marginTop: 20 }}>
+                  {[{ label: "0–30d", value: "142", pct: "58%", delta: "+12", color: "#10B981", deltaColor: "#6B7280" }, { label: "31–45d", value: "61", pct: "25%", delta: "+3", color: "#F59E0B", deltaColor: "#6B7280" }, { label: "46–60d", value: "30", pct: "12%", delta: "-2", color: "#F97316", deltaColor: "#059669" }, { label: "60d+", value: "14", pct: "5%", delta: "+1", color: "#DC2626", deltaColor: "#DC2626" }].map((col, ci) => (
+                    <div key={ci} className={`bucket-item bucket-item-${ci}`} style={{ padding: "0 12px", borderRight: ci < 3 ? "1px solid #F0F0F0" : "none" }}>
+                      <div style={{ fontSize: 10, fontWeight: 600, color: "#9CA3AF", marginBottom: 6 }}>{col.label}</div>
+                      <div style={{ fontSize: 20, fontWeight: 800, color: "#18181B", letterSpacing: "-0.02em", marginBottom: 2 }}>{col.value}</div>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: col.color, marginBottom: 10 }}>{col.pct}</div>
+                      <span style={{ fontSize: 10, fontWeight: 600, color: col.deltaColor }}>{col.delta} vs last wk</span>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ display: "flex", borderRadius: 3, overflow: "hidden", height: 4, marginTop: 12, gap: 1 }}>
+                  {[{ pct: 58, color: "#10B981" }, { pct: 25, color: "#F59E0B" }, { pct: 12, color: "#F97316" }, { pct: 5, color: "#DC2626" }].map((seg, i) => <div key={i} style={{ width: `${seg.pct}%`, background: seg.color, borderRadius: i === 0 ? "3px 0 0 3px" : i === 3 ? "0 3px 3px 0" : 0 }} />)}
+                </div>
+                <div style={{ display: "flex", gap: 8, marginTop: 14, alignItems: "flex-start" }}><div style={{ width: 3, borderRadius: 2, background: aiGrad, flexShrink: 0, alignSelf: "stretch" }} /><span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", lineHeight: 1.6 }}>2026 Tacoma SR5 · 18d supply · 3 units 60d+<br/>2025 Venza XLE · 11d supply · 2 units 45d+</span></div>
+              </Bp></B>;
+
+              if (id === "salesfloor") return <B key="salesfloor" delay={delay}><Bp>
+                <Row sx={{ justifyContent: "space-between", marginBottom: 12 }}><div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Sales Floor</div>{rb}</Row>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 48px 52px 1fr", gap: "0 8px", padding: "6px 0 8px 0", borderBottom: "1px solid #E5E7EB", marginBottom: 2 }}>
+                  {["Salesperson", "Load", "Leads", "Note"].map((h, i) => <div key={i} style={{ fontSize: 11, fontWeight: 700, color: "#374151", textAlign: i === 1 || i === 2 ? "center" : "left" }}>{h}</div>)}
+                </div>
+                {(() => {
+                  const SB = ({ level, color }) => <div style={{ display: "flex", alignItems: "center", gap: 2, opacity: level === 0 ? 0.3 : 1 }}>{[1,2,3].map(s => <div key={s} style={{ width: 10, height: 10, borderRadius: 2, background: s <= level ? color : "#E5E7EB" }} />)}</div>;
+                  return [
+                    { name: "Chris", load: "Normal", level: 2, leads: 6, note: "Balanced mix", loadColor: "#15803D" },
+                    { name: "Jason", load: "High", level: 3, leads: 10, note: "SLA risk · 2 late", loadColor: "#DC2626" },
+                    { name: "Emily", load: "Absent", level: 0, leads: 4, note: "4 hot deals pending", loadColor: "#9CA3AF" },
+                    { name: "Marcus", load: "Low", level: 1, leads: 3, note: "Extra capacity", loadColor: "#D97706" },
+                  ].map((r, i, arr) => (
+                    <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 48px 52px 1fr", gap: "0 8px", padding: "6px 0", borderBottom: i < arr.length - 1 ? "1px solid #F5F5F5" : "none", alignItems: "center" }}>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: "#18181B" }}>{r.name}</span>
+                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}><SB level={r.level} color={r.loadColor} /><span style={{ fontSize: 9, fontWeight: 700, color: r.loadColor }}>{r.load}</span></div>
+                      <div style={{ textAlign: "center" }}><span style={{ fontSize: 13, fontWeight: 700, color: "#18181B" }}>{r.leads}</span></div>
+                      <span style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.note}</span>
+                    </div>
+                  ));
+                })()}
+                <div style={{ display: "flex", gap: 8, marginTop: 14, alignItems: "flex-start" }}><div style={{ width: 3, borderRadius: 2, background: aiGrad, flexShrink: 0, alignSelf: "stretch" }} /><span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", lineHeight: 1.6 }}>Floor status: Jason is over-loaded, Marcus has spare capacity, and Emily's hot deals need coverage.</span></div>
+              </Bp></B>;
+
+              if (id === "leads") return <B key="leads" delay={delay}><Bp>
+                <Row sx={{ justifyContent: "space-between", marginBottom: 12 }}><Row sx={{ gap: 5, alignItems: "baseline" }}><div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Overnight Leads</div><span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>{HOT_LEADS.length}</span></Row>{rb}</Row>
+                {HOT_LEADS.map((lead, i) => { const ini = lead.name.split(" ").map(n => n[0]).join("").slice(0,2); const colors = ["#2563EB","#059669","#7C3AED","#D97706","#DC2626"]; const color = colors[i%colors.length]; return (
+                  <div key={lead.id} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "8px 0", borderBottom: i < HOT_LEADS.length-1 ? "1px solid #F5F5F5" : "none" }}>
+                    <div style={{ width: 30, height: 30, borderRadius: "50%", flexShrink: 0, background: `${color}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color }}>{ini}</div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: "#18181B", marginBottom: 3 }}>{deal.customer}</div>
-                      <div style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", marginBottom: deal.stip ? 4 : 0 }}>{deal.vehicle}</div>
-                      {deal.stip && (
-                        <Row sx={{ gap: 4 }}>
-                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#D97706" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                          <span style={{ fontSize: 12, fontWeight: 500, color: "#D97706" }}>Needs: {deal.stip}</span>
-                        </Row>
-                      )}
+                      <div style={{ display: "flex", gap: 6, alignItems: "baseline", marginBottom: 3, overflow: "hidden" }}>
+                        <span style={{ fontSize: 13, fontWeight: 700, color: "#18181B", whiteSpace: "nowrap" }}>{lead.name}</span>
+                        {lead.status === "not_contacted" && null}
+                      </div>
+                      <div style={{ display: "flex", gap: 6, alignItems: "center", overflow: "hidden" }}><span style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", whiteSpace: "nowrap", flexShrink: 0 }}>{lead.vehicle}</span><span style={{ fontSize: 11, color: "#D4D4D4", flexShrink: 0 }}>|</span><span style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{lead.src} · {lead.time}</span></div>
                     </div>
-                    {/* right: status pill + lender */}
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", flexShrink: 0, gap: 4 }}>
-                      <span style={{ padding: "2px 8px", borderRadius: 4, background: st.bg, color: st.c, fontSize: 11, fontWeight: 700 }}>{st.label}</span>
-                      <span style={{ fontSize: 11, fontWeight: 500, color: "#9CA3AF" }}>{deal.lender}</span>
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", flexShrink: 0, gap: 3 }}>
+                      {lead.status === "contacted" ? <span style={{ fontSize: 10, fontWeight: 600, color: "#15803D", background: "#F0FDF4", padding: "1px 6px", borderRadius: 3 }}>Contacted · {lead.contactedAt}</span> : <span style={{ fontSize: 10, fontWeight: 600, color: "#DC2626", background: "#FEF2F2", padding: "1px 6px", borderRadius: 3 }}>Not Contacted</span>}
+                      <span style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF" }}>{lead.rep}</span>
                     </div>
                   </div>
-                );
-              });
-            })()}
-          </Bp></B>}
+                ); })}
+              </Bp></B>;
 
-          {/* ── ROW 6: Lead Source Performance + Leads Pipeline ── */}
-          {widgetSelected.has("sources") && <B delay={2700}><Bp>
-            <Row sx={{ justifyContent: "space-between", marginBottom: 12 }}>
-              <Row sx={{ gap: 5, alignItems: "baseline" }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Lead Sources</div>
-                <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>MTD</span>
-              </Row>
-              <button style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid #E5E7EB", background: "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}
-                className="icon-btn" onMouseEnter={e => { e.currentTarget.style.borderColor = "#C0C0C0"; e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.boxShadow = "none"; }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
-              </button>
-            </Row>
-            {/* col headers */}
-            <div style={{ display: "grid", gridTemplateColumns: "36% 18% 22% 24%", gap: 0, padding: "0 0 6px 0", borderBottom: "1px solid #E5E7EB", marginBottom: 2 }}>
-              {["Source", "Leads", "Contact", "Close %"].map((h, i) => (
-                <div key={i} style={{ fontSize: 11, fontWeight: 700, color: "#374151", textAlign: i > 0 ? "right" : "left", whiteSpace: "nowrap" }}>{h}</div>
-              ))}
-            </div>
-            {(() => {
-              const maxClose = Math.max(...LEAD_SOURCES.map(s => s.closeRate));
-              return LEAD_SOURCES.map((s, i) => (
-                <div key={i} style={{ display: "grid", gridTemplateColumns: "36% 18% 22% 24%", gap: 0, padding: "6px 0", borderBottom: i < LEAD_SOURCES.length - 1 ? "1px solid #F5F5F5" : "none", alignItems: "center" }}>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: "#18181B" }}>{s.src}</div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: "#374151", textAlign: "right" }}>{s.volume}</div>
-                  <div style={{ textAlign: "right" }}>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: s.contactRate >= 75 ? "#15803D" : s.contactRate >= 60 ? "#A16207" : "#DC2626" }}>{s.contactRate}%</span>
-                  </div>
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 3, minWidth: 0, overflow: "hidden" }}>
-                    <span style={{ fontSize: 12, fontWeight: 800, color: "#18181B" }}>{s.closeRate}%</span>
-                    <div style={{ width: 40, height: 3, borderRadius: 2, background: "#F0F0F0", flexShrink: 0 }}>
-                      <div style={{ height: "100%", borderRadius: 2, width: `${(s.closeRate / maxClose) * 100}%`, background: s.closeRate === maxClose ? "#15803D" : aiGrad }} />
+              if (id === "finance") return <B key="finance" delay={delay}><Bp>
+                <Row sx={{ justifyContent: "space-between", marginBottom: 12 }}><Row sx={{ gap: 5, alignItems: "baseline" }}><div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Finance Approvals</div><span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>{FINANCE_Q.length}</span></Row>{rb}</Row>
+                {(() => {
+                  const fs = { pending_stips: { label: "Pending Stips", bg: "#FFFBEB", c: "#A16207" }, submitted: { label: "Submitted", bg: "#EFF6FF", c: "#2563EB" }, approved: { label: "Approved", bg: "#F0FDF4", c: "#15803D" }, conditional: { label: "Conditional", bg: "#F5F3FF", c: "#7C3AED" } };
+                  return FINANCE_Q.map((deal, i) => { const st = fs[deal.status]; return (
+                    <div key={deal.id} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "8px 0", borderBottom: i < FINANCE_Q.length-1 ? "1px solid #F5F5F5" : "none" }}>
+                      <div style={{ width: 30, height: 30, borderRadius: "50%", flexShrink: 0, background: `${deal.color}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: deal.color, marginTop: 1 }}>{deal.ini}</div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: "#18181B", marginBottom: 3 }}>{deal.customer}</div>
+                        <div style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", marginBottom: deal.stip ? 4 : 0 }}>{deal.vehicle}</div>
+                        {deal.stip && <Row sx={{ gap: 4 }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#D97706" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span style={{ fontSize: 11, fontWeight: 500, color: "#D97706" }}>Needs: {deal.stip}</span></Row>}
+                      </div>
+                      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", flexShrink: 0, gap: 4 }}>
+                        <span style={{ padding: "2px 8px", borderRadius: 4, background: st.bg, color: st.c, fontSize: 11, fontWeight: 700 }}>{st.label}</span>
+                        <span style={{ fontSize: 11, fontWeight: 500, color: "#9CA3AF" }}>{deal.lender}</span>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              ));
-            })()}
-            <div style={{ display: "flex", gap: 8, marginTop: 12, alignItems: "flex-start" }}>
-              <div style={{ width: 3, borderRadius: 2, background: aiGrad, flexShrink: 0, alignSelf: "stretch" }} />
-              <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", lineHeight: 1.55 }}>Walk-ins closing at 2× third-party leads. Autotrader &amp; CarGurus contact rates down 8pts — check rep follow-up cadence.</span>
-            </div>
-          </Bp></B>}
+                  ); });
+                })()}
+              </Bp></B>;
 
-          {widgetSelected.has("pipeline") && <B delay={2900}><Bp>
-            <Row sx={{ justifyContent: "space-between", marginBottom: 12 }}>
-              <Row sx={{ gap: 5, alignItems: "baseline" }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Leads Pipeline</div>
-                <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>MTD</span>
-              </Row>
-              <Row sx={{ gap: 8 }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: "#15803D", background: "#F0FDF4", padding: "2px 8px", borderRadius: 3 }}>
-                  {((PIPELINE[4].count / PIPELINE[0].count) * 100).toFixed(1)}% lead-to-sale
-                </span>
-                <button style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid #E5E7EB", background: "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}
-                  className="icon-btn" onMouseEnter={e => { e.currentTarget.style.borderColor = "#C0C0C0"; e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)"; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.boxShadow = "none"; }}>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
-                </button>
-              </Row>
-            </Row>
-            {/* waterfall chart */}
-            {(() => {
-              const maxCount = PIPELINE[0].count;
-              const logH = c => Math.round((Math.log(c) / Math.log(maxCount)) * 100);
-              return (
-                <div>
-                  <div style={{ display: "flex", alignItems: "flex-end", gap: 4, height: 160, borderBottom: "1px solid #F0F0F0", marginBottom: 8 }}>
-                    {PIPELINE.map((b, i) => {
-                      const h = logH(b.count);
-                      const prev = i > 0 ? PIPELINE[i - 1] : null;
-                      const dropPct = prev ? Math.round((1 - b.count / prev.count) * 100) : null;
-                      const ghostH = prev ? Math.round((Math.log(prev.count) / Math.log(maxCount)) * 100) - h : 0;
-                      return (
+              if (id === "sources") return <B key="sources" delay={delay}><Bp>
+                <Row sx={{ justifyContent: "space-between", marginBottom: 12 }}><Row sx={{ gap: 5, alignItems: "baseline" }}><div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Lead Sources</div><span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>MTD</span></Row>{rb}</Row>
+                <div style={{ display: "grid", gridTemplateColumns: "36% 18% 22% 24%", gap: 0, padding: "0 0 6px 0", borderBottom: "1px solid #E5E7EB", marginBottom: 2 }}>{["Source","Leads #","Contact %","Close %"].map((h,i) => <div key={i} style={{ fontSize: 11, fontWeight: 700, color: "#374151", textAlign: i > 0 ? "right" : "left", whiteSpace: "nowrap" }}>{h}</div>)}</div>
+                {(() => { const mx = Math.max(...LEAD_SOURCES.map(s => s.closeRate)); return LEAD_SOURCES.map((s,i) => (
+                  <div key={i} style={{ display: "grid", gridTemplateColumns: "36% 18% 22% 24%", gap: 0, padding: "6px 0", borderBottom: i < LEAD_SOURCES.length-1 ? "1px solid #F5F5F5" : "none", alignItems: "center" }}>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: "#18181B" }}>{s.src}</div>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: "#374151", textAlign: "right" }}>{s.volume}</div>
+                    <div style={{ textAlign: "right" }}><span style={{ fontSize: 12, fontWeight: 700, color: s.contactRate >= 75 ? "#15803D" : s.contactRate >= 60 ? "#A16207" : "#DC2626" }}>{s.contactRate}%</span></div>
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 3, minWidth: 0, overflow: "hidden" }}><span style={{ fontSize: 12, fontWeight: 800, color: "#18181B" }}>{s.closeRate}%</span><div style={{ width: 40, height: 3, borderRadius: 2, background: "#F0F0F0", flexShrink: 0 }}><div style={{ height: "100%", borderRadius: 2, width: `${(s.closeRate/mx)*100}%`, background: s.closeRate === mx ? "#15803D" : aiGrad }} /></div></div>
+                  </div>
+                )); })()}
+                <div style={{ display: "flex", gap: 8, marginTop: 12, alignItems: "flex-start" }}><div style={{ width: 3, borderRadius: 2, background: aiGrad, flexShrink: 0, alignSelf: "stretch" }} /><span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", lineHeight: 1.55 }}>Walk-ins closing at 2× third-party leads. Autotrader &amp; CarGurus contact rates down 8pts — check rep follow-up cadence.</span></div>
+              </Bp></B>;
+
+              if (id === "pipeline") return <B key="pipeline" delay={delay}><Bp>
+                <Row sx={{ justifyContent: "space-between", marginBottom: 12 }}><Row sx={{ gap: 5, alignItems: "baseline" }}><div style={{ fontSize: 13, fontWeight: 700, color: "#374151" }}>Leads Pipeline</div><span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>MTD</span></Row><Row sx={{ gap: 8 }}><span style={{ fontSize: 11, fontWeight: 700, color: "#15803D", background: "#F0FDF4", padding: "2px 8px", borderRadius: 3 }}>{((PIPELINE[4].count/PIPELINE[0].count)*100).toFixed(1)}% lead-to-sale</span>{rb}</Row></Row>
+                {(() => { const mc = PIPELINE[0].count; const lh = c => Math.round((Math.log(c)/Math.log(mc))*100); return (
+                  <div>
+                    <div style={{ display: "flex", alignItems: "flex-end", gap: 4, height: 160, borderBottom: "1px solid #F0F0F0", marginBottom: 8 }}>
+                      {PIPELINE.map((b,i) => { const h = lh(b.count); const prev = i > 0 ? PIPELINE[i-1] : null; const dp = prev ? Math.round((1-b.count/prev.count)*100) : null; const gh = prev ? Math.round((Math.log(prev.count)/Math.log(mc))*100)-h : 0; return (
                         <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "stretch", justifyContent: "flex-end", height: "100%" }}>
-                          {dropPct !== null && <div style={{ textAlign: "center", fontSize: 9, fontWeight: 800, color: dropPct >= 60 ? "#DC2626" : "#D97706", marginBottom: 2 }}>−{dropPct}%</div>}
-                          {ghostH > 0 && <div style={{ height: `${ghostH}%`, background: "#FEF2F2", border: "1px dashed #FECACA", borderRadius: "2px 2px 0 0" }} />}
-                          <div style={{ height: `${h}%`, minHeight: 10, background: b.color, borderRadius: "2px 2px 0 0", display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: 2 }}>
-                            <span style={{ fontSize: 9, fontWeight: 800, color: "#FFF" }}>{b.count}</span>
-                          </div>
+                          {dp !== null && <div style={{ textAlign: "center", fontSize: 9, fontWeight: 800, color: dp >= 60 ? "#DC2626" : "#D97706", marginBottom: 2 }}>−{dp}%</div>}
+                          {gh > 0 && <div style={{ height: `${gh}%`, background: "#FEF2F2", border: "1px dashed #FECACA", borderRadius: "2px 2px 0 0" }} />}
+                          <div style={{ height: `${h}%`, minHeight: 10, background: b.color, borderRadius: "2px 2px 0 0", display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: 2 }}><span style={{ fontSize: 9, fontWeight: 800, color: "#FFF" }}>{b.count}</span></div>
                         </div>
-                      );
-                    })}
+                      ); })}
+                    </div>
+                    <div style={{ display: "flex", gap: 4 }}>{PIPELINE.map((b,i) => <div key={i} style={{ flex: 1, textAlign: "center", fontSize: 10, fontWeight: 600, color: "#6B7280", lineHeight: 1.3 }}>{b.label}</div>)}</div>
                   </div>
-                  <div style={{ display: "flex", gap: 4 }}>
-                    {PIPELINE.map((b, i) => (
-                      <div key={i} style={{ flex: 1, textAlign: "center", fontSize: 10, fontWeight: 600, color: "#6B7280", lineHeight: 1.3 }}>{b.label}</div>
-                    ))}
-                  </div>
-                </div>
-              );
-            })()}
-            <div style={{ display: "flex", gap: 8, marginTop: 12, alignItems: "flex-start" }}>
-              <div style={{ width: 3, borderRadius: 2, background: aiGrad, flexShrink: 0, alignSelf: "stretch" }} />
-              <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", lineHeight: 1.55 }}>Biggest leak: Contacted → Engaged at 70% drop-off. Top dealers convert 40%+ of contacted leads.</span>
-            </div>
-          </Bp></B>}
+                ); })()}
+                <div style={{ display: "flex", gap: 8, marginTop: 12, alignItems: "flex-start" }}><div style={{ width: 3, borderRadius: 2, background: aiGrad, flexShrink: 0, alignSelf: "stretch" }} /><span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", lineHeight: 1.55 }}>Biggest leak: Contacted → Engaged at 70% drop-off. Top dealers convert 40%+ of contacted leads.</span></div>
+              </Bp></B>;
+
+              return null;
+            };
+
+            return widgetOrder.filter(id => id !== "huddle").map((id, i) => renderWidget(id, 1500 + i * 200));
+          })()}
+
 
         </div>
 
