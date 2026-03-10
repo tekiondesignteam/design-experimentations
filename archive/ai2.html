@@ -550,8 +550,8 @@ function App() {
                     <div style={{ height: 3, borderRadius: 2, background: "#E5E7EB", overflow: "hidden" }}><div style={{ height: "100%", borderRadius: 2, width: `${(completedSteps.length/cur.steps.length)*100}%`, background: executionDone ? "#10B981" : "linear-gradient(90deg, #3B82F6, #8B5CF6)", transition: "width 0.5s, background 0.4s" }} /></div>
                     {executionDone && <div style={{ marginTop: 12 }}>
                       {automated.has(cur.sev+cur.why) ? (
-                        <div style={{ display: "flex", gap: 10, padding: "12px 14px", borderRadius: 6, background: "#F0FDF4", border: "1px solid #D1FAE5" }}>
-                          <div style={{ width: 3, borderRadius: 2, background: "#15803D", flexShrink: 0, opacity: 0.4 }} />
+                        <div style={{ display: "flex", gap: 10, padding: "12px 14px", borderRadius: 8, background: "linear-gradient(99deg, #E7F7F9 0%, #FBF8F2 100%)" }}>
+                          <div style={{ width: 3, borderRadius: 2, background: aiGrad, flexShrink: 0 }} />
                           <div style={{ flex: 1 }}>
                             <Row sx={{ gap: 6, marginBottom: 4 }}>
                               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#15803D" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
@@ -645,11 +645,11 @@ function App() {
             <div style={{ fontSize: 13, fontWeight: 500, color: "#9CA3AF", marginBottom: 12 }}>Automated actions completed before you opened the dashboard</div>
 
             {/* single card */}
-            <div style={{ background: "#FFF", borderRadius: 8, border: "1px solid #EBEBEB", boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02)", overflow: "hidden" }}>
+            <div style={{ background: "linear-gradient(99deg, #E7F7F9 0%, #FBF8F2 100%)", borderRadius: 8, border: "1px solid #EBEBEB", boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02)", overflow: "hidden" }}>
               {visible.map((ar, ai) => {
                 const isOpen = expandedAuto === ar.id;
                 return (
-                  <div key={ar.id} style={{ borderBottom: ai < visible.length - 1 ? "1px solid #F5F5F5" : "none" }}>
+                  <div key={ar.id} style={{ borderBottom: ai < visible.length - 1 ? "1px solid #D4E8E4" : "none" }}>
                     <div style={{ display: "flex", alignItems: "stretch", minHeight: 64 }}>
                       {/* content with internal strip */}
                       <div style={{ flex: 1, minWidth: 0, padding: "12px 12px", display: "flex", gap: 10, alignItems: "stretch" }}>
@@ -677,11 +677,11 @@ function App() {
 
                     {/* expanded steps */}
                     {isOpen && (
-                      <div style={{ padding: "0 12px 12px 15px", borderTop: "1px solid #F3F4F6" }}>
+                      <div style={{ padding: "0 12px 12px 15px" }}>
                         <div style={{ marginTop: 12 }}>
                           {ar.steps.map((step, si) => (
-                            <Row key={si} sx={{ gap: 8, padding: "5px 0", borderBottom: si < ar.steps.length - 1 ? "1px solid #F5F5F5" : "none" }}>
-                              <div style={{ width: 18, height: 18, borderRadius: 4, flexShrink: 0, background: "#EFF6FF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 800, color: "#2563EB" }}>{si + 1}</div>
+                            <Row key={si} sx={{ gap: 8, padding: "5px 0", borderBottom: si < ar.steps.length - 1 ? "1px solid #F0EDE8" : "none" }}>
+                              <div style={{ width: 18, height: 18, borderRadius: 4, flexShrink: 0, background: "#F3F4F6", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 800, color: "#374151" }}>{si + 1}</div>
                               <span style={{ fontSize: 12, fontWeight: 500, color: "#374151", lineHeight: 1.45 }}>{step}</span>
                             </Row>
                           ))}
