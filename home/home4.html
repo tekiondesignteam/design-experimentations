@@ -30,14 +30,14 @@
   button:not(.filter-fab):active { transform: scale(0.96) !important; }
 
   /* ── Page load — clean top-to-bottom cascade ── */
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
 
-  .page-header { animation: fadeUp 0.25s ease both; }
-  .logo-entrance { animation: fadeUp 0.25s ease 0.05s both; }
-  .greeting-entrance { animation: fadeUp 0.25s ease 0.1s both; }
-  .narrative-entrance { animation: fadeUp 0.25s ease 0.14s both; }
-  .prompt-entrance { animation: fadeUp 0.25s ease 0.18s both; }
-  .chip-entrance { animation: fadeUp 0.2s ease both; }
+  .page-header { animation: fadeUp 0.45s ease both; }
+  .logo-entrance { animation: fadeUp 0.5s ease 0.1s both; }
+  .greeting-entrance { animation: fadeUp 0.5s ease 0.25s both; }
+  .narrative-entrance { animation: fadeUp 0.5s ease 0.4s both; }
+  .prompt-entrance { animation: fadeUp 0.5s ease 0.55s both; }
+  .chip-entrance { animation: fadeUp 0.45s ease both; }
 
   /* ── Card hover lift ── */
   .card-hover {
@@ -81,7 +81,10 @@
     transform: translateY(-1px);
   }
 
-  .alert-entrance { animation: fadeUp 0.25s ease 0.28s both; }
+  .alert-entrance { animation: fadeUp 0.5s ease 0.7s both; }
+  .divider-entrance { animation: fadeUp 0.5s ease 0.75s both; }
+  .feed-entrance { animation: fadeUp 0.55s ease 0.9s both; }
+  .card-enter { opacity: 0; transform: translateY(14px); animation: fadeUp 0.45s ease forwards; }
 
   /* ── Existing ── */
   @keyframes pulse { 0%,100% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.8); opacity: 0; } }
@@ -158,10 +161,9 @@
     .filter-fab:active { transform: translateX(-50%) scale(0.96) !important; }
   }
 
-  /* Hide mobile-only filter header on desktop */
   .filter-mobile-header { display: none; }
   @media (max-width: 767px) {
-    .filter-mobile-header { display: flex; }
+    .filter-mobile-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 16px 8px; }
   }
 
   /* Tablet: narrower sidebar */
@@ -333,6 +335,21 @@ function App() {
   const [feedCats, setFeedCats] = useState(new Set());
   const [feedSigs, setFeedSigs] = useState(new Set());
   const [showFilterPanel, setShowFilterPanel] = useState(false);
+  const ALL_CATS = ["appt","deal","finance","inventory","lead","salesfloor"];
+  const [selectedBg, setSelectedBg] = useState('auto');
+  const BG_OPTIONS = [
+    { id: 'auto',     label: 'Auto',      preview: null },
+    { id: 'white',    label: 'None',       preview: '#FFFFFF' },
+    { id: 'amber',    label: 'Dawn',       preview: 'linear-gradient(to bottom,#FFFAF8,#FEF3EE 40%,#FBECE4)' },
+    { id: 'morning',  label: 'Morning',    preview: 'linear-gradient(to bottom,#FDFEFF,#F3F7FF 40%,#E8F0FF)' },
+    { id: 'midday',   label: 'Midday',     preview: 'linear-gradient(to bottom,#FDFEFF,#F2F4FB 40%,#EBEFF8)' },
+    { id: 'gold',     label: 'Afternoon',  preview: 'linear-gradient(to bottom,#FFFFFB,#FEFAEC 40%,#FBF3D5)' },
+    { id: 'lavender', label: 'Evening',    preview: 'linear-gradient(to bottom,#FDFCFF,#F3F1FB 40%,#EAE7F7)' },
+    { id: 'charcoal', label: 'Night',      preview: 'linear-gradient(to bottom,#F8F9FC,#ECEEF5 40%,#DEE2ED)' },
+  ];
+  const [showHamburgerMenu, setShowHamburgerMenu] = useState(false);
+  const [catOrder, setCatOrder] = useState(["appt","deal","finance","inventory","lead","salesfloor"]);
+  const [hiddenCatsState, setHiddenCatsState] = useState(new Set(["salesfloor"]));
   const [feedDismissed, setFeedDismissed] = useState(new Set());
   const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
   const [automated, setAutomated] = useState(new Set());
@@ -459,30 +476,68 @@ function App() {
   ];
   const chips = ALL_CHIPS[chipSet];
 
+  const getTimeGradient = () => {
+    const h = new Date().getHours();
+    if (h >= 5 && h < 8)   return 'linear-gradient(to bottom, #FFFAF8 0%, #FEF3EE 40%, #FBECE4 100%)'; // dawn 5-8
+    if (h >= 8 && h < 11)  return 'linear-gradient(to bottom, #FDFEFF 0%, #F3F7FF 40%, #E8F0FF 100%)'; // morning 8-11
+    if (h >= 11 && h < 13) return 'linear-gradient(to bottom, #FDFEFF 0%, #F2F4FB 40%, #EBEFF8 100%)'; // midday 11-1
+    if (h >= 13 && h < 16) return 'linear-gradient(to bottom, #FFFFFB 0%, #FEFAEC 40%, #FBF3D5 100%)'; // afternoon 1-4
+    if (h >= 16 && h < 18) return 'linear-gradient(to bottom, #FEFDFB 0%, #FAF4EB 40%, #F5ECD9 100%)'; // late afternoon 4-6
+    if (h >= 18 && h < 21) return 'linear-gradient(to bottom, #FDFCFF 0%, #F3F1FB 40%, #EAE7F7 100%)'; // evening 6-9
+    return 'linear-gradient(to bottom, #F8F9FC 0%, #ECEEF5 40%, #DEE2ED 100%)'; // night 9-5
+  };
+  const timeGradient = selectedBg === 'auto' ? getTimeGradient() : (BG_OPTIONS.find(o => o.id === selectedBg)?.preview || '#FFFFFF');
+
   return (
-    <div style={{ minHeight: "100vh", background: "#FFFFFF", fontFamily: sans, color: "#18181B", opacity: loaded ? 1 : 0, transition: "opacity 0.4s" }}>
+    <div style={{ minHeight: "100vh", background: timeGradient, fontFamily: sans, color: "#18181B", opacity: loaded ? 1 : 0, transition: "opacity 0.4s" }}>
 
       {/* title bar */}
-      <div className="page-header" style={{ position: "sticky", top: 0, zIndex: 50, background: "#FFFFFF", borderBottom: "1px solid #F0F0F0", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+      <div className="page-header" style={{ position: "sticky", top: 0, zIndex: 50, background: '#FFFFFF', backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", borderBottom: "1px solid #F0F0F0", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
         <div className="title-bar" style={{ padding: "0 24px", height: 52, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           {/* hamburger */}
-          <button style={{ width: 36, height: 36, borderRadius: 6, border: "none", background: "transparent", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 4, padding: 0, transition: "background 0.15s" }}
-            onMouseEnter={e => e.currentTarget.style.background = "#F3F4F6"}
-            onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-            <span style={{ display: "block", width: 16, height: 1.5, background: "#374151", borderRadius: 2 }} />
-            <span style={{ display: "block", width: 16, height: 1.5, background: "#374151", borderRadius: 2 }} />
-            <span style={{ display: "block", width: 16, height: 1.5, background: "#374151", borderRadius: 2 }} />
-          </button>
+          <div style={{ position: "relative" }}>
+            <button onClick={() => setShowHamburgerMenu(m => !m)}
+              style={{ width: 36, height: 36, borderRadius: 6, border: "none", background: showHamburgerMenu ? "#F3F4F6" : "transparent", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 4, padding: 0, transition: "background 0.15s" }}
+              onMouseEnter={e => e.currentTarget.style.background = "#F3F4F6"}
+              onMouseLeave={e => !showHamburgerMenu && (e.currentTarget.style.background = "transparent")}>
+              <span style={{ display: "block", width: 16, height: 1.5, background: "#374151", borderRadius: 2 }} />
+              <span style={{ display: "block", width: 16, height: 1.5, background: "#374151", borderRadius: 2 }} />
+              <span style={{ display: "block", width: 16, height: 1.5, background: "#374151", borderRadius: 2 }} />
+            </button>
+            {showHamburgerMenu && (
+              <>
+                <div onClick={() => setShowHamburgerMenu(false)} style={{ position: "fixed", inset: 0, zIndex: 98 }} />
+                <div style={{ position: "absolute", top: 42, left: 0, zIndex: 99, background: "#FFF", borderRadius: 10, border: "1px solid #EBEBEB", boxShadow: "0 8px 24px rgba(0,0,0,0.10)", minWidth: 224, padding: "10px 12px 12px" }}>
+                  <div style={{ fontSize: 9, fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 10 }}>Background</div>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
+                    {BG_OPTIONS.map(opt => {
+                      const swatch = opt.id === "auto" ? getTimeGradient() : (opt.preview || "#FFF");
+                      const active = selectedBg === opt.id;
+                      return (
+                        <div key={opt.id} onClick={() => { setSelectedBg(opt.id); setShowHamburgerMenu(false); }}
+                          style={{ cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 5 }}>
+                          <div style={{ width: 40, height: 28, borderRadius: 6, background: swatch, border: active ? "2px solid #7C3AED" : "1.5px solid #E5E7EB", boxShadow: active ? "0 0 0 2px #EDE9FE" : "none", transition: "all 0.15s", position: "relative" }}>
+                            {opt.id === "auto" && <div style={{ position: "absolute", bottom: 3, right: 3, width: 6, height: 6, borderRadius: "50%", background: "linear-gradient(135deg,#4A7CF7,#A855F7)" }} />}
+                          </div>
+                          <span style={{ fontSize: 10, fontWeight: active ? 700 : 500, color: active ? "#7C3AED" : "#6B7280", whiteSpace: "nowrap" }}>{opt.label}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
 
           {/* center label */}
           <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em" }}>Home</span>
 
           <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
             {/* add widget */}
-            <button onClick={() => { setDraftSelected(new Set(widgetSelected)); setDraftOrder([...widgetOrder]); setShowWidgetModal(true); document.body.style.overflow = "hidden"; }} style={{ width: 36, height: 36, borderRadius: 6, border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.15s" }}
+            <button onClick={() => { setDraftSelected(new Set(ALL_CATS.filter(id => !hiddenCatsState.has(id)))); setDraftOrder([...catOrder]); setShowWidgetModal(true); document.body.style.overflow = "hidden"; }} style={{ width: 36, height: 36, borderRadius: 6, border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.15s" }}
               onMouseEnter={e => e.currentTarget.style.background = "#F3F4F6"}
               onMouseLeave={e => e.currentTarget.style.background = "transparent"}
-              title="Add widget">
+              title="Customize">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
                 <path d="M17 14v6M14 17h6"/>
@@ -495,7 +550,7 @@ function App() {
       <main className="main-wrap" style={{ maxWidth: 1280, margin: "0 auto", padding: "32px 32px 48px" }}>
 
         {/* logo above greeting */}
-        <div className="logo-entrance" style={{ marginBottom: 4 }}>
+        <div className="logo-entrance" style={{ marginBottom: 4, marginTop: 24 }}>
           <svg width="32" height="32" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M3.90234 12.1417C4.35913 11.3507 5.37099 11.0796 6.1621 11.5362C6.95276 11.993 7.22378 13.004 6.76757 13.795C6.31077 14.5862 5.299 14.8573 4.50781 14.4005C3.71688 13.9436 3.44577 12.9327 3.90234 12.1417Z" fill="url(#lg0)"/>
             <path d="M9.85253 11.5362C10.6436 11.0795 11.6554 11.3507 12.1123 12.1417C12.5687 12.9327 12.2976 13.9436 11.5068 14.4005C10.7156 14.8573 9.70386 14.5862 9.24706 13.795C8.79076 13.0039 9.06163 11.9929 9.85253 11.5362Z" fill="url(#lg1)"/>
@@ -567,10 +622,11 @@ function App() {
         </div>
 
         {/* separator */}
-        <div style={{ margin: "40px 0 0", height: 1, background: "#E5E7EB" }} />
+        <div className="divider-entrance" style={{ margin: "40px 0 0", height: 1, background: "#E5E7EB" }} />
 
 
         {/* ── UNIFIED FEED ── */}
+        <div className="feed-entrance">
         {(() => {
           const FEED_ITEMS = [
             { id: "f1",  img: "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=400&h=200&fit=crop", type: "deal",      sig: "positive", title: "Lisa Rodriguez",            sub: "Deal #2847 · 2024 Camry SE",          badge: "Closing today",  badgeBg: "#F0FDF4", badgeC: "#15803D", avatar: "LR", avatarC: "#2563EB", blurb: "Returning at noon to sign. Finance approved, paperwork ready. Jason Lee is the assigned salesperson.", cta: "Confirm",      ctaPrimary: false, menu: ["Open deal", "Call customer", "View finance", "Reassign salesperson"] },
@@ -584,7 +640,8 @@ function App() {
             { id: "f9",  img: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=200&fit=crop", type: "finance",   sig: "action",   title: "Mark Henderson",            sub: "Deal #3891 · 2024 Tacoma SR5",        badge: "Pending stips",  badgeBg: "#FFFBEB", badgeC: "#A16207", avatar: "MH", avatarC: "#DC2626", blurb: "Ally Financial needs proof of residence. Day 4 on this deal. Emily is absent — Chris Walker is now owner.", cta: "Chase stip",   ctaPrimary: false, menu: ["Open finance", "Open deal", "Request stip", "Call customer"] },
             { id: "f10", img: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=400&h=200&fit=crop", type: "lead",      sig: "insight",  title: "Rachel Kim",                sub: "Lead #L-0829 · Highlander · TrueCar", badge: "Contacted",      badgeBg: "#F0FDF4", badgeC: "#15803D", avatar: "RK", avatarC: "#D97706", blurb: "Jason contacted 1h ago. Showed strong interest. Good candidate for a same-day visit if followed up now.", cta: "Follow up",    ctaPrimary: false, menu: ["Open lead", "Schedule appointment", "Send follow-up SMS", "Reassign salesperson"] },
             { id: "f11", img: "https://images.unsplash.com/photo-1612544448445-b8232cff3b6c?w=400&h=200&fit=crop", type: "inventory", sig: "negative", title: "Tacoma SR5 — 72 days",      sub: "Stock #T4821 · $38,400",             badge: "Aged",           badgeBg: "#FEF2F2", badgeC: "#DC2626", avatar: "T4", avatarC: "#DC2626", blurb: "Henderson deal stalled. No other active interest. Consider a price adjustment or targeted push to walk-ins today.", cta: "Adjust price", ctaPrimary: false, menu: ["Open inventory", "Adjust price", "Link to deal", "Mark for promotion"] },
-            { id: "f12", img: "https://images.unsplash.com/photo-1625231337875-c26e1b5d9e9e?w=400&h=200&fit=crop", type: "deal",      sig: "negative", title: "Tom Vasquez",               sub: "Deal #2764 · 2024 Tacoma TRD",        badge: "Unresponsive",   badgeBg: "#F3F4F6", badgeC: "#6B7280", avatar: "TV", avatarC: "#DC2626", blurb: "Left voicemail. Day 1. Chris Walker owns this deal. One more attempt before the slot goes cold.", cta: "Call now",     ctaPrimary: false, menu: ["Open deal", "Call now", "Send SMS", "Reassign salesperson"] },
+            { id: "f12", img: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&h=200&fit=crop", type: "deal",      sig: "negative", title: "Tom Vasquez",               sub: "Deal #2764 · 2024 Tacoma TRD",        badge: "Unresponsive",   badgeBg: "#F3F4F6", badgeC: "#6B7280", avatar: "TV", avatarC: "#DC2626", blurb: "Left voicemail. Day 1. Chris Walker owns this deal. One more attempt before the slot goes cold.", cta: "Call now",     ctaPrimary: false, menu: ["Open deal", "Call now", "Send SMS", "Reassign salesperson"] },
+            { id: "f13", img: "https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?w=400&h=200&fit=crop", type: "salesfloor", sig: "insight",  title: "Michael Davis",              sub: "9:30 AM · Test Drive · RAV4 XLE",     badge: "On floor",       badgeBg: "#EFF6FF", badgeC: "#2563EB", avatar: "MD", avatarC: "#2563EB", blurb: "Currently on test drive with Chris Walker. 2024 RAV4 XLE. First visit, came via website lead. High engagement.", cta: "View",         ctaPrimary: false, menu: ["Open appointment", "Assign salesperson", "Add note", "Open CRM"] },
           ];
 
           const typeIcon = {
@@ -594,15 +651,18 @@ function App() {
             finance:   { icon: "🏦", label: "Finance",     color: "#059669" },
             alert:     { icon: "⚠️", label: "Alert",       color: "#DC2626" },
             inventory: { icon: "🚗", label: "Inventory",   color: "#6B7280" },
+            salesfloor: { icon: "🏢", label: "Sales Floor", color: "#0EA5E9" },
           };
 
-          const CAT_FILTERS = [
+          const CAT_FILTERS_ALL = [
             { id: "appt",      label: "Appointments", icon: "📅", match: i => i.type === "appt" },
             { id: "deal",      label: "Deals",        icon: "💼", match: i => i.type === "deal" },
             { id: "finance",   label: "Finance",      icon: "🏦", match: i => i.type === "finance" },
             { id: "inventory", label: "Inventory",    icon: "🚗", match: i => i.type === "inventory" },
             { id: "lead",      label: "Leads",        icon: "📥", match: i => i.type === "lead" },
+            { id: "salesfloor", label: "Sales Floor", icon: "🏢", match: i => i.type === "salesfloor" },
           ];
+          const CAT_FILTERS = [...CAT_FILTERS_ALL].sort((a, b) => catOrder.indexOf(a.id) - catOrder.indexOf(b.id)).filter(f => !hiddenCatsState.has(f.id));
           const SIG_FILTERS = [
             { id: "action",   label: "Action Needed", icon: "⚡", match: i => i.sig === "action" },
             { id: "insight",  label: "Insights",      icon: "✨", match: i => i.sig === "insight" },
@@ -611,10 +671,10 @@ function App() {
           ];
           const sigColors = { action: "#DC2626", insight: "#2563EB", negative: "#D97706", positive: "#059669" };
 
-          const catMatch = feedCats.size === 0 ? () => true : i => feedCats.has(i.type);
+          const catMatch = feedCats.size === 0 ? i => !hiddenCatsState.has(i.type) : i => feedCats.has(i.type) && !hiddenCatsState.has(i.type);
           const sigMatch = feedSigs.size === 0 ? () => true : i => feedSigs.has(i.sig);
           const allSelected = feedCats.size === 0 && feedSigs.size === 0;
-          const CAT_ORDER = ["appt","deal","finance","inventory","lead"];
+          const CAT_ORDER = catOrder;
           const SIG_ORDER = ["action","insight","negative","positive"];
           const baseFiltered = FEED_ITEMS.filter(i => !feedDismissed.has(i.id) && catMatch(i) && sigMatch(i));
           const filtered = [...baseFiltered].sort((a, b) => {
@@ -622,7 +682,7 @@ function App() {
             if (catDiff !== 0) return catDiff;
             return SIG_ORDER.indexOf(a.sig) - SIG_ORDER.indexOf(b.sig);
           });
-          const catCounts = Object.fromEntries(CAT_FILTERS.map(f => [f.id, FEED_ITEMS.filter(i => !feedDismissed.has(i.id) && i.type === f.id && (feedSigs.size === 0 || feedSigs.has(i.sig))).length]));
+          const catCounts = Object.fromEntries(CAT_FILTERS.map(f => [f.id, FEED_ITEMS.filter(i => !feedDismissed.has(i.id) && i.type === f.id && !hiddenCatsState.has(i.type) && (feedSigs.size === 0 || feedSigs.has(i.sig))).length]));
           const sigCounts = Object.fromEntries(SIG_FILTERS.map(f => [f.id, FEED_ITEMS.filter(i => !feedDismissed.has(i.id) && i.sig === f.id && (feedCats.size === 0 || feedCats.has(i.type))).length]));
 
           return (
@@ -715,6 +775,12 @@ function App() {
                 <div className={"feed-sidebar" + (showFilterPanel ? " open" : "")} onClick={e => { if (e.target === e.currentTarget) setShowFilterPanel(false); }}>
                   <div className="feed-sidebar-inner" style={{}}>
                   <div style={{ background: "#FFF", borderRadius: 8, border: "1px solid #EBEBEB", overflow: "hidden", padding: "6px 0", margin: "0" }}>
+                    <div className="filter-mobile-header">
+                      <span style={{ fontSize: 15, fontWeight: 700, color: "#18181B" }}>Filter</span>
+                      <button onClick={() => setShowFilterPanel(false)} style={{ width: 30, height: 30, borderRadius: 8, border: "none", background: "#F3F4F6", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#6B7280" }}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                      </button>
+                    </div>
                     {/* All */}
                     <div style={{ padding: "2px 10px 8px" }}>
                       <button onClick={() => { scrollLock.current = window.scrollY; setFeedCats(new Set()); setFeedSigs(new Set()); }}
@@ -783,16 +849,18 @@ function App() {
                   finance:   { label: "Finance",       color: "#059669", icon: "🏦", kpis: [{ label: "In queue", value: "4", color: "#059669" }, { label: "Approved", value: "1", color: "#15803D" }, { label: "Pending stips", value: "2", color: "#D97706" }, { label: "Conditional", value: "1", color: "#7C3AED" }] },
                   inventory: { label: "Inventory",     color: "#6B7280", icon: "🚗", kpis: [{ label: "On lot", value: "247", color: "#6B7280" }, { label: "60d+", value: "14", color: "#DC2626" }, { label: "In transit", value: "18", color: "#2563EB" }, { label: "Days supply", value: "28d", color: "#374151" }] },
                   lead:      { label: "Leads",         color: "#7C3AED", icon: "📥", kpis: [{ label: "Overnight", value: "5", color: "#7C3AED" }, { label: "Contacted", value: "3", color: "#15803D" }, { label: "Not contacted", value: "2", color: "#DC2626" }, { label: "Avg response", value: "2.1h", color: "#374151" }] },
+                  salesfloor: { label: "Sales Floor", color: "#0EA5E9", icon: "🏢", kpis: [{ label: "On floor", value: "1", color: "#0EA5E9" }, { label: "Test drives", value: "1", color: "#15803D" }, { label: "Avg time", value: "24m", color: "#374151" }, { label: "Walk-ins", value: "0", color: "#9CA3AF" }] },
                 };
                 // Group filtered items by category in CAT_ORDER
                 const activeCats = CAT_ORDER.filter(cat => filtered.some(i => i.type === cat));
+                let cardIndex = 0;
                 return (
                   <div style={{ display: "flex", flexDirection: "column", gap: 0, minHeight: "60vh" }}>
                     {activeCats.map(cat => {
                       const catItems = filtered.filter(i => i.type === cat);
                       const meta = ALL_KPIS[cat];
                       return (
-                        <div key={cat} style={{ marginBottom: 24 }}>
+                        <div key={cat} style={{ marginBottom: 36 }}>
                           {/* Category KPI header — hidden when only signal is selected */}
                           {feedSigs.size === 0 || feedCats.size > 0 ? (
                           <div style={{ background: "#FFF", borderRadius: 8, border: "1px solid #EBEBEB", overflow: "hidden", marginBottom: 10 }}>
@@ -813,7 +881,7 @@ function App() {
                           ) : null}
                           {/* Cards in this category */}
                           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                            {catItems.map((item, ii) => {
+                            {catItems.map((item, ii) => { const globalIdx = filtered.indexOf(item);
                   const tc = typeIcon[item.type];
                   const menuOpen = expandedAuto === ("fdot-" + item.id);
                   const palettes = {
@@ -832,7 +900,7 @@ function App() {
 
                   return (
                     <React.Fragment key={item.id}>
-                    <div className="card-hover" style={{ background: "#FFF", borderRadius: 12, border: "1px solid #EBEBEB", boxShadow: "0 1px 4px rgba(0,0,0,0.04), 0 4px 14px rgba(0,0,0,0.03)", overflow: "hidden", display: "flex" }}>
+                    <div className="card-hover card-enter" style={{ animationDelay: (1.0 + globalIdx * 0.08) + "s", background: "#FFF", borderRadius: 12, border: "1px solid #EBEBEB", boxShadow: "0 1px 4px rgba(0,0,0,0.04), 0 4px 14px rgba(0,0,0,0.03)", overflow: "hidden", display: "flex" }}>
 
                       {/* thumbnail */}
                       <div style={{ width: 96, flexShrink: 0, position: "relative", overflow: "hidden", background: pal.from }}>
@@ -847,7 +915,7 @@ function App() {
                       <div style={{ padding: "12px 14px", flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                         <div>
                           <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 4 }}>
-                            <span style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "1px 6px", borderRadius: 4, background: "#F3F4F6", fontSize: 10, fontWeight: 700, color: tc.color }}>{tc.icon} {tc.label}</span>
+                            <span style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "2px 8px", borderRadius: 4, background: "#F3F4F6", fontSize: 10, fontWeight: 700, color: tc.color }}>{tc.icon} {tc.label}</span>
                             <span style={{ padding: "1px 7px", borderRadius: 20, fontSize: 10, fontWeight: 700, background: item.badgeBg, color: item.badgeC, marginLeft: "auto", whiteSpace: "nowrap" }}>{item.badge}</span>
                           </div>
                           <div style={{ fontSize: 14, fontWeight: 700, color: "#18181B", lineHeight: 1.3, marginBottom: 2 }}>{item.title}</div>
@@ -905,20 +973,23 @@ function App() {
                 </div>{/* end main column */}
               </div>{/* end sidebar+main row */}
 
-              {/* FAB — mobile filter button */}
-              <button className="filter-fab" onClick={() => setShowFilterPanel(true)}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/>
-                </svg>
-                Filter
-                {(feedCats.size + feedSigs.size) > 0 && (
-                  <span style={{ background: "linear-gradient(135deg,#4A7CF7 28%,#A855F7 111%)", color: "#FFF", borderRadius: 10, padding: "0 6px", fontSize: 11, fontWeight: 700, minWidth: 18, textAlign: "center" }}>{feedCats.size + feedSigs.size}</span>
-                )}
-              </button>
+
             </div>
           );
         })()}
+        </div>
       </main>
+
+      {/* FAB — mobile filter button, fixed outside main */}
+      <button className="filter-fab" onClick={() => setShowFilterPanel(true)}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/>
+        </svg>
+        Filter
+        {(feedCats.size + feedSigs.size) > 0 && (
+          <span style={{ background: "linear-gradient(135deg,#4A7CF7 28%,#A855F7 111%)", color: "#FFF", borderRadius: 10, padding: "0 6px", fontSize: 11, fontWeight: 700, minWidth: 18, textAlign: "center" }}>{feedCats.size + feedSigs.size}</span>
+        )}
+      </button>
 
       {/* Sources Modal */}
       {sourcesModal && (
@@ -1068,89 +1139,99 @@ function App() {
         </div>
       </>)}
 
-      {/* Widget Manager Modal */}
-      {showWidgetModal && (<>
-        <div onClick={() => { setShowWidgetModal(false); document.body.style.overflow = ""; }} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.3)", zIndex: 49, backdropFilter: "blur(2px)" }} />
-        <div style={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 420, maxWidth: "92vw", maxHeight: "88vh", background: "#FFF", borderRadius: 12, boxShadow: "0 20px 48px rgba(0,0,0,0.18)", zIndex: 50, display: "flex", flexDirection: "column", overflow: "hidden" }}>
-          {/* header */}
-          <div style={{ padding: "16px 20px", borderBottom: "1px solid #F0F0F0", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
-            <div>
-              <div style={{ fontSize: 15, fontWeight: 700, color: "#18181B" }}>Manage Widgets</div>
-              <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 2 }}>Select and reorder widgets on your dashboard</div>
+      {/* Customize Modal */}
+      {showWidgetModal && (() => {
+        const CATS = [
+          { id: "appt",      icon: "📅", label: "Appointments", color: "#D97706" },
+          { id: "deal",      icon: "💼", label: "Deals",        color: "#2563EB" },
+          { id: "finance",   icon: "🏦", label: "Finance",      color: "#059669" },
+          { id: "inventory", icon: "🚗", label: "Inventory",    color: "#6B7280" },
+          { id: "lead",      icon: "📥", label: "Leads",        color: "#7C3AED" },
+          { id: "salesfloor", icon: "🏢", label: "Sales Floor",  color: "#0EA5E9" },
+        ];
+        const allCatIds = ["appt","deal","finance","inventory","lead","salesfloor"];
+        const draftCatOrder = draftOrder ? draftOrder.filter(id => CATS.some(c => c.id === id)) : [...catOrder];
+        const draftCatVisible = draftSelected || new Set(allCatIds.filter(id => !hiddenCatsState.has(id)));
+        return (<>
+          <div onClick={() => { setShowWidgetModal(false); document.body.style.overflow = ""; }} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.3)", zIndex: 49, backdropFilter: "blur(2px)" }} />
+          <div style={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 400, maxWidth: "92vw", maxHeight: "88vh", background: "#FFF", borderRadius: 12, boxShadow: "0 20px 48px rgba(0,0,0,0.18)", zIndex: 50, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+            {/* header */}
+            <div style={{ padding: "16px 20px", borderBottom: "1px solid #F0F0F0", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
+              <div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: "#18181B" }}>Customize</div>
+                <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 2 }}>Reorder or hide categories in your feed</div>
+              </div>
+              <button onClick={() => { setShowWidgetModal(false); document.body.style.overflow = ""; setDraftSelected(null); setDraftOrder(null); }} style={{ width: 28, height: 28, borderRadius: 6, background: "#F3F4F6", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#6B7280", fontSize: 14 }}>{"\u2715"}</button>
             </div>
-            <button onClick={() => { setShowWidgetModal(false); document.body.style.overflow = ""; }} style={{ width: 28, height: 28, borderRadius: 6, background: "#F3F4F6", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#6B7280", fontSize: 14, fontWeight: 600 }}>{"\u2715"}</button>
-          </div>
 
-          {/* list */}
-          <div style={{ overflowY: "auto", flex: 1, padding: "8px 0" }}>
-            {(draftOrder || widgetOrder).map((id, i) => {
-              const order = draftOrder || widgetOrder;
-              const widget = ALL_WIDGETS.find(w => w.id === id);
-              const isSelected = (draftSelected || widgetSelected).has(id);
-              const isLocked = widget.locked;
-              const isDragging = widgetDragItem === i;
-              const isDragOver = widgetDragOver === i && widgetDragItem !== i;
-
-              return (
-                <div key={id}
-                  draggable={!isLocked}
-                  onDragStart={() => !isLocked && setWidgetDragItem(i)}
-                  onDragEnter={() => !isLocked && setWidgetDragOver(i)}
-                  onDragOver={e => e.preventDefault()}
-                  onDrop={() => {
-                    if (widgetDragItem === null || widgetDragItem === i) { setWidgetDragOver(null); return; }
-                    const newOrder = [...order];
-                    const dragged = newOrder.splice(widgetDragItem, 1)[0];
-                    newOrder.splice(i, 0, dragged);
-                    setDraftOrder(newOrder);
-                    setWidgetDragItem(null); setWidgetDragOver(null);
-                  }}
-                  onDragEnd={() => { setWidgetDragItem(null); setWidgetDragOver(null); }}
-                  style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 20px", borderBottom: i < order.length - 1 ? "1px solid #F5F5F5" : "none", background: isDragOver ? "#F5F3FF" : isDragging ? "#FAFAFA" : "#FFF", opacity: isDragging ? 0.45 : 1, transition: "background 0.1s", cursor: isLocked ? "default" : "grab" }}>
-
-                  {/* drag handle */}
-                  <div style={{ color: isLocked ? "#E5E7EB" : "#C4C4C4", flexShrink: 0, display: "flex", alignItems: "center" }}>
-                    <svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor">
-                      <circle cx="3" cy="2" r="1.2"/><circle cx="7" cy="2" r="1.2"/>
-                      <circle cx="3" cy="7" r="1.2"/><circle cx="7" cy="7" r="1.2"/>
-                      <circle cx="3" cy="12" r="1.2"/><circle cx="7" cy="12" r="1.2"/>
-                    </svg>
-                  </div>
-
-                  {/* checkbox */}
-                  <div
-                    onClick={() => {
-                      if (isLocked) return;
-                      setDraftSelected(prev => {
-                        const next = new Set(prev);
-                        if (next.has(id)) next.delete(id); else next.add(id);
-                        return next;
-                      });
+            {/* category list */}
+            <div style={{ overflowY: "auto", flex: 1, padding: "8px 0" }}>
+              <div style={{ padding: "6px 20px 4px" }}>
+                <span style={{ fontSize: 10, fontWeight: 700, color: "#C4C4C4", textTransform: "uppercase", letterSpacing: "0.07em" }}>Drag to reorder · toggle to show/hide</span>
+              </div>
+              {draftCatOrder.map((id, i) => {
+                const cat = CATS.find(c => c.id === id);
+                if (!cat) return null;
+                const isVisible = draftCatVisible.has(id);
+                const isDragging = widgetDragItem === i;
+                const isDragOver = widgetDragOver === i && widgetDragItem !== i;
+                return (
+                  <div key={id}
+                    draggable
+                    onDragStart={() => setWidgetDragItem(i)}
+                    onDragEnter={() => setWidgetDragOver(i)}
+                    onDragOver={e => e.preventDefault()}
+                    onDrop={() => {
+                      if (widgetDragItem === null || widgetDragItem === i) { setWidgetDragOver(null); return; }
+                      const newOrder = [...draftCatOrder];
+                      const dragged = newOrder.splice(widgetDragItem, 1)[0];
+                      newOrder.splice(i, 0, dragged);
+                      setDraftOrder(newOrder);
+                      setWidgetDragItem(null); setWidgetDragOver(null);
                     }}
-                    style={{ width: 18, height: 18, borderRadius: 4, flexShrink: 0, border: isSelected ? "none" : "1.5px solid #D1D5DB", background: isSelected ? (isLocked ? "#E5E7EB" : aiGrad) : "#FFF", display: "flex", alignItems: "center", justifyContent: "center", cursor: isLocked ? "default" : "pointer", transition: "all 0.15s" }}>
-                    {isSelected && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#FFF" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>}
+                    onDragEnd={() => { setWidgetDragItem(null); setWidgetDragOver(null); }}
+                    style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 20px", borderBottom: i < draftCatOrder.length - 1 ? "1px solid #F5F5F5" : "none", background: isDragOver ? "#F5F3FF" : isDragging ? "#FAFAFA" : "#FFF", opacity: isDragging ? 0.45 : 1, transition: "background 0.1s", cursor: "grab" }}>
+                    {/* drag handle */}
+                    <div style={{ color: "#C4C4C4", flexShrink: 0 }}>
+                      <svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor">
+                        <circle cx="3" cy="2" r="1.2"/><circle cx="7" cy="2" r="1.2"/>
+                        <circle cx="3" cy="7" r="1.2"/><circle cx="7" cy="7" r="1.2"/>
+                        <circle cx="3" cy="12" r="1.2"/><circle cx="7" cy="12" r="1.2"/>
+                      </svg>
+                    </div>
+                    {/* icon + label */}
+                    <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 10 }}>
+                      <div style={{ width: 32, height: 32, borderRadius: 8, background: cat.color + "12", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}>{cat.icon}</div>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: isVisible ? "#18181B" : "#9CA3AF" }}>{cat.label}</span>
+                    </div>
+                    {/* toggle */}
+                    <div onClick={() => setDraftSelected(prev => {
+                        const base = prev || new Set(draftCatOrder);
+                        const next = new Set(base);
+                        next.has(id) ? next.delete(id) : next.add(id);
+                        return next;
+                      })}
+                      style={{ width: 36, height: 20, borderRadius: 10, background: isVisible ? aiGrad : "#E5E7EB", cursor: "pointer", position: "relative", transition: "background 0.2s", flexShrink: 0 }}>
+                      <div style={{ position: "absolute", top: 2, left: isVisible ? 18 : 2, width: 16, height: 16, borderRadius: "50%", background: "#FFF", boxShadow: "0 1px 3px rgba(0,0,0,0.2)", transition: "left 0.2s" }} />
+                    </div>
                   </div>
+                );
+              })}
+            </div>
 
-                  {/* label */}
-                  <div style={{ flex: 1 }}>
-                    <span style={{ fontSize: 13, fontWeight: 600, color: isLocked ? "#9CA3AF" : "#18181B" }}>{widget.label}</span>
-                  </div>
-                </div>
-              );
-            })}
+            {/* footer */}
+            <div style={{ padding: "12px 20px", borderTop: "1px solid #F0F0F0", background: "#FAFAFA", display: "flex", gap: 8, justifyContent: "flex-end", flexShrink: 0 }}>
+              <Btn onClick={() => { setShowWidgetModal(false); document.body.style.overflow = ""; setDraftSelected(null); setDraftOrder(null); }}>Cancel</Btn>
+              <Btn primary onClick={() => {
+                setCatOrder(draftCatOrder);
+                const hidden = new Set(draftCatOrder.filter(id => !draftCatVisible.has(id)));
+                setHiddenCatsState(hidden);
+                setShowWidgetModal(false); document.body.style.overflow = ""; setDraftSelected(null); setDraftOrder(null);
+              }} sx={{ padding: "6px 16px" }}>Save</Btn>
+            </div>
           </div>
-
-          {/* footer */}
-          <div style={{ padding: "12px 20px", borderTop: "1px solid #F0F0F0", background: "#FAFAFA", display: "flex", gap: 8, justifyContent: "flex-end", flexShrink: 0 }}>
-            <Btn onClick={() => { setShowWidgetModal(false); document.body.style.overflow = ""; setDraftSelected(null); setDraftOrder(null); }}>Cancel</Btn>
-            <Btn primary onClick={() => {
-              if (draftSelected) setWidgetSelected(draftSelected);
-              if (draftOrder) setWidgetOrder(draftOrder);
-              setShowWidgetModal(false); document.body.style.overflow = ""; setDraftSelected(null); setDraftOrder(null);
-            }} sx={{ padding: "6px 16px" }}>Save</Btn>
-          </div>
-        </div>
-      </>)}
+        </>);
+      })()}
     </div>
   );
 }
