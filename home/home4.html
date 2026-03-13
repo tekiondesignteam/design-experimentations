@@ -574,7 +574,7 @@ function App() {
   ];
   const CAT_FILTERS_APP = [...CAT_FILTERS_ALL_APP].sort((a, b) => catOrder.indexOf(a.id) - catOrder.indexOf(b.id)).filter(f => !hiddenCatsState.has(f.id));
   const SIG_FILTERS_APP = [
-    { id: "action",   label: "Action Needed", icon: "⚡" },
+    { id: "action",   label: "Action Needed", icon: "🚨" },
     { id: "insight",  label: "Insights",      icon: "✨" },
     { id: "negative", label: "Negative",      icon: "👎" },
     { id: "positive", label: "Positive",      icon: "👍" },
@@ -759,7 +759,7 @@ function App() {
           ];
           const CAT_FILTERS = [...CAT_FILTERS_ALL].sort((a, b) => catOrder.indexOf(a.id) - catOrder.indexOf(b.id)).filter(f => !hiddenCatsState.has(f.id));
           const SIG_FILTERS = [
-            { id: "action",   label: "Action Needed", icon: "⚡", match: i => i.sig === "action" },
+            { id: "action",   label: "Action Needed", icon: "🚨", match: i => i.sig === "action" },
             { id: "insight",  label: "Insights",      icon: "✨", match: i => i.sig === "insight" },
             { id: "negative", label: "Negative",      icon: "👎", match: i => i.sig === "negative" },
             { id: "positive", label: "Positive",      icon: "👍", match: i => i.sig === "positive" },
