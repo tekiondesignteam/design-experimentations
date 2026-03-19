@@ -1601,7 +1601,6 @@
       const [pDragSec, setPDragSec] = useState(null);
       const [pInsertBefore, setPInsertBefore] = useState(null); // secId | '__end__' | null
       const hasAnimated = React.useRef(false);
-      React.useEffect(() => { hasAnimated.current = true; }, []);
       const cardRefs = React.useRef({});
       const pInsertRef = React.useRef(null);
       const sectionOrderRef = React.useRef(sectionOrder);
@@ -1612,25 +1611,55 @@
       const dragPlaceholderHeight = React.useRef(150);
       const startPointerDrag = React.useCallback((e, secId) => {
         e.preventDefault(); e.stopPropagation();
+        hasAnimated.current = true; // lock out re-animation before drag causes re-renders
         const cardEl = cardRefs.current[secId];
         if (cardEl) dragPlaceholderHeight.current = cardEl.offsetHeight;
         setPDragSec(secId);
         document.body.style.cursor = 'grabbing';
         document.body.style.userSelect = 'none';
 
-        const computeInsert = (clientY) => {
-          const order = sectionOrderRef.current.filter(id => visibleRef.current.has(id) && id !== secId);
-          for (const id of order) {
+        // Snapshot page-relative midpoints (Y and X) at drag start.
+        const snapMid = {};   // page-Y midpoints
+        const snapMidX = {};  // viewport-X midpoints
+        const snapHalfH = {}; // half-heights (to detect same-row)
+        sectionOrderRef.current.forEach(id => {
+          if (visibleRef.current.has(id)) {
             const el = cardRefs.current[id];
-            if (!el) continue;
-            const r = el.getBoundingClientRect();
-            if (clientY < r.top + r.height / 2) return id;
+            if (el) {
+              const r = el.getBoundingClientRect();
+              snapMid[id]   = r.top + window.scrollY + r.height / 2;
+              snapMidX[id]  = r.left + r.width / 2;
+              snapHalfH[id] = r.height / 2;
+            }
+          }
+        });
+
+        const computeInsert = (clientX, clientY) => {
+          const pageY = clientY + window.scrollY;
+          const order = sectionOrderRef.current.filter(id => visibleRef.current.has(id) && id !== secId);
+          for (let i = 0; i < order.length; i++) {
+            const id = order[i];
+            if (snapMid[id] == null) continue;
+            const vertDist = Math.abs(pageY - snapMid[id]);
+            if (vertDist < (snapHalfH[id] ?? 80)) {
+              // Mouse is at the same vertical level — compare X
+              if (clientX < snapMidX[id]) return id; // insert before
+              // Mouse is right of this card's midpoint — check if next card is also same-row
+              const nextId = order[i + 1];
+              const nextSameRow = nextId && snapMid[nextId] != null &&
+                Math.abs(pageY - snapMid[nextId]) < (snapHalfH[nextId] ?? 80);
+              if (nextSameRow) continue; // let next iteration handle it
+              // No more same-row cards — insert AFTER this card
+              return `__after__${id}`;
+            } else if (pageY < snapMid[id]) {
+              return id;
+            }
           }
           return '__end__';
         };
 
         const onMove = (ev) => {
-          const ins = computeInsert(ev.clientY);
+          const ins = computeInsert(ev.clientX, ev.clientY);
           if (ins !== pInsertRef.current) { pInsertRef.current = ins; setPInsertBefore(ins); }
         };
 
@@ -1643,7 +1672,15 @@
           if (ins !== null) {
             setSectionOrder(prev => {
               const next = prev.filter(id => id !== secId);
-              if (ins === '__end__') { next.push(secId); } else { next.splice(next.indexOf(ins), 0, secId); }
+              if (ins === '__end__') {
+                next.push(secId);
+              } else if (ins.startsWith('__after__')) {
+                const afterId = ins.slice(9);
+                const idx = next.indexOf(afterId);
+                next.splice(idx >= 0 ? idx + 1 : next.length, 0, secId);
+              } else {
+                next.splice(next.indexOf(ins), 0, secId);
+              }
               return next;
             });
           }
@@ -2624,15 +2661,29 @@
                 <div className="divider-entrance" style={{ margin: "20px 0 0", height: 1, background: "#E5E7EB" }} />
 
 
-                <div style={{ display: isMobile ? 'block' : 'grid', gridTemplateColumns: '1fr 1fr', columnGap: 20 }}>
-                {sectionOrder.map((secId, idx) => {
+                <div style={{ display: isMobile ? 'block' : 'grid', gridTemplateColumns: '1fr 1fr', columnGap: 20, rowGap: 28, paddingTop: 24 }}>
+                {(() => {
+                  // Pre-compute column placement so right-column items animate after left-column items
+                  let _col = 0, _leftIdx = 0, _rightIdx = 0;
+                  const _colInfo = {};
+                  sectionOrder.forEach(id => {
+                    if (!visibleSections.has(id)) return;
+                    const _span = (!isMobile && widgetWidths[id] === 'half') ? 1 : 2;
+                    _colInfo[id] = { col: isMobile ? 0 : _col, idx: _col === 1 ? _rightIdx++ : _leftIdx++ };
+                    _col = (_col + _span) % 2;
+                  });
+                  const _leftCount = _leftIdx;
+                  return sectionOrder.map((secId, idx) => {
                   if (!visibleSections.has(secId)) return null;
-                  const delay = `${0.75 + idx * 0.1}s`;
+                  const _ci = _colInfo[secId] || { col: 0, idx: idx };
+                  const delay = _ci.col === 1
+                    ? `${0.75 + _leftCount * 0.1 + 0.15 + _ci.idx * 0.1}s`
+                    : `${0.75 + _ci.idx * 0.1}s`;
                   const isHalf = !isMobile && widgetWidths[secId] === 'half';
                   const _section = (() => {
                   if (secId === "daily-briefs") {
                     return (
-                      <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 28, animationDelay: hasAnimated.current ? undefined : delay }}>
+                      <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 0, animationDelay: hasAnimated.current ? undefined : delay }}>
                         <div style={{ marginBottom: 12 }}>
                           <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em", fontFamily: sans }}>Daily Briefs</span>
                         </div>
@@ -2789,7 +2840,7 @@
                     const cur = pending[si2];
                     const total = pending.length;
                     return (
-                      <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 28, animationDelay: hasAnimated.current ? undefined : delay }}>
+                      <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 0, animationDelay: hasAnimated.current ? undefined : delay }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
                           <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em" }}>Needs attention</span>
                           <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>{pending.length} of {ALERTS.length} remaining</span>
@@ -2965,7 +3016,7 @@
                     );
                   }
                   if (secId === "morning-huddle") return (
-                    <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 28, animationDelay: hasAnimated.current ? undefined : delay }}>
+                    <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 0, animationDelay: hasAnimated.current ? undefined : delay }}>
                       <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em", display: "block", marginBottom: 12 }}>Morning brief</span>
                       <B delay={0}>
                         <div style={{ padding: 12, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -3092,7 +3143,7 @@
                     </div>
                   );
                   if (secId === "kpi") return (
-                    <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 28, animationDelay: hasAnimated.current ? undefined : delay }}>
+                    <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 0, animationDelay: hasAnimated.current ? undefined : delay }}>
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
                         <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em" }}>Month at a glance</span>
                         <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>March 2026 · MTD</span>
@@ -3160,7 +3211,7 @@
                     const pickupTotalPages = Math.ceil(PICKUP_ITEMS.length / PICKUP_PAGE_SIZE);
                     const pickupPageItems = PICKUP_ITEMS.slice(pickupPage * PICKUP_PAGE_SIZE, (pickupPage + 1) * PICKUP_PAGE_SIZE);
                     return (
-                      <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 32, animationDelay: hasAnimated.current ? undefined : delay }}>
+                      <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 0, animationDelay: hasAnimated.current ? undefined : delay }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
                           <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em" }}>Pick up where you left off</span>
                           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
@@ -3229,7 +3280,7 @@
                     );
                   }
                   if (secId === "webinar") return (
-                    <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 36, animationDelay: hasAnimated.current ? undefined : delay }}>
+                    <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 0, animationDelay: hasAnimated.current ? undefined : delay }}>
                       <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em", display: "block", marginBottom: 12 }}>Upcoming webinar</span>
                       <div style={{ background: "#FFF", borderRadius: 8, border: "1px solid #E5E7EB", overflow: "hidden", display: "flex", flexDirection: (isMobile || isHalf) ? "column" : "row", alignItems: "stretch", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
                         {/* visual — top on mobile/half, right on desktop */}
@@ -3296,7 +3347,7 @@
                     const inspireTotalPages = Math.ceil(INSPIRE_ITEMS.length / INSPIRE_PAGE_SIZE);
                     const inspirePageItems = INSPIRE_ITEMS.slice(inspirePage * INSPIRE_PAGE_SIZE, (inspirePage + 1) * INSPIRE_PAGE_SIZE);
                     return (
-                      <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 36, marginBottom: 48, animationDelay: hasAnimated.current ? undefined : delay }}>
+                      <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 0, marginBottom: 48, animationDelay: hasAnimated.current ? undefined : delay }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
                           <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em" }}>Get inspired</span>
                           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
@@ -3351,7 +3402,7 @@
                     ];
                     const sourceColor = { "TrueCar": "#7C3AED", "Walk-in": "#059669", "AutoTrader": "#D97706", "Referral": "#2563EB", "Cars.com": "#DC2626" };
                     return (
-                      <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 28, animationDelay: hasAnimated.current ? undefined : delay }}>
+                      <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 0, animationDelay: hasAnimated.current ? undefined : delay }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
                           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                             <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em", fontFamily: sans }}>New leads</span>
@@ -3429,7 +3480,7 @@
                     };
                     const confirmedCount = APPT_LIST.filter(a => confirmedAppts.has(a.customer)).length;
                     return (
-                      <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 28, animationDelay: hasAnimated.current ? undefined : delay }}>
+                      <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 0, animationDelay: hasAnimated.current ? undefined : delay }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
                           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                             <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em", fontFamily: sans }}>Appointments</span>
@@ -3541,7 +3592,7 @@
                     const convColor = p => p >= 60 ? "#059669" : p >= 45 ? "#D97706" : "#6B7280";
                     const convBg = p => p >= 60 ? "#DCFCE7" : p >= 45 ? "#FEF3C7" : "#F3F4F6";
                     return (
-                      <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 28, animationDelay: hasAnimated.current ? undefined : delay }}>
+                      <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 0, animationDelay: hasAnimated.current ? undefined : delay }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
                           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                             <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em", fontFamily: sans }}>Opportunities to push</span>
@@ -3631,7 +3682,7 @@
                       },
                     ];
                     return (
-                      <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 28, animationDelay: hasAnimated.current ? undefined : delay }}>
+                      <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 0, animationDelay: hasAnimated.current ? undefined : delay }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
                           <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em", fontFamily: sans }}>AI insights & trends</span>
                         </div>
@@ -3673,31 +3724,45 @@
                   if (!_section) return null;
                   const _isActive = pDragSec === secId;
                   const _showBefore = !isMobile && pDragSec && pDragSec !== secId && pInsertBefore === secId;
-                  const _draggedIsHalf = !isMobile && widgetWidths[pDragSec] === 'half';
-                  const _ph = (
-                    <div style={{ gridColumn: _draggedIsHalf ? 'span 1' : 'span 2', height: dragPlaceholderHeight.current, background: '#EFF6FF', border: '2px dashed #93C5FD', borderRadius: 12, boxSizing: 'border-box', transition: 'height 0.15s' }} />
-                  );
+                  const _showAfter  = !isMobile && pDragSec && pDragSec !== secId && pInsertBefore === `__after__${secId}`;
                   return (
                     <React.Fragment key={secId}>
-                      {_showBefore && _ph}
                       <div
                         ref={el => { if (el) cardRefs.current[secId] = el; else delete cardRefs.current[secId]; }}
-                        style={{ gridColumn: isHalf ? 'span 1' : 'span 2', position: 'relative', opacity: _isActive ? 0.25 : 1, borderRadius: 8, transition: 'opacity 0.15s' }}
+                        style={{ gridColumn: isHalf ? 'span 1' : 'span 2', position: 'relative', opacity: _isActive ? 0.25 : 1, borderRadius: 8, transition: 'opacity 0.15s', minWidth: 0 }}
                         onMouseEnter={e => { if (!isMobile) { const h = e.currentTarget.querySelector('.sect-rh'); if (h) h.style.opacity = '1'; const dh = e.currentTarget.querySelector('.sect-dh'); if (dh) dh.style.opacity = '1'; }}}
                         onMouseLeave={e => { const h = e.currentTarget.querySelector('.sect-rh'); if (h) h.style.opacity = '0'; const dh = e.currentTarget.querySelector('.sect-dh'); if (dh) dh.style.opacity = '0'; }}>
+                        {_showBefore && (() => {
+                          const _colSwap = isHalf && widgetWidths[pDragSec] === 'half';
+                          return _colSwap
+                            ? /* vertical line — left edge column swap */
+                              <div style={{ position: 'absolute', top: 0, bottom: 0, left: -11, width: 2, background: '#2563EB', zIndex: 20, pointerEvents: 'none' }}>
+                                <div style={{ position: 'absolute', top: 0, left: -3, width: 8, height: 8, borderRadius: '50%', background: '#2563EB' }} />
+                              </div>
+                            : /* horizontal line — row reorder */
+                              <div style={{ position: 'absolute', top: -11, left: 0, right: 0, height: 2, background: '#2563EB', zIndex: 20, pointerEvents: 'none' }}>
+                                <div style={{ position: 'absolute', left: 0, top: -3, width: 8, height: 8, borderRadius: '50%', background: '#2563EB' }} />
+                              </div>;
+                        })()}
+                        {_showAfter && (
+                          /* vertical line — right edge column swap */
+                          <div style={{ position: 'absolute', top: 0, bottom: 0, right: -11, width: 2, background: '#2563EB', zIndex: 20, pointerEvents: 'none' }}>
+                            <div style={{ position: 'absolute', top: 0, right: -3, width: 8, height: 8, borderRadius: '50%', background: '#2563EB' }} />
+                          </div>
+                        )}
                         {_section}
                         {!isMobile && (
                           <>
                             {/* Drag handle — left of section title */}
                             <div className="sect-dh"
                               onMouseDown={(e) => startPointerDrag(e, secId)}
-                              style={{ position: 'absolute', top: ({ 'pickup': 34, 'get-inspired': 38, 'webinar': 34, 'daily-briefs': 28 })[secId] ?? 26, left: -20, cursor: 'grab', opacity: 0, transition: 'opacity 0.15s', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10, padding: '5px 5px', borderRadius: 5 }}
+                              style={{ position: 'absolute', top: secId === 'pickup' ? 7 : 3, left: -20, cursor: 'grab', opacity: 0, transition: 'opacity 0.15s', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10, padding: '0 6px', borderRadius: 5 }}
                               onMouseEnter={e => { e.currentTarget.style.background = 'rgba(0,0,0,0.06)'; }}
                               onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}>
                               <svg width="10" height="14" viewBox="0 0 10 16" fill="#94A3B8"><circle cx="2" cy="2" r="1.6"/><circle cx="8" cy="2" r="1.6"/><circle cx="2" cy="8" r="1.6"/><circle cx="8" cy="8" r="1.6"/><circle cx="2" cy="14" r="1.6"/><circle cx="8" cy="14" r="1.6"/></svg>
                             </div>
                             {/* Resize handle — right edge */}
-                            <div className="sect-rh" style={{ position: 'absolute', right: -6, top: 28, bottom: 0, width: 12, cursor: 'col-resize', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0, transition: 'opacity 0.15s', zIndex: 20 }}
+                            <div className="sect-rh" style={{ position: 'absolute', right: -6, top: 3, bottom: 0, width: 12, cursor: 'col-resize', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0, transition: 'opacity 0.15s', zIndex: 20 }}
                               onMouseDown={(e) => handleResizeDrag(e, secId)}>
                               <div style={{ width: 4, height: 32, borderRadius: 2, background: '#CBD5E1' }} />
                             </div>
@@ -3706,10 +3771,14 @@
                       </div>
                     </React.Fragment>
                   );
-                })}
-                {/* End-of-list placeholder */}
+                });})()}
+                {/* End-of-list indicator — zero-height, no layout shift */}
                 {!isMobile && pDragSec && pInsertBefore === '__end__' && (
-                  <div style={{ gridColumn: (!isMobile && widgetWidths[pDragSec] === 'half') ? 'span 1' : 'span 2', height: dragPlaceholderHeight.current, background: '#EFF6FF', border: '2px dashed #93C5FD', borderRadius: 12, boxSizing: 'border-box' }} />
+                  <div style={{ gridColumn: 'span 2', height: 0, overflow: 'visible', position: 'relative', zIndex: 20 }}>
+                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: '#2563EB', pointerEvents: 'none' }}>
+                      <div style={{ position: 'absolute', left: 0, top: -3, width: 8, height: 8, borderRadius: '50%', background: '#2563EB' }} />
+                    </div>
+                  </div>
                 )}
                 </div>
 
