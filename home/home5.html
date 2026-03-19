@@ -920,10 +920,7 @@
       </div>
       <!-- Tekion Logo -->
       <div class="tk-logo">
-        <svg height="14" viewBox="0 0 122 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <text x="0" y="12" fill="#00BFA5" font-family="'Proxima Nova', sans-serif" font-weight="bold" font-size="18"
-            letter-spacing="1">TEKION</text>
-        </svg>
+        <img src="assets/tekion-logo.gif" alt="Tekion" style="height: 16px; width: auto; display: block;" />
       </div>
     </div>
 
@@ -1395,9 +1392,10 @@
     const CUSTOMIZE_SECTIONS = [
       { id: "daily-briefs", icon: "📋", label: "Daily Briefs", desc: "Scheduled morning, midday and evening summaries", color: "#F59E0B", locked: "on" },
       { id: "needs-attention", icon: "⚠️", label: "Needs attention", desc: "Critical alerts requiring your action", color: "#DC2626" },
-      { id: "new-leads", icon: "🟢", label: "New Leads", desc: "Fresh inbound leads ready to contact", color: "#059669" },
+      { id: "new-leads", icon: "🟢", label: "New leads", desc: "Fresh inbound leads ready to contact", color: "#059669" },
       { id: "appointments", icon: "📅", label: "Appointments", desc: "Your scheduled appointments for today", color: "#2563EB" },
-      { id: "push", icon: "🔥", label: "Opportunities to Push", desc: "AI-ranked deals most likely to close today", color: "#EA580C" },
+      { id: "push", icon: "🔥", label: "Opportunities to push", desc: "AI-ranked deals most likely to close today", color: "#EA580C" },
+      { id: "ai-insights", icon: "✦", label: "AI insights & trends", desc: "What AI is noticing across your pipeline — not just metrics", color: "#7C3AED" },
       { id: "morning-huddle", icon: "🗣️", label: "Morning brief", desc: "AI-generated personal brief for your day", color: "#7C3AED", locked: "off" },
       { id: "pickup", icon: "🕐", label: "Pick up where you left off", desc: "Recently opened leads and deals", color: "#7C3AED" },
       // { id: "kpi", icon: "📊", label: "Month at a glance", desc: "Your gross, close rate, units sold & F&I MTD", color: "#2563EB" }, // hidden
@@ -1579,8 +1577,82 @@
       const [widgetDragOver, setWidgetDragOver] = useState(null);
       const [draftSelected, setDraftSelected] = useState(null);
       const [draftOrder, setDraftOrder] = useState(null);
-      const [visibleSections, setVisibleSections] = useState(new Set(["daily-briefs", "needs-attention", "new-leads", "appointments", "push", "pickup", "webinar", "get-inspired"]));
-      const [sectionOrder, setSectionOrder] = useState(["daily-briefs", "needs-attention", "pickup", "new-leads", "appointments", "push", "morning-huddle", "webinar", "get-inspired"]);
+      const [visibleSections, setVisibleSections] = useState(new Set(["daily-briefs", "needs-attention", "new-leads", "appointments", "push", "ai-insights", "pickup"]));
+      const [sectionOrder, setSectionOrder] = useState(["daily-briefs", "needs-attention", "pickup", "new-leads", "appointments", "push", "ai-insights", "morning-huddle", "webinar", "get-inspired"]);
+      const [insightCols, setInsightCols] = useState(3);
+      const [widgetWidths, setWidgetWidths] = useState({});
+      const handleResizeDrag = (e, secId) => {
+        e.preventDefault();
+        const startX = e.clientX;
+        const startIsHalf = widgetWidths[secId] === 'half';
+        let snapped = false;
+        const onMove = (ev) => {
+          const delta = ev.clientX - startX;
+          if (!snapped && delta < -50 && !startIsHalf) { setWidgetWidths(w => ({ ...w, [secId]: 'half' })); snapped = true; }
+          else if (!snapped && delta > 50 && startIsHalf) { setWidgetWidths(w => ({ ...w, [secId]: 'full' })); snapped = true; }
+        };
+        const onUp = () => { document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); document.body.style.cursor = ''; document.body.style.userSelect = ''; };
+        document.body.style.cursor = 'col-resize';
+        document.body.style.userSelect = 'none';
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+      };
+      // ── Pointer-based drag reorder ──
+      const [pDragSec, setPDragSec] = useState(null);
+      const [pInsertBefore, setPInsertBefore] = useState(null); // secId | '__end__' | null
+      const hasAnimated = React.useRef(false);
+      React.useEffect(() => { hasAnimated.current = true; }, []);
+      const cardRefs = React.useRef({});
+      const pInsertRef = React.useRef(null);
+      const sectionOrderRef = React.useRef(sectionOrder);
+      React.useEffect(() => { sectionOrderRef.current = sectionOrder; }, [sectionOrder]);
+      const visibleRef = React.useRef(visibleSections);
+      React.useEffect(() => { visibleRef.current = visibleSections; }, [visibleSections]);
+
+      const dragPlaceholderHeight = React.useRef(150);
+      const startPointerDrag = React.useCallback((e, secId) => {
+        e.preventDefault(); e.stopPropagation();
+        const cardEl = cardRefs.current[secId];
+        if (cardEl) dragPlaceholderHeight.current = cardEl.offsetHeight;
+        setPDragSec(secId);
+        document.body.style.cursor = 'grabbing';
+        document.body.style.userSelect = 'none';
+
+        const computeInsert = (clientY) => {
+          const order = sectionOrderRef.current.filter(id => visibleRef.current.has(id) && id !== secId);
+          for (const id of order) {
+            const el = cardRefs.current[id];
+            if (!el) continue;
+            const r = el.getBoundingClientRect();
+            if (clientY < r.top + r.height / 2) return id;
+          }
+          return '__end__';
+        };
+
+        const onMove = (ev) => {
+          const ins = computeInsert(ev.clientY);
+          if (ins !== pInsertRef.current) { pInsertRef.current = ins; setPInsertBefore(ins); }
+        };
+
+        const onUp = () => {
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onUp);
+          document.body.style.cursor = '';
+          document.body.style.userSelect = '';
+          const ins = pInsertRef.current;
+          if (ins !== null) {
+            setSectionOrder(prev => {
+              const next = prev.filter(id => id !== secId);
+              if (ins === '__end__') { next.push(secId); } else { next.splice(next.indexOf(ins), 0, secId); }
+              return next;
+            });
+          }
+          setPDragSec(null); setPInsertBefore(null); pInsertRef.current = null;
+        };
+
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+      }, []);
       const [showModifyModal, setShowModifyModal] = useState(false);
       const [modifySteps, setModifySteps] = useState([]);
       const [modifyPrompt, setModifyPrompt] = useState("");
@@ -1592,7 +1664,9 @@
       const [dragItem, setDragItem] = useState(null);
       const [dragOverItem, setDragOverItem] = useState(null);
       const [pickupPage, setPickupPage] = useState(0);
+      const [briefPage, setBriefPage] = useState(0);
       const [inspirePage, setInspirePage] = useState(0);
+      const swipeStartX = React.useRef(null);
       const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 767);
       const [activeNav, setActiveNav] = useState("home");
       React.useEffect(() => {
@@ -1608,20 +1682,20 @@
           gradient: "linear-gradient(135deg, #F59E0B 0%, #EF4444 100%)",
           slides: [
             {
-              emoji: "☀️", title: "Wednesday. Here's your day.", body: "8 deals in play · 3 carrying over from last week.\n4 appointments today, starting at 9:30 AM.\n2 things need your attention.", links: [{ label: "My active deals", icon: "🤝" }, { label: "Today's appointments", icon: "📅" }],
-              voiceText: "Good morning, Mike. Yesterday closed clean, so you're starting today on solid ground. Eight deals in play, four appointments on the books, three carryovers you're actively managing. The pipeline's in good shape. Two situations are heating up. Handle those first, everything else can wait."
+              emoji: "☀️", title: "Morning, Mike. Two things first.", body: "8 deals in play · yesterday closed clean.\n4 appointments today, starting at 9:30 AM.\n2 things need your attention.", links: [{ label: "My active deals", icon: "🤝" }, { label: "Today's appointments", icon: "📅" }],
+              voiceText: "Good morning, Mike. Yesterday closed clean, so you're starting from a good place today. Eight deals in play, four appointments on the books. Solid foundation. But two situations are heating up — and they need you before anything else. We'll walk through them now."
             },
             {
-              emoji: "⚠️", title: "Henderson's gone quiet. Day 4.", body: "26 hours silent. Finance is approved, deal expires Friday. A casual text before 9 AM gets a 60% reply rate — send it before you do anything else.", links: [{ label: "Deal #3891 · Henderson", icon: "🔗" }],
-              voiceText: "Mark Henderson. Day four on the Tacoma SR5, and he's been silent for 26 hours. Here's what makes this urgent — finance is already approved, and the deal expires Friday. You're not starting from zero, you're one conversation away from closing. A short casual text before 9 AM — not a call, not a pitch, just 'Hey Mark, still thinking it over?' — gets a reply 60 percent of the time. Twenty seconds. Send it first."
+              emoji: "💬", title: "Henderson: Day 4 of silence.", body: "4 days silent.\nFinance is approved — deal expires Friday.\nA casual text before 9 AM gets a 60% reply rate.\nSend it before you do anything else.", links: [{ label: "Deal #3891 · Henderson", icon: "🔗" }],
+              voiceText: "Henderson's been quiet four days. Finance is approved — the deal is done on paper, waiting on one conversation. The clock is working against you: it expires Friday. But a casual text before 9 AM gets a sixty percent reply rate. Not a call, not a pitch. Just a check-in. Twenty seconds."
             },
             {
-              emoji: "🚗", title: "Kim walks in at 10 AM. Lead with $7,500.", body: "Jessica Kim, RAV4 Hybrid test drive. She's also talking to Riverside Toyota — but she mentioned saving money twice. Open with the federal hybrid tax credit before you're near the desk.", links: [{ label: "Appt · Jessica Kim 10 AM", icon: "📅" }, { label: "Lead #L-0829 · Kim", icon: "🔗" }],
-              voiceText: "Jessica Kim is your best opportunity today. She's in at 10 for a RAV4 Hybrid test drive — and she's also talking to Riverside Toyota. But here's your edge: she mentioned saving money twice. That's not small talk, that's a signal. Lead with the federal hybrid tax credit — up to seventy-five hundred dollars back. Riverside may not even bring it up. You will. Get her feeling that number before you're ever back at the desk."
+              emoji: "🚗", title: "10 AM: Kim. Open with the tax credit.", body: "Jessica Kim · RAV4 Hybrid test drive.\nAlso talking to Riverside Toyota.\nShe's mentioned saving money twice — that's your signal.\nOpen with the federal hybrid tax credit before you're near the desk.", links: [{ label: "Appt · Jessica Kim 10 AM", icon: "📅" }, { label: "Lead #L-0829 · Kim", icon: "🔗" }],
+              voiceText: "Jessica Kim walks in at 10. She's also talking to Riverside — but she's mentioned saving money twice. That's your signal. Lead with the federal hybrid tax credit, seventy-five hundred dollars back, before you're anywhere near the desk. Riverside probably won't bring it up. You will."
             },
             {
-              emoji: "🔥", title: "$7,700 closes your week. Today.", body: "You need $6,200 gross to hit your weekly goal. Henderson is $4,100. Rachel Kim's Venza is $3,600. Move both and you're done with $1,500 to spare.", links: [{ label: "Deal #3891 · Henderson", icon: "🔗" }, { label: "Rachel Kim · Venza XLE", icon: "🔗" }],
-              voiceText: "Here's the number that matters today. You need sixty-two hundred in gross to hit your weekly goal. Henderson is forty-one hundred. Rachel Kim's Venza is thirty-six hundred. That's seventy-seven hundred combined — fifteen hundred more than you need. Close both today and your week is done. It's Wednesday morning. Everything we just walked through leads right here. Go get it."
+              emoji: "🔥", title: "Close two deals, hit your weekly target.", body: "You need $6,200 gross to close your week.\nHenderson: $4,100 · Rachel Kim's Venza: $3,600.\nMove both — that's $7,700.\n$1,500 to spare.", links: [{ label: "Deal #3891 · Henderson", icon: "🔗" }, { label: "Rachel Kim · Venza XLE", icon: "🔗" }],
+              voiceText: "Everything we just covered leads here. You need sixty-two hundred gross to close your week. Henderson is forty-one hundred. Rachel Kim's Venza is thirty-six hundred. That's seventy-seven hundred combined — fifteen hundred more than you need. Two conversations today, and your week is done. Go get it."
             },
           ],
         },
@@ -1718,6 +1792,7 @@
         const onKey = (e) => {
           if (e.key === "ArrowRight") nextStorySlide();
           else if (e.key === "ArrowLeft") prevStorySlide();
+          else if (e.key === "Escape") closeStory();
         };
         window.addEventListener("keydown", onKey);
         return () => window.removeEventListener("keydown", onKey);
@@ -2037,12 +2112,12 @@
                 {/* Row 1 — Units Sold (full width) with stacked new/used progress bar */}
                 <div style={{ background: "#FFF", border: "1px solid #EBEBEB", borderRadius: 8, padding: "10px 12px", boxShadow: "0 1px 3px rgba(0,0,0,.04)" }}>
                   {/* Header row with New/Used on the right */}
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+                  <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 10 }}>
                     <div>
                       <div style={{ fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 5 }}>Units Sold</div>
                       <div style={{ fontSize: 32, fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, color: "#18181B" }}>11</div>
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, paddingBottom: 2 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
                         <div style={{ width: 8, height: 8, borderRadius: 2, background: "#2563EB", flexShrink: 0 }} />
                         <span style={{ fontSize: 12, fontWeight: 700, color: "#18181B" }}>7</span>
@@ -2154,7 +2229,7 @@
                   <div style={{ padding: "10px 14px 14px" }}>
                     {/* Section header */}
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-                      <div style={{ fontSize: 12, fontWeight: 800, color: "#9CA3AF" }}>Closed Deals - This Month</div>
+                      <div style={{ fontSize: 12, fontWeight: 800, color: "#9CA3AF" }}>Closed deals - This month</div>
                       <div style={{ fontSize: 12, fontWeight: 600, color: "#6B7280" }}>{CLOSED.length} deals</div>
                     </div>
                     {/* Deal list */}
@@ -2224,9 +2299,9 @@
                 ) : (
                   <>
                     {[
-                      { label: "UNITS", value: "11",   change: "▲73%",  changeColor: "#15803D" },
-                      { label: "CLOSE", value: "34%",  change: "▲+6%",  changeColor: "#15803D" },
-                      { label: "OPEN",  value: "8",    change: "2 attn", changeColor: "#D97706" },
+                      { label: "UNITS", value: "11",    change: "73% to goal",  changeColor: "#15803D" },
+                      { label: "PVR",   value: "$2.4k", change: "+$200",  changeColor: "#15803D" },
+                      { label: "F&I",   value: "$1.1k", change: "+$150",  changeColor: "#15803D" },
                     ].map((k, i, arr) => (
                       <div key={i} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 5, lineHeight: 1, borderRight: i < arr.length - 1 ? "1px solid #F0F0F0" : "none" }}>
                         <span style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF" }}>{k.label}</span>
@@ -2236,10 +2311,12 @@
                     ))}
                   </>
                 )}
-                {/* Chevron */}
-                <button onClick={() => setKpiExpanded(v => !v)} style={{ flexShrink: 0, width: 36, height: "100%", background: "transparent", border: "none", borderLeft: "1px solid #EBEBEB", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transform: kpiExpanded ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}><path d="M6 9l6 6 6-6" /></svg>
-                </button>
+                {/* Chevron — only shown when collapsed */}
+                {!kpiExpanded && (
+                  <button onClick={() => setKpiExpanded(true)} style={{ flexShrink: 0, width: 36, height: "100%", background: "transparent", border: "none", borderLeft: "1px solid #EBEBEB", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6" /></svg>
+                  </button>
+                )}
               </div>
 
               {/* Expanded KPI panel */}
@@ -2313,7 +2390,7 @@
                         return (
                           <div style={{ padding: "4px 0 4px" }}>
                             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-                              <div style={{ fontSize: 12, fontWeight: 800, color: "#9CA3AF" }}>Closed Deals - This Month</div>
+                              <div style={{ fontSize: 12, fontWeight: 800, color: "#9CA3AF" }}>Closed deals - This month</div>
                               <div style={{ fontSize: 12, fontWeight: 600, color: "#6B7280" }}>{CLOSED.length} deals</div>
                             </div>
                             <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
@@ -2355,8 +2432,8 @@
           )}
 
           {/* Flex wrapper: centered within space left of right panel */}
-          <div style={{ marginRight: isMobile ? 0 : "var(--right-panel-width)", display: "flex", justifyContent: "center" }}>
-            <main className="main-wrap" style={{ width: "100%", maxWidth: 1000, padding: isMobile ? "56px 16px 48px" : "80px 32px 48px" }}>
+          <div style={{ marginRight: isMobile ? 0 : "var(--right-panel-width)", display: "flex", justifyContent: "center", minWidth: 0 }}>
+            <main className="main-wrap" style={{ width: "100%", maxWidth: 1000, minWidth: 0, padding: isMobile ? "56px 16px 48px" : "80px 32px 48px", boxSizing: "border-box" }}>
 
               {/* ── Feed empty state ── */}
               {activeNav === "feed" && (
@@ -2413,7 +2490,7 @@
                 <p className="narrative-entrance" style={{ fontSize: 14, fontWeight: 500, color: "#6B7280", lineHeight: 1.65, margin: "0 0 20px", maxWidth: 720 }}>2 deals need attention · AI handled Ashley Carter · 4 appointments this afternoon.</p>
 
                 {/* prompt bar */}
-                <div className="prompt-entrance" style={{ marginBottom: 20 }}>
+                <div className="prompt-entrance" style={{ marginBottom: 20, width: "100%", boxSizing: "border-box" }}>
 
                   <div style={{
                     borderRadius: 8,
@@ -2547,19 +2624,37 @@
                 <div className="divider-entrance" style={{ margin: "20px 0 0", height: 1, background: "#E5E7EB" }} />
 
 
+                <div style={{ display: isMobile ? 'block' : 'grid', gridTemplateColumns: '1fr 1fr', columnGap: 20 }}>
                 {sectionOrder.map((secId, idx) => {
                   if (!visibleSections.has(secId)) return null;
                   const delay = `${0.75 + idx * 0.1}s`;
+                  const isHalf = !isMobile && widgetWidths[secId] === 'half';
+                  const _section = (() => {
                   if (secId === "daily-briefs") {
                     return (
-                      <div key="daily-briefs" className="section-entrance" style={{ marginTop: 28, animationDelay: delay }}>
+                      <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 28, animationDelay: hasAnimated.current ? undefined : delay }}>
                         <div style={{ marginBottom: 12 }}>
                           <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em", fontFamily: sans }}>Daily Briefs</span>
                         </div>
-                        {isMobile ? (
-                          /* ── Mobile: horizontal scrolling circles ── */
-                          <div style={{ display: "flex", gap: 18, overflowX: "auto", paddingBottom: 6, scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch", msOverflowStyle: "none", scrollbarWidth: "none" }}>
-                            {STORIES.map((s) => {
+                        {isMobile ? (() => {
+                          /* ── Mobile: paginated swipe circles (3 per page) ── */
+                          const BRIEF_PAGE_SIZE = 4;
+                          const briefTotalPages = Math.ceil(STORIES.length / BRIEF_PAGE_SIZE);
+                          const briefPageItems = STORIES.slice(briefPage * BRIEF_PAGE_SIZE, (briefPage + 1) * BRIEF_PAGE_SIZE);
+                          return (
+                          <div
+                            onTouchStart={e => { swipeStartX.current = e.touches[0].clientX; }}
+                            onTouchEnd={e => {
+                              if (swipeStartX.current === null) return;
+                              const dx = e.changedTouches[0].clientX - swipeStartX.current;
+                              swipeStartX.current = null;
+                              if (Math.abs(dx) < 40) return;
+                              if (dx < 0) setBriefPage(p => Math.min(briefTotalPages - 1, p + 1));
+                              else setBriefPage(p => Math.max(0, p - 1));
+                            }}
+                          >
+                            <div style={{ display: "flex", gap: 0, justifyContent: "space-between" }}>
+                            {briefPageItems.map((s) => {
                               const seen = seenStories.has(s.id);
                               const partial = partialProgress[s.id];
                               const totalSlides = s.slides ? s.slides.length : 0;
@@ -2567,7 +2662,7 @@
                                 <div key={s.id} onClick={() => s.ready && openStory(s)}
                                   className={!s.ready ? "brief-tooltip" : undefined}
                                   data-tooltip={!s.ready ? `Brief will be generated by ${s.time}` : undefined}
-                                  style={{ flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 7, scrollSnapAlign: "start", cursor: s.ready ? "pointer" : "default", opacity: s.ready ? 1 : 0.45 }}>
+                                  style={{ flex: "0 0 calc(25% - 4px)", display: "flex", flexDirection: "column", alignItems: "center", gap: 7, cursor: s.ready ? "pointer" : "default", opacity: s.ready ? 1 : 0.45 }}>
                                   {(() => {
                                     const ringC = 2 * Math.PI * 34;
                                     const n = Math.max(1, totalSlides);
@@ -2612,10 +2707,20 @@
                                 </div>
                               );
                             })}
+                            </div>
+                            {/* Swipe page dots */}
+                            {briefTotalPages > 1 && (
+                              <div style={{ display: "flex", justifyContent: "center", gap: 5, marginTop: 10 }}>
+                                {Array.from({ length: briefTotalPages }, (_, i) => (
+                                  <div key={i} onClick={() => setBriefPage(i)} style={{ width: i === briefPage ? 14 : 5, height: 5, borderRadius: 99, background: i === briefPage ? "#2563EB" : "#E5E7EB", transition: "width 0.2s, background 0.2s", cursor: "pointer" }} />
+                                ))}
+                              </div>
+                            )}
                           </div>
-                        ) : (
+                          );
+                        })() : (
                           /* ── Desktop: card grid ── */
-                          <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 10 }}>
+                          <div style={{ display: "grid", gridTemplateColumns: isHalf ? "repeat(3, 1fr)" : "repeat(6, 1fr)", gap: 10 }}>
                             {STORIES.map((s) => {
                               const seen = seenStories.has(s.id);
                               const partial = partialProgress[s.id];
@@ -2630,15 +2735,15 @@
                                   <div style={{ width: "100%", height: 72, borderRadius: 7, background: s.gradient, position: "relative", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", filter: seen ? "grayscale(40%) brightness(0.88)" : "none" }}>
                                     <span style={{ fontSize: 32, filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.25))" }}>{s.icon}</span>
                                     {seen && (
-                                      <div style={{ position: "absolute", top: 6, left: 6, background: "rgba(0,0,0,0.38)", borderRadius: 4, padding: "2px 7px", fontSize: 12, fontWeight: 700, color: "#FFF", letterSpacing: "0.04em", display: "flex", alignItems: "center", gap: 3 }}>
-                                        <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#FFF" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5" /></svg>Seen
+                                      <div style={{ position: "absolute", top: 6, left: 6, background: "rgba(0,0,0,0.38)", borderRadius: 4, padding: "1px 5px", fontSize: 10, fontWeight: 700, color: "#FFF", letterSpacing: "0.03em", display: "flex", alignItems: "center", gap: 3 }}>
+                                        <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="#FFF" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5" /></svg>Seen
                                       </div>
                                     )}
                                     {!seen && partial != null && slidesLeft > 0 && (
-                                      <div style={{ position: "absolute", top: 6, left: 6, background: "rgba(0,0,0,0.38)", borderRadius: 4, padding: "2px 7px", fontSize: 12, fontWeight: 700, color: "#FFF" }}>{slidesLeft} left</div>
+                                      <div style={{ position: "absolute", top: 6, left: 6, background: "rgba(0,0,0,0.38)", borderRadius: 4, padding: "1px 5px", fontSize: 10, fontWeight: 700, color: "#FFF" }}>{slidesLeft} left</div>
                                     )}
                                     {!seen && partial == null && totalSlides > 0 && (
-                                      <div style={{ position: "absolute", top: 6, left: 6, background: "rgba(0,0,0,0.28)", borderRadius: 4, padding: "2px 7px", fontSize: 12, fontWeight: 700, color: "#FFF" }}>{totalSlides}</div>
+                                      <div style={{ position: "absolute", top: 6, left: 6, background: "rgba(0,0,0,0.28)", borderRadius: 4, padding: "1px 5px", fontSize: 10, fontWeight: 700, color: "#FFF" }}>{totalSlides}</div>
                                     )}
                                   </div>
                                   <div style={{ padding: "6px 4px 2px", display: "flex", flexDirection: "column", gap: 1, minWidth: 0 }}>
@@ -2684,7 +2789,7 @@
                     const cur = pending[si2];
                     const total = pending.length;
                     return (
-                      <div key="needs-attention" className="section-entrance" style={{ marginTop: 28, animationDelay: delay }}>
+                      <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 28, animationDelay: hasAnimated.current ? undefined : delay }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
                           <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em" }}>Needs attention</span>
                           <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>{pending.length} of {ALERTS.length} remaining</span>
@@ -2860,7 +2965,7 @@
                     );
                   }
                   if (secId === "morning-huddle") return (
-                    <div key="morning-huddle" className="section-entrance" style={{ marginTop: 28, animationDelay: delay }}>
+                    <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 28, animationDelay: hasAnimated.current ? undefined : delay }}>
                       <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em", display: "block", marginBottom: 12 }}>Morning brief</span>
                       <B delay={0}>
                         <div style={{ padding: 12, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -2987,7 +3092,7 @@
                     </div>
                   );
                   if (secId === "kpi") return (
-                    <div key="kpi" className="section-entrance" style={{ marginTop: 28, animationDelay: delay }}>
+                    <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 28, animationDelay: hasAnimated.current ? undefined : delay }}>
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
                         <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em" }}>Month at a glance</span>
                         <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>March 2026 · MTD</span>
@@ -3055,8 +3160,8 @@
                     const pickupTotalPages = Math.ceil(PICKUP_ITEMS.length / PICKUP_PAGE_SIZE);
                     const pickupPageItems = PICKUP_ITEMS.slice(pickupPage * PICKUP_PAGE_SIZE, (pickupPage + 1) * PICKUP_PAGE_SIZE);
                     return (
-                      <div key="pickup" className="section-entrance" style={{ marginTop: 32, animationDelay: delay }}>
-                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+                      <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 32, animationDelay: hasAnimated.current ? undefined : delay }}>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
                           <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em" }}>Pick up where you left off</span>
                           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                             <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginRight: 2 }}>{pickupPage * PICKUP_PAGE_SIZE + 1}–{Math.min((pickupPage + 1) * PICKUP_PAGE_SIZE, PICKUP_ITEMS.length)} of {PICKUP_ITEMS.length}</span>
@@ -3071,7 +3176,18 @@
                             })}
                           </div>
                         </div>
-                        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(6, 1fr)", gap: 12 }}>
+                        <div
+                          onTouchStart={isMobile ? (e => { swipeStartX.current = e.touches[0].clientX; }) : undefined}
+                          onTouchEnd={isMobile ? (e => {
+                            if (swipeStartX.current === null) return;
+                            const dx = e.changedTouches[0].clientX - swipeStartX.current;
+                            swipeStartX.current = null;
+                            if (Math.abs(dx) < 40) return;
+                            if (dx < 0) setPickupPage(p => Math.min(pickupTotalPages - 1, p + 1));
+                            else setPickupPage(p => Math.max(0, p - 1));
+                          }) : undefined}
+                        >
+                        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : isHalf ? "repeat(3, 1fr)" : "repeat(6, 1fr)", gap: 12 }}>
                           {pickupPageItems.map((item, i) => {
                             const isLead = item.type === "lead";
                             return (
@@ -3082,14 +3198,14 @@
                                       ? <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
                                       : <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" /><path d="M2 12h20" /></svg>}
                                   </div>
-                                  <div style={{ position: "absolute", top: 6, left: 6, background: item.statusBg, borderRadius: 4, padding: "2px 6px", fontSize: 12, fontWeight: 700, color: item.statusColor, letterSpacing: "0.02em", whiteSpace: "nowrap" }}>{item.status}</div>
+                                  <div style={{ position: "absolute", top: 6, left: 6, background: item.statusBg, borderRadius: 4, padding: "1px 5px", fontSize: 10, fontWeight: 700, color: item.statusColor, letterSpacing: "0.02em", whiteSpace: "nowrap" }}>{item.status}</div>
                                 </div>
-                                <div style={{ padding: "6px 4px 4px", display: "flex", flexDirection: "column", gap: 3, minWidth: 0 }}>
+                                <div style={{ padding: "6px 4px 2px", display: "flex", flexDirection: "column", gap: 1, minWidth: 0 }}>
                                   <div style={{ display: "flex", alignItems: "center", gap: 3, minWidth: 0 }}>
                                     <span style={{ fontSize: 12, fontWeight: 600, color: "#18181B", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1, minWidth: 0 }}>
                                       {isLead
-                                        ? <><span style={{ color: "#6B7280", fontWeight: 500 }}>Lead · </span>{item.label}</>
-                                        : <><span style={{ color: "#C4C4C4", fontWeight: 400, fontSize: 12 }}>{item.label} · </span>{item.sub}</>}
+                                        ? <><span style={{ color: "#9CA3AF", fontWeight: 500 }}>Lead · </span>{item.label}</>
+                                        : <><span style={{ color: "#9CA3AF", fontWeight: 500 }}>Deal · </span>{item.sub}</>}
                                     </span>
                                     <svg className="redirect-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
                                       <line x1="7" y1="17" x2="17" y2="7" /><polyline points="7,7 17,7 17,17" />
@@ -3101,15 +3217,23 @@
                             );
                           })}
                         </div>
+                        {isMobile && pickupTotalPages > 1 && (
+                          <div style={{ display: "flex", justifyContent: "center", gap: 5, marginTop: 10 }}>
+                            {Array.from({ length: pickupTotalPages }, (_, i) => (
+                              <div key={i} onClick={() => setPickupPage(i)} style={{ width: i === pickupPage ? 14 : 5, height: 5, borderRadius: 99, background: i === pickupPage ? "#2563EB" : "#E5E7EB", transition: "width 0.2s, background 0.2s", cursor: "pointer" }} />
+                            ))}
+                          </div>
+                        )}
+                        </div>
                       </div>
                     );
                   }
                   if (secId === "webinar") return (
-                    <div key="webinar" className="section-entrance" style={{ marginTop: 36, animationDelay: delay }}>
+                    <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 36, animationDelay: hasAnimated.current ? undefined : delay }}>
                       <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em", display: "block", marginBottom: 12 }}>Upcoming webinar</span>
-                      <div style={{ background: "#FFF", borderRadius: 8, border: "1px solid #E5E7EB", overflow: "hidden", display: "flex", flexDirection: isMobile ? "column" : "row", alignItems: "stretch", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
-                        {/* visual — top on mobile, right on desktop */}
-                        <div style={{ order: isMobile ? -1 : 1, flex: isMobile ? "none" : 1, background: "linear-gradient(135deg,#0f172a 0%,#1e1b4b 50%,#1e3a5f 100%)", position: "relative", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", minHeight: isMobile ? 160 : 200 }}>
+                      <div style={{ background: "#FFF", borderRadius: 8, border: "1px solid #E5E7EB", overflow: "hidden", display: "flex", flexDirection: (isMobile || isHalf) ? "column" : "row", alignItems: "stretch", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+                        {/* visual — top on mobile/half, right on desktop */}
+                        <div style={{ order: (isMobile || isHalf) ? -1 : 1, flex: (isMobile || isHalf) ? "none" : 1, background: "linear-gradient(135deg,#0f172a 0%,#1e1b4b 50%,#1e3a5f 100%)", position: "relative", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", minHeight: (isMobile || isHalf) ? 140 : 200 }}>
                           {/* ambient glows */}
                           <div style={{ position: "absolute", top: -30, right: -20, width: 140, height: 140, borderRadius: "50%", background: "rgba(99,102,241,0.25)", filter: "blur(40px)" }} />
                           <div style={{ position: "absolute", bottom: -20, left: 10, width: 100, height: 100, borderRadius: "50%", background: "rgba(37,99,235,0.3)", filter: "blur(30px)" }} />
@@ -3131,7 +3255,7 @@
                           </div>
                         </div>
                         {/* content — below on mobile, left on desktop */}
-                        <div style={{ order: isMobile ? 1 : -1, flex: isMobile ? "none" : "0 0 54%", padding: "24px 28px 24px 24px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                        <div style={{ order: (isMobile || isHalf) ? 1 : -1, flex: (isMobile || isHalf) ? "none" : "0 0 54%", padding: "14px 14px 14px 14px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                           <div>
                             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
                               <span style={{ display: "inline-block", padding: "3px 8px", borderRadius: 4, background: "#EFF6FF", color: "#2563EB", fontSize: 12, fontWeight: 800, letterSpacing: "0.06em" }}>LIVE WEBINAR</span>
@@ -3168,11 +3292,11 @@
                       { bg: "linear-gradient(160deg,#0a1a2e 0%,#1e4a6f 60%,#2563eb 100%)", scene: [["#1E3A8A", "M0 80 Q60 45 120 72 L120 130 L0 130Z"], ["#60A5FA", "M75 48 Q112 22 140 47 L140 82 L75 76Z"]], title: "Digital Retail Demo", tag: "Deal", duration: "6:40" },
                       { bg: "linear-gradient(160deg,#2e1a1a 0%,#7c1d1d 60%,#b42020 100%)", scene: [["#7F1D1D", "M0 90 Q40 55 115 78 L115 130 L0 130Z"], ["#F87171", "M60 52 Q100 22 138 50 L138 86 L60 80Z"]], title: "Trade-Up Conversation", tag: "Lead", duration: "4:02" },
                     ];
-                    const INSPIRE_PAGE_SIZE = isMobile ? 2 : 4;
+                    const INSPIRE_PAGE_SIZE = (isMobile || isHalf) ? 2 : 4;
                     const inspireTotalPages = Math.ceil(INSPIRE_ITEMS.length / INSPIRE_PAGE_SIZE);
                     const inspirePageItems = INSPIRE_ITEMS.slice(inspirePage * INSPIRE_PAGE_SIZE, (inspirePage + 1) * INSPIRE_PAGE_SIZE);
                     return (
-                      <div key="get-inspired" className="section-entrance" style={{ marginTop: 36, marginBottom: 48, animationDelay: delay }}>
+                      <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 36, marginBottom: 48, animationDelay: hasAnimated.current ? undefined : delay }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
                           <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em" }}>Get inspired</span>
                           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
@@ -3188,7 +3312,7 @@
                             })}
                           </div>
                         </div>
-                        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: 14 }}>
+                        <div style={{ display: "grid", gridTemplateColumns: (isMobile || isHalf) ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: 14 }}>
                           {inspirePageItems.map((t, i) => (
                             <div key={i} className="card-hover" style={{ borderRadius: 8, overflow: "hidden", cursor: "pointer", border: "1px solid #EBEBEB" }}>
                               <div style={{ background: t.bg, height: 126, position: "relative", overflow: "hidden" }}>
@@ -3227,44 +3351,62 @@
                     ];
                     const sourceColor = { "TrueCar": "#7C3AED", "Walk-in": "#059669", "AutoTrader": "#D97706", "Referral": "#2563EB", "Cars.com": "#DC2626" };
                     return (
-                      <div key="new-leads" className="section-entrance" style={{ marginTop: 28, animationDelay: delay }}>
+                      <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 28, animationDelay: hasAnimated.current ? undefined : delay }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
                           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                            <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em", fontFamily: sans }}>New Leads</span>
+                            <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em", fontFamily: sans }}>New leads</span>
                           </div>
                           <span style={{ fontSize: 12, fontWeight: 600, color: "#2563EB", cursor: "pointer", fontFamily: sans }}>View all →</span>
                         </div>
                         {/* Single card containing all rows */}
                         <div style={{ background: "#FFF", border: "1px solid #E5E7EB", borderRadius: 10, overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
                           {NEW_LEADS.map((lead, i) => (
-                            <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px", borderBottom: i < NEW_LEADS.length - 1 ? "1px solid #F3F4F6" : "none", cursor: "pointer" }}
+                            <div key={i} style={{ display: "flex", flexDirection: "column", padding: "12px 16px", borderBottom: i < NEW_LEADS.length - 1 ? "1px solid #F3F4F6" : "none", cursor: "pointer" }}
                               onMouseEnter={e => e.currentTarget.style.background = "#FAFAFA"}
                               onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-                              {/* Avatar */}
-                              <div style={{ width: 36, height: 36, borderRadius: "50%", background: `${lead.sColor}15`, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: lead.sColor, fontFamily: sans }}>
-                                {lead.name.split(" ").map(n => n[0]).join("")}
-                              </div>
-                              {/* Name + vehicle */}
-                              <div style={{ flex: 1, minWidth: 0 }}>
-                                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
-                                  <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", fontFamily: sans }}>{lead.name}</span>
-                                  <span style={{ fontSize: 12, fontWeight: 700, padding: "1px 7px", borderRadius: 99, background: lead.sBg, color: lead.sColor, fontFamily: sans, whiteSpace: "nowrap", flexShrink: 0 }}>{lead.status}</span>
+                              {/* Row 1: avatar + name + (desktop: actions) */}
+                              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                                {/* Avatar */}
+                                <div style={{ width: 36, height: 36, borderRadius: "50%", background: `${lead.sColor}15`, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: lead.sColor, fontFamily: sans }}>
+                                  {lead.name.split(" ").map(n => n[0]).join("")}
                                 </div>
-                                <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", fontFamily: sans, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", display: "block" }}>{lead.vehicle} · {lead.source} · {lead.age}</span>
+                                {/* Name + vehicle */}
+                                <div style={{ flex: 1, minWidth: 0 }}>
+                                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 3 }}>
+                                    <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", fontFamily: sans, lineHeight: "20px" }}>{lead.name}</span>
+                                    <span style={{ fontSize: 12, fontWeight: 700, padding: "1px 7px", borderRadius: 99, background: lead.sBg, color: lead.sColor, fontFamily: sans, whiteSpace: "nowrap", flexShrink: 0 }}>{lead.status}</span>
+                                  </div>
+                                  <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", fontFamily: sans, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", display: "block", lineHeight: "16px" }}>{lead.vehicle} · {lead.source} · {lead.age}</span>
+                                </div>
+                                {/* Actions — inline on desktop */}
+                                {!isMobile && (
+                                  <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }} onClick={e => e.stopPropagation()}>
+                                    {[
+                                      { label: "Call", icon: <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.1 11.1a19.79 19.79 0 01-3.07-8.67A2 2 0 012 .42h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.27a16 16 0 006.29 6.29l1.42-1.42a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 15.42v1.5z" /></svg> },
+                                      { label: "Text", icon: <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" /></svg> },
+                                    ].map(btn => (
+                                      <button key={btn.label} style={{ display: "flex", alignItems: "center", gap: 4, padding: "4px 10px", borderRadius: 6, border: "1px solid #E5E7EB", background: "#FFF", fontSize: 12, fontWeight: 600, color: "#374151", cursor: "pointer", fontFamily: sans }}
+                                        onMouseEnter={e => { e.currentTarget.style.background = "#F9FAFB"; e.currentTarget.style.borderColor = "#D1D5DB"; }}
+                                        onMouseLeave={e => { e.currentTarget.style.background = "#FFF"; e.currentTarget.style.borderColor = "#E5E7EB"; }}>
+                                        {btn.icon}{btn.label}
+                                      </button>
+                                    ))}
+                                  </div>
+                                )}
                               </div>
-                              {/* Actions */}
-                              <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }} onClick={e => e.stopPropagation()}>
-                                {[
-                                  { label: "Call", icon: <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.1 11.1a19.79 19.79 0 01-3.07-8.67A2 2 0 012 .42h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.27a16 16 0 006.29 6.29l1.42-1.42a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 15.42v1.5z" /></svg> },
-                                  { label: "Text", icon: <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" /></svg> },
-                                ].map(btn => (
-                                  <button key={btn.label} style={{ display: "flex", alignItems: "center", gap: 4, padding: "4px 10px", borderRadius: 6, border: "1px solid #E5E7EB", background: "#FFF", fontSize: 12, fontWeight: 600, color: "#374151", cursor: "pointer", fontFamily: sans }}
-                                    onMouseEnter={e => { e.currentTarget.style.background = "#F9FAFB"; e.currentTarget.style.borderColor = "#D1D5DB"; }}
-                                    onMouseLeave={e => { e.currentTarget.style.background = "#FFF"; e.currentTarget.style.borderColor = "#E5E7EB"; }}>
-                                    {btn.icon}{btn.label}
-                                  </button>
-                                ))}
-                              </div>
+                              {/* Row 2 (mobile only): Call + Text buttons */}
+                              {isMobile && (
+                                <div style={{ display: "flex", gap: 8, marginTop: 10, paddingLeft: 48 }} onClick={e => e.stopPropagation()}>
+                                  {[
+                                    { label: "Call", icon: <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.1 11.1a19.79 19.79 0 01-3.07-8.67A2 2 0 012 .42h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.27a16 16 0 006.29 6.29l1.42-1.42a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 15.42v1.5z" /></svg> },
+                                    { label: "Text", icon: <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" /></svg> },
+                                  ].map(btn => (
+                                    <button key={btn.label} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 5, padding: "5px 10px", borderRadius: 6, border: "1px solid #E5E7EB", background: "#FFF", fontSize: 12, fontWeight: 600, color: "#374151", cursor: "pointer", fontFamily: sans }}>
+                                      {btn.icon}{btn.label}
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
                             </div>
                           ))}
                         </div>
@@ -3287,7 +3429,7 @@
                     };
                     const confirmedCount = APPT_LIST.filter(a => confirmedAppts.has(a.customer)).length;
                     return (
-                      <div key="appointments" className="section-entrance" style={{ marginTop: 28, animationDelay: delay }}>
+                      <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 28, animationDelay: hasAnimated.current ? undefined : delay }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
                           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                             <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em", fontFamily: sans }}>Appointments</span>
@@ -3298,51 +3440,70 @@
                           {APPT_LIST.map((appt, i) => {
                             const isConfirmed = confirmedAppts.has(appt.customer);
                             return (
-                              <div key={i} style={{ display: "flex", alignItems: "center", borderBottom: i < APPT_LIST.length - 1 ? "1px solid #F0F0F0" : "none", background: "#FFF", padding: "7px 12px 7px 14px", gap: 10 }}>
-                                {/* Colored accent bar */}
-                                <div style={{ width: 3, height: 36, borderRadius: 99, background: appt.tColor, flexShrink: 0 }} />
-                                {/* Time — hour line 1, AM/PM line 2 */}
-                                {(() => {
-                                  const [t, ampm] = appt.time.split(" "); return (
-                                    <div style={{ flexShrink: 0, minWidth: 34, textAlign: "left" }}>
-                                      <div style={{ fontSize: 12, fontWeight: 700, color: "#18181B", lineHeight: 1.1, fontFamily: sans }}>{t}</div>
-                                      <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 1, fontFamily: sans }}>{ampm}</div>
+                              <div key={i} style={{ display: "flex", flexDirection: "column", borderBottom: i < APPT_LIST.length - 1 ? "1px solid #F3F4F6" : "none", background: "#FFF", padding: "12px 16px" }}>
+                                {/* Row 1+2: accent bar + time + name/status + (desktop: actions) */}
+                                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                                  {/* Colored accent bar */}
+                                  <div style={{ width: 3, height: 36, borderRadius: 99, background: appt.tColor, flexShrink: 0 }} />
+                                  {/* Time */}
+                                  {(() => {
+                                    const [t, ampm] = appt.time.split(" "); return (
+                                      <div style={{ flexShrink: 0, minWidth: 34, textAlign: "left" }}>
+                                        <div style={{ fontSize: 12, fontWeight: 700, color: "#18181B", lineHeight: 1.1, fontFamily: sans }}>{t}</div>
+                                        <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 1, fontFamily: sans }}>{ampm}</div>
+                                      </div>
+                                    );
+                                  })()}
+                                  {/* Name + vehicle + confirm status */}
+                                  <div style={{ flex: 1, minWidth: 0 }}>
+                                    <div style={{ fontSize: 14, fontWeight: 700, color: "#18181B", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontFamily: sans, lineHeight: "20px", marginBottom: 3 }}>{appt.customer}</div>
+                                    <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                                      <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontFamily: sans, lineHeight: "16px" }}>{appt.vehicle}</span>
+                                      <span style={{ width: 3, height: 3, borderRadius: "50%", background: "#D1D5DB", flexShrink: 0 }} />
+                                      {!isConfirmed
+                                        ? <span style={{ fontSize: 12, fontWeight: 600, color: "#DC2626", whiteSpace: "nowrap", fontFamily: sans }}>Unconfirmed</span>
+                                        : <span style={{ fontSize: 12, fontWeight: 600, color: "#059669", display: "flex", alignItems: "center", gap: 3, fontFamily: sans, whiteSpace: "nowrap" }}>
+                                          <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5" /></svg>
+                                          Confirmed
+                                        </span>
+                                      }
                                     </div>
-                                  );
-                                })()}
-                                {/* Name + vehicle + confirm status */}
-                                <div style={{ flex: 1, minWidth: 0 }}>
-                                  <div style={{ fontSize: 12, fontWeight: 700, color: "#18181B", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontFamily: sans }}>{appt.customer}</div>
-                                  <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 1 }}>
-                                    <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontFamily: sans }}>{appt.vehicle}</span>
-                                    <span style={{ width: 3, height: 3, borderRadius: "50%", background: "#D1D5DB", flexShrink: 0 }} />
-                                    {!isConfirmed
-                                      ? <span style={{ fontSize: 12, fontWeight: 600, color: "#DC2626", whiteSpace: "nowrap", fontFamily: sans }}>Unconfirmed</span>
-                                      : <span style={{ fontSize: 12, fontWeight: 600, color: "#059669", display: "flex", alignItems: "center", gap: 3, fontFamily: sans, whiteSpace: "nowrap" }}>
-                                        <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5" /></svg>
-                                        Confirmed
-                                      </span>
-                                    }
                                   </div>
-                                </div>
-                                {/* Actions */}
-                                <div style={{ display: "flex", alignItems: "center", gap: 5, flexShrink: 0 }}>
-                                  {!isConfirmed && (
-                                    <button onClick={() => setConfirmedAppts(p => new Set([...p, appt.customer]))}
-                                      style={{ padding: "4px 8px", borderRadius: 5, border: "1px solid #E5E7EB", background: "#FFF", fontSize: 12, fontWeight: 600, color: "#374151", cursor: "pointer", fontFamily: sans, whiteSpace: "nowrap" }}
-                                      onMouseEnter={e => e.currentTarget.style.background = "#F9FAFB"}
-                                      onMouseLeave={e => e.currentTarget.style.background = "#FFF"}>
-                                      Confirm
-                                    </button>
+                                  {/* Actions — inline on desktop */}
+                                  {!isMobile && (
+                                    <div style={{ display: "flex", alignItems: "center", gap: 5, flexShrink: 0, minWidth: 142, justifyContent: "flex-end" }}>
+                                      {!isConfirmed && (
+                                        <button onClick={() => setConfirmedAppts(p => new Set([...p, appt.customer]))}
+                                          style={{ padding: "4px 8px", borderRadius: 5, border: "1px solid #E5E7EB", background: "#FFF", fontSize: 12, fontWeight: 600, color: "#374151", cursor: "pointer", fontFamily: sans, whiteSpace: "nowrap" }}
+                                          onMouseEnter={e => e.currentTarget.style.background = "#F9FAFB"}
+                                          onMouseLeave={e => e.currentTarget.style.background = "#FFF"}>
+                                          Confirm
+                                        </button>
+                                      )}
+                                      <button style={{ padding: "4px 8px", borderRadius: 5, border: "1px solid #E5E7EB", background: "#FFF", fontSize: 12, fontWeight: 600, color: "#374151", cursor: "pointer", fontFamily: sans, whiteSpace: "nowrap", display: "flex", alignItems: "center", gap: 3 }}
+                                        onMouseEnter={e => e.currentTarget.style.background = "#F9FAFB"}
+                                        onMouseLeave={e => e.currentTarget.style.background = "#FFF"}>
+                                        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" /></svg>
+                                        Check-in
+                                      </button>
+                                    </div>
                                   )}
-                                  <button
-                                    style={{ padding: "4px 8px", borderRadius: 5, border: "1px solid #E5E7EB", background: "#FFF", fontSize: 12, fontWeight: 600, color: "#374151", cursor: "pointer", fontFamily: sans, whiteSpace: "nowrap", display: "flex", alignItems: "center", gap: 3 }}
-                                    onMouseEnter={e => e.currentTarget.style.background = "#F9FAFB"}
-                                    onMouseLeave={e => e.currentTarget.style.background = "#FFF"}>
-                                    <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" /></svg>
-                                    Check-in
-                                  </button>
                                 </div>
+                                {/* Row 3 (mobile only): action buttons */}
+                                {isMobile && (
+                                  <div style={{ display: "flex", gap: 6, marginTop: 8, paddingLeft: 61 }}>
+                                    {!isConfirmed && (
+                                      <button onClick={() => setConfirmedAppts(p => new Set([...p, appt.customer]))}
+                                        style={{ flex: 1, padding: "5px 8px", borderRadius: 5, border: "1px solid #E5E7EB", background: "#FFF", fontSize: 12, fontWeight: 600, color: "#374151", cursor: "pointer", fontFamily: sans }}>
+                                        Confirm
+                                      </button>
+                                    )}
+                                    <button style={{ flex: 1, padding: "5px 8px", borderRadius: 5, border: "1px solid #E5E7EB", background: "#FFF", fontSize: 12, fontWeight: 600, color: "#374151", cursor: "pointer", fontFamily: sans, display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}>
+                                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" /></svg>
+                                      Check-in
+                                    </button>
+                                  </div>
+                                )}
                               </div>
                             );
                           })}
@@ -3380,40 +3541,40 @@
                     const convColor = p => p >= 60 ? "#059669" : p >= 45 ? "#D97706" : "#6B7280";
                     const convBg = p => p >= 60 ? "#DCFCE7" : p >= 45 ? "#FEF3C7" : "#F3F4F6";
                     return (
-                      <div key="push" className="section-entrance" style={{ marginTop: 28, animationDelay: delay }}>
+                      <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 28, animationDelay: hasAnimated.current ? undefined : delay }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
                           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                            <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em", fontFamily: sans }}>Opportunities to Push</span>
+                            <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em", fontFamily: sans }}>Opportunities to push</span>
                           </div>
                           <span style={{ fontSize: 12, fontWeight: 600, color: "#2563EB", cursor: "pointer", fontFamily: sans }}></span>
                         </div>
                         <div style={{ background: "#FFF", border: "1px solid #E5E7EB", borderRadius: 10, overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
                           {PUSH_OPPS.map((opp, i) => (
-                            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "12px 14px", borderBottom: i < PUSH_OPPS.length - 1 ? "1px solid #F3F4F6" : "none" }}
+                            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "12px 16px", borderBottom: i < PUSH_OPPS.length - 1 ? "1px solid #F3F4F6" : "none" }}
                               onMouseEnter={e => e.currentTarget.style.background = "#FAFAFA"}
                               onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
                               {/* Avatar */}
-                              <div style={{ width: 34, height: 34, borderRadius: "50%", background: opp.iColor + "15", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: opp.iColor, fontFamily: sans, marginTop: 1 }}>
+                              <div style={{ width: 36, height: 36, borderRadius: "50%", background: opp.iColor + "15", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: opp.iColor, fontFamily: sans }}>
                                 {opp.ini}
                               </div>
                               {/* Content */}
                               <div style={{ flex: 1, minWidth: 0 }}>
                                 {/* Line 1: name + deal · · · idle (desktop only right-aligned) */}
                                 <div style={{ display: "flex", alignItems: "center", marginBottom: 3 }}>
-                                  <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", fontFamily: sans }}>{opp.customer}</span>
+                                  <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", fontFamily: sans, lineHeight: "20px" }}>{opp.customer}</span>
                                   <span style={{ fontSize: 12, fontWeight: 600, color: "#9CA3AF", fontFamily: sans, marginLeft: 6 }}>{opp.deal}</span>
                                   {!isMobile && <><span style={{ flex: 1 }} /><span style={{ fontSize: 12, fontWeight: 600, padding: "1px 6px", borderRadius: 4, background: "#FEF3C7", color: "#B45309", fontFamily: sans, flexShrink: 0 }}>{opp.idle}</span></>}
                                 </div>
-                                {/* Line 2: why text · · · conv% (right-aligned) */}
+                                {/* Line 2: why text · · · conv% (desktop only) */}
                                 <div style={{ display: "flex", alignItems: "flex-start", gap: 5, marginBottom: isMobile ? 4 : 0 }}>
-                                  <span style={{ flex: 1, fontSize: 12, fontWeight: 500, color: "#6B7280", fontFamily: sans, lineHeight: 1.5 }}>{opp.why}</span>
-                                  <span style={{ fontSize: 12, fontWeight: 700, color: convColor(opp.conv), fontFamily: sans, flexShrink: 0, whiteSpace: "nowrap", paddingTop: 1, marginLeft: 8 }}>{opp.conv}% chance</span>
+                                  <span style={{ flex: 1, fontSize: 12, fontWeight: 500, color: "#6B7280", fontFamily: sans, lineHeight: "18px" }}>{opp.why}</span>
+                                  {!isMobile && <span style={{ fontSize: 12, fontWeight: 700, color: convColor(opp.conv), fontFamily: sans, flexShrink: 0, whiteSpace: "nowrap", paddingTop: 1, marginLeft: 8 }}>{opp.conv}% chance</span>}
                                 </div>
-                                {/* Line 3 (mobile only): idle badge only */}
+                                {/* Line 3 (mobile only): idle badge + x% chance on same row */}
                                 {isMobile && (
                                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 2 }}>
                                     <span style={{ fontSize: 12, fontWeight: 600, padding: "1px 6px", borderRadius: 4, background: "#FEF3C7", color: "#B45309", fontFamily: sans }}>{opp.idle}</span>
-                                    <span style={{ fontSize: 12, fontWeight: 700, color: convColor(opp.conv), fontFamily: sans }}>{opp.conv}% chance</span>
+                                    <span style={{ fontSize: 12, fontWeight: 700, padding: "1px 6px", borderRadius: 4, background: convBg(opp.conv), color: convColor(opp.conv), fontFamily: sans }}>{opp.conv}% chance</span>
                                   </div>
                                 )}
                               </div>
@@ -3423,8 +3584,134 @@
                       </div>
                     );
                   }
+                  if (secId === "ai-insights") {
+                    const INSIGHTS = [
+                      {
+                        typeLabel: "Trend",
+                        typeColor: "#B45309", typeBg: "#FFFBEB", typeGrad: "linear-gradient(135deg,#FFFBEB 0%,#FEF3C7 100%)",
+                        icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6" /><polyline points="17 18 23 18 23 12" /></svg>,
+                        stat: "23%", statDelta: "↓ from 31%", statDeltaColor: "#DC2626",
+                        visual: (
+                          <svg width="80" height="36" viewBox="0 0 80 36">
+                            <polyline points="0,28 13,22 26,24 39,16 52,20 65,10 80,14" fill="none" stroke="#D97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity="0.35"/>
+                            <polyline points="0,28 13,26 26,28 39,24 52,26 65,30 80,32" fill="none" stroke="#10B981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity="0.35"/>
+                            <text x="0" y="35" fontSize="9" fill="#B45309" fontWeight="600" opacity="0.7">Phone</text>
+                            <text x="48" y="35" fontSize="9" fill="#059669" fontWeight="600" opacity="0.7">Web ✓</text>
+                          </svg>
+                        ),
+                        title: "Close rate slipping this week",
+                        body: "Down from 31% to 23% over 7 days. Phone leads stalling at contact stage — web leads still converting on pace. 3 web leads untouched today.",
+                        cta: "View web leads",
+                      },
+                      {
+                        typeLabel: "Pattern",
+                        typeColor: "#1D4ED8", typeBg: "#EFF6FF", typeGrad: "linear-gradient(135deg,#EFF6FF 0%,#DBEAFE 100%)",
+                        icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>,
+                        stat: "2x", statDelta: "faster close", statDeltaColor: "#059669",
+                        visual: (
+                          <svg width="80" height="36" viewBox="0 0 80 36">
+                            <rect x="0" y="14" width="32" height="14" rx="3" fill="#2563EB" opacity="0.8"/>
+                            <rect x="0" y="2" width="72" height="14" rx="3" fill="#BFDBFE" opacity="0.9"/>
+                            <text x="34" y="25" fontSize="9" fill="#1D4ED8" fontWeight="700">4.1d</text>
+                            <text x="74" y="13" fontSize="9" fill="#6B7280" fontWeight="600">9.4d</text>
+                          </svg>
+                        ),
+                        title: "Trade-in leads close 2x faster",
+                        body: "Leads with a trade appraisal close in 4.1 days vs 9.4 days otherwise. Ryan Mitchell's appraisal expires today — strongest opening in your pipeline right now.",
+                        cta: "Open Mitchell deal",
+                      },
+                      {
+                        typeLabel: "Opportunity",
+                        typeColor: "#065F46", typeBg: "#ECFDF5", typeGrad: "linear-gradient(135deg,#ECFDF5 0%,#D1FAE5 100%)",
+                        icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+                        stat: "3 deals", statDelta: "expiring this week", statDeltaColor: "#D97706",
+                        title: "Rate lock window closing on 3 deals",
+                        body: "Davis, Nguyen, and Brooks are inside their rate-lock window. Rates are expected to tick up Thursday — closing before then saves each customer $40–$80/month and removes the most common last-minute objection.",
+                        cta: "Review deals",
+                      },
+                    ];
+                    return (
+                      <div className={hasAnimated.current ? "" : "section-entrance"} style={{ marginTop: 28, animationDelay: hasAnimated.current ? undefined : delay }}>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+                          <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em", fontFamily: sans }}>AI insights & trends</span>
+                        </div>
+                        <div style={{ display: "grid", gridTemplateColumns: isHalf || isMobile ? "repeat(1, 1fr)" : "repeat(3, 1fr)", gap: isHalf || isMobile ? 8 : 10 }}>
+                          {INSIGHTS.map((ins, i) => (
+                            <div key={i} style={{ background: "#FFF", borderRadius: 10, overflow: "hidden", display: "flex", flexDirection: isHalf || isMobile ? "row" : "column", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}
+                              onMouseEnter={e => e.currentTarget.style.boxShadow = "0 4px 14px rgba(0,0,0,0.09)"}
+                              onMouseLeave={e => e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.05)"}>
+                              {/* Tinted header */}
+                              <div style={{ background: ins.typeGrad, padding: (isHalf || isMobile) ? "12px 14px" : "20px 16px", flexShrink: 0, width: (isHalf || isMobile) ? 100 : "auto", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "flex-start" }}>
+                                {/* Stat row */}
+                                <div style={{ fontSize: (isHalf || isMobile) ? 20 : 28, fontWeight: 800, color: "#18181B", fontFamily: sans, lineHeight: 1, letterSpacing: "-0.03em" }}>{ins.stat}</div>
+                                <div style={{ fontSize: 10, fontWeight: 600, color: ins.statDeltaColor, fontFamily: sans, marginTop: 4, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: (isHalf || isMobile) ? 76 : "none" }}>{ins.statDelta}</div>
+                              </div>
+                              {/* White content area */}
+                              <div style={{ padding: "10px 12px", display: "flex", flexDirection: "column", flex: 1, minWidth: 0, justifyContent: "center" }}>
+                                {/* Type label row */}
+                                <div style={{ display: "inline-flex", alignItems: "center", gap: 3, marginBottom: 4 }}>
+                                  <span style={{ color: ins.typeColor, display: "flex", alignItems: "center" }}>{ins.icon}</span>
+                                  <span style={{ fontSize: 10, fontWeight: 700, color: ins.typeColor, fontFamily: sans, textTransform: "uppercase", letterSpacing: "0.04em" }}>{ins.typeLabel}</span>
+                                </div>
+                                <div style={{ fontSize: 13, fontWeight: 700, color: "#18181B", fontFamily: sans, marginBottom: 4, lineHeight: 1.35 }}>{ins.title}</div>
+                                <div style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", fontFamily: sans, lineHeight: 1.6, marginBottom: 8, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{ins.body}</div>
+                                <button style={{ display: "flex", alignItems: "center", gap: 3, padding: "4px 8px", borderRadius: 5, border: "1px solid #E5E7EB", background: "#FFF", color: "#374151", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: sans, width: "auto", alignSelf: "flex-start" }}
+                                  onMouseEnter={e => { e.currentTarget.style.background = "#F9FAFB"; e.currentTarget.style.borderColor = "#D1D5DB"; }}
+                                  onMouseLeave={e => { e.currentTarget.style.background = "#FFF"; e.currentTarget.style.borderColor = "#E5E7EB"; }}>
+                                  {ins.cta}
+                                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  }
                   return null;
+                  })();
+                  if (!_section) return null;
+                  const _isActive = pDragSec === secId;
+                  const _showBefore = !isMobile && pDragSec && pDragSec !== secId && pInsertBefore === secId;
+                  const _draggedIsHalf = !isMobile && widgetWidths[pDragSec] === 'half';
+                  const _ph = (
+                    <div style={{ gridColumn: _draggedIsHalf ? 'span 1' : 'span 2', height: dragPlaceholderHeight.current, background: '#EFF6FF', border: '2px dashed #93C5FD', borderRadius: 12, boxSizing: 'border-box', transition: 'height 0.15s' }} />
+                  );
+                  return (
+                    <React.Fragment key={secId}>
+                      {_showBefore && _ph}
+                      <div
+                        ref={el => { if (el) cardRefs.current[secId] = el; else delete cardRefs.current[secId]; }}
+                        style={{ gridColumn: isHalf ? 'span 1' : 'span 2', position: 'relative', opacity: _isActive ? 0.25 : 1, borderRadius: 8, transition: 'opacity 0.15s' }}
+                        onMouseEnter={e => { if (!isMobile) { const h = e.currentTarget.querySelector('.sect-rh'); if (h) h.style.opacity = '1'; const dh = e.currentTarget.querySelector('.sect-dh'); if (dh) dh.style.opacity = '1'; }}}
+                        onMouseLeave={e => { const h = e.currentTarget.querySelector('.sect-rh'); if (h) h.style.opacity = '0'; const dh = e.currentTarget.querySelector('.sect-dh'); if (dh) dh.style.opacity = '0'; }}>
+                        {_section}
+                        {!isMobile && (
+                          <>
+                            {/* Drag handle — left of section title */}
+                            <div className="sect-dh"
+                              onMouseDown={(e) => startPointerDrag(e, secId)}
+                              style={{ position: 'absolute', top: ({ 'pickup': 34, 'get-inspired': 38, 'webinar': 34, 'daily-briefs': 28 })[secId] ?? 26, left: -20, cursor: 'grab', opacity: 0, transition: 'opacity 0.15s', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10, padding: '5px 5px', borderRadius: 5 }}
+                              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(0,0,0,0.06)'; }}
+                              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}>
+                              <svg width="10" height="14" viewBox="0 0 10 16" fill="#94A3B8"><circle cx="2" cy="2" r="1.6"/><circle cx="8" cy="2" r="1.6"/><circle cx="2" cy="8" r="1.6"/><circle cx="8" cy="8" r="1.6"/><circle cx="2" cy="14" r="1.6"/><circle cx="8" cy="14" r="1.6"/></svg>
+                            </div>
+                            {/* Resize handle — right edge */}
+                            <div className="sect-rh" style={{ position: 'absolute', right: -6, top: 28, bottom: 0, width: 12, cursor: 'col-resize', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0, transition: 'opacity 0.15s', zIndex: 20 }}
+                              onMouseDown={(e) => handleResizeDrag(e, secId)}>
+                              <div style={{ width: 4, height: 32, borderRadius: 2, background: '#CBD5E1' }} />
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </React.Fragment>
+                  );
                 })}
+                {/* End-of-list placeholder */}
+                {!isMobile && pDragSec && pInsertBefore === '__end__' && (
+                  <div style={{ gridColumn: (!isMobile && widgetWidths[pDragSec] === 'half') ? 'span 1' : 'span 2', height: dragPlaceholderHeight.current, background: '#EFF6FF', border: '2px dashed #93C5FD', borderRadius: 12, boxSizing: 'border-box' }} />
+                )}
+                </div>
 
               </>} {/* end activeNav === "home" */}
             </main >
