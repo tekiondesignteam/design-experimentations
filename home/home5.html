@@ -1,5 +1,7 @@
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -380,7 +382,7 @@
       }
 
       .main-wrap {
-        padding: 20px 16px 40px !important;
+        padding: 68px 16px 40px !important;
       }
 
       .new-suggestions-btn {
@@ -1593,7 +1595,7 @@
           gradient: "linear-gradient(135deg, #F59E0B 0%, #EF4444 100%)",
           slides: [
             {
-              emoji: "☀️", title: "Tuesday. Here's your day.", body: "8 deals in play · 3 carrying over from last week.\n4 appointments today, starting at 9:30 AM.\n2 things need your attention.", links: [{ label: "My active deals", icon: "🤝" }, { label: "Today's appointments", icon: "📅" }],
+              emoji: "☀️", title: "Wednesday. Here's your day.", body: "8 deals in play · 3 carrying over from last week.\n4 appointments today, starting at 9:30 AM.\n2 things need your attention.", links: [{ label: "My active deals", icon: "🤝" }, { label: "Today's appointments", icon: "📅" }],
               voiceText: "Good morning, Mike. Yesterday closed clean, so you're starting today on solid ground. Eight deals in play, four appointments on the books, three carryovers you're actively managing. The pipeline's in good shape. Two situations are heating up. Handle those first, everything else can wait."
             },
             {
@@ -1606,7 +1608,7 @@
             },
             {
               emoji: "🔥", title: "$7,700 closes your week. Today.", body: "You need $6,200 gross to hit your weekly goal. Henderson is $4,100. Rachel Kim's Venza is $3,600. Move both and you're done with $1,500 to spare.", links: [{ label: "Deal #3891 · Henderson", icon: "🔗" }, { label: "Rachel Kim · Venza XLE", icon: "🔗" }],
-              voiceText: "Here's the number that matters today. You need sixty-two hundred in gross to hit your weekly goal. Henderson is forty-one hundred. Rachel Kim's Venza is thirty-six hundred. That's seventy-seven hundred combined — fifteen hundred more than you need. Close both today and your week is done. It's Tuesday morning. Everything we just walked through leads right here. Go get it."
+              voiceText: "Here's the number that matters today. You need sixty-two hundred in gross to hit your weekly goal. Henderson is forty-one hundred. Rachel Kim's Venza is thirty-six hundred. That's seventy-seven hundred combined — fifteen hundred more than you need. Close both today and your week is done. It's Wednesday morning. Everything we just walked through leads right here. Go get it."
             },
           ],
         },
@@ -1624,16 +1626,31 @@
       const holdTimerRef = React.useRef(null);
       const isHoldingRef = React.useRef(false);
       const [isHolding, setIsHolding] = useState(false);
+      const touchSwipeStartRef = React.useRef(null);
+      // Holds the current slide's audio info so pause→play can resume without reset
+      const currentSlideAudioRef = React.useRef({ src: null, onEnd: null, cancelRef: { v: true }, trackProg: true });
 
-      const onStoryPointerDown = () => {
+      const onStoryPointerDown = (e) => {
+        if (e && e.touches) touchSwipeStartRef.current = e.touches[0].clientX;
         holdTimerRef.current = setTimeout(() => {
           isHoldingRef.current = true;
           setIsHolding(true);
           if (ttsAudioRef.current) ttsAudioRef.current.pause();
         }, 180);
       };
-      const onStoryPointerUp = () => {
+      const onStoryPointerUp = (e) => {
         clearTimeout(holdTimerRef.current);
+        // Swipe detection for mobile
+        if (e && e.changedTouches && touchSwipeStartRef.current !== null) {
+          const deltaX = e.changedTouches[0].clientX - touchSwipeStartRef.current;
+          touchSwipeStartRef.current = null;
+          if (Math.abs(deltaX) > 48 && !isHoldingRef.current) {
+            if (deltaX < 0) nextStorySlide(); else prevStorySlide();
+            isHoldingRef.current = true;
+            setTimeout(() => { isHoldingRef.current = false; }, 10);
+            return;
+          }
+        }
         if (isHoldingRef.current) {
           setIsHolding(false);
           if (ttsAudioRef.current) ttsAudioRef.current.play();
@@ -1720,24 +1737,46 @@
         audio.onerror = () => { if (!cancelRef.v && onEnd) onEnd(); };
         audio.play().catch(() => { if (!cancelRef.v && onEnd) onEnd(); });
       };
+      // Effect 1: fires when the slide changes — sets up audio but does NOT reset on pause/play
       React.useEffect(() => {
         if (!activeStory) return;
+        // Cancel previous slide's audio
+        currentSlideAudioRef.current.cancelRef.v = true;
         cancelTTS();
         setAudioTime(0); setAudioDuration(0);
-        if (!voiceEnabled) return;
         const cancelRef = { v: false };
+        let src, onEnd, trackProg;
         if (showIntroSlide) {
-          // Intro phase: play chime and track progress so bar 0 fills
-          playFile("voice/intro.mp3", () => {
-            if (!cancelRef.v) { setAudioTime(0); setAudioDuration(0); setShowIntroSlide(false); }
-          }, cancelRef, true);
+          src = "voice/intro.mp3";
+          onEnd = () => { if (!cancelRef.v) { setAudioTime(0); setAudioDuration(0); setShowIntroSlide(false); } };
+          trackProg = true;
         } else {
-          // Content phase: play current slide audio, on end advance to next slide
-          const slideSrc = `voice/${storySlideIdx + 1}.mp3`;
-          playFile(slideSrc, nextStorySlide, cancelRef);
+          src = `voice/${storySlideIdx + 1}.mp3`;
+          onEnd = nextStorySlide;
+          trackProg = undefined;
         }
+        currentSlideAudioRef.current = { src, onEnd, cancelRef, trackProg };
+        // Only start playing if not currently paused
+        if (voiceEnabled) playFile(src, onEnd, cancelRef, trackProg);
         return () => { cancelRef.v = true; cancelTTS(); };
-      }, [activeStory, storySlideIdx, showIntroSlide, voiceEnabled]);
+      }, [activeStory, storySlideIdx, showIntroSlide]); // voiceEnabled intentionally excluded
+
+      // Effect 2: fires only when play/pause is toggled — resumes from exact position
+      React.useEffect(() => {
+        if (!activeStory) return;
+        if (voiceEnabled) {
+          if (ttsAudioRef.current) {
+            // Resume from where we paused
+            ttsAudioRef.current.play().catch(() => {});
+          } else {
+            // Slide loaded while paused — create audio now without resetting progress
+            const { src, onEnd, cancelRef, trackProg } = currentSlideAudioRef.current;
+            if (src && !cancelRef.v) playFile(src, onEnd, cancelRef, trackProg);
+          }
+        } else {
+          if (ttsAudioRef.current) ttsAudioRef.current.pause();
+        }
+      }, [voiceEnabled]);
 
       const CITATIONS = {
         1: { type: "rep", name: "Jason Lee", ini: "JL", c: "#2563EB", id: "Rep #JL-204", detail: "RAV4 XLE sold at MSRP $38,400", sub: "68 days on lot, 0% discount", metric: "1 Unit Sold" },
@@ -1983,28 +2022,23 @@
 
                 {/* Row 1 — Units Sold (full width) with stacked new/used progress bar */}
                 <div style={{ background: "#FFF", border: "1px solid #EBEBEB", borderRadius: 8, padding: "12px 14px", boxShadow: "0 1px 3px rgba(0,0,0,.04)" }}>
-                  {/* Header row */}
-                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 10 }}>
+                  {/* Header row with New/Used on the right */}
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
                     <div>
                       <div style={{ fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 5 }}>Units Sold</div>
                       <div style={{ fontSize: 32, fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, color: "#18181B" }}>11</div>
                     </div>
-                    <div style={{ textAlign: "right" }}>
-                      <div style={{ fontSize: 16, fontWeight: 800, letterSpacing: "-.02em", color: "#059669", lineHeight: 1 }}>73%</div>
-                      <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 3 }}>of target</div>
-                    </div>
-                  </div>
-                  {/* New / Used breakdown */}
-                  <div style={{ display: "flex", gap: 12, marginBottom: 8 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                      <div style={{ width: 9, height: 9, borderRadius: 2, background: "#2563EB", flexShrink: 0 }} />
-                      <span style={{ fontSize: 12, fontWeight: 700, color: "#18181B" }}>7</span>
-                      <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280" }}>New</span>
-                    </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                      <div style={{ width: 9, height: 9, borderRadius: 2, background: "#F59E0B", flexShrink: 0 }} />
-                      <span style={{ fontSize: 12, fontWeight: 700, color: "#18181B" }}>4</span>
-                      <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280" }}>Used</span>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                        <div style={{ width: 8, height: 8, borderRadius: 2, background: "#2563EB", flexShrink: 0 }} />
+                        <span style={{ fontSize: 12, fontWeight: 700, color: "#18181B" }}>7</span>
+                        <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280" }}>New</span>
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                        <div style={{ width: 8, height: 8, borderRadius: 2, background: "#F59E0B", flexShrink: 0 }} />
+                        <span style={{ fontSize: 12, fontWeight: 700, color: "#18181B" }}>4</span>
+                        <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280" }}>Used</span>
+                      </div>
                     </div>
                   </div>
                   {/* Stacked progress bar */}
@@ -3661,7 +3695,7 @@
                   <div style={{ flex: 1, position: "relative", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "80px 36px 80px", textAlign: "center" }}>
                     <div style={{ fontSize: 84, marginBottom: 28, filter: "drop-shadow(0 8px 40px rgba(0,0,0,0.35))" }}>{activeStory.icon}</div>
                     <div style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.6)", letterSpacing: "0.14em", marginBottom: 12, fontFamily: sans }}>Daily Brief</div>
-                    <div style={{ fontSize: 36, fontWeight: 800, color: "#FFF", lineHeight: 1.15, letterSpacing: "-0.025em", marginBottom: 8, fontFamily: sans }}>{activeStory.label}</div>
+                    <div style={{ fontSize: 26, fontWeight: 800, color: "#FFF", lineHeight: 1.15, letterSpacing: "-0.025em", marginBottom: 8, fontFamily: sans }}>{activeStory.label}</div>
                     <div style={{ fontSize: 14, color: "rgba(255,255,255,0.6)", fontWeight: 500, fontFamily: sans }}>{activeStory.slides.length} insights</div>
                     <div style={{ position: "absolute", bottom: 28, left: 0, right: 0, textAlign: "center", fontSize: 12, color: "rgba(255,255,255,0.45)", fontWeight: 500, fontFamily: sans }}>Generated at {activeStory.time}</div>
                   </div>
@@ -3674,7 +3708,7 @@
                     return (
                       <div key={storySlideIdx} className="story-slide-card" style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "flex-start", padding: `108px 28px ${hasLinks ? 188 : 48}px` }}>
                         <div style={{ fontSize: 44, marginBottom: 24, filter: "drop-shadow(0 2px 12px rgba(0,0,0,0.3))" }}>{slide.emoji}</div>
-                        <div style={{ fontSize: 36, fontWeight: 900, color: "#FFF", fontFamily: sans, lineHeight: 1.1, marginBottom: 16, letterSpacing: "-0.035em", textShadow: "0 2px 20px rgba(0,0,0,0.3)" }}>{slide.title}</div>
+                        <div style={{ fontSize: 20, fontWeight: 900, color: "#FFF", fontFamily: sans, lineHeight: 1.1, marginBottom: 16, letterSpacing: "-0.035em", textShadow: "0 2px 20px rgba(0,0,0,0.3)" }}>{slide.title}</div>
                         <div style={{ fontSize: 16, fontWeight: 500, color: "rgba(255,255,255,0.92)", fontFamily: sans, lineHeight: 1.75, textShadow: "0 1px 8px rgba(0,0,0,0.25)", whiteSpace: "pre-line" }}>{slide.body}</div>
                       </div>
                     );
@@ -3705,8 +3739,9 @@
 
                 {/* ── Tap zones (behind all controls) ── */}
                 <div onMouseDown={onStoryPointerDown} onMouseUp={onStoryPointerUp} onMouseLeave={onStoryPointerUp} onTouchStart={onStoryPointerDown} onTouchEnd={onStoryPointerUp} onTouchCancel={onStoryPointerUp} style={{ position: "absolute", inset: 0, display: "flex", zIndex: 5 }}>
-                  <div onClick={() => { if (!isHoldingRef.current) prevStorySlide(); }} style={{ flex: 1, cursor: "pointer" }} />
-                  <div onClick={() => { if (!isHoldingRef.current) nextStorySlide(); }} style={{ flex: 1, cursor: "pointer" }} />
+                  <div onClick={() => { if (!isHoldingRef.current) prevStorySlide(); }} style={{ width: "25%", cursor: "pointer" }} />
+                  <div style={{ flex: 1 }} />
+                  <div onClick={() => { if (!isHoldingRef.current) nextStorySlide(); }} style={{ width: "25%", cursor: "pointer" }} />
                 </div>
               </div>
             </div>,
