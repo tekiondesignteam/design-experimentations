@@ -347,6 +347,17 @@
       }
     }
 
+    @keyframes ticker-scroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .ticker-track {
+      display: flex;
+      width: max-content;
+      animation: ticker-scroll 28s linear infinite;
+    }
+    .ticker-track:hover { animation-play-state: paused; }
+
     /* ── Responsive 2-col grids ── */
     @media (max-width: 600px) {
 
@@ -382,7 +393,7 @@
       }
 
       .main-wrap {
-        padding: 68px 16px 40px !important;
+        padding: 56px 16px 48px !important;
       }
 
       .new-suggestions-btn {
@@ -1524,6 +1535,8 @@
       const [draftEditing, setDraftEditing] = useState(false);
       const [undoneAuto, setUndoneAuto] = useState(new Set());
       const [expandedAuto, setExpandedAuto] = useState(null);
+      const [closedDealExp, setClosedDealExp] = useState(null);
+      const [mobileClosedDealExp, setMobileClosedDealExp] = useState(null);
       const [apptTab, setApptTab] = useState("all");
       const [confirmedAppts, setConfirmedAppts] = useState(new Set(["Lisa Rodriguez", "Amanda White"]));
       const [showHuddleScript, setShowHuddleScript] = useState("idle");
@@ -1713,6 +1726,7 @@
       const [voiceEnabled, setVoiceEnabled] = useState(true);
       const [isMuted, setIsMuted] = useState(false);
       const [showIntroSlide, setShowIntroSlide] = useState(false);
+      const [kpiExpanded, setKpiExpanded] = useState(false);
       const [audioTime, setAudioTime] = useState(0);
       const [audioDuration, setAudioDuration] = useState(0);
       // Keep a ref so playFile always reads the latest mute state even in stale closures
@@ -1944,7 +1958,7 @@
         <div style={{ minHeight: "100vh", background: timeGradient, fontFamily: sans, color: "#18181B", opacity: loaded ? 1 : 0, transition: "opacity 0.4s" }}>
 
           {/* ── Title bar ── */}
-          <div className="page-header" style={{ position: "fixed", top: isMobile ? 0 : 56, left: isMobile ? 0 : 64, right: 0, zIndex: 50, background: "rgba(255,255,255,0.92)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", borderBottom: "1px solid #EBEBEB", boxShadow: "none" }}>
+          <div className="page-header" style={{ position: "fixed", top: isMobile ? 0 : 56, left: isMobile ? 0 : 64, right: 0, zIndex: 50, background: "rgba(255,255,255,0.92)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", borderBottom: "1px solid #EBEBEB", boxShadow: "none", display: isMobile ? "none" : "block" }}>
             <div style={{ padding: "0 32px", height: 48, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
 
               {/* Left — page title */}
@@ -2021,7 +2035,7 @@
               <div style={{ display: "flex", flexDirection: "column", gap: 6, padding: "6px 14px 14px" }}>
 
                 {/* Row 1 — Units Sold (full width) with stacked new/used progress bar */}
-                <div style={{ background: "#FFF", border: "1px solid #EBEBEB", borderRadius: 8, padding: "12px 14px", boxShadow: "0 1px 3px rgba(0,0,0,.04)" }}>
+                <div style={{ background: "#FFF", border: "1px solid #EBEBEB", borderRadius: 8, padding: "10px 12px", boxShadow: "0 1px 3px rgba(0,0,0,.04)" }}>
                   {/* Header row with New/Used on the right */}
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
                     <div>
@@ -2123,6 +2137,7 @@
               {/* ── IN DEALERSHIP — hidden ── */}
 
               {/* ── CLOSED DEALS THIS MONTH ── */}
+              <div style={{ height: 1, background: "#EBEBEB", margin: "8px 0" }} />
               {(() => {
                 const CLOSED = [
                   { name: "Marcus Webb", vehicle: "2024 Tacoma TRD", type: "New", gross: "$3,200", date: "Mar 17", frontG: "$1,850", backG: "$1,350" },
@@ -2133,7 +2148,8 @@
                   { name: "Aaliya Patel", vehicle: "2023 Corolla Cross", type: "New", gross: "$2,900", date: "Mar 8", frontG: "$1,500", backG: "$1,400" },
                   { name: "James Cullen", vehicle: "2021 4Runner SR5", type: "Used", gross: "$1,800", date: "Mar 5", frontG: "$800", backG: "$1,000" },
                 ];
-                const [expanded, setExpanded] = React.useState(null);
+                const expanded = closedDealExp;
+                const setExpanded = setClosedDealExp;
                 return (
                   <div style={{ padding: "10px 14px 14px" }}>
                     {/* Section header */}
@@ -2194,9 +2210,153 @@
             </div>
           )}
 
+          {/* ── Mobile KPI ticker ── */}
+          {isMobile && (
+            <>
+              {/* KPI strip — 3 items upfront, expand for more */}
+              <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 40, background: "rgba(255,255,255,0.92)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", borderBottom: "1px solid #EBEBEB", height: 40, display: "flex", alignItems: "center" }}>
+                {/* When expanded: show close label; when collapsed: show 3 KPIs */}
+                {kpiExpanded ? (
+                  <div onClick={() => setKpiExpanded(false)} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, cursor: "pointer" }}>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 15l-6-6-6 6" /></svg>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: "#6B7280" }}>Hide stats</span>
+                  </div>
+                ) : (
+                  <>
+                    {[
+                      { label: "UNITS", value: "11",   change: "▲73%",  changeColor: "#15803D" },
+                      { label: "CLOSE", value: "34%",  change: "▲+6%",  changeColor: "#15803D" },
+                      { label: "OPEN",  value: "8",    change: "2 attn", changeColor: "#D97706" },
+                    ].map((k, i, arr) => (
+                      <div key={i} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 5, lineHeight: 1, borderRight: i < arr.length - 1 ? "1px solid #F0F0F0" : "none" }}>
+                        <span style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF" }}>{k.label}</span>
+                        <span style={{ fontSize: 12, fontWeight: 800, color: "#18181B" }}>{k.value}</span>
+                        <span style={{ fontSize: 11, fontWeight: 700, color: k.changeColor }}>{k.change}</span>
+                      </div>
+                    ))}
+                  </>
+                )}
+                {/* Chevron */}
+                <button onClick={() => setKpiExpanded(v => !v)} style={{ flexShrink: 0, width: 36, height: "100%", background: "transparent", border: "none", borderLeft: "1px solid #EBEBEB", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transform: kpiExpanded ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}><path d="M6 9l6 6 6-6" /></svg>
+                </button>
+              </div>
+
+              {/* Expanded KPI panel */}
+              {kpiExpanded && (
+                <>
+                  {/* Backdrop */}
+                  <div onClick={() => setKpiExpanded(false)} style={{ position: "fixed", inset: 0, zIndex: 38, background: "rgba(0,0,0,0.18)" }} />
+                  {/* Panel */}
+                  <div style={{ position: "fixed", top: 40, left: 0, right: 0, zIndex: 39, background: "#F7F8FA", maxHeight: "calc(100vh - 40px)", overflowY: "auto", borderBottom: "1px solid #EBEBEB", boxShadow: "0 8px 24px rgba(0,0,0,0.10)" }}>
+                    <div style={{ padding: "12px 14px 4px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                      <div style={{ fontSize: 12, fontWeight: 800, color: "#9CA3AF" }}>Month at a glance</div>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: "#6B7280" }}>March 2026 · MTD</div>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 6, padding: "6px 14px 14px" }}>
+                      {/* Units Sold */}
+                      <div style={{ background: "#FFF", border: "1px solid #EBEBEB", borderRadius: 8, padding: "12px 14px" }}>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+                          <div>
+                            <div style={{ fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 5 }}>Units Sold</div>
+                            <div style={{ fontSize: 32, fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, color: "#18181B" }}>11</div>
+                          </div>
+                          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 5 }}><div style={{ width: 8, height: 8, borderRadius: 2, background: "#2563EB" }} /><span style={{ fontSize: 12, fontWeight: 700, color: "#18181B" }}>7</span><span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280" }}>New</span></div>
+                            <div style={{ display: "flex", alignItems: "center", gap: 5 }}><div style={{ width: 8, height: 8, borderRadius: 2, background: "#F59E0B" }} /><span style={{ fontSize: 12, fontWeight: 700, color: "#18181B" }}>4</span><span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280" }}>Used</span></div>
+                          </div>
+                        </div>
+                        <div style={{ height: 6, borderRadius: 99, background: "#E5E7EB", overflow: "hidden", display: "flex" }}>
+                          <div style={{ height: "100%", background: "#2563EB", width: "46.7%" }} />
+                          <div style={{ height: "100%", background: "#F59E0B", width: "26.7%" }} />
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
+                          <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280" }}>73% of target</span>
+                          <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280" }}>Target: 15</span>
+                        </div>
+                      </div>
+                      {/* 2-col grid */}
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+                        {[
+                          { label: "Appts Set", val: "22", valColor: "#18181B", badge: "47%", badgeBg: "#EFF6FF", badgeColor: "#2563EB", sub: "lead-to-appt" },
+                          { label: "Open Deals", val: "8", valColor: "#A16207", badge: "2 need attention", badgeBg: "#FEF3C7", badgeColor: "#D97706", sub: "" },
+                          { label: "Show Rate", val: "68%", valColor: "#2563EB", badge: "+5%", badgeBg: "#F0FDF4", badgeColor: "#15803D", sub: "appts shown", bar: 68 },
+                          { label: "Close Rate", val: "34%", valColor: "#2563EB", badge: "+6%", badgeBg: "#F0FDF4", badgeColor: "#15803D", sub: "store avg 28%", bar: 34 },
+                          { label: "PVR", val: "$2.4k", valColor: "#7C3AED", badge: "+$200", badgeBg: "#F0FDF4", badgeColor: "#15803D", sub: "per vehicle" },
+                          { label: "F&I", val: "$1.1k", valColor: "#059669", badge: "+$150", badgeBg: "#F0FDF4", badgeColor: "#15803D", sub: "per deal avg" },
+                        ].map((k, i) => (
+                          <div key={i} style={{ background: "#FFF", border: "1px solid #EBEBEB", borderRadius: 8, padding: "12px 14px" }}>
+                            <div style={{ fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 4 }}>{k.label}</div>
+                            <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, color: k.valColor }}>{k.val}</div>
+                            <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 3, display: "flex", alignItems: "center", gap: 3 }}>
+                              <span style={{ fontSize: 12, fontWeight: 700, padding: "1px 4px", borderRadius: 3, background: k.badgeBg, color: k.badgeColor }}>{k.badge}</span>
+                              {k.sub}
+                            </div>
+                            {k.bar && <div style={{ height: 3, borderRadius: 99, background: "#E5E7EB", marginTop: 6 }}><div style={{ height: "100%", borderRadius: 99, background: "#2563EB", width: `${k.bar}%` }} /></div>}
+                          </div>
+                        ))}
+                      </div>
+                      {/* Closed Deals */}
+                      <div style={{ height: 1, background: "#EBEBEB", margin: "8px 0" }} />
+                      {(() => {
+                        const CLOSED = [
+                          { name: "Marcus Webb", vehicle: "2024 Tacoma TRD", type: "New", gross: "$3,200", date: "Mar 17", frontG: "$1,850", backG: "$1,350" },
+                          { name: "Priya Nair", vehicle: "2023 Camry XSE", type: "Used", gross: "$2,750", date: "Mar 15", frontG: "$1,200", backG: "$1,550" },
+                          { name: "Derek Hollis", vehicle: "2024 RAV4 Hybrid", type: "New", gross: "$4,100", date: "Mar 14", frontG: "$2,400", backG: "$1,700" },
+                          { name: "Sandra Okafor", vehicle: "2022 Highlander", type: "Used", gross: "$2,100", date: "Mar 12", frontG: "$900", backG: "$1,200" },
+                          { name: "Tom Breckenridge", vehicle: "2024 Tundra SR5", type: "New", gross: "$5,600", date: "Mar 10", frontG: "$3,100", backG: "$2,500" },
+                          { name: "Aaliya Patel", vehicle: "2023 Corolla Cross", type: "New", gross: "$2,900", date: "Mar 8", frontG: "$1,500", backG: "$1,400" },
+                          { name: "James Cullen", vehicle: "2021 4Runner SR5", type: "Used", gross: "$1,800", date: "Mar 5", frontG: "$800", backG: "$1,000" },
+                        ];
+                        const mExp = mobileClosedDealExp;
+                        const setMExp = setMobileClosedDealExp;
+                        return (
+                          <div style={{ padding: "4px 0 4px" }}>
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+                              <div style={{ fontSize: 12, fontWeight: 800, color: "#9CA3AF" }}>Closed Deals - This Month</div>
+                              <div style={{ fontSize: 12, fontWeight: 600, color: "#6B7280" }}>{CLOSED.length} deals</div>
+                            </div>
+                            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                              {CLOSED.map((d, i) => {
+                                const isOpen = mExp === i;
+                                const tc = d.type === "New" ? { bg: "#EFF6FF", col: "#2563EB" } : { bg: "#FEF3C7", col: "#D97706" };
+                                return (
+                                  <div key={i} onClick={() => setMExp(isOpen ? null : i)} style={{ background: "#FFF", border: "1px solid " + (isOpen ? "#BFDBFE" : "#EBEBEB"), borderRadius: 8, padding: "9px 10px", cursor: "pointer" }}>
+                                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                                      <div style={{ width: 30, height: 30, borderRadius: "50%", background: tc.bg, color: tc.col, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800, flexShrink: 0 }}>{d.name.split(" ").map(n => n[0]).join("")}</div>
+                                      <div style={{ flex: 1, minWidth: 0 }}>
+                                        <div style={{ fontSize: 12, fontWeight: 700, color: "#18181B", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.name}</div>
+                                        <div style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginTop: 1 }}>{d.vehicle}</div>
+                                      </div>
+                                      <div style={{ textAlign: "right", flexShrink: 0 }}>
+                                        <div style={{ fontSize: 12, fontWeight: 800, color: "#059669" }}>{d.gross}</div>
+                                        <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 1 }}>{d.date}</div>
+                                      </div>
+                                    </div>
+                                    {isOpen && (
+                                      <div style={{ marginTop: 8, paddingTop: 8, borderTop: "1px solid #F0F0F0", display: "flex", gap: 6 }}>
+                                        <div style={{ flex: 1, background: "#F9FAFB", borderRadius: 5, padding: "6px 8px" }}><div style={{ fontSize: 12, fontWeight: 700, color: "#9CA3AF", marginBottom: 2 }}>Front</div><div style={{ fontSize: 14, fontWeight: 800, color: "#18181B" }}>{d.frontG}</div></div>
+                                        <div style={{ flex: 1, background: "#F9FAFB", borderRadius: 5, padding: "6px 8px" }}><div style={{ fontSize: 12, fontWeight: 700, color: "#9CA3AF", marginBottom: 2 }}>F&amp;I</div><div style={{ fontSize: 14, fontWeight: 800, color: "#7C3AED" }}>{d.backG}</div></div>
+                                        <div style={{ flex: 1, background: "#F0FDF4", borderRadius: 5, padding: "6px 8px" }}><div style={{ fontSize: 12, fontWeight: 700, color: "#9CA3AF", marginBottom: 2 }}>Total</div><div style={{ fontSize: 14, fontWeight: 800, color: "#059669" }}>{d.gross}</div></div>
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  </div>
+                </>
+              )}
+            </>
+          )}
+
           {/* Flex wrapper: centered within space left of right panel */}
           <div style={{ marginRight: isMobile ? 0 : "var(--right-panel-width)", display: "flex", justifyContent: "center" }}>
-            <main className="main-wrap" style={{ width: "100%", maxWidth: 1000, padding: "80px 32px 48px" }}>
+            <main className="main-wrap" style={{ width: "100%", maxWidth: 1000, padding: isMobile ? "56px 16px 48px" : "80px 32px 48px" }}>
 
               {/* ── Feed empty state ── */}
               {activeNav === "feed" && (
