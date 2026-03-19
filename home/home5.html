@@ -1,7 +1,5 @@
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -590,6 +588,7 @@
       --text-gray: #969AA3;
       --sidebar-width: 64px;
       --header-height: 56px;
+      --right-panel-width: calc((100vw - 64px) * 3 / 12);
     }
 
     body {
@@ -1345,7 +1344,7 @@
     };
 
     function Tag({ children, bg = "#F3F4F6", c = "#374151", sx = {} }) {
-      return <span style={{ display: "inline-block", padding: "2px 7px", borderRadius: 3, fontSize: 11, fontWeight: 600, background: bg, color: c, whiteSpace: "nowrap", lineHeight: "18px", ...sx }}>{children}</span>;
+      return <span style={{ display: "inline-block", padding: "2px 7px", borderRadius: 3, fontSize: 12, fontWeight: 600, background: bg, color: c, whiteSpace: "nowrap", lineHeight: "18px", ...sx }}>{children}</span>;
     }
 
     const aiGrad = "linear-gradient(135deg, var(--primitive-color-ai-primary-start) 28.53%, var(--primitive-color-ai-primary-end) 111.04%)";
@@ -1366,8 +1365,8 @@
 
     function Sec({ label, sub }) {
       return (<div style={{ marginBottom: 12, marginTop: 4 }}>
-        <div style={{ fontSize: 18, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em" }}>{label}</div>
-        {sub && <div style={{ fontSize: 13, fontWeight: 500, color: "#9CA3AF", marginTop: 2 }}>{sub}</div>}
+        <div style={{ fontSize: 20, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em" }}>{label}</div>
+        {sub && <div style={{ fontSize: 14, fontWeight: 500, color: "#9CA3AF", marginTop: 2 }}>{sub}</div>}
       </div>);
     }
 
@@ -1404,7 +1403,7 @@
           {/* header */}
           <div style={{ padding: "18px 20px 14px", borderBottom: "1px solid #F0F0F0", display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexShrink: 0 }}>
             <div>
-              <div style={{ fontSize: 15, fontWeight: 700, color: "#18181B" }}>Customize home</div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: "#18181B" }}>Customize home</div>
               <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 3 }}>Drag to reorder · toggle to show or hide</div>
             </div>
             <button onClick={onClose} style={{ width: 28, height: 28, borderRadius: 4, background: "#F3F4F6", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#6B7280", fontSize: 14, flexShrink: 0 }}>✕</button>
@@ -1444,8 +1443,8 @@
 
                   {/* text */}
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: isOn ? "#18181B" : "#9CA3AF", marginBottom: 2 }}>{sec.label}</div>
-                    <div style={{ fontSize: 11, color: "#6B7280", lineHeight: 1.35, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{sec.desc}</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: isOn ? "#18181B" : "#9CA3AF", marginBottom: 2 }}>{sec.label}</div>
+                    <div style={{ fontSize: 12, color: "#6B7280", lineHeight: 1.35, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{sec.desc}</div>
                   </div>
 
                   {/* toggle */}
@@ -1473,11 +1472,11 @@
           {/* footer */}
           <div style={{ padding: "14px 20px", borderTop: "1px solid #F0F0F0", background: "#FAFAFA", display: "flex", gap: 8, justifyContent: "flex-end", flexShrink: 0 }}>
             <button onClick={onClose}
-              style={{ padding: "7px 18px", borderRadius: 8, border: "1px solid #E5E7EB", background: "#FFF", fontSize: 13, fontWeight: 600, color: "#374151", cursor: "pointer", fontFamily: sans }}>
+              style={{ padding: "7px 18px", borderRadius: 8, border: "1px solid #E5E7EB", background: "#FFF", fontSize: 14, fontWeight: 600, color: "#374151", cursor: "pointer", fontFamily: sans }}>
               Cancel
             </button>
             <button onClick={() => onSave(visible, order)}
-              style={{ padding: "7px 18px", borderRadius: 8, border: "none", background: "#2563EB", fontSize: 13, fontWeight: 600, color: "#FFF", cursor: "pointer", fontFamily: sans, boxShadow: "0 1px 3px rgba(37,99,235,0.3)" }}>
+              style={{ padding: "7px 18px", borderRadius: 8, border: "none", background: "#2563EB", fontSize: 14, fontWeight: 600, color: "#FFF", cursor: "pointer", fontFamily: sans, boxShadow: "0 1px 3px rgba(37,99,235,0.3)" }}>
               Save
             </button>
           </div>
@@ -1622,6 +1621,26 @@
       const [seenStories, setSeenStories] = useState(new Set());
       const [partialProgress, setPartialProgress] = useState({});
       const ttsAudioRef = React.useRef(null);
+      const holdTimerRef = React.useRef(null);
+      const isHoldingRef = React.useRef(false);
+      const [isHolding, setIsHolding] = useState(false);
+
+      const onStoryPointerDown = () => {
+        holdTimerRef.current = setTimeout(() => {
+          isHoldingRef.current = true;
+          setIsHolding(true);
+          if (ttsAudioRef.current) ttsAudioRef.current.pause();
+        }, 180);
+      };
+      const onStoryPointerUp = () => {
+        clearTimeout(holdTimerRef.current);
+        if (isHoldingRef.current) {
+          setIsHolding(false);
+          if (ttsAudioRef.current) ttsAudioRef.current.play();
+          // Delay reset so onClick fires first and still sees isHoldingRef = true
+          setTimeout(() => { isHoldingRef.current = false; }, 10);
+        }
+      };
       const cancelTTS = () => {
         if (ttsAudioRef.current) { try { ttsAudioRef.current.pause(); ttsAudioRef.current.src = ""; } catch (e) { } ttsAudioRef.current = null; }
       };
@@ -1937,7 +1956,7 @@
                       display: "flex", alignItems: "center", gap: 7, padding: "6px 12px",
                       borderRadius: 6, border: "1px solid #E5E7EB",
                       background: showQuickActionsDropdown ? "#F9FAFB" : "#FFF",
-                      fontSize: 13, fontWeight: 600, color: "#18181B", cursor: "pointer", fontFamily: sans,
+                      fontSize: 14, fontWeight: 600, color: "#18181B", cursor: "pointer", fontFamily: sans,
                       boxShadow: "0 1px 3px rgba(0,0,0,0.05)", transition: "all 0.15s"
                     }}>
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#4A7CF7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>
@@ -1953,12 +1972,12 @@
 
           {/* ── Right panel ── */}
           {!isMobile && (
-            <div style={{ position: "fixed", top: 104, right: 0, width: 300, bottom: 0, background: "#F7F8FA", borderLeft: "1px solid #EBEBEB", overflowY: "auto", zIndex: 30, display: "flex", flexDirection: "column" }}>
+            <div style={{ position: "fixed", top: 104, right: 0, width: "var(--right-panel-width)", bottom: 0, background: "#F7F8FA", borderLeft: "1px solid #EBEBEB", overflowY: "auto", zIndex: 30, display: "flex", flexDirection: "column" }}>
 
               {/* ── KPI SNAPSHOT ── */}
               <div style={{ padding: "12px 14px 4px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: ".09em", color: "#9CA3AF" }}>Month at a glance</div>
-                <div style={{ fontSize: 10, fontWeight: 700, color: "#6B7280" }}>March 2026 · MTD</div>
+                <div style={{ fontSize: 12, fontWeight: 800, color: "#9CA3AF" }}>Month at a glance</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#6B7280" }}>March 2026 · MTD</div>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 6, padding: "6px 14px 14px" }}>
 
@@ -1967,12 +1986,12 @@
                   {/* Header row */}
                   <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 10 }}>
                     <div>
-                      <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".06em", color: "#374151", marginBottom: 5 }}>Units Sold</div>
-                      <div style={{ fontSize: 30, fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, color: "#18181B" }}>11</div>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 5 }}>Units Sold</div>
+                      <div style={{ fontSize: 32, fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, color: "#18181B" }}>11</div>
                     </div>
                     <div style={{ textAlign: "right" }}>
                       <div style={{ fontSize: 16, fontWeight: 800, letterSpacing: "-.02em", color: "#059669", lineHeight: 1 }}>73%</div>
-                      <div style={{ fontSize: 11, fontWeight: 500, color: "#9CA3AF", marginTop: 3 }}>of target</div>
+                      <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 3 }}>of target</div>
                     </div>
                   </div>
                   {/* New / Used breakdown */}
@@ -1980,12 +1999,12 @@
                     <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
                       <div style={{ width: 9, height: 9, borderRadius: 2, background: "#2563EB", flexShrink: 0 }} />
                       <span style={{ fontSize: 12, fontWeight: 700, color: "#18181B" }}>7</span>
-                      <span style={{ fontSize: 11, fontWeight: 500, color: "#6B7280" }}>New</span>
+                      <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280" }}>New</span>
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
                       <div style={{ width: 9, height: 9, borderRadius: 2, background: "#F59E0B", flexShrink: 0 }} />
                       <span style={{ fontSize: 12, fontWeight: 700, color: "#18181B" }}>4</span>
-                      <span style={{ fontSize: 11, fontWeight: 500, color: "#6B7280" }}>Used</span>
+                      <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280" }}>Used</span>
                     </div>
                   </div>
                   {/* Stacked progress bar */}
@@ -1995,26 +2014,26 @@
                   </div>
                   {/* Footer */}
                   <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
-                    <span style={{ fontSize: 11, fontWeight: 500, color: "#6B7280" }}>73% of target</span>
-                    <span style={{ fontSize: 11, fontWeight: 500, color: "#6B7280" }}>Target: 15</span>
+                    <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280" }}>73% of target</span>
+                    <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280" }}>Target: 15</span>
                   </div>
                 </div>
 
                 {/* Row 2 — Appts Set | Open Deals */}
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
                   <div style={{ background: "#FFF", border: "1px solid #EBEBEB", borderRadius: 8, padding: "10px 12px", boxShadow: "0 1px 3px rgba(0,0,0,.04)" }}>
-                    <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".06em", color: "#374151", marginBottom: 4 }}>Appts Set</div>
-                    <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, color: "#18181B" }}>22</div>
-                    <div style={{ fontSize: 10, fontWeight: 500, color: "#9CA3AF", marginTop: 3, display: "flex", alignItems: "center", gap: 3 }}>
-                      <span style={{ fontSize: 9, fontWeight: 700, padding: "1px 4px", borderRadius: 3, background: "#EFF6FF", color: "#2563EB" }}>47%</span>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 4 }}>Appts Set</div>
+                    <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, color: "#18181B" }}>22</div>
+                    <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 3, display: "flex", alignItems: "center", gap: 3 }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, padding: "1px 4px", borderRadius: 3, background: "#EFF6FF", color: "#2563EB" }}>47%</span>
                       lead-to-appt
                     </div>
                   </div>
                   <div style={{ background: "#FFF", border: "1px solid #EBEBEB", borderRadius: 8, padding: "10px 12px", boxShadow: "0 1px 3px rgba(0,0,0,.04)" }}>
-                    <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".06em", color: "#374151", marginBottom: 4 }}>Open Deals</div>
-                    <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, color: "#A16207" }}>8</div>
-                    <div style={{ fontSize: 10, fontWeight: 500, color: "#9CA3AF", marginTop: 3, display: "flex", alignItems: "center", gap: 3 }}>
-                      <span style={{ fontSize: 9, fontWeight: 700, padding: "1px 4px", borderRadius: 3, background: "#FEF3C7", color: "#D97706" }}>2 need attention</span>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 4 }}>Open Deals</div>
+                    <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, color: "#A16207" }}>8</div>
+                    <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 3, display: "flex", alignItems: "center", gap: 3 }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, padding: "1px 4px", borderRadius: 3, background: "#FEF3C7", color: "#D97706" }}>2 need attention</span>
                     </div>
                   </div>
                 </div>
@@ -2022,10 +2041,10 @@
                 {/* Row 3 — Show Rate | Close Rate */}
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
                   <div style={{ background: "#FFF", border: "1px solid #EBEBEB", borderRadius: 8, padding: "10px 12px", boxShadow: "0 1px 3px rgba(0,0,0,.04)" }}>
-                    <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".06em", color: "#374151", marginBottom: 4 }}>Show Rate</div>
-                    <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, color: "#2563EB" }}>68%</div>
-                    <div style={{ fontSize: 10, fontWeight: 500, color: "#9CA3AF", marginTop: 3, display: "flex", alignItems: "center", gap: 3 }}>
-                      <span style={{ fontSize: 9, fontWeight: 700, padding: "1px 4px", borderRadius: 3, background: "#F0FDF4", color: "#15803D" }}>+5%</span>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 4 }}>Show Rate</div>
+                    <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, color: "#2563EB" }}>68%</div>
+                    <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 3, display: "flex", alignItems: "center", gap: 3 }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, padding: "1px 4px", borderRadius: 3, background: "#F0FDF4", color: "#15803D" }}>+5%</span>
                       appts shown
                     </div>
                     <div style={{ height: 3, borderRadius: 99, background: "#E5E7EB", width: "100%", marginTop: 6 }}>
@@ -2033,10 +2052,10 @@
                     </div>
                   </div>
                   <div style={{ background: "#FFF", border: "1px solid #EBEBEB", borderRadius: 8, padding: "10px 12px", boxShadow: "0 1px 3px rgba(0,0,0,.04)" }}>
-                    <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".06em", color: "#374151", marginBottom: 4 }}>Close Rate</div>
-                    <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, color: "#2563EB" }}>34%</div>
-                    <div style={{ fontSize: 10, fontWeight: 500, color: "#9CA3AF", marginTop: 3, display: "flex", alignItems: "center", gap: 3 }}>
-                      <span style={{ fontSize: 9, fontWeight: 700, padding: "1px 4px", borderRadius: 3, background: "#F0FDF4", color: "#15803D" }}>+6%</span>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 4 }}>Close Rate</div>
+                    <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, color: "#2563EB" }}>34%</div>
+                    <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 3, display: "flex", alignItems: "center", gap: 3 }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, padding: "1px 4px", borderRadius: 3, background: "#F0FDF4", color: "#15803D" }}>+6%</span>
                       store avg 28%
                     </div>
                     <div style={{ height: 3, borderRadius: 99, background: "#E5E7EB", width: "100%", marginTop: 6 }}>
@@ -2048,18 +2067,18 @@
                 {/* Row 4 — PVR | F&I */}
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
                   <div style={{ background: "#FFF", border: "1px solid #EBEBEB", borderRadius: 8, padding: "10px 12px", boxShadow: "0 1px 3px rgba(0,0,0,.04)" }}>
-                    <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".06em", color: "#374151", marginBottom: 4 }}>PVR</div>
-                    <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, color: "#7C3AED" }}>$2.4k</div>
-                    <div style={{ fontSize: 10, fontWeight: 500, color: "#9CA3AF", marginTop: 3, display: "flex", alignItems: "center", gap: 3 }}>
-                      <span style={{ fontSize: 9, fontWeight: 700, padding: "1px 4px", borderRadius: 3, background: "#F0FDF4", color: "#15803D" }}>+$200</span>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 4 }}>PVR</div>
+                    <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, color: "#7C3AED" }}>$2.4k</div>
+                    <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 3, display: "flex", alignItems: "center", gap: 3 }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, padding: "1px 4px", borderRadius: 3, background: "#F0FDF4", color: "#15803D" }}>+$200</span>
                       per vehicle
                     </div>
                   </div>
                   <div style={{ background: "#FFF", border: "1px solid #EBEBEB", borderRadius: 8, padding: "10px 12px", boxShadow: "0 1px 3px rgba(0,0,0,.04)" }}>
-                    <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".06em", color: "#374151", marginBottom: 4 }}>F&amp;I</div>
-                    <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, color: "#059669" }}>$1.1k</div>
-                    <div style={{ fontSize: 10, fontWeight: 500, color: "#9CA3AF", marginTop: 3, display: "flex", alignItems: "center", gap: 3 }}>
-                      <span style={{ fontSize: 9, fontWeight: 700, padding: "1px 4px", borderRadius: 3, background: "#F0FDF4", color: "#15803D" }}>+$150</span>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 4 }}>F&amp;I</div>
+                    <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, color: "#059669" }}>$1.1k</div>
+                    <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 3, display: "flex", alignItems: "center", gap: 3 }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, padding: "1px 4px", borderRadius: 3, background: "#F0FDF4", color: "#15803D" }}>+$150</span>
                       per deal avg
                     </div>
                   </div>
@@ -2085,8 +2104,8 @@
                   <div style={{ padding: "10px 14px 14px" }}>
                     {/* Section header */}
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-                      <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: ".09em", color: "#9CA3AF" }}>Closed Deals - This Month</div>
-                      <div style={{ fontSize: 10, fontWeight: 600, color: "#6B7280" }}>{CLOSED.length} deals</div>
+                      <div style={{ fontSize: 12, fontWeight: 800, color: "#9CA3AF" }}>Closed Deals - This Month</div>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: "#6B7280" }}>{CLOSED.length} deals</div>
                     </div>
                     {/* Deal list */}
                     <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
@@ -2099,32 +2118,32 @@
                             {/* Main row */}
                             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                               {/* Customer avatar */}
-                              <div style={{ width: 30, height: 30, borderRadius: "50%", background: typeColor.bg, color: typeColor.col, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, flexShrink: 0 }}>
+                              <div style={{ width: 30, height: 30, borderRadius: "50%", background: typeColor.bg, color: typeColor.col, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800, flexShrink: 0 }}>
                                 {d.name.split(" ").map(n => n[0]).join("")}
                               </div>
                               <div style={{ flex: 1, minWidth: 0 }}>
                                 <div style={{ fontSize: 12, fontWeight: 700, color: "#18181B", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.name}</div>
-                                <div style={{ fontSize: 10, fontWeight: 500, color: "#6B7280", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginTop: 1 }}>{d.vehicle}</div>
+                                <div style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginTop: 1 }}>{d.vehicle}</div>
                               </div>
                               <div style={{ textAlign: "right", flexShrink: 0 }}>
                                 <div style={{ fontSize: 12, fontWeight: 800, color: "#059669" }}>{d.gross}</div>
-                                <div style={{ fontSize: 10, fontWeight: 500, color: "#9CA3AF", marginTop: 1 }}>{d.date}</div>
+                                <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 1 }}>{d.date}</div>
                               </div>
                             </div>
                             {/* Expanded breakdown */}
                             {isOpen && (
                               <div style={{ marginTop: 8, paddingTop: 8, borderTop: "1px solid #F0F0F0", display: "flex", gap: 6 }}>
                                 <div style={{ flex: 1, background: "#F9FAFB", borderRadius: 5, padding: "6px 8px" }}>
-                                  <div style={{ fontSize: 9, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: ".05em", marginBottom: 2 }}>Front</div>
-                                  <div style={{ fontSize: 13, fontWeight: 800, color: "#18181B" }}>{d.frontG}</div>
+                                  <div style={{ fontSize: 12, fontWeight: 700, color: "#9CA3AF", marginBottom: 2 }}>Front</div>
+                                  <div style={{ fontSize: 14, fontWeight: 800, color: "#18181B" }}>{d.frontG}</div>
                                 </div>
                                 <div style={{ flex: 1, background: "#F9FAFB", borderRadius: 5, padding: "6px 8px" }}>
-                                  <div style={{ fontSize: 9, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: ".05em", marginBottom: 2 }}>F&amp;I</div>
-                                  <div style={{ fontSize: 13, fontWeight: 800, color: "#7C3AED" }}>{d.backG}</div>
+                                  <div style={{ fontSize: 12, fontWeight: 700, color: "#9CA3AF", marginBottom: 2 }}>F&amp;I</div>
+                                  <div style={{ fontSize: 14, fontWeight: 800, color: "#7C3AED" }}>{d.backG}</div>
                                 </div>
                                 <div style={{ flex: 1, background: "#F0FDF4", borderRadius: 5, padding: "6px 8px" }}>
-                                  <div style={{ fontSize: 9, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: ".05em", marginBottom: 2 }}>Total</div>
-                                  <div style={{ fontSize: 13, fontWeight: 800, color: "#059669" }}>{d.gross}</div>
+                                  <div style={{ fontSize: 12, fontWeight: 700, color: "#9CA3AF", marginBottom: 2 }}>Total</div>
+                                  <div style={{ fontSize: 14, fontWeight: 800, color: "#059669" }}>{d.gross}</div>
                                 </div>
                               </div>
                             )}
@@ -2142,7 +2161,7 @@
           )}
 
           {/* Flex wrapper: centered within space left of right panel */}
-          <div style={{ marginRight: isMobile ? 0 : 300, display: "flex", justifyContent: "center" }}>
+          <div style={{ marginRight: isMobile ? 0 : "var(--right-panel-width)", display: "flex", justifyContent: "center" }}>
             <main className="main-wrap" style={{ width: "100%", maxWidth: 1000, padding: "80px 32px 48px" }}>
 
               {/* ── Feed empty state ── */}
@@ -2153,7 +2172,7 @@
                   </div>
                   <div>
                     <div style={{ fontSize: 16, fontWeight: 700, color: "#18181B", marginBottom: 6 }}>Your feed is empty</div>
-                    <div style={{ fontSize: 13, fontWeight: 500, color: "#9CA3AF", maxWidth: 280, lineHeight: 1.6 }}>Activity from your deals, leads, and appointments will show up here as things happen.</div>
+                    <div style={{ fontSize: 14, fontWeight: 500, color: "#9CA3AF", maxWidth: 280, lineHeight: 1.6 }}>Activity from your deals, leads, and appointments will show up here as things happen.</div>
                   </div>
                 </div>
               )}
@@ -2166,7 +2185,7 @@
                   </div>
                   <div>
                     <div style={{ fontSize: 16, fontWeight: 700, color: "#18181B", marginBottom: 6 }}>No pulse data yet</div>
-                    <div style={{ fontSize: 13, fontWeight: 500, color: "#9CA3AF", maxWidth: 280, lineHeight: 1.6 }}>Real-time performance signals for your team and store will appear here once data starts flowing.</div>
+                    <div style={{ fontSize: 14, fontWeight: 500, color: "#9CA3AF", maxWidth: 280, lineHeight: 1.6 }}>Real-time performance signals for your team and store will appear here once data starts flowing.</div>
                   </div>
                 </div>
               )}
@@ -2190,7 +2209,7 @@
                       <linearGradient id="lg4" x1="1" y1="2" x2="16.8697" y2="5.1208" gradientUnits="userSpaceOnUse"><stop stopColor="#25C8A5" /><stop offset="0.5" stopColor="#1B90B4" /><stop offset="1" stopColor="#1A6CC4" /></linearGradient>
                     </defs>
                   </svg>
-                  <div style={{ fontSize: 11, fontWeight: 500, color: "#C0C0C0", marginTop: 6 }}></div>
+                  <div style={{ fontSize: 12, fontWeight: 500, color: "#C0C0C0", marginTop: 6 }}></div>
                 </div>
 
                 {/* greeting */}
@@ -2234,7 +2253,7 @@
                     {chips.map((ch, ci) => (
                       <button key={`${chipSet}-${ci}`}
                         className="prompt-chip chip-entrance"
-                        style={{ animationDelay: `${0.35 + ci * 0.06}s`, display: "flex", alignItems: "center", gap: 5, padding: "5px 11px", borderRadius: 4, background: "#FFF", border: "1px solid #EBEBEB", fontSize: 11, fontWeight: 600, color: "#6B7280", cursor: "pointer", fontFamily: sans, whiteSpace: "nowrap" }}
+                        style={{ animationDelay: `${0.35 + ci * 0.06}s`, display: "flex", alignItems: "center", gap: 5, padding: "5px 11px", borderRadius: 4, background: "#FFF", border: "1px solid #EBEBEB", fontSize: 12, fontWeight: 600, color: "#6B7280", cursor: "pointer", fontFamily: sans, whiteSpace: "nowrap" }}
                         onClick={() => { setPromptQuery(ch.q); setPromptFocused(true); promptRef.current?.focus(); }}
                       ><span style={{ fontSize: 12 }}>{ch.icon}</span>{ch.label}</button>
                     ))}
@@ -2255,7 +2274,7 @@
                       display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "9px 14px",
                       width: "100%", borderRadius: 8, border: "1px solid #E5E7EB",
                       background: showQuickActionsDropdown ? "#F9FAFB" : "#FFF",
-                      fontSize: 13, fontWeight: 600, color: "#18181B", cursor: "pointer", fontFamily: sans,
+                      fontSize: 14, fontWeight: 600, color: "#18181B", cursor: "pointer", fontFamily: sans,
                       boxShadow: "0 1px 3px rgba(0,0,0,0.06)", transition: "all 0.15s"
                     }}>
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4A7CF7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>
@@ -2270,7 +2289,7 @@
                   <>
                     <div onClick={() => setShowHamburgerMenu(false)} style={{ position: "fixed", inset: 0, zIndex: 9998 }} />
                     <div style={{ position: "fixed", top: themeDropPos.top, right: themeDropPos.right, zIndex: 9999, background: "#FFF", borderRadius: 10, border: "1px solid #EBEBEB", boxShadow: "0 8px 24px rgba(0,0,0,0.10)", minWidth: 224, padding: "10px 12px 12px" }}>
-                      <div style={{ fontSize: 9, fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 10 }}>Background</div>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: "#9CA3AF", letterSpacing: "0.07em", marginBottom: 10 }}>Background</div>
                       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
                         {BG_OPTIONS.map(opt => {
                           const swatch = opt.id === "auto" ? getTimeGradient() : (opt.preview || "#FFF");
@@ -2281,7 +2300,7 @@
                               <div style={{ width: 40, height: 28, borderRadius: 6, background: swatch, border: active ? "2px solid #7C3AED" : "1.5px solid #E5E7EB", boxShadow: active ? "0 0 0 2px #EDE9FE" : "none", transition: "all 0.15s", position: "relative" }}>
                                 {opt.id === "auto" && <div style={{ position: "absolute", bottom: 3, right: 3, width: 6, height: 6, borderRadius: "50%", background: "linear-gradient(135deg,#4A7CF7,#A855F7)" }} />}
                               </div>
-                              <span style={{ fontSize: 10, fontWeight: active ? 700 : 500, color: active ? "#7C3AED" : "#6B7280", whiteSpace: "nowrap" }}>{opt.label}</span>
+                              <span style={{ fontSize: 12, fontWeight: active ? 700 : 500, color: active ? "#7C3AED" : "#6B7280", whiteSpace: "nowrap" }}>{opt.label}</span>
                             </div>
                           );
                         })}
@@ -2315,13 +2334,13 @@
                       ].map((action, i) => (
                         <button key={i} onClick={() => setShowQuickActionsDropdown(false)} style={{
                           display: "flex", alignItems: "center", gap: 10, width: "100%", padding: "10px 16px",
-                          border: "none", background: "transparent", textAlign: "left", fontSize: 13,
+                          border: "none", background: "transparent", textAlign: "left", fontSize: 14,
                           fontWeight: 500, color: "#18181B", cursor: "pointer", fontFamily: sans
                         }}
                           onMouseEnter={e => e.currentTarget.style.background = "#F9FAFB"}
                           onMouseLeave={e => e.currentTarget.style.background = "transparent"}
                         >
-                          <span style={{ fontSize: 15 }}>{action.icon}</span>
+                          <span style={{ fontSize: 16 }}>{action.icon}</span>
                           {action.label}
                         </button>
                       ))}
@@ -2341,7 +2360,7 @@
                     return (
                       <div key="daily-briefs" className="section-entrance" style={{ marginTop: 28, animationDelay: delay }}>
                         <div style={{ marginBottom: 12 }}>
-                          <span style={{ fontSize: 13, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em", fontFamily: sans }}>Daily Briefs</span>
+                          <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em", fontFamily: sans }}>Daily Briefs</span>
                         </div>
                         {isMobile ? (
                           /* ── Mobile: horizontal scrolling circles ── */
@@ -2388,14 +2407,14 @@
                                           </svg>
                                         )}
                                         <div style={{ position: "absolute", top: 6, left: 6, width: 62, height: 62, borderRadius: "50%", background: s.ready ? s.gradient : "#F3F4F6", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", filter: seen ? "grayscale(50%) brightness(0.85)" : "none" }}>
-                                          <span style={{ fontSize: 26, filter: s.ready ? "drop-shadow(0 1px 4px rgba(0,0,0,0.25))" : "none" }}>{s.icon}</span>
+                                          <span style={{ fontSize: 32, filter: s.ready ? "drop-shadow(0 1px 4px rgba(0,0,0,0.25))" : "none" }}>{s.icon}</span>
                                           {!s.ready && <div style={{ position: "absolute", inset: 0, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.28)" }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg></div>}
                                         </div>
                                       </div>
                                     );
                                   })()}
-                                  <span style={{ fontSize: 11, fontWeight: 600, color: s.ready ? "#18181B" : "#9CA3AF", textAlign: "center", lineHeight: 1.4, maxWidth: 60, wordBreak: "keep-all", overflowWrap: "break-word", fontFamily: sans }}>{s.label}</span>
-                                  <span style={{ fontSize: 10, fontWeight: 500, color: "#9CA3AF", textAlign: "center", fontFamily: sans, marginTop: -2 }}>{s.time}</span>
+                                  <span style={{ fontSize: 12, fontWeight: 600, color: s.ready ? "#18181B" : "#9CA3AF", textAlign: "center", lineHeight: 1.4, maxWidth: 60, wordBreak: "keep-all", overflowWrap: "break-word", fontFamily: sans }}>{s.label}</span>
+                                  <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", textAlign: "center", fontFamily: sans, marginTop: -2 }}>{s.time}</span>
                                 </div>
                               );
                             })}
@@ -2415,17 +2434,17 @@
                                   className="recent-card"
                                   style={{ cursor: "pointer", display: "flex", flexDirection: "column", gap: 0 }}>
                                   <div style={{ width: "100%", height: 72, borderRadius: 7, background: s.gradient, position: "relative", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", filter: seen ? "grayscale(40%) brightness(0.88)" : "none" }}>
-                                    <span style={{ fontSize: 26, filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.25))" }}>{s.icon}</span>
+                                    <span style={{ fontSize: 32, filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.25))" }}>{s.icon}</span>
                                     {seen && (
-                                      <div style={{ position: "absolute", top: 6, left: 6, background: "rgba(0,0,0,0.38)", borderRadius: 4, padding: "2px 7px", fontSize: 9, fontWeight: 700, color: "#FFF", letterSpacing: "0.04em", display: "flex", alignItems: "center", gap: 3 }}>
+                                      <div style={{ position: "absolute", top: 6, left: 6, background: "rgba(0,0,0,0.38)", borderRadius: 4, padding: "2px 7px", fontSize: 12, fontWeight: 700, color: "#FFF", letterSpacing: "0.04em", display: "flex", alignItems: "center", gap: 3 }}>
                                         <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#FFF" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5" /></svg>Seen
                                       </div>
                                     )}
                                     {!seen && partial != null && slidesLeft > 0 && (
-                                      <div style={{ position: "absolute", top: 6, left: 6, background: "rgba(0,0,0,0.38)", borderRadius: 4, padding: "2px 7px", fontSize: 9, fontWeight: 700, color: "#FFF" }}>{slidesLeft} left</div>
+                                      <div style={{ position: "absolute", top: 6, left: 6, background: "rgba(0,0,0,0.38)", borderRadius: 4, padding: "2px 7px", fontSize: 12, fontWeight: 700, color: "#FFF" }}>{slidesLeft} left</div>
                                     )}
                                     {!seen && partial == null && totalSlides > 0 && (
-                                      <div style={{ position: "absolute", top: 6, left: 6, background: "rgba(0,0,0,0.28)", borderRadius: 4, padding: "2px 7px", fontSize: 9, fontWeight: 700, color: "#FFF" }}>{totalSlides}</div>
+                                      <div style={{ position: "absolute", top: 6, left: 6, background: "rgba(0,0,0,0.28)", borderRadius: 4, padding: "2px 7px", fontSize: 12, fontWeight: 700, color: "#FFF" }}>{totalSlides}</div>
                                     )}
                                   </div>
                                   <div style={{ padding: "6px 4px 2px", display: "flex", flexDirection: "column", gap: 1, minWidth: 0 }}>
@@ -2433,7 +2452,7 @@
                                       <span style={{ fontSize: 12, fontWeight: 700, color: "#18181B", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1, minWidth: 0, fontFamily: sans }}>{s.label}</span>
                                       <svg className="redirect-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7,7 17,7 17,17" /></svg>
                                     </div>
-                                    <span style={{ fontSize: 10, fontWeight: 500, color: "#9CA3AF", fontFamily: sans }}>{s.time}</span>
+                                    <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", fontFamily: sans }}>{s.time}</span>
                                   </div>
                                 </div>
                               );
@@ -2447,15 +2466,15 @@
                                     {/* Frosted overlay */}
                                     <div style={{ position: "absolute", inset: 0, background: "rgba(250,250,250,0.58)" }} />
                                     {/* Emoji */}
-                                    <span style={{ fontSize: 22, position: "relative", zIndex: 1, opacity: 0.52, filter: "grayscale(15%)" }}>{s.icon}</span>
+                                    <span style={{ fontSize: 24, position: "relative", zIndex: 1, opacity: 0.52, filter: "grayscale(15%)" }}>{s.icon}</span>
                                     {/* Lock icon — top right */}
                                     <div style={{ position: "absolute", top: 6, right: 6, zIndex: 2, width: 18, height: 18, borderRadius: 4, background: "rgba(0,0,0,0.10)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                                       <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
                                     </div>
                                   </div>
                                   <div style={{ padding: "6px 4px 2px", display: "flex", flexDirection: "column", gap: 1 }}>
-                                    <span style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontFamily: sans }}>{s.label}</span>
-                                    <span style={{ fontSize: 10, fontWeight: 500, color: "#C4C4C4", fontFamily: sans }}>{s.time}</span>
+                                    <span style={{ fontSize: 12, fontWeight: 600, color: "#9CA3AF", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontFamily: sans }}>{s.label}</span>
+                                    <span style={{ fontSize: 12, fontWeight: 500, color: "#C4C4C4", fontFamily: sans }}>{s.time}</span>
                                   </div>
                                 </div>
                               );
@@ -2473,13 +2492,13 @@
                     return (
                       <div key="needs-attention" className="section-entrance" style={{ marginTop: 28, animationDelay: delay }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-                          <span style={{ fontSize: 13, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em" }}>Needs attention</span>
-                          <span style={{ fontSize: 11, fontWeight: 500, color: "#9CA3AF" }}>{pending.length} of {ALERTS.length} remaining</span>
+                          <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em" }}>Needs attention</span>
+                          <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>{pending.length} of {ALERTS.length} remaining</span>
                         </div>
                         {pending.length === 0 ? (
                           <B delay={0} sx={{ marginBottom: 16, textAlign: "center" }}>
                             <Bp sx={{ padding: "28px 24px" }}>
-                              <div style={{ fontSize: 22, marginBottom: 6 }}>✓</div>
+                              <div style={{ fontSize: 24, marginBottom: 6 }}>✓</div>
                               <div style={{ fontSize: 14, fontWeight: 700, color: "#15803D" }}>All clear</div>
                               <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 4 }}>All {ALERTS.length} actions handled.</div>
                             </Bp>
@@ -2491,11 +2510,11 @@
                             <B delay={0} sx={{ position: "relative", zIndex: 2, overflow: "visible" }}>
                               <div className="alert-split" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0, minHeight: 240 }}>
                                 <div style={{ padding: 12, borderRight: "1px solid #F0F0F0", opacity: executing === cur.id ? 0.4 : 1, transition: "opacity 0.4s" }}>
-                                  <div style={{ fontSize: 15, fontWeight: 700, color: "#18181B", lineHeight: 1.4, marginBottom: 6 }}>{cur.why}</div>
-                                  <div style={{ fontSize: 13, fontWeight: 500, color: "#6B7280", lineHeight: 1.55 }}>{cur.context}</div>
+                                  <div style={{ fontSize: 16, fontWeight: 700, color: "#18181B", lineHeight: 1.4, marginBottom: 6 }}>{cur.why}</div>
+                                  <div style={{ fontSize: 14, fontWeight: 500, color: "#6B7280", lineHeight: 1.55 }}>{cur.context}</div>
                                   {cur.viewLabel && (
                                     <div style={{ marginTop: 10 }}>
-                                      <span style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "5px 10px", borderRadius: 6, border: "1px solid #E5E7EB", background: "#FFF", fontSize: 11, fontWeight: 600, color: "#374151", cursor: "pointer", userSelect: "none" }}>
+                                      <span style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "5px 10px", borderRadius: 6, border: "1px solid #E5E7EB", background: "#FFF", fontSize: 12, fontWeight: 600, color: "#374151", cursor: "pointer", userSelect: "none" }}>
                                         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" /></svg>
                                         {cur.viewLabel}
                                         <span style={{ color: "#9CA3AF", fontWeight: 500 }}>{cur.viewSub}</span>
@@ -2505,8 +2524,8 @@
                                 </div>
                                 <div style={{ padding: 12, background: executing === cur.id ? (executionDone ? "#F0FDF9" : "#F8FAFC") : "#F8FAFC", transition: "background 0.4s" }}>
                                   <Row sx={{ justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                                    <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: executing === cur.id ? (executionDone ? "#15803D" : actionModal ? "#D97706" : "#2563EB") : "#2563EB" }}>{executing === cur.id ? (executionDone ? "All done" : actionModal ? "Your turn: review draft" : "Running actions...") : "Recommendation"}</div>
-                                    {!executing && <span onClick={() => { setModifySteps([...cur.steps]); setModifyPrompt(""); setModifyApplied(false); setShowModifyModal(true); }} style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF", cursor: "pointer", display: "flex", alignItems: "center", gap: 3, textDecoration: "underline", textUnderlineOffset: 2 }}>
+                                    <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", color: executing === cur.id ? (executionDone ? "#15803D" : actionModal ? "#D97706" : "#2563EB") : "#2563EB" }}>{executing === cur.id ? (executionDone ? "All done" : actionModal ? "Your turn: review draft" : "Running actions...") : "Recommendation"}</div>
+                                    {!executing && <span onClick={() => { setModifySteps([...cur.steps]); setModifyPrompt(""); setModifyApplied(false); setShowModifyModal(true); }} style={{ fontSize: 12, fontWeight: 600, color: "#9CA3AF", cursor: "pointer", display: "flex", alignItems: "center", gap: 3, textDecoration: "underline", textUnderlineOffset: 2 }}>
                                       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>Modify
                                     </span>}
                                   </Row>
@@ -2518,12 +2537,12 @@
                                     const nextIdx = cur.steps.findIndex((_, i) => !completedSteps.includes(i));
                                     const active = executing === cur.id && !executionDone && sti === nextIdx && !isActionStep;
                                     return (<Row key={sti} sx={{ gap: 8, padding: "5px 0", borderBottom: sti < Math.min(cur.steps.length, 5) - 1 ? "1px solid #EDF0F3" : "none" }}>
-                                      <div style={{ width: 20, height: 20, borderRadius: 4, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, fontFamily: mono, transition: "all 0.4s", ...(done ? { background: "#10B981", color: "#FFF" } : isPending ? { background: "#FEF3C7", color: "#D97706", border: "1px solid #FDE68A" } : active ? { background: "#3B82F6", color: "#FFF", animation: "pulse 1.5s ease-in-out infinite" } : { background: "#EFF6FF", color: "#2563EB" }) }}>
+                                      <div style={{ width: 20, height: 20, borderRadius: 4, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800, fontFamily: mono, transition: "all 0.4s", ...(done ? { background: "#10B981", color: "#FFF" } : isPending ? { background: "#FEF3C7", color: "#D97706", border: "1px solid #FDE68A" } : active ? { background: "#3B82F6", color: "#FFF", animation: "pulse 1.5s ease-in-out infinite" } : { background: "#EFF6FF", color: "#2563EB" }) }}>
                                         {done ? <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#FFF" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5" /></svg> : isPending ? <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg> : sti + 1}
                                       </div>
-                                      <span style={{ fontSize: 13, fontWeight: done ? 600 : 500, lineHeight: 1.45, color: done ? "#15803D" : "#374151", textDecoration: done ? "line-through" : "none", transition: "all 0.3s", flex: 1 }}>{step.text}</span>
-                                      {done && <span style={{ fontSize: 10, fontWeight: 600, color: "#15803D", marginLeft: "auto", flexShrink: 0 }}>Done</span>}
-                                      {isPending && <span style={{ fontSize: 10, fontWeight: 700, color: "#D97706", marginLeft: "auto", flexShrink: 0, background: "#FEF3C7", padding: "2px 6px", borderRadius: 3 }}>Review ↑</span>}
+                                      <span style={{ fontSize: 14, fontWeight: done ? 600 : 500, lineHeight: 1.45, color: done ? "#15803D" : "#374151", textDecoration: done ? "line-through" : "none", transition: "all 0.3s", flex: 1 }}>{step.text}</span>
+                                      {done && <span style={{ fontSize: 12, fontWeight: 600, color: "#15803D", marginLeft: "auto", flexShrink: 0 }}>Done</span>}
+                                      {isPending && <span style={{ fontSize: 12, fontWeight: 700, color: "#D97706", marginLeft: "auto", flexShrink: 0, background: "#FEF3C7", padding: "2px 6px", borderRadius: 3 }}>Review ↑</span>}
                                     </Row>);
                                   })}
                                 </div>
@@ -2533,7 +2552,7 @@
                                   <div>
                                     <Row sx={{ justifyContent: "space-between", marginBottom: 6 }}>
                                       <span style={{ fontSize: 12, fontWeight: 600, color: executionDone ? "#15803D" : actionModal ? "#D97706" : "#2563EB" }}>{executionDone ? "All steps completed" : actionModal ? "Waiting for your action..." : `Step ${completedSteps.length + 1} of ${cur.steps.length}...`}</span>
-                                      <span style={{ fontSize: 11, fontWeight: 500, color: "#9CA3AF", fontFamily: mono }}>{completedSteps.length}/{cur.steps.length}</span>
+                                      <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", fontFamily: mono }}>{completedSteps.length}/{cur.steps.length}</span>
                                     </Row>
                                     <div style={{ height: 3, borderRadius: 2, background: "#E5E7EB", overflow: "hidden" }}>
                                       <div style={{ height: "100%", borderRadius: 2, width: `${(completedSteps.length / Math.max(cur.steps.length, 1)) * 100}%`, background: executionDone ? "#10B981" : actionModal ? "#F59E0B" : "linear-gradient(90deg,#3B82F6,#8B5CF6)", transition: "width 0.5s, background 0.4s" }} />
@@ -2543,27 +2562,27 @@
                                         <div style={{ display: "flex", gap: 10, padding: "12px 14px", borderRadius: 8, background: "linear-gradient(99deg,#E7F7F9 0%,#FBF8F2 100%)" }}>
                                           <div style={{ width: 3, borderRadius: 2, background: aiGrad, flexShrink: 0 }} />
                                           <div style={{ flex: 1 }}>
-                                            <Row sx={{ gap: 6, marginBottom: 4 }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#15803D" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5" /></svg><span style={{ fontSize: 13, fontWeight: 700, color: "#15803D" }}>Autopilot active</span></Row>
+                                            <Row sx={{ gap: 6, marginBottom: 4 }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#15803D" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5" /></svg><span style={{ fontSize: 14, fontWeight: 700, color: "#15803D" }}>Autopilot active</span></Row>
                                             <div style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", lineHeight: 1.5 }}>AI will watch for this pattern and run the same steps automatically. You'll only be looped in when a message needs your review.</div>
                                           </div>
                                         </div>
                                       ) : (
                                         <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 14px", borderRadius: 8, background: "linear-gradient(99deg,#E7F7F9 0%,#FBF8F2 100%)" }}>
                                           <div style={{ flex: 1 }}>
-                                            <div style={{ fontSize: 13, fontWeight: 600, color: "#18181B" }}>Run this automatically next time?</div>
-                                            <div style={{ fontSize: 11, fontWeight: 500, color: "#9CA3AF" }}>AI handles it in the background. You review any outreach before it goes out.</div>
+                                            <div style={{ fontSize: 14, fontWeight: 600, color: "#18181B" }}>Run this automatically next time?</div>
+                                            <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>AI handles it in the background. You review any outreach before it goes out.</div>
                                           </div>
                                           <Btn onClick={() => setAutomated(p => new Set([...p, cur.sev + cur.why]))} sx={{ flexShrink: 0, padding: "6px 16px", fontSize: 12 }}>Enable</Btn>
                                         </div>
                                       )}
-                                      <Btn primary onClick={() => dismissExecution(cur.id)} sx={{ marginTop: 10, width: "100%", justifyContent: "center", padding: "9px 16px", fontSize: 13 }}>{total > 1 ? `Next (${total - 1} remaining)` : "Done"}</Btn>
+                                      <Btn primary onClick={() => dismissExecution(cur.id)} sx={{ marginTop: 10, width: "100%", justifyContent: "center", padding: "9px 16px", fontSize: 14 }}>{total > 1 ? `Next (${total - 1} remaining)` : "Done"}</Btn>
                                     </div>}
                                   </div>
                                 ) : (
                                   <Row sx={{ justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
                                     <Row className="alert-act" sx={{ gap: 8 }}>
                                       <Btn primary onClick={() => runExecution(cur)}>Take Action</Btn>
-                                      <span onClick={() => { setAccepted(p => new Set([...p, cur.id])); setAlertIndex(0); setShowAllSteps(null); }} style={{ fontSize: 13, fontWeight: 600, color: "#9CA3AF", cursor: "pointer", padding: "5px 4px", textDecoration: "underline", textUnderlineOffset: 2, marginLeft: 8 }}>Skip</span>
+                                      <span onClick={() => { setAccepted(p => new Set([...p, cur.id])); setAlertIndex(0); setShowAllSteps(null); }} style={{ fontSize: 14, fontWeight: 600, color: "#9CA3AF", cursor: "pointer", padding: "5px 4px", textDecoration: "underline", textUnderlineOffset: 2, marginLeft: 8 }}>Skip</span>
                                     </Row>
                                     {total > 1 && <Row sx={{ gap: 4 }}>
                                       <button onClick={() => { setAlertIndex(i => Math.max(i - 1, 0)); setShowAllSteps(null); }} disabled={si2 === 0} style={{ width: 28, height: 28, borderRadius: 4, border: "1px solid #EBEBEB", background: si2 === 0 ? "transparent" : "#FFF", color: si2 === 0 ? "#D4D4D4" : "#374151", cursor: si2 === 0 ? "default" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontFamily: sans }}>‹</button>
@@ -2592,17 +2611,17 @@
                                           <div style={{ width: 3, borderRadius: 2, background: aiGrad, flexShrink: 0 }} />
                                           <div style={{ flex: 1, minWidth: 0 }}>
                                             <Row sx={{ gap: 8, marginBottom: 4, flexWrap: "wrap" }}>
-                                              <div style={{ fontSize: 13, fontWeight: 700, color: "#18181B" }}>{ar.rule}</div>
+                                              <div style={{ fontSize: 14, fontWeight: 700, color: "#18181B" }}>{ar.rule}</div>
                                               <Row sx={{ gap: 5 }}>
-                                                <span style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF", display: "flex", alignItems: "center", gap: 4 }}>
+                                                <span style={{ fontSize: 12, fontWeight: 600, color: "#9CA3AF", display: "flex", alignItems: "center", gap: 4 }}>
                                                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                                     <defs><linearGradient id="act-grad" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse"><stop stopColor="#4A7CF7" /><stop offset="1" stopColor="#A855F7" /></linearGradient></defs>
                                                     <path d="M20 6L9 17l-5-5" stroke="url(#act-grad)" />
                                                   </svg>
                                                   {ar.actions}
                                                 </span>
-                                                <span style={{ fontSize: 11, color: "#D4D4D4" }}>•</span>
-                                                <span style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF" }}>{ar.time}</span>
+                                                <span style={{ fontSize: 12, color: "#D4D4D4" }}>•</span>
+                                                <span style={{ fontSize: 12, fontWeight: 600, color: "#9CA3AF" }}>{ar.time}</span>
                                               </Row>
                                             </Row>
                                             <div style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", lineHeight: 1.5 }}>{ar.summary}</div>
@@ -2617,22 +2636,22 @@
                                           <div style={{ marginTop: 10 }}>
                                             {ar.steps.map((step, sti) => (
                                               <Row key={sti} sx={{ gap: 8, padding: "5px 0", borderBottom: sti < ar.steps.length - 1 ? "1px solid #F0EDE8" : "none" }}>
-                                                <div style={{ width: 18, height: 18, borderRadius: 4, flexShrink: 0, background: "#F3F4F6", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 800, color: "#374151" }}>{sti + 1}</div>
+                                                <div style={{ width: 18, height: 18, borderRadius: 4, flexShrink: 0, background: "#F3F4F6", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800, color: "#374151" }}>{sti + 1}</div>
                                                 <span style={{ fontSize: 12, fontWeight: 500, color: "#374151", lineHeight: 1.45 }}>{step}</span>
                                               </Row>
                                             ))}
                                           </div>
                                           {(ar.sent > 0 || ar.reversible > 0) && (
                                             <div style={{ marginTop: 10, padding: "10px 12px", borderRadius: 6, background: "#FFFBEB", border: "1px solid #FDE68A" }}>
-                                              <div style={{ fontSize: 11, fontWeight: 500, color: "#92400E", lineHeight: 1.5 }}>
+                                              <div style={{ fontSize: 12, fontWeight: 500, color: "#92400E", lineHeight: 1.5 }}>
                                                 {ar.sent > 0 && <>{ar.sent} {ar.sent === 1 ? "action" : "actions"} already sent ({ar.sentChannels}) and cannot be reversed.{ar.reversible > 0 && " "}</>}
                                                 {ar.reversible > 0 && `${ar.reversible} system ${ar.reversible === 1 ? "change" : "changes"} can still be undone.`}
                                               </div>
                                             </div>
                                           )}
                                           <Row sx={{ gap: 8, marginTop: 10 }}>
-                                            {ar.reversible > 0 && <Btn onClick={() => setUndoneAuto(p => new Set([...p, ar.id]))} sx={{ fontSize: 11, padding: "5px 12px" }}>Undo {ar.reversible} change{ar.reversible > 1 ? "s" : ""}</Btn>}
-                                            <Btn sx={{ fontSize: 11, padding: "5px 12px" }}>Stop Automation</Btn>
+                                            {ar.reversible > 0 && <Btn onClick={() => setUndoneAuto(p => new Set([...p, ar.id]))} sx={{ fontSize: 12, padding: "5px 12px" }}>Undo {ar.reversible} change{ar.reversible > 1 ? "s" : ""}</Btn>}
+                                            <Btn sx={{ fontSize: 12, padding: "5px 12px" }}>Stop Automation</Btn>
                                           </Row>
                                         </div>
                                       )}
@@ -2648,7 +2667,7 @@
                   }
                   if (secId === "morning-huddle") return (
                     <div key="morning-huddle" className="section-entrance" style={{ marginTop: 28, animationDelay: delay }}>
-                      <span style={{ fontSize: 13, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em", display: "block", marginBottom: 12 }}>Morning brief</span>
+                      <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em", display: "block", marginBottom: 12 }}>Morning brief</span>
                       <B delay={0}>
                         <div style={{ padding: 12, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                           <Row sx={{ gap: 10 }}>
@@ -2656,14 +2675,14 @@
                               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 00-3-3.87" /><path d="M16 3.13a4 4 0 010 7.75" /></svg>
                             </div>
                             <div>
-                              <div style={{ fontSize: 13, fontWeight: 700, color: "#18181B" }}>Morning Huddle</div>
-                              <div style={{ fontSize: 11, fontWeight: 500, color: "#9CA3AF", marginTop: 1 }}>Wins, coverage, priorities, and coaching. Ready to read to the team</div>
+                              <div style={{ fontSize: 14, fontWeight: 700, color: "#18181B" }}>Morning Huddle</div>
+                              <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 1 }}>Wins, coverage, priorities, and coaching. Ready to read to the team</div>
                             </div>
                           </Row>
                           {showHuddleScript === "idle" && (
                             <Btn onClick={() => { setShowHuddleScript("generating"); setTimeout(() => { setShowHuddleScript("ready"); setHuddleExpanded(true); }, 3000); }} sx={{ background: aiGrad, color: "#FFF", padding: "6px 16px", fontSize: 12, boxShadow: "0 2px 4px rgba(0,0,0,0.08)", flexShrink: 0 }}>Generate</Btn>
                           )}
-                          {showHuddleScript === "generating" && <span style={{ fontSize: 11, fontWeight: 600, color: "#7C3AED", flexShrink: 0 }}>Generating...</span>}
+                          {showHuddleScript === "generating" && <span style={{ fontSize: 12, fontWeight: 600, color: "#7C3AED", flexShrink: 0 }}>Generating...</span>}
                           {showHuddleScript === "ready" && (
                             <Btn onClick={() => setHuddleExpanded(e => !e)} sx={{ flexShrink: 0, fontSize: 12, padding: "5px 12px" }}>{huddleExpanded ? "Hide" : "Show"}</Btn>
                           )}
@@ -2682,7 +2701,7 @@
                                   </div>
                                 ))}
                               </div>
-                              <div style={{ fontSize: 11, fontWeight: 500, color: "#C0C0C0", marginTop: 14, textAlign: "center" }}>Pulling from your deals, appointments, and yesterday's activity</div>
+                              <div style={{ fontSize: 12, fontWeight: 500, color: "#C0C0C0", marginTop: 14, textAlign: "center" }}>Pulling from your deals, appointments, and yesterday's activity</div>
                             </div>
                           );
                         })()}
@@ -2720,10 +2739,10 @@
                                 <div key={si} style={{ display: "flex", gap: 10 }}>
                                   <div style={{ width: 3, borderRadius: 2, background: section.color, flexShrink: 0, opacity: 0.45, alignSelf: "stretch" }} />
                                   <div style={{ flex: 1 }}>
-                                    <div style={{ fontSize: 11, fontWeight: 700, color: section.color, marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.04em" }}>{section.label}</div>
+                                    <div style={{ fontSize: 12, fontWeight: 700, color: section.color, marginBottom: 4, letterSpacing: "0.04em" }}>{section.label}</div>
                                     <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
                                       {section.items.map((item, ii) => (
-                                        <div key={ii} style={{ fontSize: 13, fontWeight: 500, color: "#374151", lineHeight: 1.6, display: "flex", gap: 6 }}>
+                                        <div key={ii} style={{ fontSize: 14, fontWeight: 500, color: "#374151", lineHeight: 1.6, display: "flex", gap: 6 }}>
                                           <span style={{ color: "#D4D4D4", flexShrink: 0 }}>·</span><span>{item}</span>
                                         </div>
                                       ))}
@@ -2732,7 +2751,7 @@
                                 </div>
                               ))}
                               <div style={{ paddingTop: 8, borderTop: "1px solid #F3F4F6" }}>
-                                <div style={{ fontSize: 13, fontWeight: 700, color: "#18181B" }}>You've got the deals. Go close them.</div>
+                                <div style={{ fontSize: 14, fontWeight: 700, color: "#18181B" }}>You've got the deals. Go close them.</div>
                               </div>
                             </div>
                             <div style={{ marginTop: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -2763,8 +2782,8 @@
                               </button>
                             </div>
                             <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid #F3F4F6" }}>
-                              <span style={{ fontSize: 11, fontWeight: 500, color: "#9CA3AF", lineHeight: 1.5 }}>
-                                <span style={{ display: "inline-flex", alignItems: "center", padding: "1px 5px", borderRadius: 3, background: "#F3F0FF", color: "#7C3AED", fontSize: 9, fontWeight: 700, letterSpacing: "0.03em", marginRight: 6, verticalAlign: "middle" }}>AI</span>
+                              <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", lineHeight: 1.5 }}>
+                                <span style={{ display: "inline-flex", alignItems: "center", padding: "1px 5px", borderRadius: 3, background: "#F3F0FF", color: "#7C3AED", fontSize: 12, fontWeight: 700, letterSpacing: "0.03em", marginRight: 6, verticalAlign: "middle" }}>AI</span>
                                 Generated at 9:02 AM. Review before sharing with your team.
                               </span>
                             </div>
@@ -2776,25 +2795,25 @@
                   if (secId === "kpi") return (
                     <div key="kpi" className="section-entrance" style={{ marginTop: 28, animationDelay: delay }}>
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-                        <span style={{ fontSize: 13, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em" }}>Month at a glance</span>
-                        <span style={{ fontSize: 11, fontWeight: 500, color: "#9CA3AF" }}>March 2026 · MTD</span>
+                        <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em" }}>Month at a glance</span>
+                        <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>March 2026 · MTD</span>
                       </div>
                       <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 10 }}>
                         <div style={{ background: "#FFF", border: "1px solid #E5E7EB", borderRadius: 8, padding: "18px 20px 16px", display: "flex", flexDirection: "column", justifyContent: "space-between", minHeight: 140 }}>
                           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                             <span style={{ fontSize: 12, fontWeight: 600, color: "#6B7280" }}>Gross profit</span>
-                            <span style={{ display: "flex", alignItems: "center", gap: 3, fontSize: 11, fontWeight: 700, color: "#059669" }}>
+                            <span style={{ display: "flex", alignItems: "center", gap: 3, fontSize: 12, fontWeight: 700, color: "#059669" }}>
                               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="19" x2="12" y2="5" /><polyline points="5,12 12,5 19,12" /></svg>
                               +11%
                             </span>
                           </div>
                           <div>
-                            <div style={{ fontSize: 42, fontWeight: 800, color: "#18181B", letterSpacing: "-0.03em", lineHeight: 1.1 }}>$14.2k</div>
+                            <div style={{ fontSize: 44, fontWeight: 800, color: "#18181B", letterSpacing: "-0.03em", lineHeight: 1.1 }}>$14.2k</div>
                             <div style={{ marginTop: 10, height: 3, borderRadius: 99, background: "#E5E7EB", width: "100%" }}>
                               <div style={{ height: "100%", borderRadius: 99, background: "#2563EB", width: "51%" }} />
                             </div>
                           </div>
-                          <div style={{ fontSize: 11, color: "#18181B", fontWeight: 600, marginTop: 10, lineHeight: 1.5 }}>
+                          <div style={{ fontSize: 12, color: "#18181B", fontWeight: 600, marginTop: 10, lineHeight: 1.5 }}>
                             Goal: $28k &nbsp;·&nbsp; <span style={{ color: "#2563EB", fontWeight: 600, cursor: "pointer" }}>View breakdown</span>
                           </div>
                         </div>
@@ -2807,15 +2826,15 @@
                           ].map((k, i) => (
                             <div key={i} style={{ background: "#FFF", border: "1px solid #E5E7EB", borderRadius: 8, padding: "14px 16px", display: "flex", flexDirection: "column", gap: 8 }}>
                               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                                <span style={{ fontSize: 11, fontWeight: 600, color: "#6B7280" }}>{k.label}</span>
-                                <span style={{ display: "flex", alignItems: "center", gap: 2, fontSize: 10, fontWeight: 700, color: k.up ? "#059669" : "#DC2626" }}>
+                                <span style={{ fontSize: 12, fontWeight: 600, color: "#6B7280" }}>{k.label}</span>
+                                <span style={{ display: "flex", alignItems: "center", gap: 2, fontSize: 12, fontWeight: 700, color: k.up ? "#059669" : "#DC2626" }}>
                                   <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke={k.up ? "#059669" : "#DC2626"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                     {k.up ? <><line x1="12" y1="19" x2="12" y2="5" /><polyline points="5,12 12,5 19,12" /></> : <><line x1="12" y1="5" x2="12" y2="19" /><polyline points="19,12 12,19 5,12" /></>}
                                   </svg>
                                   {k.delta}
                                 </span>
                               </div>
-                              <div style={{ fontSize: 26, fontWeight: 800, color: "#18181B", letterSpacing: "-0.02em", lineHeight: 1 }}>{k.value}</div>
+                              <div style={{ fontSize: 32, fontWeight: 800, color: "#18181B", letterSpacing: "-0.02em", lineHeight: 1 }}>{k.value}</div>
                               <div style={{ height: 2.5, borderRadius: 99, background: "#E5E7EB", width: "100%" }}>
                                 <div style={{ height: "100%", borderRadius: 99, background: k.color, width: `${k.fill}%` }} />
                               </div>
@@ -2844,9 +2863,9 @@
                     return (
                       <div key="pickup" className="section-entrance" style={{ marginTop: 32, animationDelay: delay }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-                          <span style={{ fontSize: 13, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em" }}>Pick up where you left off</span>
+                          <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em" }}>Pick up where you left off</span>
                           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                            <span style={{ fontSize: 11, fontWeight: 500, color: "#9CA3AF", marginRight: 2 }}>{pickupPage * PICKUP_PAGE_SIZE + 1}–{Math.min((pickupPage + 1) * PICKUP_PAGE_SIZE, PICKUP_ITEMS.length)} of {PICKUP_ITEMS.length}</span>
+                            <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginRight: 2 }}>{pickupPage * PICKUP_PAGE_SIZE + 1}–{Math.min((pickupPage + 1) * PICKUP_PAGE_SIZE, PICKUP_ITEMS.length)} of {PICKUP_ITEMS.length}</span>
                             {[0, 1].map(d => {
                               const disabled = d === 0 ? pickupPage === 0 : pickupPage === pickupTotalPages - 1;
                               return (
@@ -2869,20 +2888,20 @@
                                       ? <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
                                       : <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" /><path d="M2 12h20" /></svg>}
                                   </div>
-                                  <div style={{ position: "absolute", top: 6, left: 6, background: item.statusBg, borderRadius: 4, padding: "2px 6px", fontSize: 9, fontWeight: 700, color: item.statusColor, letterSpacing: "0.02em", whiteSpace: "nowrap" }}>{item.status}</div>
+                                  <div style={{ position: "absolute", top: 6, left: 6, background: item.statusBg, borderRadius: 4, padding: "2px 6px", fontSize: 12, fontWeight: 700, color: item.statusColor, letterSpacing: "0.02em", whiteSpace: "nowrap" }}>{item.status}</div>
                                 </div>
                                 <div style={{ padding: "6px 4px 4px", display: "flex", flexDirection: "column", gap: 3, minWidth: 0 }}>
                                   <div style={{ display: "flex", alignItems: "center", gap: 3, minWidth: 0 }}>
                                     <span style={{ fontSize: 12, fontWeight: 600, color: "#18181B", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1, minWidth: 0 }}>
                                       {isLead
                                         ? <><span style={{ color: "#6B7280", fontWeight: 500 }}>Lead · </span>{item.label}</>
-                                        : <><span style={{ color: "#C4C4C4", fontWeight: 400, fontSize: 11 }}>{item.label} · </span>{item.sub}</>}
+                                        : <><span style={{ color: "#C4C4C4", fontWeight: 400, fontSize: 12 }}>{item.label} · </span>{item.sub}</>}
                                     </span>
                                     <svg className="redirect-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
                                       <line x1="7" y1="17" x2="17" y2="7" /><polyline points="7,7 17,7 17,17" />
                                     </svg>
                                   </div>
-                                  <span style={{ fontSize: 11, fontWeight: 500, color: "#9CA3AF", lineHeight: 1.2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.vehicle}</span>
+                                  <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", lineHeight: 1.2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.vehicle}</span>
                                 </div>
                               </div>
                             );
@@ -2893,7 +2912,7 @@
                   }
                   if (secId === "webinar") return (
                     <div key="webinar" className="section-entrance" style={{ marginTop: 36, animationDelay: delay }}>
-                      <span style={{ fontSize: 13, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em", display: "block", marginBottom: 12 }}>Upcoming webinar</span>
+                      <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em", display: "block", marginBottom: 12 }}>Upcoming webinar</span>
                       <div style={{ background: "#FFF", borderRadius: 8, border: "1px solid #E5E7EB", overflow: "hidden", display: "flex", flexDirection: isMobile ? "column" : "row", alignItems: "stretch", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
                         {/* visual — top on mobile, right on desktop */}
                         <div style={{ order: isMobile ? -1 : 1, flex: isMobile ? "none" : 1, background: "linear-gradient(135deg,#0f172a 0%,#1e1b4b 50%,#1e3a5f 100%)", position: "relative", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", minHeight: isMobile ? 160 : 200 }}>
@@ -2912,30 +2931,30 @@
                             {[{ cx: 39, cy: 130 }, { cx: 64, cy: 105 }, { cx: 89, cy: 118 }, { cx: 114, cy: 85 }, { cx: 139, cy: 100 }, { cx: 164, cy: 70 }].map((p, i) => <circle key={i} cx={p.cx} cy={p.cy} r="3" fill="#FFF" opacity="0.8" />)}
                           </svg>
                           <div style={{ position: "absolute", top: 16, right: 14, background: "rgba(255,255,255,0.1)", backdropFilter: "blur(8px)", borderRadius: 8, border: "1px solid rgba(255,255,255,0.15)", padding: "8px 12px" }}>
-                            <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.6)", letterSpacing: "0.05em", marginBottom: 2 }}>AVG CLOSE RATE</div>
-                            <div style={{ fontSize: 18, fontWeight: 800, color: "#FFF" }}>+34%</div>
-                            <div style={{ fontSize: 9, fontWeight: 600, color: "rgba(99,255,180,0.9)" }}>↑ with AI-assisted deals</div>
+                            <div style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.6)", letterSpacing: "0.05em", marginBottom: 2 }}>AVG CLOSE RATE</div>
+                            <div style={{ fontSize: 20, fontWeight: 800, color: "#FFF" }}>+34%</div>
+                            <div style={{ fontSize: 12, fontWeight: 600, color: "rgba(99,255,180,0.9)" }}>↑ with AI-assisted deals</div>
                           </div>
                         </div>
                         {/* content — below on mobile, left on desktop */}
                         <div style={{ order: isMobile ? 1 : -1, flex: isMobile ? "none" : "0 0 54%", padding: "24px 28px 24px 24px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                           <div>
                             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
-                              <span style={{ display: "inline-block", padding: "3px 8px", borderRadius: 4, background: "#EFF6FF", color: "#2563EB", fontSize: 10, fontWeight: 800, letterSpacing: "0.06em" }}>LIVE WEBINAR</span>
-                              <span style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF" }}>Wed, Mar 19 · 10:00 – 10:45 AM ET</span>
+                              <span style={{ display: "inline-block", padding: "3px 8px", borderRadius: 4, background: "#EFF6FF", color: "#2563EB", fontSize: 12, fontWeight: 800, letterSpacing: "0.06em" }}>LIVE WEBINAR</span>
+                              <span style={{ fontSize: 12, fontWeight: 600, color: "#9CA3AF" }}>Wed, Mar 19 · 10:00 – 10:45 AM ET</span>
                             </div>
                             <div style={{ fontSize: 20, fontWeight: 800, color: "#18181B", lineHeight: 1.25, letterSpacing: "-0.025em", marginBottom: 10 }}>From First Call<br />to Funded with AI</div>
                             <div style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", lineHeight: 1.6, marginBottom: 16 }}>Learn how top reps use AI to score leads instantly, generate payment options on the spot, and cut their close time in half.</div>
                             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                              <div style={{ width: 28, height: 28, borderRadius: "50%", background: "linear-gradient(135deg,#2563EB,#7C3AED)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: "#FFF", flexShrink: 0 }}>DR</div>
+                              <div style={{ width: 28, height: 28, borderRadius: "50%", background: "linear-gradient(135deg,#2563EB,#7C3AED)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800, color: "#FFF", flexShrink: 0 }}>DR</div>
                               <div>
                                 <div style={{ fontSize: 12, fontWeight: 700, color: "#18181B" }}>David Reyes</div>
-                                <div style={{ fontSize: 11, fontWeight: 500, color: "#9CA3AF" }}>VP of Sales, Tekion</div>
+                                <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>VP of Sales, Tekion</div>
                               </div>
                             </div>
                           </div>
                           <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 20 }}>
-                            <button style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "9px 20px", borderRadius: 4, background: "#2563EB", border: "none", color: "#FFF", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: sans }}>Register free</button>
+                            <button style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "9px 20px", borderRadius: 4, background: "#2563EB", border: "none", color: "#FFF", fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: sans }}>Register free</button>
                             <span style={{ fontSize: 12, fontWeight: 600, color: "#9CA3AF" }}>142 registered</span>
                           </div>
                         </div>
@@ -2961,9 +2980,9 @@
                     return (
                       <div key="get-inspired" className="section-entrance" style={{ marginTop: 36, marginBottom: 48, animationDelay: delay }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-                          <span style={{ fontSize: 13, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em" }}>Get inspired</span>
+                          <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em" }}>Get inspired</span>
                           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                            <span style={{ fontSize: 11, fontWeight: 500, color: "#9CA3AF", marginRight: 2 }}>{inspirePage * INSPIRE_PAGE_SIZE + 1}–{Math.min((inspirePage + 1) * INSPIRE_PAGE_SIZE, INSPIRE_ITEMS.length)} of {INSPIRE_ITEMS.length}</span>
+                            <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginRight: 2 }}>{inspirePage * INSPIRE_PAGE_SIZE + 1}–{Math.min((inspirePage + 1) * INSPIRE_PAGE_SIZE, INSPIRE_ITEMS.length)} of {INSPIRE_ITEMS.length}</span>
                             {[0, 1].map(d => {
                               const disabled = d === 0 ? inspirePage === 0 : inspirePage === inspireTotalPages - 1;
                               return (
@@ -2992,10 +3011,10 @@
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21" /></svg>
                                   </div>
                                 </div>
-                                <div style={{ position: "absolute", bottom: 8, right: 8, background: "rgba(0,0,0,0.65)", borderRadius: 3, padding: "2px 5px", fontSize: 9, fontWeight: 700, color: "#FFF", letterSpacing: "0.02em" }}>{t.duration}</div>
+                                <div style={{ position: "absolute", bottom: 8, right: 8, background: "rgba(0,0,0,0.65)", borderRadius: 3, padding: "2px 5px", fontSize: 12, fontWeight: 700, color: "#FFF", letterSpacing: "0.02em" }}>{t.duration}</div>
                               </div>
                               <div style={{ padding: "10px 12px 12px", background: "#FFF" }}>
-                                <span style={{ fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 3, background: "#F3F4F6", color: "#6B7280", letterSpacing: "0.04em", textTransform: "uppercase", display: "inline-block", marginBottom: 5 }}>{t.tag}</span>
+                                <span style={{ fontSize: 12, fontWeight: 700, padding: "2px 6px", borderRadius: 3, background: "#F3F4F6", color: "#6B7280", letterSpacing: "0.04em", display: "inline-block", marginBottom: 5 }}>{t.tag}</span>
                                 <div style={{ fontSize: 12, fontWeight: 700, color: "#18181B" }}>{t.title}</div>
                               </div>
                             </div>
@@ -3017,9 +3036,9 @@
                       <div key="new-leads" className="section-entrance" style={{ marginTop: 28, animationDelay: delay }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
                           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                            <span style={{ fontSize: 13, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em", fontFamily: sans }}>New Leads</span>
+                            <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em", fontFamily: sans }}>New Leads</span>
                           </div>
-                          <span style={{ fontSize: 11, fontWeight: 600, color: "#2563EB", cursor: "pointer", fontFamily: sans }}>View all →</span>
+                          <span style={{ fontSize: 12, fontWeight: 600, color: "#2563EB", cursor: "pointer", fontFamily: sans }}>View all →</span>
                         </div>
                         {/* Single card containing all rows */}
                         <div style={{ background: "#FFF", border: "1px solid #E5E7EB", borderRadius: 10, overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
@@ -3034,10 +3053,10 @@
                               {/* Name + vehicle */}
                               <div style={{ flex: 1, minWidth: 0 }}>
                                 <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
-                                  <span style={{ fontSize: 13, fontWeight: 700, color: "#18181B", fontFamily: sans }}>{lead.name}</span>
-                                  <span style={{ fontSize: 10, fontWeight: 700, padding: "1px 7px", borderRadius: 99, background: lead.sBg, color: lead.sColor, fontFamily: sans, whiteSpace: "nowrap", flexShrink: 0 }}>{lead.status}</span>
+                                  <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", fontFamily: sans }}>{lead.name}</span>
+                                  <span style={{ fontSize: 12, fontWeight: 700, padding: "1px 7px", borderRadius: 99, background: lead.sBg, color: lead.sColor, fontFamily: sans, whiteSpace: "nowrap", flexShrink: 0 }}>{lead.status}</span>
                                 </div>
-                                <span style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", fontFamily: sans, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", display: "block" }}>{lead.vehicle} · {lead.source} · {lead.age}</span>
+                                <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", fontFamily: sans, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", display: "block" }}>{lead.vehicle} · {lead.source} · {lead.age}</span>
                               </div>
                               {/* Actions */}
                               <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }} onClick={e => e.stopPropagation()}>
@@ -3045,7 +3064,7 @@
                                   { label: "Call", icon: <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.1 11.1a19.79 19.79 0 01-3.07-8.67A2 2 0 012 .42h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.27a16 16 0 006.29 6.29l1.42-1.42a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 15.42v1.5z" /></svg> },
                                   { label: "Text", icon: <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" /></svg> },
                                 ].map(btn => (
-                                  <button key={btn.label} style={{ display: "flex", alignItems: "center", gap: 4, padding: "4px 10px", borderRadius: 6, border: "1px solid #E5E7EB", background: "#FFF", fontSize: 11, fontWeight: 600, color: "#374151", cursor: "pointer", fontFamily: sans }}
+                                  <button key={btn.label} style={{ display: "flex", alignItems: "center", gap: 4, padding: "4px 10px", borderRadius: 6, border: "1px solid #E5E7EB", background: "#FFF", fontSize: 12, fontWeight: 600, color: "#374151", cursor: "pointer", fontFamily: sans }}
                                     onMouseEnter={e => { e.currentTarget.style.background = "#F9FAFB"; e.currentTarget.style.borderColor = "#D1D5DB"; }}
                                     onMouseLeave={e => { e.currentTarget.style.background = "#FFF"; e.currentTarget.style.borderColor = "#E5E7EB"; }}>
                                     {btn.icon}{btn.label}
@@ -3077,9 +3096,9 @@
                       <div key="appointments" className="section-entrance" style={{ marginTop: 28, animationDelay: delay }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
                           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                            <span style={{ fontSize: 13, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em", fontFamily: sans }}>Appointments</span>
+                            <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em", fontFamily: sans }}>Appointments</span>
                           </div>
-                          <span style={{ fontSize: 11, fontWeight: 600, color: "#2563EB", cursor: "pointer", fontFamily: sans }}>View calendar →</span>
+                          <span style={{ fontSize: 12, fontWeight: 600, color: "#2563EB", cursor: "pointer", fontFamily: sans }}>View calendar →</span>
                         </div>
                         <div style={{ background: "#FFF", border: "1px solid #E5E7EB", borderRadius: 10, overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
                           {APPT_LIST.map((appt, i) => {
@@ -3093,7 +3112,7 @@
                                   const [t, ampm] = appt.time.split(" "); return (
                                     <div style={{ flexShrink: 0, minWidth: 34, textAlign: "left" }}>
                                       <div style={{ fontSize: 12, fontWeight: 700, color: "#18181B", lineHeight: 1.1, fontFamily: sans }}>{t}</div>
-                                      <div style={{ fontSize: 10, fontWeight: 500, color: "#9CA3AF", marginTop: 1, fontFamily: sans }}>{ampm}</div>
+                                      <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 1, fontFamily: sans }}>{ampm}</div>
                                     </div>
                                   );
                                 })()}
@@ -3101,11 +3120,11 @@
                                 <div style={{ flex: 1, minWidth: 0 }}>
                                   <div style={{ fontSize: 12, fontWeight: 700, color: "#18181B", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontFamily: sans }}>{appt.customer}</div>
                                   <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 1 }}>
-                                    <span style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontFamily: sans }}>{appt.vehicle}</span>
+                                    <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontFamily: sans }}>{appt.vehicle}</span>
                                     <span style={{ width: 3, height: 3, borderRadius: "50%", background: "#D1D5DB", flexShrink: 0 }} />
                                     {!isConfirmed
-                                      ? <span style={{ fontSize: 10, fontWeight: 600, color: "#DC2626", whiteSpace: "nowrap", fontFamily: sans }}>Unconfirmed</span>
-                                      : <span style={{ fontSize: 10, fontWeight: 600, color: "#059669", display: "flex", alignItems: "center", gap: 3, fontFamily: sans, whiteSpace: "nowrap" }}>
+                                      ? <span style={{ fontSize: 12, fontWeight: 600, color: "#DC2626", whiteSpace: "nowrap", fontFamily: sans }}>Unconfirmed</span>
+                                      : <span style={{ fontSize: 12, fontWeight: 600, color: "#059669", display: "flex", alignItems: "center", gap: 3, fontFamily: sans, whiteSpace: "nowrap" }}>
                                         <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5" /></svg>
                                         Confirmed
                                       </span>
@@ -3116,14 +3135,14 @@
                                 <div style={{ display: "flex", alignItems: "center", gap: 5, flexShrink: 0 }}>
                                   {!isConfirmed && (
                                     <button onClick={() => setConfirmedAppts(p => new Set([...p, appt.customer]))}
-                                      style={{ padding: "4px 8px", borderRadius: 5, border: "1px solid #E5E7EB", background: "#FFF", fontSize: 10, fontWeight: 600, color: "#374151", cursor: "pointer", fontFamily: sans, whiteSpace: "nowrap" }}
+                                      style={{ padding: "4px 8px", borderRadius: 5, border: "1px solid #E5E7EB", background: "#FFF", fontSize: 12, fontWeight: 600, color: "#374151", cursor: "pointer", fontFamily: sans, whiteSpace: "nowrap" }}
                                       onMouseEnter={e => e.currentTarget.style.background = "#F9FAFB"}
                                       onMouseLeave={e => e.currentTarget.style.background = "#FFF"}>
                                       Confirm
                                     </button>
                                   )}
                                   <button
-                                    style={{ padding: "4px 8px", borderRadius: 5, border: "1px solid #E5E7EB", background: "#FFF", fontSize: 10, fontWeight: 600, color: "#374151", cursor: "pointer", fontFamily: sans, whiteSpace: "nowrap", display: "flex", alignItems: "center", gap: 3 }}
+                                    style={{ padding: "4px 8px", borderRadius: 5, border: "1px solid #E5E7EB", background: "#FFF", fontSize: 12, fontWeight: 600, color: "#374151", cursor: "pointer", fontFamily: sans, whiteSpace: "nowrap", display: "flex", alignItems: "center", gap: 3 }}
                                     onMouseEnter={e => e.currentTarget.style.background = "#F9FAFB"}
                                     onMouseLeave={e => e.currentTarget.style.background = "#FFF"}>
                                     <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" /></svg>
@@ -3170,9 +3189,9 @@
                       <div key="push" className="section-entrance" style={{ marginTop: 28, animationDelay: delay }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
                           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                            <span style={{ fontSize: 13, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em", fontFamily: sans }}>Opportunities to Push</span>
+                            <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em", fontFamily: sans }}>Opportunities to Push</span>
                           </div>
-                          <span style={{ fontSize: 11, fontWeight: 600, color: "#2563EB", cursor: "pointer", fontFamily: sans }}></span>
+                          <span style={{ fontSize: 12, fontWeight: 600, color: "#2563EB", cursor: "pointer", fontFamily: sans }}></span>
                         </div>
                         <div style={{ background: "#FFF", border: "1px solid #E5E7EB", borderRadius: 10, overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
                           {PUSH_OPPS.map((opp, i) => (
@@ -3180,27 +3199,27 @@
                               onMouseEnter={e => e.currentTarget.style.background = "#FAFAFA"}
                               onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
                               {/* Avatar */}
-                              <div style={{ width: 34, height: 34, borderRadius: "50%", background: opp.iColor + "15", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: opp.iColor, fontFamily: sans, marginTop: 1 }}>
+                              <div style={{ width: 34, height: 34, borderRadius: "50%", background: opp.iColor + "15", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: opp.iColor, fontFamily: sans, marginTop: 1 }}>
                                 {opp.ini}
                               </div>
                               {/* Content */}
                               <div style={{ flex: 1, minWidth: 0 }}>
                                 {/* Line 1: name + deal · · · idle (desktop only right-aligned) */}
                                 <div style={{ display: "flex", alignItems: "center", marginBottom: 3 }}>
-                                  <span style={{ fontSize: 13, fontWeight: 700, color: "#18181B", fontFamily: sans }}>{opp.customer}</span>
-                                  <span style={{ fontSize: 10, fontWeight: 600, color: "#9CA3AF", fontFamily: sans, marginLeft: 6 }}>{opp.deal}</span>
-                                  {!isMobile && <><span style={{ flex: 1 }} /><span style={{ fontSize: 10, fontWeight: 600, padding: "1px 6px", borderRadius: 4, background: "#FEF3C7", color: "#B45309", fontFamily: sans, flexShrink: 0 }}>{opp.idle}</span></>}
+                                  <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", fontFamily: sans }}>{opp.customer}</span>
+                                  <span style={{ fontSize: 12, fontWeight: 600, color: "#9CA3AF", fontFamily: sans, marginLeft: 6 }}>{opp.deal}</span>
+                                  {!isMobile && <><span style={{ flex: 1 }} /><span style={{ fontSize: 12, fontWeight: 600, padding: "1px 6px", borderRadius: 4, background: "#FEF3C7", color: "#B45309", fontFamily: sans, flexShrink: 0 }}>{opp.idle}</span></>}
                                 </div>
                                 {/* Line 2: why text · · · conv% (right-aligned) */}
                                 <div style={{ display: "flex", alignItems: "flex-start", gap: 5, marginBottom: isMobile ? 4 : 0 }}>
-                                  <span style={{ flex: 1, fontSize: 11, fontWeight: 500, color: "#6B7280", fontFamily: sans, lineHeight: 1.5 }}>{opp.why}</span>
-                                  <span style={{ fontSize: 11, fontWeight: 700, color: convColor(opp.conv), fontFamily: sans, flexShrink: 0, whiteSpace: "nowrap", paddingTop: 1, marginLeft: 8 }}>{opp.conv}% chance</span>
+                                  <span style={{ flex: 1, fontSize: 12, fontWeight: 500, color: "#6B7280", fontFamily: sans, lineHeight: 1.5 }}>{opp.why}</span>
+                                  <span style={{ fontSize: 12, fontWeight: 700, color: convColor(opp.conv), fontFamily: sans, flexShrink: 0, whiteSpace: "nowrap", paddingTop: 1, marginLeft: 8 }}>{opp.conv}% chance</span>
                                 </div>
                                 {/* Line 3 (mobile only): idle badge only */}
                                 {isMobile && (
                                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 2 }}>
-                                    <span style={{ fontSize: 10, fontWeight: 600, padding: "1px 6px", borderRadius: 4, background: "#FEF3C7", color: "#B45309", fontFamily: sans }}>{opp.idle}</span>
-                                    <span style={{ fontSize: 11, fontWeight: 700, color: convColor(opp.conv), fontFamily: sans }}>{opp.conv}% chance</span>
+                                    <span style={{ fontSize: 12, fontWeight: 600, padding: "1px 6px", borderRadius: 4, background: "#FEF3C7", color: "#B45309", fontFamily: sans }}>{opp.idle}</span>
+                                    <span style={{ fontSize: 12, fontWeight: 700, color: convColor(opp.conv), fontFamily: sans }}>{opp.conv}% chance</span>
                                   </div>
                                 )}
                               </div>
@@ -3230,7 +3249,7 @@
                   <div style={{ position: "fixed", bottom: menuPos.bottom, right: menuPos.right, zIndex: 101, background: "#FFF", borderRadius: 8, border: "1px solid #E5E7EB", boxShadow: "0 8px 24px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06)", minWidth: 180, overflow: "hidden" }}>
                     {[...openItem.menu, "Don't show this"].map((label, mi) => (
                       <button key={mi} onClick={() => { if (label === "Don't show this") setFeedDismissed(p => new Set([...p, openItem.id])); setExpandedAuto(null); }}
-                        style={{ display: "block", width: "100%", padding: "9px 14px", textAlign: "left", background: "transparent", border: "none", borderBottom: mi < openItem.menu.length ? "1px solid #F5F5F5" : "none", fontSize: 13, fontWeight: 500, color: label === "Don't show this" ? "#DC2626" : "#374151", cursor: "pointer", fontFamily: sans }}
+                        style={{ display: "block", width: "100%", padding: "9px 14px", textAlign: "left", background: "transparent", border: "none", borderBottom: mi < openItem.menu.length ? "1px solid #F5F5F5" : "none", fontSize: 14, fontWeight: 500, color: label === "Don't show this" ? "#DC2626" : "#374151", cursor: "pointer", fontFamily: sans }}
                         onMouseEnter={e => e.currentTarget.style.background = "#F8F9FA"}
                         onMouseLeave={e => e.currentTarget.style.background = "transparent"}>{label}</button>
                     ))}
@@ -3251,7 +3270,7 @@
                   </div>
                   {/* Filter header */}
                   <div className="filter-mobile-header">
-                    <span style={{ fontSize: 15, fontWeight: 700, color: "#18181B" }}>Filter</span>
+                    <span style={{ fontSize: 16, fontWeight: 700, color: "#18181B" }}>Filter</span>
                     <button onClick={() => setShowFilterPanel(false)} style={{ width: 30, height: 30, borderRadius: 4, border: "none", background: "#F3F4F6", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#6B7280" }}>
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6L6 18M6 6l12 12" /></svg>
                     </button>
@@ -3261,10 +3280,10 @@
                     <button onClick={() => { scrollLock.current = window.scrollY; setFeedCats(new Set()); setFeedSigs(new Set()); setShowFilterPanel(false); }}
                       style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", padding: "10px 12px", borderRadius: 8, border: "none", background: allSelectedApp ? "#F5F3FF" : "#F9FAFB", cursor: "pointer", fontFamily: sans, marginBottom: 8 }}>
                       <span style={{ fontSize: 14, fontWeight: allSelectedApp ? 700 : 500, color: allSelectedApp ? "#7C3AED" : "#374151" }}>All items</span>
-                      <span style={{ fontSize: 11, fontWeight: 700, background: allSelectedApp ? "#EDE9FE" : "#F3F4F6", color: allSelectedApp ? "#7C3AED" : "#9CA3AF", borderRadius: 10, padding: "2px 8px" }}>{FEED_ITEMS.filter(i => !feedDismissed.has(i.id)).length}</span>
+                      <span style={{ fontSize: 12, fontWeight: 700, background: allSelectedApp ? "#EDE9FE" : "#F3F4F6", color: allSelectedApp ? "#7C3AED" : "#9CA3AF", borderRadius: 10, padding: "2px 8px" }}>{FEED_ITEMS.filter(i => !feedDismissed.has(i.id)).length}</span>
                     </button>
                     {/* Category */}
-                    <div style={{ fontSize: 10, fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6 }}>Category</div>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: "#9CA3AF", letterSpacing: "0.07em", marginBottom: 6 }}>Category</div>
                     {CAT_FILTERS_APP.map(f => {
                       const active = feedCats.has(f.id);
                       return (
@@ -3281,7 +3300,7 @@
                       );
                     })}
                     {/* Signal */}
-                    <div style={{ fontSize: 10, fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.07em", margin: "12px 0 6px" }}>Signal</div>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: "#9CA3AF", letterSpacing: "0.07em", margin: "12px 0 6px" }}>Signal</div>
                     {SIG_FILTERS_APP.map(f => {
                       const active = feedSigs.has(f.id);
                       const sc = sigColorsApp[f.id];
@@ -3300,7 +3319,7 @@
                     })}
                     {!allSelectedApp && (
                       <button onClick={() => { scrollLock.current = window.scrollY; setFeedCats(new Set()); setFeedSigs(new Set()); }}
-                        style={{ marginTop: 8, fontSize: 13, fontWeight: 600, color: "#9CA3AF", background: "none", border: "none", cursor: "pointer", fontFamily: sans }}>
+                        style={{ marginTop: 8, fontSize: 14, fontWeight: 600, color: "#9CA3AF", background: "none", border: "none", cursor: "pointer", fontFamily: sans }}>
                         Clear all
                       </button>
                     )}
@@ -3328,7 +3347,7 @@
             </svg>
             Filter
             {(feedCats.size + feedSigs.size) > 0 && (
-              <span style={{ background: "linear-gradient(135deg,#4A7CF7 28%,#A855F7 111%)", color: "#FFF", borderRadius: 10, padding: "0 6px", fontSize: 11, fontWeight: 700, minWidth: 18, textAlign: "center" }}>{feedCats.size + feedSigs.size}</span>
+              <span style={{ background: "linear-gradient(135deg,#4A7CF7 28%,#A855F7 111%)", color: "#FFF", borderRadius: 10, padding: "0 6px", fontSize: 12, fontWeight: 700, minWidth: 18, textAlign: "center" }}>{feedCats.size + feedSigs.size}</span>
             )}
           </button>
 
@@ -3339,8 +3358,8 @@
                 <div onClick={e => e.stopPropagation()} style={{ background: "#FFF", borderRadius: 12, width: 480, maxWidth: "92vw", maxHeight: "80vh", boxShadow: "0 20px 60px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.06)", display: "flex", flexDirection: "column", opacity: 0, animation: "fadeSlideIn 0.2s ease forwards" }}>
                   <div style={{ padding: 16, borderBottom: "1px solid #F3F4F6", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <div>
-                      <div style={{ fontSize: 15, fontWeight: 700, color: "#18181B" }}>Sources</div>
-                      <div style={{ fontSize: 11, fontWeight: 500, color: "#9CA3AF", marginTop: 2 }}>{Object.keys(CITATIONS).length} data points used to generate this script</div>
+                      <div style={{ fontSize: 16, fontWeight: 700, color: "#18181B" }}>Sources</div>
+                      <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 2 }}>{Object.keys(CITATIONS).length} data points used to generate this script</div>
                     </div>
                     <button onClick={() => setSourcesModal(false)} style={{ width: 28, height: 28, borderRadius: 4, border: "none", background: "#F3F4F6", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, color: "#9CA3AF" }}>{"\u2715"}</button>
                   </div>
@@ -3348,10 +3367,10 @@
                     {Object.values(CITATIONS).map((c, i) => (
                       <div key={i} style={{ padding: "12px 16px", borderBottom: i < Object.keys(CITATIONS).length - 1 ? "1px solid #F5F5F5" : "none" }}>
                         <Row sx={{ gap: 12 }}>
-                          <div style={{ width: 36, height: 36, borderRadius: "50%", flexShrink: 0, background: `${c.c}12`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: c.c }}>{c.ini}</div>
+                          <div style={{ width: 36, height: 36, borderRadius: "50%", flexShrink: 0, background: `${c.c}12`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: c.c }}>{c.ini}</div>
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <Row sx={{ gap: 6 }}><span style={{ fontSize: 13, fontWeight: 700, color: "#18181B" }}>{c.name}</span><span style={{ fontSize: 11, fontWeight: 500, color: "#9CA3AF" }}>{c.id}</span></Row>
-                            <div style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", marginTop: 2 }}>{c.detail} · {c.sub}</div>
+                            <Row sx={{ gap: 6 }}><span style={{ fontSize: 14, fontWeight: 700, color: "#18181B" }}>{c.name}</span><span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>{c.id}</span></Row>
+                            <div style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", marginTop: 2 }}>{c.detail} · {c.sub}</div>
                           </div>
                           <div style={{ textAlign: "right", flexShrink: 0 }}><div style={{ fontSize: 12, fontWeight: 700, color: c.c, fontFamily: mono }}>{c.metric}</div></div>
                         </Row>
@@ -3395,7 +3414,7 @@
                     </div>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 14, fontWeight: 700, color: "#18181B" }}>Review &amp; {isEmail ? "send email" : "send message"}</div>
-                      <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2 }}>AI-drafted · all fields are editable</div>
+                      <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>AI-drafted · all fields are editable</div>
                     </div>
                     <button onClick={skipStep} style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid #E5E7EB", background: "#FAFAFA", color: "#6B7280", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: 16, fontFamily: "inherit", lineHeight: 1 }}>×</button>
                   </div>
@@ -3403,12 +3422,12 @@
                   <div style={{ padding: "16px 20px", overflowY: "auto", flex: 1 }}>
                     {/* To: dropdown */}
                     <div style={{ marginBottom: 14 }}>
-                      <label style={{ fontSize: 11, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: 6 }}>{isEmail ? "To" : "Send to"}</label>
+                      <label style={{ fontSize: 12, fontWeight: 700, color: "#9CA3AF", letterSpacing: "0.06em", display: "block", marginBottom: 6 }}>{isEmail ? "To" : "Send to"}</label>
                       <div style={{ position: "relative" }}>
                         <select
                           value={selectedContact}
                           onChange={e => setSelectedContact(Number(e.target.value))}
-                          style={{ width: "100%", padding: "9px 34px 9px 12px", borderRadius: 8, border: "1.5px solid #E5E7EB", fontSize: 13, fontWeight: 600, color: "#374151", background: "#FAFAFA", fontFamily: "inherit", outline: "none", cursor: "pointer", appearance: "none", WebkitAppearance: "none" }}
+                          style={{ width: "100%", padding: "9px 34px 9px 12px", borderRadius: 8, border: "1.5px solid #E5E7EB", fontSize: 14, fontWeight: 600, color: "#374151", background: "#FAFAFA", fontFamily: "inherit", outline: "none", cursor: "pointer", appearance: "none", WebkitAppearance: "none" }}
                         >
                           {contactOptions.map((opt, i) => (
                             <option key={i} value={i}>{opt.display}</option>
@@ -3420,28 +3439,28 @@
                     {/* Subject — email only */}
                     {isEmail && (
                       <div style={{ marginBottom: 14 }}>
-                        <label style={{ fontSize: 11, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: 6 }}>Subject</label>
+                        <label style={{ fontSize: 12, fontWeight: 700, color: "#9CA3AF", letterSpacing: "0.06em", display: "block", marginBottom: 6 }}>Subject</label>
                         <input
                           type="text"
                           value={currentSubject}
                           onChange={e => setDraftSubject(e.target.value)}
-                          style={{ width: "100%", padding: "9px 12px", borderRadius: 8, border: "1.5px solid #E5E7EB", fontSize: 13, fontWeight: 500, color: "#374151", background: "#FFF", fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
+                          style={{ width: "100%", padding: "9px 12px", borderRadius: 8, border: "1.5px solid #E5E7EB", fontSize: 14, fontWeight: 500, color: "#374151", background: "#FFF", fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
                         />
                       </div>
                     )}
                     {/* Message body - always editable */}
                     <div>
-                      <label style={{ fontSize: 11, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: 6 }}>Message</label>
+                      <label style={{ fontSize: 12, fontWeight: 700, color: "#9CA3AF", letterSpacing: "0.06em", display: "block", marginBottom: 6 }}>Message</label>
                       <textarea
                         value={currentBody}
                         onChange={e => setDraftBody(e.target.value)}
                         autoFocus
-                        style={{ width: "100%", fontSize: 13, color: "#374151", lineHeight: 1.65, background: "#FFF", border: "1.5px solid #E5E7EB", borderRadius: 8, padding: "10px 12px", resize: "vertical", minHeight: 130, fontFamily: "inherit", outline: "none", display: "block", boxSizing: "border-box" }}
+                        style={{ width: "100%", fontSize: 14, color: "#374151", lineHeight: 1.65, background: "#FFF", border: "1.5px solid #E5E7EB", borderRadius: 8, padding: "10px 12px", resize: "vertical", minHeight: 130, fontFamily: "inherit", outline: "none", display: "block", boxSizing: "border-box" }}
                       />
                       {step.action.vehicle && (
                         <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 6 }}>
-                          <span style={{ fontSize: 11, color: "#9CA3AF", fontWeight: 500 }}>Linked:</span>
-                          <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 8px", borderRadius: 5, background: "#F0F7FF", border: "1px solid #BFDBFE", fontSize: 11, fontWeight: 600, color: "#2563EB", cursor: "pointer" }}>
+                          <span style={{ fontSize: 12, color: "#9CA3AF", fontWeight: 500 }}>Linked:</span>
+                          <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 8px", borderRadius: 5, background: "#F0F7FF", border: "1px solid #BFDBFE", fontSize: 12, fontWeight: 600, color: "#2563EB", cursor: "pointer" }}>
                             🚗 {step.action.vehicle.name}
                             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" /><polyline points="15,3 21,3 21,9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
                           </span>
@@ -3524,7 +3543,7 @@
                 {/* Steps */}
                 <div style={{ padding: "14px 20px", overflowY: "auto", flex: 1 }}>
                   <Row sx={{ justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.05em" }}>Steps</div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "#6B7280", letterSpacing: "0.05em" }}>Steps</div>
                     <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>{modifySteps.length} steps</span>
                   </Row>
                   <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
@@ -3547,7 +3566,7 @@
                               <circle cx="3" cy="12" r="1.2" /><circle cx="7" cy="12" r="1.2" />
                             </svg>
                           </div>
-                          <div style={{ width: 20, height: 20, borderRadius: 4, flexShrink: 0, background: "#EFF6FF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: "#2563EB" }}>{i + 1}</div>
+                          <div style={{ width: 20, height: 20, borderRadius: 4, flexShrink: 0, background: "#EFF6FF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800, color: "#2563EB" }}>{i + 1}</div>
                           <span style={{ flex: 1, fontSize: 14, fontWeight: 500, color: "#374151", lineHeight: 1.45 }}>{typeof step === "object" ? step.text : step}</span>
                           <button onClick={() => setModifySteps(modifySteps.filter((_, j) => j !== i))} style={{ width: 24, height: 24, borderRadius: 4, border: "1px solid #FECACA", background: "#FFF5F5", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0 }} onMouseEnter={e => e.currentTarget.style.background = "#FEE2E2"} onMouseLeave={e => e.currentTarget.style.background = "#FFF5F5"}>
                             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6L6 18M6 6l12 12" /></svg>
@@ -3558,7 +3577,7 @@
                   </div>
                   {addingStep ? (
                     <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8, padding: "8px 10px", borderRadius: 7, border: "1.5px solid rgba(74,124,247,0.3)", background: "#FAFBFF" }}>
-                      <div style={{ width: 20, height: 20, borderRadius: 4, flexShrink: 0, background: "#EFF6FF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: "#2563EB" }}>{modifySteps.length + 1}</div>
+                      <div style={{ width: 20, height: 20, borderRadius: 4, flexShrink: 0, background: "#EFF6FF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800, color: "#2563EB" }}>{modifySteps.length + 1}</div>
                       <input autoFocus value={newStepText} onChange={e => setNewStepText(e.target.value)}
                         onKeyDown={e => { if (e.key === "Enter" && newStepText.trim()) { setModifySteps([...modifySteps, newStepText.trim()]); setNewStepText(""); setAddingStep(false); } if (e.key === "Escape") { setNewStepText(""); setAddingStep(false); } }}
                         placeholder="Describe the step..."
@@ -3639,11 +3658,12 @@
 
                 {/* ── INTRO SLIDE ── */}
                 {showIntroSlide ? (
-                  <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "80px 36px 80px", textAlign: "center" }}>
+                  <div style={{ flex: 1, position: "relative", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "80px 36px 80px", textAlign: "center" }}>
                     <div style={{ fontSize: 84, marginBottom: 28, filter: "drop-shadow(0 8px 40px rgba(0,0,0,0.35))" }}>{activeStory.icon}</div>
-                    <div style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.6)", letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 12, fontFamily: sans }}>Daily Brief</div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.6)", letterSpacing: "0.14em", marginBottom: 12, fontFamily: sans }}>Daily Brief</div>
                     <div style={{ fontSize: 36, fontWeight: 800, color: "#FFF", lineHeight: 1.15, letterSpacing: "-0.025em", marginBottom: 8, fontFamily: sans }}>{activeStory.label}</div>
-                    <div style={{ fontSize: 14, color: "rgba(255,255,255,0.6)", fontWeight: 500, fontFamily: sans }}>{activeStory.slides.length} insights · {activeStory.time}</div>
+                    <div style={{ fontSize: 14, color: "rgba(255,255,255,0.6)", fontWeight: 500, fontFamily: sans }}>{activeStory.slides.length} insights</div>
+                    <div style={{ position: "absolute", bottom: 28, left: 0, right: 0, textAlign: "center", fontSize: 12, color: "rgba(255,255,255,0.45)", fontWeight: 500, fontFamily: sans }}>Generated at {activeStory.time}</div>
                   </div>
                 ) : (
                   /* ── CONTENT SLIDE ── */
@@ -3653,9 +3673,9 @@
                     const hasLinks = slide.links?.length > 0;
                     return (
                       <div key={storySlideIdx} className="story-slide-card" style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "flex-start", padding: `108px 28px ${hasLinks ? 188 : 48}px` }}>
-                        <div style={{ fontSize: 48, marginBottom: 24, filter: "drop-shadow(0 2px 12px rgba(0,0,0,0.3))" }}>{slide.emoji}</div>
+                        <div style={{ fontSize: 44, marginBottom: 24, filter: "drop-shadow(0 2px 12px rgba(0,0,0,0.3))" }}>{slide.emoji}</div>
                         <div style={{ fontSize: 36, fontWeight: 900, color: "#FFF", fontFamily: sans, lineHeight: 1.1, marginBottom: 16, letterSpacing: "-0.035em", textShadow: "0 2px 20px rgba(0,0,0,0.3)" }}>{slide.title}</div>
-                        <div style={{ fontSize: 15, fontWeight: 500, color: "rgba(255,255,255,0.92)", fontFamily: sans, lineHeight: 1.75, textShadow: "0 1px 8px rgba(0,0,0,0.25)", whiteSpace: "pre-line" }}>{slide.body}</div>
+                        <div style={{ fontSize: 16, fontWeight: 500, color: "rgba(255,255,255,0.92)", fontFamily: sans, lineHeight: 1.75, textShadow: "0 1px 8px rgba(0,0,0,0.25)", whiteSpace: "pre-line" }}>{slide.body}</div>
                       </div>
                     );
                   })()
@@ -3668,18 +3688,25 @@
                       <div key={li} onClick={e => e.stopPropagation()} style={{ display: "flex", alignItems: "center", gap: 10, padding: "13px 14px", borderRadius: 14, background: "rgba(255,255,255,0.14)", backdropFilter: "blur(16px)", border: "1px solid rgba(255,255,255,0.2)", cursor: "pointer", transition: "background 0.18s" }}
                         onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.26)"}
                         onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.14)"}>
-                        <div style={{ width: 32, height: 32, borderRadius: 8, background: "rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, flexShrink: 0 }}>{lnk.icon}</div>
-                        <span style={{ flex: 1, fontSize: 13, fontWeight: 600, color: "#FFF", fontFamily: sans, textAlign: "left" }}>{lnk.label}</span>
+                        <div style={{ width: 32, height: 32, borderRadius: 8, background: "rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}>{lnk.icon}</div>
+                        <span style={{ flex: 1, fontSize: 14, fontWeight: 600, color: "#FFF", fontFamily: sans, textAlign: "left" }}>{lnk.label}</span>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7,7 17,7 17,17" /></svg>
                       </div>
                     ))}
                   </div>
                 )}
 
+                {/* ── Hold-to-pause dim overlay ── */}
+                {isHolding && (
+                  <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.28)", zIndex: 6, pointerEvents: "none", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><rect x="6" y="4" width="4" height="16" rx="1" /><rect x="14" y="4" width="4" height="16" rx="1" /></svg>
+                  </div>
+                )}
+
                 {/* ── Tap zones (behind all controls) ── */}
-                <div style={{ position: "absolute", inset: 0, display: "flex", zIndex: 5 }}>
-                  <div onClick={prevStorySlide} style={{ flex: 1, cursor: "pointer" }} />
-                  <div onClick={nextStorySlide} style={{ flex: 1, cursor: "pointer" }} />
+                <div onMouseDown={onStoryPointerDown} onMouseUp={onStoryPointerUp} onMouseLeave={onStoryPointerUp} onTouchStart={onStoryPointerDown} onTouchEnd={onStoryPointerUp} onTouchCancel={onStoryPointerUp} style={{ position: "absolute", inset: 0, display: "flex", zIndex: 5 }}>
+                  <div onClick={() => { if (!isHoldingRef.current) prevStorySlide(); }} style={{ flex: 1, cursor: "pointer" }} />
+                  <div onClick={() => { if (!isHoldingRef.current) nextStorySlide(); }} style={{ flex: 1, cursor: "pointer" }} />
                 </div>
               </div>
             </div>,
