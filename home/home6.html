@@ -98,8 +98,8 @@
     }
 
     .card-hover:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.10), 0 2px 6px rgba(0, 0, 0, 0.05) !important;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07) !important;
       border-color: #D0D5DD !important;
     }
 
@@ -1715,6 +1715,23 @@
       const [feedFilter, setFeedFilter] = useState("all");
       const [expandedCards, setExpandedCards] = useState(new Set());
       const toggleCardExpand = id => setExpandedCards(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
+      const [readCards, setReadCards] = useState(new Set());
+      const markRead = id => setReadCards(prev => { const n = new Set(prev); n.add(id); return n; });
+      // Today's (Mar 20) non-expired feed card titles — used for unread badge count
+      const TODAY_FEED_TITLES = [
+        "Marcus Torres just opened your payment quote",
+        "Rivera deal stalled — lender hasn't responded",
+        "Tundra SR5 at 62 days — needs a price move",
+        "New 5-star review — Karen Liu mentions you by name",
+        "You close 2.1× more deals on Tuesday mornings",
+      ];
+      const unreadTodayCount = TODAY_FEED_TITLES.filter(t => !readCards.has(t)).length;
+      const [savedCards, setSavedCards] = useState(new Set([
+        "Ashley Walker — hot lead going cold",
+        "Thompson deal aging in F&I — Day 5",
+        "RAV4 Hybrid XSE arrived — matches Ruiz's ask",
+      ]));
+      const toggleSave = id => setSavedCards(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
       const [showDateJumper, setShowDateJumper] = useState(false);
       const [activeFeedDate, setActiveFeedDate] = useState(null);
       const dateGroupRefs = React.useRef({});
@@ -2151,12 +2168,12 @@
       const timeGradient = selectedBg === 'auto' ? getTimeGradient() : (BG_OPTIONS.find(o => o.id === selectedBg)?.preview || '#FFFFFF');
 
       return (
-        <div style={{ minHeight: "100vh", background: "#FFFFFF", fontFamily: sans, color: "#18181B", opacity: loaded ? 1 : 0, transition: "opacity 0.4s" }}>
+        <div style={{ minHeight: "100vh", background: "#F4F5F6", fontFamily: sans, color: "#18181B", opacity: loaded ? 1 : 0, transition: "opacity 0.4s" }}>
 
 
 
-          {/* ── Mobile KPI ticker — hidden on feed tab ── */}
-          {isMobile && activeNav !== "feed" && (
+          {/* ── Mobile KPI ticker — home tab only ── */}
+          {isMobile && activeNav === "home" && (
             <>
               {/* KPI strip — 3 items upfront, expand for more */}
               <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 40, background: "rgba(255,255,255,0.92)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", borderBottom: "1px solid #EBEBEB", height: 40, display: "flex", alignItems: "center" }}>
@@ -2334,7 +2351,7 @@
                       key={tab.id}
                       onClick={() => { setActiveNav(tab.id); try { window.history.pushState(null, "", "#" + tab.id); } catch(e) {} }}
                       style={{
-                        display: "flex", alignItems: "center", gap: 10, width: "100%",
+                        display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, width: "100%",
                         padding: "8px 12px",
                         border: "none",
                         borderRadius: 4,
@@ -2349,10 +2366,15 @@
                       onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = "#F3F4F6"; e.currentTarget.style.color = "#111827"; } }}
                       onMouseLeave={e => { if (!isActive) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#374151"; } }}
                     >
-                      <span style={{ display: "flex", flexShrink: 0, color: isActive ? "#2563EB" : "#6B7280", transition: "color 0.1s" }}>
-                        {isActive ? tab.activeIcon : tab.inactiveIcon}
+                      <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                        <span style={{ display: "flex", flexShrink: 0, color: isActive ? "#2563EB" : "#6B7280", transition: "color 0.1s" }}>
+                          {isActive ? tab.activeIcon : tab.inactiveIcon}
+                        </span>
+                        {tab.label}
                       </span>
-                      {tab.label}
+                      {tab.id === "feed" && unreadTodayCount > 0 && (
+                        <span style={{ fontSize: 10, fontWeight: 700, color: isActive ? "#FFF" : "#9CA3AF", background: isActive ? "#2563EB" : "#E5E7EB", borderRadius: 20, padding: "2px 6px", lineHeight: "15px", minWidth: 18, textAlign: "center" }}>{unreadTodayCount}</span>
+                      )}
                     </button>
                   );
                 })}
@@ -2414,8 +2436,13 @@
                     {isActive && (
                       <span style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", width: 24, height: 3, borderRadius: "0 0 3px 3px", background: "#2563EB" }} />
                     )}
-                    <span style={{ display: "flex", transition: "color 0.12s" }}>{tab.icon(isActive)}</span>
-                    <span style={{ fontSize: 9, fontWeight: isActive ? 700 : 500, letterSpacing: "0.01em", fontFamily: sans, transition: "color 0.12s" }}>{tab.label}</span>
+                    <span style={{ display: "flex", transition: "color 0.12s", position: "relative" }}>
+                      {tab.icon(isActive)}
+                      {tab.id === "feed" && unreadTodayCount > 0 && (
+                        <span style={{ position: "absolute", top: -5, right: -8, minWidth: 18, height: 18, borderRadius: 20, background: "#2563EB", border: "2px solid #fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: "#fff", padding: "0 4px", lineHeight: "16px" }}>{unreadTodayCount}</span>
+                      )}
+                    </span>
+                    <span style={{ fontSize: 11, fontWeight: isActive ? 700 : 500, letterSpacing: "0.01em", fontFamily: sans, transition: "color 0.12s" }}>{tab.label}</span>
                   </button>
                 );
               })}
@@ -2424,7 +2451,7 @@
 
           {/* Flex wrapper: centered within space right of left panel */}
           <div style={{ marginLeft: isMobile ? 0 : "var(--left-panel-width)", display: "flex", justifyContent: "center", minWidth: 0 }}>
-            <main className="main-wrap" style={{ width: "100%", maxWidth: 1000, minWidth: 0, padding: isMobile ? (activeNav === "feed" ? "8px 16px 76px" : "68px 16px 76px") : "32px 32px 48px", boxSizing: "border-box" }}>
+            <main className="main-wrap" style={{ width: "100%", maxWidth: 1000, minWidth: 0, padding: isMobile ? (activeNav === "feed" ? "8px 16px 76px" : activeNav === "home" ? "68px 16px 76px" : "16px 16px 76px") : "32px 32px 48px", boxSizing: "border-box" }}>
 
               {/* ── Feed ── */}
               {activeNav === "feed" && (() => {
@@ -2846,13 +2873,18 @@
                   ? FEED.length
                   : id === "briefs"
                   ? STORIES.length
+                  : id === "saved"
+                  ? savedCards.size
                   : FEED.filter(f => f.type === id).length;
+                const totalUnread = FEED.filter(f => f.dateGroup === DATE_ORDER[0] && !f.expired && !readCards.has(f.title)).length;
 
                 // apply filter to grouped feed
                 const filteredGrouped = feedFilter === "all"
                   ? grouped
                   : feedFilter === "briefs"
-                  ? grouped  // show all date groups (stories only, no cards)
+                  ? grouped
+                  : feedFilter === "saved"
+                  ? grouped.map(g => ({ ...g, items: g.items.filter(f => savedCards.has(f.title)) })).filter(g => g.items.length > 0)
                   : grouped.map(g => ({ ...g, items: g.items.filter(f => f.type === feedFilter) })).filter(g => g.items.length > 0);
 
                 return (
@@ -3004,9 +3036,9 @@
                       return (
                       <div key={group.date} ref={el => { dateGroupRefs.current[group.date] = el; }} style={{ marginBottom: 32, marginTop: gi === 0 ? 16 : 0 }}>
                         {/* Date separator */}
-                        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: isToday ? 14 : 16 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: isToday ? 14 : 16 }}>
                           <span style={{ fontSize: 11, fontWeight: 700, color: "#9CA3AF", letterSpacing: "0.07em", textTransform: "uppercase", whiteSpace: "nowrap" }}>{isToday ? "Today" : group.date}</span>
-                          <div style={{ flex: 1, height: 1, background: "#F0F0F0" }} />
+                          <div style={{ flex: 1, height: 1, background: "#EBEBEB" }} />
                         </div>
 
                         {/* ── Daily brief stories — show when filter is "all" or "briefs" ── */}
@@ -3141,21 +3173,32 @@
                             const hasStatStrip = !!item.statStrip;
                             const hasHeatmap = !!item.heatmapChart;
                             const hasFunnel = !!item.funnelChart;
+                            const isUnread = isToday && !isExpired && !readCards.has(item.title);
+                            const isSaved = savedCards.has(item.title);
 
                             return (
-                              <div key={i} className={isExpired ? "" : "card-hover"} style={{
+                              <div key={i} data-cardid={item.title} className={isExpired ? "" : "card-hover"}
+                                ref={el => {
+                                  if (!el || !isUnread) return;
+                                  const obs = new IntersectionObserver(([entry]) => {
+                                    if (entry.isIntersecting) { markRead(item.title); obs.disconnect(); }
+                                  }, { rootMargin: "0px 0px -90% 0px", threshold: 0 });
+                                  obs.observe(el);
+                                }}
+                                onClick={() => { if (isUnread) markRead(item.title); }}
+                                style={{
                                 background: isExpired ? "#FAFAFA" : "#FFF",
                                 borderRadius: 8,
-                                border: `1px solid ${isExpired ? "#EBEBEB" : "#EBEBEB"}`,
+                                border: isUnread ? "1px solid #C4C9D4" : "1px solid #EBEBEB",
                                 overflow: "hidden",
-                                transition: "box-shadow 0.15s, transform 0.15s",
+                                transition: "box-shadow 0.15s, transform 0.15s, border-color 0.3s",
                                 position: "relative",
                               }}>
 
                                 {/* ── Title row (title left, timestamp right) ── */}
                                 <div style={{ padding: "14px 16px 12px" }}>
                                   <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: 6 }}>
-                                    <div style={{ fontSize: 17, fontWeight: 800, color: isExpired ? "#6B7280" : "#18181B", letterSpacing: "-0.025em", lineHeight: 1.3, flex: 1, minWidth: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                    <div style={{ fontSize: 17, fontWeight: 800, color: isExpired ? "#6B7280" : "#18181B", letterSpacing: "-0.025em", lineHeight: 1.3, flex: 1, minWidth: 0 }}>
                                       {item.title}
                                     </div>
                                     {!isExpired && (
@@ -3404,7 +3447,7 @@
                                   </div>
                                 )}
 
-                                {/* ── Footer: feedback icons left, CTA / action-taken right ── */}
+                                {/* ── Footer: feedback icons left, bookmark + CTA right ── */}
                                 {!isExpired && (
                                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "9px 14px 12px", borderTop: "1px solid #F5F5F5" }}>
                                     {/* Feedback icons */}
@@ -3423,6 +3466,15 @@
                                           </svg>
                                         </button>
                                       ))}
+                                      {/* Bookmark */}
+                                      <button title="Save" onClick={e => { e.stopPropagation(); toggleSave(item.title); }}
+                                        style={{ width: 28, height: 28, borderRadius: 4, border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 0, transition: "color 0.12s, background 0.12s", color: isSaved ? "#2563EB" : "#9CA3AF" }}
+                                        onMouseEnter={e => { if (!isSaved) { e.currentTarget.style.color = "#374151"; e.currentTarget.style.background = "#F3F4F6"; } }}
+                                        onMouseLeave={e => { if (!isSaved) { e.currentTarget.style.color = "#9CA3AF"; e.currentTarget.style.background = "transparent"; } }}>
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill={isSaved ? "#2563EB" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                          <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>
+                                        </svg>
+                                      </button>
                                     </div>
                                     {/* CTA or action-taken state */}
                                     {actionTaken ? (
@@ -3456,54 +3508,56 @@
                         <span style={{ fontSize: 12, fontWeight: 700, color: "#9CA3AF", letterSpacing: "0.05em", textTransform: "uppercase" }}>Category</span>
                       </div>
 
-                      {/* Category list */}
-                      <div style={{ background: "#FFF", borderRadius: 12, border: "1px solid #E5E7EB", overflow: "hidden", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
-                        {FEED_CATS.map((cat, ci) => {
-                          const isActive = feedFilter === cat.id;
-                          const count = catCount(cat.id);
-                          return (
-                            <button
-                              key={cat.id}
-                              onClick={() => setFeedFilter(cat.id)}
-                              style={{
-                                width: "100%",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                                padding: "11px 14px",
-                                background: isActive ? "#EFF6FF" : "transparent",
-                                border: "none",
-                                borderBottom: ci < FEED_CATS.length - 1 ? "1px solid #F3F4F6" : "none",
-                                cursor: "pointer",
-                                textAlign: "left",
-                                transition: "background 0.13s",
-                              }}
-                              onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "#F9FAFB"; }}
-                              onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = "transparent"; }}
-                            >
-                              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                                <span style={{ fontSize: 13, fontWeight: isActive ? 700 : 500, color: isActive ? "#18181B" : "#6B7280", letterSpacing: "-0.01em" }}>{cat.label}</span>
-                              </div>
-                              {/* Count badge — only show if > 0 */}
-                              {count > 0 && (
-                                <span style={{
-                                  fontSize: 11, fontWeight: 700,
-                                  color: isActive ? "#FFF" : "#9CA3AF",
-                                  background: isActive ? cat.color : "#F3F4F6",
-                                  borderRadius: 20,
-                                  padding: "2px 7px",
-                                  minWidth: 22,
-                                  textAlign: "center",
-                                  lineHeight: "16px",
-                                  transition: "all 0.13s",
-                                }}>
-                                  {count}
-                                </span>
-                              )}
-                            </button>
-                          );
-                        })}
-                      </div>
+                      {/* Category list — Saved is first item, then FEED_CATS */}
+                      {(() => {
+                        const allItems = [
+                          { id: "saved", label: "Saved", color: "#2563EB", isSavedItem: true },
+                          ...FEED_CATS,
+                        ];
+                        return (
+                          <div style={{ background: "#FFF", borderRadius: 12, border: "1px solid #E5E7EB", overflow: "hidden", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+                            {allItems.map((cat, ci) => {
+                              const isActive = feedFilter === cat.id;
+                              const count = cat.isSavedItem ? savedCards.size : catCount(cat.id);
+                              return (
+                                <button
+                                  key={cat.id}
+                                  onClick={() => setFeedFilter(cat.id)}
+                                  style={{
+                                    width: "100%",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                    padding: "11px 14px",
+                                    background: isActive ? "#EFF6FF" : "transparent",
+                                    border: "none",
+                                    borderBottom: ci < allItems.length - 1 ? "1px solid #F3F4F6" : "none",
+                                    cursor: "pointer",
+                                    textAlign: "left",
+                                    transition: "background 0.13s",
+                                  }}
+                                  onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "#F9FAFB"; }}
+                                  onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = "transparent"; }}
+                                >
+                                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                                    {cat.isSavedItem && (
+                                      <svg width="13" height="13" viewBox="0 0 24 24" fill={isActive ? "#2563EB" : "none"} stroke={isActive ? "#2563EB" : "#9CA3AF"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>
+                                      </svg>
+                                    )}
+                                    <span style={{ fontSize: 13, fontWeight: isActive ? 700 : 500, color: isActive ? "#18181B" : "#6B7280", letterSpacing: "-0.01em" }}>{cat.label}</span>
+                                  </div>
+                                  {count > 0 && (
+                                    <span style={{ fontSize: 11, fontWeight: 700, color: isActive ? "#FFF" : "#9CA3AF", background: isActive ? cat.color : "#F3F4F6", borderRadius: 20, padding: "2px 7px", minWidth: 22, textAlign: "center", lineHeight: "16px", transition: "all 0.13s" }}>
+                                      {count}
+                                    </span>
+                                  )}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        );
+                      })()}
                     </div>}
 
                   </div>
@@ -3544,11 +3598,11 @@
                           </button>
                         </div>
 
-                        {/* Category list */}
+                        {/* Category list — Saved first, then FEED_CATS */}
                         <div style={{ padding: "8px 0" }}>
-                          {FEED_CATS.map((cat) => {
+                          {[{ id: "saved", label: "Saved", color: "#2563EB", isSavedItem: true }, ...FEED_CATS].map((cat) => {
                             const isActive = feedFilter === cat.id;
-                            const count = catCount(cat.id);
+                            const count = cat.isSavedItem ? savedCards.size : catCount(cat.id);
                             return (
                               <button
                                 key={cat.id}
@@ -3567,6 +3621,11 @@
                                 }}
                               >
                                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                                  {cat.isSavedItem && (
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill={isActive ? "#2563EB" : "none"} stroke={isActive ? "#2563EB" : "#9CA3AF"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                      <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>
+                                    </svg>
+                                  )}
                                   <span style={{ fontSize: 15, fontWeight: isActive ? 700 : 500, color: isActive ? "#18181B" : "#6B7280", letterSpacing: "-0.01em" }}>{cat.label}</span>
                                 </div>
                                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
