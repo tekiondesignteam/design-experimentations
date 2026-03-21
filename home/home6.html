@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -393,11 +392,7 @@
       }
 
       .main-wrap {
-        padding: 0px 16px 48px !important;
-      }
-
-      .section-entrance {
-        margin-bottom: 28px;
+        padding: 56px 16px 48px !important;
       }
 
       .new-suggestions-btn {
@@ -605,7 +600,7 @@
       --text-gray: #969AA3;
       --sidebar-width: 64px;
       --header-height: 56px;
-      --left-panel-width: 240px;
+      --right-panel-width: calc((100vw - 64px) * 3 / 12);
     }
 
     body {
@@ -1208,10 +1203,10 @@
     ];
 
     const HOT_LEADS = [
-      { id: 1, name: "Kevin Morales", vehicle: "2024 RAV4 XLE", src: "Cars.com", time: "2h ago", rep: "Mike", status: "not_contacted" },
-      { id: 2, name: "Rachel Kim", vehicle: "2024 Highlander", src: "TrueCar", time: "4h ago", rep: "Mike", status: "contacted", contactedAt: "1h ago" },
-      { id: 3, name: "Brian Foster", vehicle: "2024 Tacoma SR5", src: "Autotrader", time: "3h ago", rep: "Mike", status: "not_contacted" },
-      { id: 4, name: "Priya Nair", vehicle: "2024 RAV4 Hybrid", src: "CarGurus", time: "6h ago", rep: "Mike", status: "contacted", contactedAt: "3h ago" },
+      { id: 1, name: "Kevin Morales", vehicle: "2024 RAV4 XLE", src: "Cars.com", time: "2h ago", rep: "Jana", status: "not_contacted" },
+      { id: 2, name: "Rachel Kim", vehicle: "2024 Highlander", src: "TrueCar", time: "4h ago", rep: "Jana", status: "contacted", contactedAt: "1h ago" },
+      { id: 3, name: "Brian Foster", vehicle: "2024 Tacoma SR5", src: "Autotrader", time: "3h ago", rep: "Jana", status: "not_contacted" },
+      { id: 4, name: "Priya Nair", vehicle: "2024 RAV4 Hybrid", src: "CarGurus", time: "6h ago", rep: "Jana", status: "contacted", contactedAt: "3h ago" },
     ];
 
     const FINANCE_Q = [
@@ -1269,7 +1264,7 @@
       "With Sales": { bg: "#F0FDF4", col: "#15803D" },
       "Waiting": { bg: "#F3F4F6", col: "#6B7280" },
     };
-    // Activity feed — Mike's pipeline signals only. No floor ops from other reps.
+    // Activity feed — Jana's pipeline signals only. No floor ops from other reps.
     // Types: signal (customer intent), finance, alert, ai, confirmed, lead
     const ACTIVITY_FEED = [
       {
@@ -1507,7 +1502,6 @@
       const [feedCats, setFeedCats] = useState(new Set());
       const [feedSigs, setFeedSigs] = useState(new Set());
       const [showFilterPanel, setShowFilterPanel] = useState(false);
-      const [showFeedFilter, setShowFeedFilter] = useState(false);
       const ALL_CATS = ["appt", "deal", "finance", "inventory", "lead", "salesfloor"];
       const [selectedBg, setSelectedBg] = useState('auto');
       const BG_OPTIONS = [
@@ -1582,8 +1576,8 @@
       const [widgetDragOver, setWidgetDragOver] = useState(null);
       const [draftSelected, setDraftSelected] = useState(null);
       const [draftOrder, setDraftOrder] = useState(null);
-      const [visibleSections, setVisibleSections] = useState(new Set(["needs-attention", "new-leads", "appointments", "pickup"]));
-      const [sectionOrder, setSectionOrder] = useState(["needs-attention", "pickup", "new-leads", "appointments", "morning-huddle", "webinar", "get-inspired"]);
+      const [visibleSections, setVisibleSections] = useState(new Set(["daily-briefs", "needs-attention", "new-leads", "appointments", "push", "ai-insights", "pickup"]));
+      const [sectionOrder, setSectionOrder] = useState(["daily-briefs", "needs-attention", "pickup", "new-leads", "appointments", "push", "ai-insights", "morning-huddle", "webinar", "get-inspired"]);
       const [insightCols, setInsightCols] = useState(3);
       const [widgetWidths, setWidgetWidths] = useState({});
       const handleResizeDrag = (e, secId) => {
@@ -1710,27 +1704,7 @@
       const [inspirePage, setInspirePage] = useState(0);
       const swipeStartX = React.useRef(null);
       const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 767);
-      const VALID_TABS = ["home", "feed", "pulse", "chat", "tasks", "profile"];
-      const hashTab = () => { const h = window.location.hash.replace("#", ""); return VALID_TABS.includes(h) ? h : "home"; };
-      const [activeNav, setActiveNav] = useState(hashTab);
-      const [feedFilter, setFeedFilter] = useState("all");
-      const [expandedCards, setExpandedCards] = useState(new Set());
-      const toggleCardExpand = id => setExpandedCards(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
-
-      // sync hash → tab when user hits back/forward
-      React.useEffect(() => {
-        const onHash = () => setActiveNav(hashTab());
-        window.addEventListener("hashchange", onHash);
-        return () => window.removeEventListener("hashchange", onHash);
-      }, []);
-
-      // sync tab → hash whenever activeNav changes
-      React.useEffect(() => {
-        if (window.location.hash !== "#" + activeNav) {
-          window.history.replaceState(null, "", "#" + activeNav);
-        }
-      }, [activeNav]);
-
+      const [activeNav, setActiveNav] = useState("home");
       React.useEffect(() => {
         const onResize = () => setIsMobile(window.innerWidth <= 767);
         window.addEventListener("resize", onResize);
@@ -1744,8 +1718,8 @@
           gradient: "linear-gradient(135deg, #F59E0B 0%, #EF4444 100%)",
           slides: [
             {
-              emoji: "☀️", title: "Morning, Mike. Two things first.", body: "8 deals in play · yesterday closed clean.\n4 appointments today, starting at 9:30 AM.\n2 things need your attention.", links: [{ label: "My active deals", icon: "🤝" }, { label: "Today's appointments", icon: "📅" }],
-              voiceText: "Good morning, Mike. Yesterday closed clean, so you're starting from a good place today. Eight deals in play, four appointments on the books. Solid foundation. But two situations are heating up — and they need you before anything else. We'll walk through them now."
+              emoji: "☀️", title: "Morning, Jana. Two things first.", body: "8 deals in play · yesterday closed clean.\n4 appointments today, starting at 9:30 AM.\n2 things need your attention.", links: [{ label: "My active deals", icon: "🤝" }, { label: "Today's appointments", icon: "📅" }],
+              voiceText: "Good morning, Jana. Yesterday closed clean, so you're starting from a good place today. Eight deals in play, four appointments on the books. Solid foundation. But two situations are heating up — and they need you before anything else. We'll walk through them now."
             },
             {
               emoji: "💬", title: "Henderson: Day 4 of silence.", body: "4 days silent.\nFinance is approved — deal expires Friday.\nA casual text before 9 AM gets a 60% reply rate.\nSend it before you do anything else.", links: [{ label: "Deal #3891 · Henderson", icon: "🔗" }],
@@ -1972,15 +1946,6 @@
       }, [showFilterPanel]);
 
       React.useEffect(() => {
-        if (showFeedFilter) {
-          document.body.style.overflow = "hidden";
-        } else {
-          document.body.style.overflow = "";
-        }
-        return () => { document.body.style.overflow = ""; };
-      }, [showFeedFilter]);
-
-      React.useEffect(() => {
         if (!expandedAuto || typeof expandedAuto !== "string" || !expandedAuto.startsWith("fdot-")) return;
         const update = () => {
           if (menuAnchorRef.current) {
@@ -2103,10 +2068,261 @@
       return (
         <div style={{ minHeight: "100vh", background: timeGradient, fontFamily: sans, color: "#18181B", opacity: loaded ? 1 : 0, transition: "opacity 0.4s" }}>
 
+          {/* ── Title bar ── */}
+          <div className="page-header" style={{ position: "fixed", top: isMobile ? 0 : 56, left: isMobile ? 0 : 64, right: 0, zIndex: 50, background: "rgba(255,255,255,0.92)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", borderBottom: "1px solid #EBEBEB", boxShadow: "none", display: isMobile ? "none" : "block" }}>
+            <div style={{ padding: "0 32px", height: 48, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
 
+              {/* Left — page title */}
+              <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em" }}>Home</span>
 
-          {/* ── Mobile KPI ticker — hidden on feed tab ── */}
-          {isMobile && activeNav !== "feed" && (
+              {/* Right — 3 buttons */}
+              {!isMobile && (
+                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+
+                  {/* Theme picker */}
+                  <div ref={themePickerRef}>
+                    <button
+                      onClick={() => {
+                        if (themePickerRef.current) {
+                          const r = themePickerRef.current.getBoundingClientRect();
+                          setThemeDropPos({ top: r.bottom + 6, right: window.innerWidth - r.right });
+                        }
+                        setShowHamburgerMenu(m => !m);
+                      }}
+                      title="Change theme"
+                      style={{ width: 32, height: 32, borderRadius: 6, border: "1px solid #E5E7EB", background: showHamburgerMenu ? "#F3F4F6" : "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 1px 3px rgba(0,0,0,0.05)", transition: "all 0.15s" }}
+                      onMouseEnter={e => { e.currentTarget.style.background = "#F3F4F6"; e.currentTarget.style.borderColor = "#D1D5DB"; }}
+                      onMouseLeave={e => { e.currentTarget.style.background = showHamburgerMenu ? "#F3F4F6" : "#FFF"; e.currentTarget.style.borderColor = "#E5E7EB"; }}>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <circle cx="12" cy="12" r="3" fill="#6B7280" stroke="none" />
+                        <path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12" />
+                      </svg>
+                    </button>
+                  </div>
+
+                  {/* Customize widgets */}
+                  <button
+                    onClick={() => { setDraftSelected(null); setDraftOrder(null); setShowWidgetModal(true); document.body.style.paddingRight = (window.innerWidth - document.documentElement.clientWidth) + "px"; document.body.style.overflow = "hidden"; }}
+                    title="Customize widgets"
+                    style={{ width: 32, height: 32, borderRadius: 6, border: "1px solid #E5E7EB", background: "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 1px 3px rgba(0,0,0,0.05)", transition: "all 0.15s" }}
+                    onMouseEnter={e => { e.currentTarget.style.background = "#F3F4F6"; e.currentTarget.style.borderColor = "#D1D5DB"; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = "#FFF"; e.currentTarget.style.borderColor = "#E5E7EB"; }}>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" />
+                      <path d="M17 14v6M14 17h6" />
+                    </svg>
+                  </button>
+
+                  {/* Quick Actions */}
+                  <div ref={desktopQARef}>
+                    <button onClick={() => openQADropdown(desktopQARef, false)} style={{
+                      display: "flex", alignItems: "center", gap: 7, padding: "6px 12px",
+                      borderRadius: 6, border: "1px solid #E5E7EB",
+                      background: showQuickActionsDropdown ? "#F9FAFB" : "#FFF",
+                      fontSize: 14, fontWeight: 600, color: "#18181B", cursor: "pointer", fontFamily: sans,
+                      boxShadow: "0 1px 3px rgba(0,0,0,0.05)", transition: "all 0.15s"
+                    }}>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#4A7CF7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>
+                      Quick Actions
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transform: showQuickActionsDropdown ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}><path d="M6 9l6 6 6-6" /></svg>
+                    </button>
+                  </div>
+
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* ── Right panel ── */}
+          {!isMobile && (
+            <div style={{ position: "fixed", top: 104, right: 0, width: "var(--right-panel-width)", bottom: 0, background: "#F7F8FA", borderLeft: "1px solid #EBEBEB", overflowY: "auto", zIndex: 30, display: "flex", flexDirection: "column" }}>
+
+              {/* ── KPI SNAPSHOT ── */}
+              <div style={{ padding: "12px 14px 4px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <div style={{ fontSize: 12, fontWeight: 800, color: "#9CA3AF" }}>Month at a glance</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#6B7280" }}>March 2026 · MTD</div>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6, padding: "6px 14px 14px" }}>
+
+                {/* Row 1 — Units Sold (full width) with stacked new/used progress bar */}
+                <div style={{ background: "#FFF", border: "1px solid #EBEBEB", borderRadius: 8, padding: "10px 12px", boxShadow: "0 1px 3px rgba(0,0,0,.04)" }}>
+                  {/* Header row with New/Used on the right */}
+                  <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 10 }}>
+                    <div>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 5 }}>Units Sold</div>
+                      <div style={{ fontSize: 32, fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, color: "#18181B" }}>11</div>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, paddingBottom: 2 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                        <div style={{ width: 8, height: 8, borderRadius: 2, background: "#2563EB", flexShrink: 0 }} />
+                        <span style={{ fontSize: 12, fontWeight: 700, color: "#18181B" }}>7</span>
+                        <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280" }}>New</span>
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                        <div style={{ width: 8, height: 8, borderRadius: 2, background: "#F59E0B", flexShrink: 0 }} />
+                        <span style={{ fontSize: 12, fontWeight: 700, color: "#18181B" }}>4</span>
+                        <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280" }}>Used</span>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Stacked progress bar */}
+                  <div style={{ height: 6, borderRadius: 99, background: "#E5E7EB", width: "100%", overflow: "hidden", display: "flex" }}>
+                    <div style={{ height: "100%", background: "#2563EB", width: "46.7%", transition: "width 0.4s ease" }} />
+                    <div style={{ height: "100%", background: "#F59E0B", width: "26.7%", transition: "width 0.4s ease" }} />
+                  </div>
+                  {/* Footer */}
+                  <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
+                    <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280" }}>73% of target</span>
+                    <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280" }}>Target: 15</span>
+                  </div>
+                </div>
+
+                {/* Row 2 — Appts Set | Open Deals */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+                  <div style={{ background: "#FFF", border: "1px solid #EBEBEB", borderRadius: 8, padding: "10px 12px", boxShadow: "0 1px 3px rgba(0,0,0,.04)" }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 4 }}>Appts Set</div>
+                    <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, color: "#18181B" }}>22</div>
+                    <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 3, display: "flex", alignItems: "center", gap: 3 }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, padding: "1px 4px", borderRadius: 3, background: "#EFF6FF", color: "#2563EB" }}>47%</span>
+                      lead-to-appt
+                    </div>
+                  </div>
+                  <div style={{ background: "#FFF", border: "1px solid #EBEBEB", borderRadius: 8, padding: "10px 12px", boxShadow: "0 1px 3px rgba(0,0,0,.04)" }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 4 }}>Open Deals</div>
+                    <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, color: "#A16207" }}>8</div>
+                    <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 3, display: "flex", alignItems: "center", gap: 3 }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, padding: "1px 4px", borderRadius: 3, background: "#FEF3C7", color: "#D97706" }}>2 need attention</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Row 3 — Show Rate | Close Rate */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+                  <div style={{ background: "#FFF", border: "1px solid #EBEBEB", borderRadius: 8, padding: "10px 12px", boxShadow: "0 1px 3px rgba(0,0,0,.04)" }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 4 }}>Show Rate</div>
+                    <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, color: "#2563EB" }}>68%</div>
+                    <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 3, display: "flex", alignItems: "center", gap: 3 }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, padding: "1px 4px", borderRadius: 3, background: "#F0FDF4", color: "#15803D" }}>+5%</span>
+                      appts shown
+                    </div>
+                    <div style={{ height: 3, borderRadius: 99, background: "#E5E7EB", width: "100%", marginTop: 6 }}>
+                      <div style={{ height: "100%", borderRadius: 99, background: "#2563EB", width: "68%" }} />
+                    </div>
+                  </div>
+                  <div style={{ background: "#FFF", border: "1px solid #EBEBEB", borderRadius: 8, padding: "10px 12px", boxShadow: "0 1px 3px rgba(0,0,0,.04)" }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 4 }}>Close Rate</div>
+                    <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, color: "#2563EB" }}>34%</div>
+                    <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 3, display: "flex", alignItems: "center", gap: 3 }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, padding: "1px 4px", borderRadius: 3, background: "#F0FDF4", color: "#15803D" }}>+6%</span>
+                      store avg 28%
+                    </div>
+                    <div style={{ height: 3, borderRadius: 99, background: "#E5E7EB", width: "100%", marginTop: 6 }}>
+                      <div style={{ height: "100%", borderRadius: 99, background: "#2563EB", width: "34%" }} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Row 4 — PVR | F&I */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+                  <div style={{ background: "#FFF", border: "1px solid #EBEBEB", borderRadius: 8, padding: "10px 12px", boxShadow: "0 1px 3px rgba(0,0,0,.04)" }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 4 }}>PVR</div>
+                    <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, color: "#7C3AED" }}>$2.4k</div>
+                    <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 3, display: "flex", alignItems: "center", gap: 3 }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, padding: "1px 4px", borderRadius: 3, background: "#F0FDF4", color: "#15803D" }}>+$200</span>
+                      per vehicle
+                    </div>
+                  </div>
+                  <div style={{ background: "#FFF", border: "1px solid #EBEBEB", borderRadius: 8, padding: "10px 12px", boxShadow: "0 1px 3px rgba(0,0,0,.04)" }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 4 }}>F&amp;I</div>
+                    <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, color: "#059669" }}>$1.1k</div>
+                    <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 3, display: "flex", alignItems: "center", gap: 3 }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, padding: "1px 4px", borderRadius: 3, background: "#F0FDF4", color: "#15803D" }}>+$150</span>
+                      per deal avg
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* ── IN DEALERSHIP — hidden ── */}
+
+              {/* ── CLOSED DEALS THIS MONTH ── */}
+              <div style={{ height: 1, background: "#EBEBEB", margin: "8px 0" }} />
+              {(() => {
+                const CLOSED = [
+                  { name: "Marcus Webb", vehicle: "2024 Tacoma TRD", type: "New", gross: "$3,200", date: "Mar 17", frontG: "$1,850", backG: "$1,350" },
+                  { name: "Priya Nair", vehicle: "2023 Camry XSE", type: "Used", gross: "$2,750", date: "Mar 15", frontG: "$1,200", backG: "$1,550" },
+                  { name: "Derek Hollis", vehicle: "2024 RAV4 Hybrid", type: "New", gross: "$4,100", date: "Mar 14", frontG: "$2,400", backG: "$1,700" },
+                  { name: "Sandra Okafor", vehicle: "2022 Highlander", type: "Used", gross: "$2,100", date: "Mar 12", frontG: "$900", backG: "$1,200" },
+                  { name: "Tom Breckenridge", vehicle: "2024 Tundra SR5", type: "New", gross: "$5,600", date: "Mar 10", frontG: "$3,100", backG: "$2,500" },
+                  { name: "Aaliya Patel", vehicle: "2023 Corolla Cross", type: "New", gross: "$2,900", date: "Mar 8", frontG: "$1,500", backG: "$1,400" },
+                  { name: "James Cullen", vehicle: "2021 4Runner SR5", type: "Used", gross: "$1,800", date: "Mar 5", frontG: "$800", backG: "$1,000" },
+                ];
+                const expanded = closedDealExp;
+                const setExpanded = setClosedDealExp;
+                return (
+                  <div style={{ padding: "10px 14px 14px" }}>
+                    {/* Section header */}
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+                      <div style={{ fontSize: 12, fontWeight: 800, color: "#9CA3AF" }}>Closed deals - This month</div>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: "#6B7280" }}>{CLOSED.length} deals</div>
+                    </div>
+                    {/* Deal list */}
+                    <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                      {CLOSED.map((d, i) => {
+                        const isOpen = expanded === i;
+                        const typeColor = d.type === "New" ? { bg: "#EFF6FF", col: "#2563EB" } : { bg: "#FEF3C7", col: "#D97706" };
+                        return (
+                          <div key={i} onClick={() => setExpanded(isOpen ? null : i)}
+                            style={{ background: "#FFF", border: "1px solid " + (isOpen ? "#BFDBFE" : "#EBEBEB"), borderRadius: 8, padding: "9px 10px", cursor: "pointer", transition: "border-color 0.15s" }}>
+                            {/* Main row */}
+                            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                              {/* Customer avatar */}
+                              <div style={{ width: 30, height: 30, borderRadius: "50%", background: typeColor.bg, color: typeColor.col, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800, flexShrink: 0 }}>
+                                {d.name.split(" ").map(n => n[0]).join("")}
+                              </div>
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ fontSize: 12, fontWeight: 700, color: "#18181B", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.name}</div>
+                                <div style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginTop: 1 }}>{d.vehicle}</div>
+                              </div>
+                              <div style={{ textAlign: "right", flexShrink: 0 }}>
+                                <div style={{ fontSize: 12, fontWeight: 800, color: "#059669" }}>{d.gross}</div>
+                                <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 1 }}>{d.date}</div>
+                              </div>
+                            </div>
+                            {/* Expanded breakdown */}
+                            {isOpen && (
+                              <div style={{ marginTop: 8, paddingTop: 8, borderTop: "1px solid #F0F0F0", display: "flex", gap: 6 }}>
+                                <div style={{ flex: 1, background: "#F9FAFB", borderRadius: 5, padding: "6px 8px" }}>
+                                  <div style={{ fontSize: 12, fontWeight: 700, color: "#9CA3AF", marginBottom: 2 }}>Front</div>
+                                  <div style={{ fontSize: 14, fontWeight: 800, color: "#18181B" }}>{d.frontG}</div>
+                                </div>
+                                <div style={{ flex: 1, background: "#F9FAFB", borderRadius: 5, padding: "6px 8px" }}>
+                                  <div style={{ fontSize: 12, fontWeight: 700, color: "#9CA3AF", marginBottom: 2 }}>F&amp;I</div>
+                                  <div style={{ fontSize: 14, fontWeight: 800, color: "#7C3AED" }}>{d.backG}</div>
+                                </div>
+                                <div style={{ flex: 1, background: "#F0FDF4", borderRadius: 5, padding: "6px 8px" }}>
+                                  <div style={{ fontSize: 12, fontWeight: 700, color: "#9CA3AF", marginBottom: 2 }}>Total</div>
+                                  <div style={{ fontSize: 14, fontWeight: 800, color: "#059669" }}>{d.gross}</div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* ── ACTIVITY FEED — hidden for now ── */}
+
+            </div>
+          )}
+
+          {/* ── Mobile KPI ticker ── */}
+          {isMobile && (
             <>
               {/* KPI strip — 3 items upfront, expand for more */}
               <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 40, background: "rgba(255,255,255,0.92)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", borderBottom: "1px solid #EBEBEB", height: 40, display: "flex", alignItems: "center" }}>
@@ -2251,1054 +2467,41 @@
             </>
           )}
 
-          {/* ── Left panel: tab nav ── */}
-          {!isMobile && (
-            <div style={{ position: "fixed", top: 56, left: "var(--sidebar-width)", width: "var(--left-panel-width)", bottom: 0, background: "#FFFFFF", borderRight: "1px solid #E5E7EB", zIndex: 30, display: "flex", flexDirection: "column", overflowY: "auto" }}>
+          {/* Flex wrapper: centered within space left of right panel */}
+          <div style={{ marginRight: isMobile ? 0 : "var(--right-panel-width)", display: "flex", justifyContent: "center", minWidth: 0 }}>
+            <main className="main-wrap" style={{ width: "100%", maxWidth: 1000, minWidth: 0, padding: isMobile ? "56px 16px 48px" : "80px 32px 48px", boxSizing: "border-box" }}>
 
-              <div style={{ padding: "16px 0 8px", display: "flex", flexDirection: "column" }}>
-                {[
-                  { id: "home", label: "Home", icon: (
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                  )},
-                  { id: "feed", label: "Feed", icon: (
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
-                  )},
-                  { id: "chat", label: "Chat", icon: (
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                  )},
-                  { id: "tasks", label: "Tasks", icon: (
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                  )},
-                  { id: "pulse", label: "Pulse", icon: (
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 20 18 20 18 10 22 10 22 20"/><polyline points="14 20 10 20 10 4 14 4 14 20"/><polyline points="6 20 2 20 2 14 6 14 6 20"/></svg>
-                  )},
-                ].map(tab => {
-                  const isActive = activeNav === tab.id;
-                  return (
-                    <button
-                      key={tab.id}
-                      onClick={() => { setActiveNav(tab.id); window.history.pushState(null, "", "#" + tab.id); }}
-                      style={{
-                        display: "flex", alignItems: "center", gap: 12, width: "100%",
-                        padding: "11px 20px",
-                        borderLeft: isActive ? "3px solid #4A7CF7" : "3px solid transparent",
-                        borderTop: "none", borderRight: "none", borderBottom: "none",
-                        borderRadius: 0,
-                        background: isActive ? "#EFF6FF" : "transparent",
-                        color: isActive ? "#2563EB" : "#52525B",
-                        fontSize: 14, fontWeight: isActive ? 800 : 600,
-                        cursor: "pointer", fontFamily: sans,
-                        transition: "background 0.12s, color 0.1s, border-color 0.12s",
-                        textAlign: "left",
-                      }}
-                      onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = "#F9FAFB"; e.currentTarget.style.color = "#18181B"; } }}
-                      onMouseLeave={e => { if (!isActive) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#52525B"; } }}
-                    >
-                      <span style={{ display: "flex", flexShrink: 0, color: isActive ? "#2563EB" : "#9CA3AF", transition: "color 0.1s" }}>{tab.icon}</span>
-                      {tab.label}
-                    </button>
-                  );
-                })}
-              </div>
-
-            </div>
-          )}
-
-          {/* ── Mobile bottom tab bar ── */}
-          {isMobile && (
-            <div style={{
-              position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 40,
-              background: "#FFF",
-              borderTop: "1px solid #E5E7EB",
-              display: "flex",
-              height: 60,
-              paddingBottom: "env(safe-area-inset-bottom, 0px)",
-            }}>
-              {[
-                { id: "home", label: "Home",
-                  icon: active => active
-                    ? <svg width="21" height="21" viewBox="0 0 24 24" fill="#2563EB" stroke="#2563EB" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22" fill="#2563EB"/></svg>
-                    : <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                },
-                { id: "feed", label: "Feed",
-                  icon: active => active
-                    ? <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
-                    : <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
-                },
-                { id: "chat", label: "Chat",
-                  icon: active => active
-                    ? <svg width="21" height="21" viewBox="0 0 24 24" fill="#2563EB" stroke="#2563EB" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-                    : <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-                },
-                { id: "tasks", label: "Tasks",
-                  icon: active => active
-                    ? <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="11" width="13" height="2" rx="1" fill="#2563EB" stroke="none"/><rect x="9" y="6" width="13" height="2" rx="1" fill="#2563EB" stroke="none"/><rect x="9" y="16" width="9" height="2" rx="1" fill="#2563EB" stroke="none"/><circle cx="4" cy="7" r="1.5" fill="#2563EB"/><circle cx="4" cy="12" r="1.5" fill="#2563EB"/><circle cx="4" cy="17" r="1.5" fill="#2563EB"/></svg>
-                    : <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="9" y1="7" x2="21" y2="7"/><line x1="9" y1="12" x2="21" y2="12"/><line x1="9" y1="17" x2="17" y2="17"/><circle cx="4" cy="7" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="17" r="1.5" fill="currentColor" stroke="none"/></svg>
-                },
-                { id: "pulse", label: "Pulse",
-                  icon: active => active
-                    ? <svg width="21" height="21" viewBox="0 0 24 24" fill="#2563EB" stroke="#2563EB" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 20 18 20 18 10 22 10 22 20"/><polyline points="14 20 10 20 10 4 14 4 14 20"/><polyline points="6 20 2 20 2 14 6 14 6 20"/></svg>
-                    : <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 20 18 20 18 10 22 10 22 20"/><polyline points="14 20 10 20 10 4 14 4 14 20"/><polyline points="6 20 2 20 2 14 6 14 6 20"/></svg>
-                },
-              ].map(tab => {
-                const isActive = activeNav === tab.id;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => { setActiveNav(tab.id); window.history.pushState(null, "", "#" + tab.id); }}
-                    style={{
-                      flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2,
-                      border: "none", background: "transparent", cursor: "pointer",
-                      color: isActive ? "#2563EB" : "#9CA3AF",
-                      padding: "5px 0",
-                      position: "relative",
-                    }}
-                  >
-                    {isActive && (
-                      <span style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", width: 24, height: 3, borderRadius: "0 0 3px 3px", background: "#2563EB" }} />
-                    )}
-                    <span style={{ display: "flex", transition: "color 0.12s" }}>{tab.icon(isActive)}</span>
-                    <span style={{ fontSize: 9, fontWeight: isActive ? 700 : 500, letterSpacing: "0.01em", fontFamily: sans, transition: "color 0.12s" }}>{tab.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-
-          {/* Flex wrapper: centered within space right of left panel */}
-          <div style={{ marginLeft: isMobile ? 0 : "var(--left-panel-width)", display: "flex", justifyContent: "center", minWidth: 0 }}>
-            <main className="main-wrap" style={{ width: "100%", maxWidth: 1000, minWidth: 0, padding: isMobile ? (activeNav === "feed" ? "8px 16px 76px" : "68px 16px 76px") : "32px 32px 48px", boxSizing: "border-box" }}>
-
-              {/* ── Feed ── */}
-              {activeNav === "feed" && (() => {
-                const FEED = [
-                  // ── Opportunities ──
-                  {
-                    type: "opportunity",
-                    tag: "Opportunities", tagColor: "#EA580C", tagBg: "#FFF7ED", accent: "#EA580C",
-                    isLive: true, expired: false, expiresIn: "2h",
-                    dateGroup: "Mar 20", postedAt: "9:14 AM",
-                    sourceLabel: "Tekion AI",
-                    img: null,
-                    statStrip: true,
-                    metrics: [{ label: "Opened", value: "4m ago" }, { label: "Time on Quote", value: "48s" }],
-                    avatarLabel: "MT", avatarColor: "#EA580C",
-                    title: "Marcus Torres just opened your payment quote",
-                    subtitle: "Lead #L-0915 · 2025 Camry XSE · Website",
-                    body: "He spent 48 seconds on the payment breakdown — that's a buying signal. Calls placed within 5 minutes of a quote open close 3× more often. Strike now.",
-                    cta: "Call Marcus", dismiss: false,
-                  },
-                  {
-                    type: "opportunity",
-                    tag: "Opportunities", tagColor: "#EA580C", tagBg: "#FFF7ED", accent: "#EA580C",
-                    isLive: false, expired: false, expiresIn: "24h",
-                    dateGroup: "Mar 19", postedAt: "Mar 19, 4:30 PM",
-                    sourceLabel: "Tekion AI",
-                    img: null,
-                    statStrip: true,
-                    metrics: [{ label: "VDP Visits", value: "6" }, { label: "Days Quiet", value: "3" }],
-                    avatarLabel: "AW", avatarColor: "#7C3AED",
-                    title: "Ashley Walker — hot lead going cold",
-                    subtitle: "Lead #L-0889 · 2024 Highlander XLE · CarGurus",
-                    body: "High-intent prospect, visited the VDP 6 times last week. No activity in 3 days. Your leads typically drop 60% in conversion after day 4 of silence.",
-                    cta: "Re-engage", dismiss: false,
-                  },
-                  {
-                    type: "opportunity",
-                    tag: "Opportunities", tagColor: "#EA580C", tagBg: "#FFF7ED", accent: "#059669",
-                    isLive: false, expired: false, expiresIn: "24h",
-                    dateGroup: "Mar 18", postedAt: "Mar 18, 3:20 PM",
-                    sourceLabel: "Tekion AI",
-                    img: null,
-                    statStrip: true,
-                    metrics: [{ label: "Email Opens", value: "1" }, { label: "Link Clicks", value: "2" }],
-                    avatarLabel: "BS", avatarColor: "#059669",
-                    title: "Brian Sullivan — lead re-engaged",
-                    subtitle: "Lead #L-0798 · 2024 Camry SE · Website",
-                    body: "Opened your follow-up email and clicked the Camry SE payment calculator. Last contact was 6 days ago. Strike while intent is hot.",
-                    cta: "Call now", dismiss: false,
-                  },
-                  {
-                    type: "opportunity",
-                    tag: "Opportunities", tagColor: "#EA580C", tagBg: "#FFF7ED", accent: "#D97706",
-                    isLive: false, expired: false, expiresIn: "7d",
-                    dateGroup: "Mar 18", postedAt: "Mar 18, 5:15 PM",
-                    sourceLabel: "Tekion AI",
-                    img: null,
-                    milestoneGrad: "linear-gradient(135deg,#7c2d12 0%,#c2410c 50%,#ea580c 100%)",
-                    milestoneEmoji: "🎂", milestoneLabel: "3-Year Owner",
-                    metrics: [{ label: "Trade Value", value: "~$19.2k" }, { label: "Equity", value: "Positive" }],
-                    avatarLabel: "JD", avatarColor: "#D97706",
-                    title: "Jessica Davis — 3-year ownership anniversary",
-                    subtitle: "Purchased 2022 RAV4 XLE · Perfect upgrade timing",
-                    body: "Her RAV4 is 3 years old with positive equity. AI-suggested opener: a trade-in equity check. Good hook for an upgrade conversation — no hard sell needed.",
-                    cta: "Send trade-in offer", dismiss: false,
-                  },
-                  // ── Inventory ──
-                  {
-                    type: "inventory",
-                    tag: "Inventory", tagColor: "#2563EB", tagBg: "#EFF6FF", accent: "#2563EB",
-                    isLive: false, expired: false, expiresIn: "48h",
-                    dateGroup: "Mar 19", postedAt: "Mar 19, 2:45 PM",
-                    sourceLabel: "Lot Update",
-                    img: "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?w=400&h=220&fit=crop",
-                    imgs: [
-                      "https://images.unsplash.com/photo-1568844293986-8d0400bd4745?w=200&h=100&fit=crop",
-                      "https://images.unsplash.com/photo-1600712242805-5f78671b24da?w=200&h=100&fit=crop",
-                    ],
-                    metrics: [{ label: "Match", value: "98%" }, { label: "Wait", value: "3 wks" }],
-                    avatarLabel: "LOT", avatarColor: "#2563EB",
-                    title: "RAV4 Hybrid XSE arrived — matches Ruiz's ask",
-                    subtitle: "Stock #RH-0231 · $44,800 · Midnight Blue · In transit",
-                    body: "David Ruiz specifically requested a RAV4 Hybrid XSE in blue three weeks ago. This unit just landed. First call gets the deal.",
-                    cta: "Notify Ruiz", dismiss: false, actionTaken: "Ruiz notified",
-                  },
-                  {
-                    type: "inventory",
-                    tag: "Inventory", tagColor: "#2563EB", tagBg: "#EFF6FF", accent: "#059669",
-                    isLive: false, expired: false, expiresIn: "24h",
-                    dateGroup: "Mar 18", postedAt: "Mar 18, 3:40 PM",
-                    sourceLabel: "Lot Update",
-                    img: "https://images.unsplash.com/photo-1612544448445-b8232cff3b6c?w=400&h=220&fit=crop",
-                    imgs: [
-                      "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=200&h=100&fit=crop",
-                      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&h=100&fit=crop",
-                    ],
-                    metrics: [{ label: "Price Drop", value: "$2,600" }, { label: "New Price", value: "$37,200" }],
-                    avatarLabel: "T4", avatarColor: "#DC2626",
-                    title: "Tacoma SR5 price dropped — open deal impacted",
-                    subtitle: "Stock #T-4821 · Was $39,800 → Now $37,200",
-                    body: "The Tacoma SR5 you quoted Henderson dropped $2,600. His hesitation was on price. This could be the nudge he needs to move forward.",
-                    cta: "Update Henderson", dismiss: false, actionTaken: "Henderson updated",
-                  },
-                  // ── Deal Health ──
-                  {
-                    type: "deal",
-                    tag: "Deal Health", tagColor: "#DC2626", tagBg: "#FEF2F2", accent: "#DC2626",
-                    isLive: false, expired: false, expiresIn: "24h",
-                    dateGroup: "Mar 19", postedAt: "Mar 19, 9:00 AM",
-                    sourceLabel: "Tekion AI",
-                    img: null,
-                    statStrip: true,
-                    metrics: [{ label: "Days in F&I", value: "5" }, { label: "Avg F&I", value: "2.1d" }],
-                    avatarLabel: "DT", avatarColor: "#6B7280",
-                    title: "Thompson deal aging in F&I — Day 5",
-                    subtitle: "Deal #2901 · 2024 RAV4 XLE · Toyota Financial",
-                    body: "Average F&I time in your deals is 2.1 days. Thompson is on day 5 with no lender response. A quick call to F&I could unstick this before the weekend.",
-                    cta: "Check F&I status", dismiss: false,
-                  },
-                  {
-                    type: "deal",
-                    tag: "Deal Health", tagColor: "#DC2626", tagBg: "#FEF2F2", accent: "#059669",
-                    isLive: false, expired: false, expiresIn: "never",
-                    dateGroup: "Mar 17", postedAt: "Mar 17, 1:00 PM",
-                    sourceLabel: "Finance",
-                    img: null,
-                    statStrip: true,
-                    metrics: [{ label: "Back Gross", value: "$1,800" }, { label: "Stips", value: "Cleared" }],
-                    avatarLabel: "KB", avatarColor: "#059669",
-                    title: "Brooks deal approved — ready for delivery",
-                    subtitle: "Deal #2991 · Toyota Financial · 2024 Corolla LE",
-                    body: "Finance approved at $28,400 with $1,800 back gross. All stipulations cleared. Kevin is scheduled for a 2 PM pickup. Confirm paperwork is ready.",
-                    cta: "Confirm pickup", dismiss: false, actionTaken: "Pickup confirmed",
-                  },
-                  {
-                    type: "deal",
-                    tag: "Deal Health", tagColor: "#DC2626", tagBg: "#FEF2F2", accent: "#7C3AED",
-                    isLive: false, expired: false, expiresIn: "24h",
-                    dateGroup: "Mar 18", postedAt: "Mar 18, 11:30 AM",
-                    sourceLabel: "Tekion AI",
-                    img: null,
-                    patternGraphic: true,
-                    metrics: [{ label: "Drop Risk", value: "73%" }, { label: "No Response", value: "18h" }],
-                    avatarLabel: "TV", avatarColor: "#DC2626",
-                    title: "Vasquez deal likely to fall — engagement dropped",
-                    subtitle: "Deal #2764 · 2024 Tacoma TRD · Day 3",
-                    body: "AI flagged a 73% drop risk. Engagement fell sharply after the last counter — no opens, no replies in 18h. Consider a manager-backed counter or a fresh alternative vehicle.",
-                    cta: "Review deal", dismiss: false,
-                  },
-                  // ── Milestones ──
-                  {
-                    type: "milestone",
-                    tag: "Milestone", tagColor: "#D97706", tagBg: "#FFFBEB", accent: "#F59E0B",
-                    isLive: false, expired: false, expiresIn: "never",
-                    dateGroup: "Mar 17", postedAt: "Mar 17, 4:30 PM",
-                    sourceLabel: "Milestone",
-                    img: null,
-                    milestoneGrad: "linear-gradient(135deg,#052e16 0%,#166534 55%,#14532d 100%)",
-                    milestoneEmoji: "🎉", milestoneLabel: "Deal Closed",
-                    metrics: [{ label: "Back Gross", value: "$2,800" }, { label: "Deals This Wk", value: "3" }],
-                    avatarLabel: "LR", avatarColor: "#059669",
-                    title: "Deal closed — Lisa Rodriguez",
-                    subtitle: "2024 Camry SE · Deal #2847 · $2,800 back gross",
-                    body: "Lisa drove off in her Camry SE. Your 3rd close this week. Your MTD gross is now $11,600 — 18% ahead of your personal average for this point in the month.",
-                    cta: "Log debrief", dismiss: false,
-                  },
-                  {
-                    type: "milestone",
-                    tag: "Milestone", tagColor: "#D97706", tagBg: "#FFFBEB", accent: "#F59E0B",
-                    isLive: false, expired: false, expiresIn: "never",
-                    dateGroup: "Mar 16", postedAt: "Mar 16, 5:30 PM",
-                    sourceLabel: "Milestone",
-                    img: null,
-                    milestoneGrad: "linear-gradient(135deg,#1a1a2e 0%,#0f3460 50%,#533483 100%)",
-                    milestoneEmoji: "🔥", milestoneLabel: "5-Day Streak",
-                    metrics: [{ label: "Streak", value: "5 days" }, { label: "Close Rate", value: "+18%" }],
-                    avatarLabel: "M", avatarColor: "#D97706",
-                    title: "5-day outbound streak",
-                    subtitle: "Meaningful contact every day this week",
-                    body: "You've made meaningful outbound contact every day for 5 consecutive days. Your close rate runs 18% higher during active streak weeks.",
-                    cta: null, dismiss: false,
-                  },
-                  // ── Coaching Patterns ──
-                  {
-                    type: "coaching",
-                    tag: "Coaching", tagColor: "#7C3AED", tagBg: "#F5F3FF", accent: "#7C3AED",
-                    isLive: false, expired: false, expiresIn: "7d",
-                    dateGroup: "Mar 19", postedAt: "Mar 19, 11:30 AM",
-                    sourceLabel: "Tekion AI",
-                    img: null,
-                    patternGraphic: true,
-                    metrics: [{ label: "Lost Deals", value: "4" }, { label: "Pattern", value: "Pricing" }],
-                    avatarLabel: "AI", avatarColor: "#7C3AED",
-                    title: "Objection pattern in your recent losses",
-                    subtitle: "4 lost deals this month share a common thread",
-                    body: "In your last 4 lost deals, price was raised on day-2 counters and then ghosted. Suggested reframe: lead with monthly payment instead of price and anchor to budget before countering.",
-                    cta: "See playbook tip", dismiss: false,
-                  },
-                  {
-                    type: "coaching",
-                    tag: "Coaching", tagColor: "#7C3AED", tagBg: "#F5F3FF", accent: "#DC2626",
-                    isLive: false, expired: false, expiresIn: "7d",
-                    dateGroup: "Mar 17", postedAt: "Mar 17, 10:00 AM",
-                    sourceLabel: "Tekion AI",
-                    img: null,
-                    patternGraphic: true,
-                    metrics: [{ label: "Touched", value: "6/18" }, { label: "Your Avg", value: "10–12" }],
-                    avatarLabel: "AI", avatarColor: "#7C3AED",
-                    title: "Follow-up depth low this week",
-                    subtitle: "Touching 6 of 18 open leads — below your norm",
-                    body: "Your usual pattern is 10–12 lead touches per week. This week you've reached 6. Three of the untouched leads are high-intent. Even a quick check-in text can re-surface them.",
-                    cta: "See untouched leads", dismiss: false,
-                  },
-                  {
-                    type: "coaching",
-                    tag: "Coaching", tagColor: "#7C3AED", tagBg: "#F5F3FF", accent: "#059669",
-                    isLive: false, expired: false, expiresIn: "7d",
-                    dateGroup: "Mar 16", postedAt: "Mar 16, 2:15 PM",
-                    sourceLabel: "Tekion AI",
-                    img: null,
-                    patternGraphic: true,
-                    metrics: [{ label: "Website CVR", value: "67%" }, { label: "Other Srcs", value: "34%" }],
-                    avatarLabel: "AI", avatarColor: "#059669",
-                    title: "Win pattern: website leads in the first hour",
-                    subtitle: "6 of your last 9 closes came from this pattern",
-                    body: "6 of your last 9 closed deals came from website leads contacted within the first hour. That's a 67% same-day conversion rate — nearly double any other source.",
-                    cta: null, dismiss: false,
-                  },
-                  // ── Reputation & Reviews ──
-                  {
-                    type: "reviews",
-                    tag: "Reputation", tagColor: "#D97706", tagBg: "#FFFBEB", accent: "#F59E0B",
-                    isLive: false, expired: false, expiresIn: "never",
-                    dateGroup: "Mar 17", postedAt: "Mar 17, 3:20 PM",
-                    sourceLabel: "Google Reviews",
-                    img: null,
-                    milestoneGrad: "linear-gradient(135deg,#451a03 0%,#92400e 50%,#b45309 100%)",
-                    milestoneEmoji: "⭐", milestoneLabel: "5 Stars",
-                    metrics: [{ label: "Rating", value: "5 / 5" }, { label: "Your Avg", value: "4.8" }],
-                    avatarLabel: "LR", avatarColor: "#2563EB",
-                    title: "5-star review — Lisa Rodriguez",
-                    subtitle: "Google · \"Mike made the whole process so easy\"",
-                    body: "\"Mike made the whole process easy. No pressure, no games. He had the paperwork ready and we were in and out in under 2 hours. 10/10 would recommend.\"",
-                    cta: null, dismiss: false,
-                  },
-                  {
-                    type: "reviews",
-                    tag: "Reputation", tagColor: "#D97706", tagBg: "#FFFBEB", accent: "#DC2626",
-                    isLive: false, expired: true, expiresIn: "never",
-                    dateGroup: "Mar 16", postedAt: "Mar 16, 4:00 PM",
-                    sourceLabel: "Review Request",
-                    img: null,
-                    statStrip: true,
-                    metrics: [{ label: "Sent", value: "3d ago" }, { label: "Status", value: "Not opened" }],
-                    avatarLabel: "KM", avatarColor: "#DC2626",
-                    title: "Review request unopened — Kevin Morales",
-                    subtitle: "SMS sent 3 days ago · Not opened",
-                    body: "Your review request text hasn't been opened. A personal follow-up message increases response rates by 3×. Try referencing the specific vehicle he purchased.",
-                    cta: "Send personal note", dismiss: false,
-                  },
-                  // ── Market Intel ──
-                  {
-                    type: "market",
-                    tag: "Market Intel", tagColor: "#059669", tagBg: "#F0FDF4", accent: "#059669",
-                    isLive: false, expired: false, expiresIn: "7d",
-                    dateGroup: "Mar 16", postedAt: "Mar 16, 10:45 AM",
-                    sourceLabel: "OEM Update",
-                    img: "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?w=400&h=220&fit=crop",
-                    imgs: [
-                      "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=200&h=100&fit=crop",
-                      "https://images.unsplash.com/photo-1568844293986-8d0400bd4745?w=200&h=100&fit=crop",
-                    ],
-                    metrics: [{ label: "Rebate", value: "$1,500" }, { label: "Deals Hit", value: "3" }],
-                    avatarLabel: "OEM", avatarColor: "#059669",
-                    title: "RAV4 Hybrid conquest cash extended through month-end",
-                    subtitle: "Toyota incentive · Valid through March 31",
-                    body: "Toyota extended the $1,500 conquest cash on the RAV4 Hybrid through month-end. You have 3 active deals on this model — worth mentioning on your next touchpoint.",
-                    cta: null, dismiss: false,
-                  },
-                  {
-                    type: "market",
-                    tag: "Market Intel", tagColor: "#059669", tagBg: "#F0FDF4", accent: "#DC2626",
-                    isLive: false, expired: false, expiresIn: "7d",
-                    dateGroup: "Mar 16", postedAt: "Mar 16, 8:20 AM",
-                    sourceLabel: "Market Update",
-                    img: null,
-                    patternGraphic: true,
-                    metrics: [{ label: "Rate Change", value: "+0.4%" }, { label: "F&I Deals Hit", value: "4" }],
-                    avatarLabel: "MKT", avatarColor: "#DC2626",
-                    title: "Interest rate uptick — +0.4% this week",
-                    subtitle: "Toyota Financial · 72-month terms affected",
-                    body: "Rates moved up 0.4% for 72-month terms. On a $35k deal that's +$8/month. Four of your active F&I deals are on 72-month terms — heads up before final disclosure.",
-                    cta: "See impacted deals", dismiss: false,
-                  },
-                ];
-
-                const DATE_ORDER = ["Mar 20", "Mar 19", "Mar 18", "Mar 17", "Mar 16"];
-                const actionCount = FEED.filter(f => ["opportunity","deal","inventory","reviews"].includes(f.type) && f.cta && !f.expired).length;
-                const grouped = DATE_ORDER.reduce((acc, d) => {
-                  const items = FEED.filter(f => f.dateGroup === d);
-                  if (items.length) acc.push({ date: d, items });
-                  return acc;
-                }, []);
-
-                // category definitions for the right panel
-                const FEED_CATS = [
-                  { id: "all",         label: "All Signals",       color: "#4A7CF7" },
-                  { id: "briefs",      label: "Daily Briefs",      color: "#F59E0B" },
-                  { id: "opportunity", label: "Opportunities",     color: "#EA580C" },
-                  { id: "inventory",   label: "Inventory",         color: "#2563EB" },
-                  { id: "deal",        label: "Deal Health",       color: "#DC2626" },
-                  { id: "milestone",   label: "Milestones",        color: "#D97706" },
-                  { id: "coaching",    label: "Coaching Patterns", color: "#7C3AED" },
-                  { id: "reviews",     label: "Reputation",        color: "#F59E0B" },
-                  { id: "market",      label: "Market Intel",      color: "#059669" },
-                ];
-                // counts per category
-                const catCount = id => id === "all"
-                  ? FEED.length
-                  : id === "briefs"
-                  ? STORIES.length
-                  : FEED.filter(f => f.type === id).length;
-
-                // apply filter to grouped feed
-                const filteredGrouped = feedFilter === "all"
-                  ? grouped
-                  : feedFilter === "briefs"
-                  ? grouped  // show all date groups (stories only, no cards)
-                  : grouped.map(g => ({ ...g, items: g.items.filter(f => f.type === feedFilter) })).filter(g => g.items.length > 0);
-
-                return (
-                  <>
-                  <div style={{ display: "flex", gap: 0, alignItems: "flex-start", paddingTop: isMobile ? 16 : 0 }}>
-
-                    {/* ── Left: feed cards ── */}
-                    <div style={{ flex: 1, minWidth: 0 }}>
-
-                    {/* Date groups */}
-                    {filteredGrouped.map((group, gi) => {
-                      const isToday = group.date === DATE_ORDER[0];
-                      return (
-                      <div key={group.date} style={{ marginBottom: 32, marginTop: gi === 0 ? 16 : 0 }}>
-                        {/* Date separator */}
-                        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: isToday ? 14 : 16 }}>
-                          <span style={{ fontSize: 11, fontWeight: 700, color: "#9CA3AF", letterSpacing: "0.07em", textTransform: "uppercase", whiteSpace: "nowrap" }}>{isToday ? "Today" : group.date}</span>
-                          <div style={{ flex: 1, height: 1, background: "#F0F0F0" }} />
-                        </div>
-
-                        {/* ── Daily brief stories — show when filter is "all" or "briefs" ── */}
-                        {(feedFilter === "all" || feedFilter === "briefs") && (() => {
-                          // Past groups: all stories shown as viewed (not clickable)
-                          const isPast = group.date !== DATE_ORDER[0];
-                          return isMobile ? (
-                            /* Mobile: circular bubble row */
-                            <div style={{ display: "flex", gap: 16, overflowX: "auto", marginBottom: 20, scrollbarWidth: "none", WebkitOverflowScrolling: "touch", paddingBottom: 4 }}>
-                              {STORIES.map(s => {
-                                const ready = isPast ? true : s.ready;
-                                const seen = isPast ? true : seenStories.has(s.id);
-                                const partial = partialProgress[s.id];
-                                const totalSlides = s.slides ? s.slides.length : 0;
-                                const n = Math.max(1, totalSlides);
-                                const ringC = 2 * Math.PI * 26;
-                                const gapDeg = n > 1 ? 10 : 0;
-                                const gapArc = (gapDeg / 360) * ringC;
-                                const segLen = ringC / n - gapArc;
-                                const rotPerSeg = 360 / n;
-                                const watchedCount = seen ? n : (partial != null ? partial + 1 : 0);
-                                return (
-                                  <div key={s.id}
-                                    onClick={() => ready && !isPast && openStory(s)}
-                                    className={!ready ? "brief-tooltip" : undefined}
-                                    data-tooltip={!ready ? `Brief will be generated by ${s.time}` : undefined}
-                                    style={{ flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 7, cursor: (ready && !isPast) ? "pointer" : "default", opacity: ready ? 1 : 0.48 }}>
-                                    <div style={{ position: "relative", width: 60, height: 60 }}>
-                                      {ready ? (
-                                        <svg width="60" height="60" style={{ position: "absolute", top: 0, left: 0, pointerEvents: "none" }}>
-                                          {Array.from({ length: n }, (_, i) => (
-                                            <circle key={i} cx="30" cy="30" r="27" fill="none"
-                                              stroke={i < watchedCount ? "#D1D5DB" : "#2563EB"}
-                                              strokeWidth="2.5" strokeLinecap="round"
-                                              strokeDasharray={`${segLen.toFixed(2)} 999`}
-                                              strokeDashoffset={0}
-                                              transform={`rotate(${-90 + i * rotPerSeg}, 30, 30)`}
-                                            />
-                                          ))}
-                                        </svg>
-                                      ) : (
-                                        <svg width="60" height="60" style={{ position: "absolute", top: 0, left: 0, pointerEvents: "none" }}>
-                                          <circle cx="30" cy="30" r="27" fill="none" stroke="#E5E7EB" strokeWidth="2" strokeDasharray="4 4" />
-                                        </svg>
-                                      )}
-                                      <div style={{ position: "absolute", top: 5, left: 5, width: 50, height: 50, borderRadius: "50%", background: ready ? s.gradient : "#F3F4F6", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", filter: seen ? "grayscale(50%) brightness(0.82)" : "none" }}>
-                                        <span style={{ fontSize: 22, filter: ready ? "drop-shadow(0 1px 4px rgba(0,0,0,0.25))" : "none" }}>{s.icon}</span>
-                                        {!ready && (
-                                          <div style={{ position: "absolute", inset: 0, borderRadius: "50%", background: "rgba(0,0,0,0.18)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                                          </div>
-                                        )}
-                                      </div>
-                                    </div>
-                                    <span style={{ fontSize: 10, fontWeight: 600, color: ready ? "#18181B" : "#9CA3AF", textAlign: "center", maxWidth: 62, lineHeight: 1.3, fontFamily: sans }}>{s.label}</span>
-                                    <span style={{ fontSize: 9, fontWeight: 500, color: "#B0B7C3", textAlign: "center", fontFamily: sans, marginTop: -4 }}>{s.time}</span>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          ) : (
-                            /* Desktop: card grid (home5 style) */
-                            <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 10, marginBottom: 20 }}>
-                              {STORIES.map(s => {
-                                const ready = isPast ? true : s.ready;
-                                const seen = isPast ? true : seenStories.has(s.id);
-                                const partial = partialProgress[s.id];
-                                const totalSlides = s.slides ? s.slides.length : 0;
-                                const slidesLeft = partial != null ? totalSlides - 1 - partial : 0;
-                                // Locked card (today's upcoming briefs — not ready yet)
-                                if (!ready) return (
-                                  <div key={s.id}
-                                    className="brief-tooltip"
-                                    data-tooltip={`Brief will be generated by ${s.time}`}
-                                    style={{ cursor: "default", display: "flex", flexDirection: "column", gap: 0, borderRadius: 8, border: "1px solid #EFEFEF", background: "#FFF", padding: 5, minWidth: 0 }}>
-                                    <div style={{ width: "100%", height: 72, borderRadius: 7, position: "relative", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-                                      <div style={{ position: "absolute", inset: 0, background: s.gradient, opacity: 0.18 }} />
-                                      <div style={{ position: "absolute", inset: 0, background: "rgba(250,250,250,0.58)" }} />
-                                      <span style={{ fontSize: 24, position: "relative", zIndex: 1, opacity: 0.52, filter: "grayscale(15%)" }}>{s.icon}</span>
-                                      <div style={{ position: "absolute", top: 6, right: 6, zIndex: 2, width: 18, height: 18, borderRadius: 4, background: "rgba(0,0,0,0.10)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                                      </div>
-                                    </div>
-                                    <div style={{ padding: "6px 4px 2px", display: "flex", flexDirection: "column", gap: 1, minWidth: 0, overflow: "hidden" }}>
-                                      <span style={{ fontSize: 12, fontWeight: 600, color: "#9CA3AF", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontFamily: sans }}>{s.label}</span>
-                                      <span style={{ fontSize: 12, fontWeight: 500, color: "#C4C4C4", fontFamily: sans }}>{s.time}</span>
-                                    </div>
-                                  </div>
-                                );
-                                // Ready card (today's morning brief OR any past story shown as seen)
-                                return (
-                                  <div key={s.id}
-                                    onClick={() => !isPast && openStory(s)}
-                                    className="recent-card"
-                                    style={{ cursor: isPast ? "default" : "pointer", display: "flex", flexDirection: "column", gap: 0, minWidth: 0 }}>
-                                    <div style={{ width: "100%", height: 72, borderRadius: 7, background: s.gradient, position: "relative", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", filter: seen ? "grayscale(40%) brightness(0.88)" : "none" }}>
-                                      <span style={{ fontSize: 32, filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.25))" }}>{s.icon}</span>
-                                      {seen && (
-                                        <div style={{ position: "absolute", top: 6, left: 6, background: "rgba(0,0,0,0.38)", borderRadius: 4, padding: "1px 5px", fontSize: 10, fontWeight: 700, color: "#FFF", letterSpacing: "0.03em", display: "flex", alignItems: "center", gap: 3 }}>
-                                          <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="#FFF" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Seen
-                                        </div>
-                                      )}
-                                      {!seen && partial != null && slidesLeft > 0 && (
-                                        <div style={{ position: "absolute", top: 6, left: 6, background: "rgba(0,0,0,0.38)", borderRadius: 4, padding: "1px 5px", fontSize: 10, fontWeight: 700, color: "#FFF" }}>{slidesLeft} left</div>
-                                      )}
-                                      {!seen && partial == null && totalSlides > 0 && (
-                                        <div style={{ position: "absolute", top: 6, left: 6, background: "rgba(0,0,0,0.28)", borderRadius: 4, padding: "1px 5px", fontSize: 10, fontWeight: 700, color: "#FFF" }}>{totalSlides}</div>
-                                      )}
-                                    </div>
-                                    <div style={{ padding: "6px 4px 2px", display: "flex", flexDirection: "column", gap: 1, minWidth: 0, overflow: "hidden" }}>
-                                      <div style={{ display: "flex", alignItems: "center", gap: 3, minWidth: 0 }}>
-                                        <span style={{ fontSize: 12, fontWeight: 700, color: seen ? "#9CA3AF" : "#18181B", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1, minWidth: 0, fontFamily: sans }}>{s.label}</span>
-                                        {!seen && !isPast && <svg className="redirect-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7,7 17,7 17,17"/></svg>}
-                                      </div>
-                                      <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", fontFamily: sans }}>{s.time}</span>
-                                    </div>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          );
-                        })()}
-
-                        {/* Cards — hidden when "briefs" filter is active */}
-                        {feedFilter !== "briefs" && <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                          {group.items.map((item, i) => {
-                            const isExpired = item.expired;
-                            const actionTaken = item.actionTaken || null;
-                            const hasImage = !!item.img;
-                            const hasMilestone = !!item.milestoneGrad;
-                            const hasPattern = !!item.patternGraphic;
-                            const hasStatStrip = !!item.statStrip;
-
-                            return (
-                              <div key={i} className={isExpired ? "" : "card-hover"} style={{
-                                background: isExpired ? "#FAFAFA" : "#FFF",
-                                borderRadius: 8,
-                                border: `1px solid ${isExpired ? "#EBEBEB" : "#EBEBEB"}`,
-                                overflow: "hidden",
-                                transition: "box-shadow 0.15s, transform 0.15s",
-                                position: "relative",
-                              }}>
-
-                                {/* ── Title row (title left, timestamp right) ── */}
-                                <div style={{ padding: "14px 16px 12px" }}>
-                                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: 6 }}>
-                                    <div style={{ fontSize: 17, fontWeight: 800, color: isExpired ? "#6B7280" : "#18181B", letterSpacing: "-0.025em", lineHeight: 1.3, flex: 1, minWidth: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                                      {item.title}
-                                    </div>
-                                    {!isExpired && (
-                                      <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
-                                        {item.isLive && (
-                                          <span style={{ display: "flex", alignItems: "center", gap: 4, background: "#FEF2F2", borderRadius: 4, padding: "2px 7px 2px 5px" }}>
-                                            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#EF4444", animation: "pulse 1.5s infinite", display: "inline-block", flexShrink: 0 }} />
-                                            <span style={{ fontSize: 10, fontWeight: 700, color: "#EF4444", letterSpacing: "0.04em" }}>LIVE</span>
-                                          </span>
-                                        )}
-                                        <span style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", whiteSpace: "nowrap", paddingTop: 1 }}>{item.postedAt}</span>
-                                      </div>
-                                    )}
-                                  </div>
-                                  {/* Meta pills row */}
-                                  <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
-                                    {/* Tag pill moved here from header */}
-                                    <span style={{ fontSize: 10, fontWeight: 700, color: isExpired ? "#9CA3AF" : item.tagColor, background: isExpired ? "#F3F4F6" : item.tagBg, padding: "3px 9px", borderRadius: 20, letterSpacing: "0.03em", whiteSpace: "nowrap" }}>
-                                      {isExpired ? "Expired" : item.tag}
-                                    </span>
-                                    <span style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", background: "#F3F4F6", padding: "3px 9px", borderRadius: 20 }}>{item.subtitle.split("·")[0].trim()}</span>
-                                    {isExpired && (
-                                      <span style={{ fontSize: 10, fontWeight: 700, color: "#9CA3AF", background: "#F3F4F6", padding: "3px 9px", borderRadius: 20, display: "flex", alignItems: "center", gap: 4 }}>
-                                        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2.5"/></svg>
-                                        Not valid
-                                      </span>
-                                    )}
-                                  </div>
-                                </div>
-
-                                {/* ── Media grid — hero left, stacked thumbs right ── */}
-                                {hasImage && (
-                                  <>
-                                    {/* Image grid — full rounded corners, standalone */}
-                                    <div style={{ margin: "0 16px 0", display: "grid", gridTemplateColumns: "1fr 36%", gap: 4, height: 180, borderRadius: 10, overflow: "hidden" }}>
-                                      {/* Left: clean hero image */}
-                                      <div style={{ position: "relative", overflow: "hidden", background: "#F3F4F6" }}>
-                                        <img src={item.img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} onError={e => e.target.style.display = "none"} />
-                                        {isExpired && <div style={{ position: "absolute", inset: 0, background: "rgba(255,255,255,0.3)" }} />}
-                                      </div>
-                                      {/* Right: stacked thumbnails */}
-                                      <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                                        {(item.imgs || []).map((src, si) => (
-                                          <div key={si} style={{ flex: 1, overflow: "hidden", background: "#F3F4F6", position: "relative" }}>
-                                            <img src={src} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} onError={e => e.target.style.display = "none"} />
-                                            {isExpired && <div style={{ position: "absolute", inset: 0, background: "rgba(255,255,255,0.3)" }} />}
-                                          </div>
-                                        ))}
-                                      </div>
-                                    </div>
-                                    {/* Stat strip — separated below image with its own border */}
-                                    <div style={{ margin: "8px 16px 14px", display: "flex", borderRadius: 8, overflow: "hidden", border: "1px solid #EBEBEB" }}>
-                                      {item.metrics.map((m, mi) => (
-                                        <div key={mi} style={{
-                                          flex: 1, padding: "10px 14px",
-                                          background: "#FAFAFA",
-                                          borderLeft: mi > 0 ? "1px solid #EBEBEB" : "none",
-                                          display: "flex", flexDirection: "column", gap: 3,
-                                        }}>
-                                          <span style={{ fontSize: 15, fontWeight: 700, color: isExpired ? "#9CA3AF" : "#18181B", letterSpacing: "-0.02em", lineHeight: 1 }}>{m.value}</span>
-                                          <span style={{ fontSize: 10, fontWeight: 500, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.06em" }}>{m.label}</span>
-                                        </div>
-                                      ))}
-                                    </div>
-                                  </>
-                                )}
-
-                                {/* ── Milestone banner ── */}
-                                {hasMilestone && (
-                                  <div style={{ margin: "0 16px 14px", borderRadius: 10, overflow: "hidden", background: isExpired ? "#F3F4F6" : item.milestoneGrad, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0, height: 100 }}>
-                                    {/* Left: emoji + label */}
-                                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 4, borderRight: "1px solid rgba(255,255,255,0.1)" }}>
-                                      <span style={{ fontSize: 34, lineHeight: 1 }}>{item.milestoneEmoji}</span>
-                                      <span style={{ fontSize: 9, fontWeight: 700, color: isExpired ? "#9CA3AF" : "rgba(255,255,255,0.7)", letterSpacing: "0.07em", textTransform: "uppercase" }}>{item.milestoneLabel}</span>
-                                    </div>
-                                    {/* Right: metrics */}
-                                    <div style={{ display: "flex", flexDirection: "column", gap: 5, padding: "14px 16px" }}>
-                                      {item.metrics.map((m, mi) => (
-                                        <div key={mi} style={{ display: "flex", flexDirection: "column" }}>
-                                          <span style={{ fontSize: 18, fontWeight: 800, color: isExpired ? "#9CA3AF" : "#FFF", letterSpacing: "-0.02em", lineHeight: 1 }}>{m.value}</span>
-                                          <span style={{ fontSize: 9, fontWeight: 600, color: isExpired ? "#C0C0C0" : "rgba(255,255,255,0.5)", textTransform: "uppercase", letterSpacing: "0.05em", marginTop: 1 }}>{m.label}</span>
-                                        </div>
-                                      ))}
-                                    </div>
-                                  </div>
-                                )}
-
-                                {/* ── Pattern banner ── */}
-                                {hasPattern && (
-                                  <div style={{ margin: "0 16px 14px", borderRadius: 10, overflow: "hidden", background: isExpired ? "#F3F4F6" : "linear-gradient(135deg,#0f0c29,#302b63,#1e1b4b)", display: "grid", gridTemplateColumns: "1fr 90px", height: 100 }}>
-                                    {/* Chart area */}
-                                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "0 10px" }}>
-                                      <svg width="100%" height="56" viewBox="0 0 180 56" preserveAspectRatio="none" fill="none">
-                                        <polyline points="0,44 30,40 55,38 80,46 110,22 135,15 158,28 180,14" stroke={isExpired ? "#9CA3AF" : item.accent} strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-                                        <polyline points="0,44 30,40 55,38 80,46 110,22 135,15 158,28 180,14 180,56 0,56" fill={isExpired ? "#9CA3AF" : item.accent} fillOpacity="0.12"/>
-                                      </svg>
-                                    </div>
-                                    {/* Metrics */}
-                                    <div style={{ display: "flex", flexDirection: "column", gap: 6, padding: "14px 14px 14px 6px", justifyContent: "center" }}>
-                                      {item.metrics.map((m, mi) => (
-                                        <div key={mi} style={{ display: "flex", flexDirection: "column" }}>
-                                          <span style={{ fontSize: 16, fontWeight: 800, color: isExpired ? "#9CA3AF" : (mi === 0 ? item.accent : "rgba(255,255,255,0.55)"), letterSpacing: "-0.02em", lineHeight: 1 }}>{m.value}</span>
-                                          <span style={{ fontSize: 8.5, fontWeight: 600, color: isExpired ? "#C0C0C0" : "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: "0.05em", marginTop: 1 }}>{m.label}</span>
-                                        </div>
-                                      ))}
-                                    </div>
-                                  </div>
-                                )}
-
-                                {/* ── Stat strip ── */}
-                                {hasStatStrip && (
-                                  <div style={{ display: "flex", margin: "0 16px 14px", borderRadius: 8, overflow: "hidden", border: "1px solid #EBEBEB" }}>
-                                    {item.metrics.map((m, mi) => (
-                                      <div key={mi} style={{
-                                        flex: 1, padding: "10px 14px",
-                                        background: "#FAFAFA",
-                                        borderLeft: mi > 0 ? "1px solid #EBEBEB" : "none",
-                                        display: "flex", flexDirection: "column", gap: 3,
-                                      }}>
-                                        <div style={{ fontSize: 15, fontWeight: 700, letterSpacing: "-0.02em", lineHeight: 1, color: isExpired ? "#9CA3AF" : "#18181B" }}>{m.value}</div>
-                                        <div style={{ fontSize: 10, fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.06em", color: "#9CA3AF" }}>{m.label}</div>
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
-
-                                {/* ── Body text ── */}
-                                {(() => {
-                                  const isExpanded = expandedCards.has(item.title);
-                                  const bodyStyle = { fontSize: 13.5, fontWeight: 400, color: isExpired ? "#9CA3AF" : "#4B5563", lineHeight: 1.65, margin: 0 };
-                                  const clampStyle = isExpanded ? {} : { display: "-webkit-box", WebkitLineClamp: 6, WebkitBoxOrient: "vertical", overflow: "hidden" };
-                                  // Estimate if text is long enough to need clamping (~80 chars per line × 6 lines)
-                                  const needsClamp = item.body && item.body.length > 480;
-                                  return (
-                                    <div style={{ padding: "0 16px 14px" }}>
-                                      <p style={{ ...bodyStyle, ...clampStyle }}>{item.body}</p>
-                                      {needsClamp && (
-                                        <button onClick={() => toggleCardExpand(item.title)} style={{ marginTop: 4, fontSize: 12.5, fontWeight: 600, color: "#2563EB", background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: "inherit" }}>
-                                          {isExpanded ? "View less" : "View more"}
-                                        </button>
-                                      )}
-                                    </div>
-                                  );
-                                })()}
-
-                                {/* ── Expired banner ── */}
-                                {isExpired && (
-                                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", margin: "0 16px 14px", padding: "9px 12px", borderRadius: 6, background: "#F3F4F6", border: "1px solid #E5E7EB" }}>
-                                    <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-                                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2.5"/></svg>
-                                      <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280" }}>Signal expired — no longer actionable</span>
-                                    </div>
-                                    <span style={{ fontSize: 11, fontWeight: 500, color: "#6B7280" }}>{item.postedAt}</span>
-                                  </div>
-                                )}
-
-                                {/* ── Footer: feedback icons left, CTA / action-taken right ── */}
-                                {!isExpired && (
-                                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "9px 14px 12px", borderTop: "1px solid #F5F5F5" }}>
-                                    {/* Feedback icons */}
-                                    <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
-                                      {[
-                                        { title: "Like", path: "M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14zM7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3" },
-                                        { title: "Dislike", path: "M10 15v4a3 3 0 003 3l4-9V2H5.72a2 2 0 00-2 1.7l-1.38 9a2 2 0 002 2.3H10zM17 2h2.67A2.31 2.31 0 0122 4v7a2.31 2.31 0 01-2.33 2H17" },
-                                        { title: "Share", path: "M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13" },
-                                      ].map(icon => (
-                                        <button key={icon.title} title={icon.title}
-                                          style={{ width: 28, height: 28, borderRadius: 4, border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#9CA3AF", padding: 0, transition: "color 0.12s, background 0.12s" }}
-                                          onMouseEnter={e => { e.currentTarget.style.color = "#374151"; e.currentTarget.style.background = "#F3F4F6"; }}
-                                          onMouseLeave={e => { e.currentTarget.style.color = "#9CA3AF"; e.currentTarget.style.background = "transparent"; }}>
-                                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                            <path d={icon.path} />
-                                          </svg>
-                                        </button>
-                                      ))}
-                                    </div>
-                                    {/* CTA or action-taken state */}
-                                    {actionTaken ? (
-                                      <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "5px 10px", borderRadius: 4, background: "#F0FDF4", border: "1px solid #BBF7D0" }}>
-                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                                        <span style={{ fontSize: 12, fontWeight: 600, color: "#16A34A" }}>{actionTaken}</span>
-                                      </div>
-                                    ) : item.cta ? (
-                                      <button style={{ padding: "6px 14px", fontSize: 12, fontWeight: 600, color: "#374151", background: "#FFF", border: "none", boxShadow: "inset 0 0 0 1px #E5E7EB", borderRadius: 4, cursor: "pointer", fontFamily: sans, transition: "all 0.12s" }}
-                                        onMouseEnter={e => { e.currentTarget.style.background = "#F9FAFB"; e.currentTarget.style.boxShadow = "inset 0 0 0 1px #D1D5DB"; }}
-                                        onMouseLeave={e => { e.currentTarget.style.background = "#FFF"; e.currentTarget.style.boxShadow = "inset 0 0 0 1px #E5E7EB"; }}>
-                                        {item.cta}
-                                      </button>
-                                    ) : null}
-                                  </div>
-                                )}
-
-                              </div>
-                            );
-                          })}
-                        </div>}
-                      </div>
-                    );
-                    })}
-                    </div>
-
-                    {/* ── Right: category filter panel — desktop only ── */}
-                    {!isMobile && <div style={{ width: 188, flexShrink: 0, position: "sticky", top: 24, marginLeft: 40, paddingRight: 8 }}>
-                      {/* Panel header */}
-                      <div style={{ marginBottom: 10, padding: "0 2px" }}>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: "#9CA3AF", letterSpacing: "0.05em", textTransform: "uppercase" }}>Category</span>
-                      </div>
-
-                      {/* Category list */}
-                      <div style={{ background: "#FFF", borderRadius: 12, border: "1px solid #E5E7EB", overflow: "hidden", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
-                        {FEED_CATS.map((cat, ci) => {
-                          const isActive = feedFilter === cat.id;
-                          const count = catCount(cat.id);
-                          return (
-                            <button
-                              key={cat.id}
-                              onClick={() => setFeedFilter(cat.id)}
-                              style={{
-                                width: "100%",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                                padding: "11px 14px",
-                                background: isActive ? "#EFF6FF" : "transparent",
-                                border: "none",
-                                borderBottom: ci < FEED_CATS.length - 1 ? "1px solid #F3F4F6" : "none",
-                                cursor: "pointer",
-                                textAlign: "left",
-                                transition: "background 0.13s",
-                              }}
-                              onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "#F9FAFB"; }}
-                              onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = "transparent"; }}
-                            >
-                              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                                <span style={{ fontSize: 13, fontWeight: isActive ? 700 : 500, color: isActive ? "#18181B" : "#6B7280", letterSpacing: "-0.01em" }}>{cat.label}</span>
-                              </div>
-                              {/* Count badge — only show if > 0 */}
-                              {count > 0 && (
-                                <span style={{
-                                  fontSize: 11, fontWeight: 700,
-                                  color: isActive ? "#FFF" : "#9CA3AF",
-                                  background: isActive ? cat.color : "#F3F4F6",
-                                  borderRadius: 20,
-                                  padding: "2px 7px",
-                                  minWidth: 22,
-                                  textAlign: "center",
-                                  lineHeight: "16px",
-                                  transition: "all 0.13s",
-                                }}>
-                                  {count}
-                                </span>
-                              )}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>}
-
+              {/* ── Feed empty state ── */}
+              {activeNav === "feed" && (
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60vh", gap: 16, textAlign: "center" }}>
+                  <div style={{ width: 56, height: 56, borderRadius: 14, background: "#F3F4F6", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 6h16M4 12h16M4 18h10" /></svg>
                   </div>
-
-                  {/* ── Floating FAB filter button — mobile only ── */}
-                  {isMobile && ReactDOM.createPortal(
-                    <button
-                      onClick={() => setShowFeedFilter(true)}
-                      style={{
-                        position: "fixed",
-                        bottom: 76,
-                        left: "50%",
-                        transform: "translateX(-50%)",
-                        zIndex: 50,
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 7,
-                        padding: "10px 20px",
-                        borderRadius: 100,
-                        border: feedFilter !== "all" ? "1.5px solid #2563EB" : "1.5px solid rgba(0,0,0,0.10)",
-                        background: feedFilter !== "all" ? "#EFF6FF" : "rgba(255,255,255,0.96)",
-                        boxShadow: "0 4px 20px rgba(0,0,0,0.13)",
-                        cursor: "pointer",
-                        fontFamily: "'Manrope', sans-serif",
-                        backdropFilter: "blur(12px)",
-                        WebkitBackdropFilter: "blur(12px)",
-                        transition: "all 0.18s",
-                      }}
-                    >
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={feedFilter !== "all" ? "#2563EB" : "#374151"} strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round">
-                        <line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/>
-                      </svg>
-                      <span style={{ fontSize: 13, fontWeight: 700, color: feedFilter !== "all" ? "#2563EB" : "#18181B", letterSpacing: "-0.01em" }}>
-                        {feedFilter === "all" ? "Filter" : FEED_CATS.find(c => c.id === feedFilter)?.label || "Filter"}
-                      </span>
-                      {feedFilter !== "all" && (
-                        <span
-                          onClick={e => { e.stopPropagation(); setFeedFilter("all"); }}
-                          style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 18, height: 18, borderRadius: "50%", background: "#BFDBFE", marginLeft: 2, cursor: "pointer" }}
-                        >
-                          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                        </span>
-                      )}
-                    </button>,
-                    document.body
-                  )}
-
-                  {/* ── Filter bottom sheet — mobile only ── */}
-                  {isMobile && showFeedFilter && ReactDOM.createPortal(
-                    <div
-                      onClick={() => setShowFeedFilter(false)}
-                      style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(0,0,0,0.35)", display: "flex", alignItems: "flex-end" }}
-                    >
-                      <div
-                        onClick={e => e.stopPropagation()}
-                        style={{
-                          width: "100%",
-                          background: "#FFF",
-                          borderRadius: "20px 20px 0 0",
-                          padding: "0 0 calc(env(safe-area-inset-bottom, 0px) + 16px)",
-                          boxShadow: "0 -8px 40px rgba(0,0,0,0.14)",
-                          maxHeight: "80svh",
-                          overflowY: "auto",
-                        }}
-                      >
-                        {/* Handle */}
-                        <div style={{ display: "flex", justifyContent: "center", padding: "12px 0 4px" }}>
-                          <div style={{ width: 36, height: 4, borderRadius: 99, background: "#E5E7EB" }} />
-                        </div>
-
-                        {/* Header */}
-                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 20px 14px", borderBottom: "1px solid #F3F4F6" }}>
-                          <span style={{ fontSize: 16, fontWeight: 800, color: "#18181B", letterSpacing: "-0.02em", fontFamily: "'Manrope', sans-serif" }}>Filter by Category</span>
-                          <button
-                            onClick={() => setShowFeedFilter(false)}
-                            style={{ width: 30, height: 30, borderRadius: "50%", background: "#F3F4F6", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
-                          >
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                          </button>
-                        </div>
-
-                        {/* Category list */}
-                        <div style={{ padding: "8px 0" }}>
-                          {FEED_CATS.map((cat) => {
-                            const isActive = feedFilter === cat.id;
-                            const count = catCount(cat.id);
-                            return (
-                              <button
-                                key={cat.id}
-                                onClick={() => { setFeedFilter(cat.id); setShowFeedFilter(false); }}
-                                style={{
-                                  width: "100%",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "space-between",
-                                  padding: "13px 20px",
-                                  background: "transparent",
-                                  border: "none",
-                                  cursor: "pointer",
-                                  textAlign: "left",
-                                  fontFamily: "'Manrope', sans-serif",
-                                }}
-                              >
-                                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                                  <span style={{ fontSize: 15, fontWeight: isActive ? 700 : 500, color: isActive ? "#18181B" : "#6B7280", letterSpacing: "-0.01em" }}>{cat.label}</span>
-                                </div>
-                                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                                  {count > 0 && (
-                                    <span style={{
-                                      fontSize: 12, fontWeight: 700,
-                                      color: isActive ? "#FFF" : "#9CA3AF",
-                                      background: isActive ? cat.color : "#F3F4F6",
-                                      borderRadius: 20,
-                                      padding: "2px 9px",
-                                      lineHeight: "18px",
-                                    }}>{count}</span>
-                                  )}
-                                  {isActive && (
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={cat.color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                      <polyline points="20 6 9 17 4 12"/>
-                                    </svg>
-                                  )}
-                                </div>
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    </div>,
-                    document.body
-                  )}
-
-                  </>
-                );
-              })()}
-
-              {/* ── Empty state helper ── */}
-              {(() => {
-                const EmptyState = ({ icon, color, iconBg, title, subtitle }) => (
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "calc(100svh - 120px)", gap: 14, textAlign: "center", padding: "0 16px", boxSizing: "border-box", width: "100%" }}>
-                    <div style={{ width: 64, height: 64, borderRadius: 18, background: iconBg || "#F3F4F6", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 4 }}>
-                      {icon}
-                    </div>
-                    <div>
-                      <div style={{ fontSize: 17, fontWeight: 700, color: "#18181B", marginBottom: 6, letterSpacing: "-0.01em" }}>{title}</div>
-                      <div style={{ fontSize: 14, fontWeight: 500, color: "#9CA3AF", maxWidth: 260, lineHeight: 1.65, margin: "0 auto" }}>{subtitle}</div>
-                    </div>
+                  <div>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: "#18181B", marginBottom: 6 }}>Your feed is empty</div>
+                    <div style={{ fontSize: 14, fontWeight: 500, color: "#9CA3AF", maxWidth: 280, lineHeight: 1.6 }}>Activity from your deals, leads, and appointments will show up here as things happen.</div>
                   </div>
-                );
+                </div>
+              )}
 
-                if (activeNav === "pulse") return (
-                  <EmptyState
-                    iconBg="#EFF6FF"
-                    icon={<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 20 18 20 18 10 22 10 22 20"/><polyline points="14 20 10 20 10 4 14 4 14 20"/><polyline points="6 20 2 20 2 14 6 14 6 20"/></svg>}
-                    title="Pulse is warming up"
-                    subtitle="Real-time performance signals for your store and team will appear here once data starts flowing."
-                  />
-                );
-                if (activeNav === "chat") return (
-                  <EmptyState
-                    iconBg="#F0FDF4"
-                    icon={<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>}
-                    title="No conversations yet"
-                    subtitle="Messages from your customers and team will show up here. Start a conversation to get going."
-                  />
-                );
-                if (activeNav === "tasks") return (
-                  <EmptyState
-                    iconBg="#FFF7ED"
-                    icon={<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#EA580C" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>}
-                    title="You're all caught up"
-                    subtitle="Tasks assigned to you or generated by Tekion AI will appear here. Nothing pending right now."
-                  />
-                );
-                return null;
-              })()}
+              {/* ── Pulse empty state ── */}
+              {activeNav === "pulse" && (
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60vh", gap: 16, textAlign: "center" }}>
+                  <div style={{ width: 56, height: 56, borderRadius: 14, background: "#F3F4F6", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 20 18 20 18 10 22 10 22 20" /><polyline points="14 20 10 20 10 4 14 4 14 20" /><polyline points="6 20 2 20 2 14 6 14 6 20" /></svg>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: "#18181B", marginBottom: 6 }}>No pulse data yet</div>
+                    <div style={{ fontSize: 14, fontWeight: 500, color: "#9CA3AF", maxWidth: 280, lineHeight: 1.6 }}>Real-time performance signals for your team and store will appear here once data starts flowing.</div>
+                  </div>
+                </div>
+              )}
 
               {/* ── Home content ── */}
               {activeNav === "home" && <>
 
                 {/* logo */}
-                <div className="logo-entrance" style={{ marginBottom: 4, marginTop: isMobile ? 52 : 0 }}>
+                <div className="logo-entrance" style={{ marginBottom: 4, marginTop: 0 }}>
                   <svg width="44" height="44" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M3.90234 12.1417C4.35913 11.3507 5.37099 11.0796 6.1621 11.5362C6.95276 11.993 7.22378 13.004 6.76757 13.795C6.31077 14.5862 5.299 14.8573 4.50781 14.4005C3.71688 13.9436 3.44577 12.9327 3.90234 12.1417Z" fill="url(#lg0)" />
                     <path d="M9.85253 11.5362C10.6436 11.0795 11.6554 11.3507 12.1123 12.1417C12.5687 12.9327 12.2976 13.9436 11.5068 14.4005C10.7156 14.8573 9.70386 14.5862 9.24706 13.795C8.79076 13.0039 9.06163 11.9929 9.85253 11.5362Z" fill="url(#lg1)" />
@@ -3317,63 +2520,8 @@
                 </div>
 
                 {/* greeting */}
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
-                  <h1 className="greeting-entrance" style={{ fontSize: 24, fontWeight: 700, letterSpacing: "-0.02em", color: "#18181B", margin: 0 }}>Good morning, Mike.</h1>
-                  {!isMobile && (
-                    <div className="qa-desktop-entrance" style={{ display: "flex", alignItems: "center", gap: 6 }}>
-
-                      {/* Theme picker */}
-                      <div ref={themePickerRef}>
-                        <button
-                          onClick={() => {
-                            if (themePickerRef.current) {
-                              const r = themePickerRef.current.getBoundingClientRect();
-                              setThemeDropPos({ top: r.bottom + 6, right: window.innerWidth - r.right });
-                            }
-                            setShowHamburgerMenu(m => !m);
-                          }}
-                          title="Change theme"
-                          style={{ width: 32, height: 32, borderRadius: 6, border: "1px solid #E5E7EB", background: showHamburgerMenu ? "#F3F4F6" : "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 1px 3px rgba(0,0,0,0.05)", transition: "all 0.15s" }}
-                          onMouseEnter={e => { e.currentTarget.style.background = "#F3F4F6"; e.currentTarget.style.borderColor = "#D1D5DB"; }}
-                          onMouseLeave={e => { e.currentTarget.style.background = showHamburgerMenu ? "#F3F4F6" : "#FFF"; e.currentTarget.style.borderColor = "#E5E7EB"; }}>
-                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <circle cx="12" cy="12" r="10" />
-                            <circle cx="12" cy="12" r="3" fill="#6B7280" stroke="none" />
-                            <path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12" />
-                          </svg>
-                        </button>
-                      </div>
-
-                      {/* Customize widgets */}
-                      <button
-                        onClick={() => { setDraftSelected(null); setDraftOrder(null); setShowWidgetModal(true); document.body.style.paddingRight = (window.innerWidth - document.documentElement.clientWidth) + "px"; document.body.style.overflow = "hidden"; }}
-                        title="Customize widgets"
-                        style={{ width: 32, height: 32, borderRadius: 6, border: "1px solid #E5E7EB", background: "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 1px 3px rgba(0,0,0,0.05)", transition: "all 0.15s" }}
-                        onMouseEnter={e => { e.currentTarget.style.background = "#F3F4F6"; e.currentTarget.style.borderColor = "#D1D5DB"; }}
-                        onMouseLeave={e => { e.currentTarget.style.background = "#FFF"; e.currentTarget.style.borderColor = "#E5E7EB"; }}>
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" />
-                          <path d="M17 14v6M14 17h6" />
-                        </svg>
-                      </button>
-
-                      {/* Quick Actions */}
-                      <div ref={desktopQARef}>
-                        <button onClick={() => openQADropdown(desktopQARef, false)} style={{
-                          display: "flex", alignItems: "center", gap: 7, padding: "6px 12px",
-                          borderRadius: 6, border: "1px solid #E5E7EB",
-                          background: showQuickActionsDropdown ? "#F9FAFB" : "#FFF",
-                          fontSize: 14, fontWeight: 600, color: "#18181B", cursor: "pointer", fontFamily: sans,
-                          boxShadow: "0 1px 3px rgba(0,0,0,0.05)", transition: "all 0.15s"
-                        }}>
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#4A7CF7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>
-                          Quick Actions
-                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transform: showQuickActionsDropdown ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}><path d="M6 9l6 6 6-6" /></svg>
-                        </button>
-                      </div>
-
-                    </div>
-                  )}
+                <div style={{ marginBottom: 6 }}>
+                  <h1 className="greeting-entrance" style={{ fontSize: 24, fontWeight: 700, letterSpacing: "-0.02em", color: "#18181B", margin: 0 }}>Good morning, Jana.</h1>
                 </div>
                 <p className="narrative-entrance" style={{ fontSize: 14, fontWeight: 500, color: "#6B7280", lineHeight: 1.65, margin: "0 0 20px", maxWidth: 720 }}>2 deals need attention · AI handled Ashley Carter · 4 appointments this afternoon.</p>
 
@@ -3512,7 +2660,7 @@
                 <div className="divider-entrance" style={{ margin: "20px 0 0", height: 1, background: "#E5E7EB" }} />
 
 
-                <div style={{ display: isMobile ? 'flex' : 'grid', flexDirection: isMobile ? 'column' : undefined, gap: isMobile ? 28 : undefined, gridTemplateColumns: isMobile ? undefined : '1fr 1fr', columnGap: isMobile ? undefined : 20, rowGap: isMobile ? undefined : 28, paddingTop: 24 }}>
+                <div style={{ display: isMobile ? 'block' : 'grid', gridTemplateColumns: '1fr 1fr', columnGap: 20, rowGap: 28, paddingTop: 24 }}>
                 {(() => {
                   // Pre-compute column placement so right-column items animate after left-column items
                   let _col = 0, _leftIdx = 0, _rightIdx = 0;
