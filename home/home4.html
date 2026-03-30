@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-Native Dealership Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script>
+  (function(){
+    var _w = console.warn;
+    console.warn = function(){
+      if(arguments[0] && typeof arguments[0]==='string' && arguments[0].indexOf('in-browser Babel')>-1) return;
+      return _w.apply(console, arguments);
+    };
+  })();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.24.7/babel.min.js"></script>
+<style>
+  :root {
+    --primitive-color-ai-primary-start: #4A7CF7;
+    --primitive-color-ai-primary-end: #A855F7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { -webkit-font-smoothing: antialiased; }
+
+  /* ── Base interactions ── */
+  button { transition: transform 0.12s ease, opacity 0.12s ease; }
+  button:not(.filter-fab):active { transform: scale(0.96) !important; }
+
+  /* ── Page load — clean top-to-bottom cascade ── */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+
+  .page-header { animation: fadeUp 0.45s ease both; }
+  .logo-entrance { animation: fadeUp 0.5s ease 0.1s both; }
+  .greeting-entrance { animation: fadeUp 0.5s ease 0.25s both; }
+  .narrative-entrance { animation: fadeUp 0.5s ease 0.4s both; }
+  .prompt-entrance { animation: fadeUp 0.5s ease 0.55s both; }
+  .chip-entrance { animation: fadeUp 0.45s ease both; }
+
+  /* ── Card hover lift ── */
+  .card-hover {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease !important;
+  }
+  .card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04) !important;
+    border-color: #E0E0E0 !important;
+  }
+
+  /* ── Chip hover ── */
+  .prompt-chip {
+    transition: all 0.15s ease !important;
+  }
+  .prompt-chip:hover {
+    border-color: #C0C0C0 !important;
+    color: #18181B !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+    transform: translateY(-1px);
+  }
+  .prompt-chip:active { transform: translateY(0) scale(0.97) !important; }
+
+  /* ── List item hover ── */
+  .list-row {
+    transition: background 0.15s ease;
+    border-radius: 4px;
+    margin: 0 -4px;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+  }
+  .list-row:hover { background: #FAFAFA; }
+
+  /* ── Icon button hover ── */
+  .icon-btn {
+    transition: all 0.15s ease !important;
+  }
+  .icon-btn:hover {
+    border-color: #C0C0C0 !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08) !important;
+    transform: translateY(-1px);
+  }
+
+  .alert-entrance { animation: fadeUp 0.5s ease 0.7s both; }
+  .divider-entrance { animation: fadeUp 0.5s ease 0.75s both; }
+  .feed-entrance { animation: fadeUp 0.55s ease 0.9s both; }
+  .card-enter { opacity: 0; transform: translateY(14px); animation: fadeUp 0.45s ease forwards; }
+
+  /* ── Existing ── */
+  @keyframes pulse { 0%,100% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.8); opacity: 0; } }
+  @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+  @keyframes shimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  @keyframes glowPulse { 0%,100% { box-shadow: 0 0 16px rgba(74,124,247,0.06),0 0 32px rgba(168,85,247,0.03); } 50% { box-shadow: 0 0 24px rgba(74,124,247,0.1),0 0 48px rgba(168,85,247,0.06); } }
+
+  /* ── glowPulse ── */
+  @keyframes glowPulse { 0%,100% { box-shadow: 0 0 16px rgba(74,124,247,0.06),0 0 32px rgba(168,85,247,0.03); } 50% { box-shadow: 0 0 24px rgba(74,124,247,0.1),0 0 48px rgba(168,85,247,0.06); } }
+
+  /* ── Responsive 2-col grids ── */
+  @media (max-width: 600px) {
+    .appt-grid,
+    .two-col-grid { grid-template-columns: 1fr !important; }
+  }
+
+  /* mobile */
+  @media (max-width: 767px) {
+    .bento-glance { grid-template-columns: 1fr !important; }
+    .bento-glance > * { grid-column: 1 / -1 !important; grid-row: auto !important; }
+    .alert-act { flex-wrap: wrap; }
+    .alert-split {
+      grid-template-columns: 1fr !important;
+      height: auto !important;
+      min-height: 0 !important;
+    }
+    .alert-split > div { border-right: none !important; }
+    .main-wrap { padding: 20px 16px 40px !important; }
+    .title-bar { padding-left: 24px !important; padding-right: 24px !important; }
+    .new-suggestions-btn { margin-left: 0 !important; flex-basis: 100%; }
+    .carryover-grid { grid-template-columns: 1fr !important; }
+    .bucket-grid { grid-template-columns: 1fr 1fr !important; row-gap: 16px !important; }
+    .bucket-item { padding: 0 8px !important; }
+    .bucket-item-0 { padding-left: 0 !important; }
+    .bucket-item-1 { border-right: none !important; }
+    .bucket-item-2 { padding-left: 0 !important; border-right: 1px solid #F0F0F0 !important; }
+    .bucket-item-3 { border-right: none !important; }
+  }
+
+  /* tablet */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .main-wrap { padding: 28px 24px 44px !important; max-width: 960px !important; }
+  }
+
+  /* ── Feed layout ── */
+  .feed-layout { display: flex; gap: 32px; align-items: flex-start; }
+  .feed-sidebar-desktop { width: 200px; flex-shrink: 0; position: sticky; top: 68px; }
+  .feed-main { flex: 1; min-width: 0; }
+  /* Mobile filter portal */
+  .mobile-filter-portal { display: none; }
+  @media (max-width: 767px) {
+    .feed-layout { display: block; }
+    .feed-sidebar-desktop { display: none; }
+    .mobile-filter-portal {
+      display: block;
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(0,0,0,0.4); backdrop-filter: blur(3px);
+    }
+    .mobile-filter-sheet {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: #FFF; border-radius: 20px 20px 0 0;
+      max-height: 85vh; overflow-y: auto;
+      padding: 0 0 32px;
+      box-shadow: 0 -4px 24px rgba(0,0,0,0.12);
+    }
+  }
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .feed-sidebar-desktop { width: 160px; }
+    .feed-layout { gap: 20px; }
+  }
+
+  /* FAB filter button — hidden on desktop */
+  .filter-fab {
+    display: none;
+  }
+
+  /* Mobile: stack layout, hide sidebar, show FAB */
+  @media (max-width: 767px) {
+    .feed-layout { display: block; }
+    .feed-sidebar {
+      position: fixed !important;
+      inset: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      z-index: 9999 !important;
+      background: rgba(0,0,0,0.4) !important;
+      backdrop-filter: blur(3px) !important;
+      display: none !important;
+      align-items: flex-end !important;
+      justify-content: center !important;
+      top: 0 !important;
+      left: 0 !important;
+    }
+    .feed-sidebar.open {
+      display: flex !important;
+    }
+    .feed-sidebar-inner {
+      display: flex !important;
+      flex-direction: column !important;
+      background: #FFF !important;
+      border-radius: 20px 20px 0 0 !important;
+      width: 100% !important;
+      max-height: 85vh !important;
+      overflow-y: auto !important;
+      padding: 0 0 32px !important;
+      box-shadow: 0 -4px 24px rgba(0,0,0,0.12) !important;
+    }
+    .drag-handle-bar { display: flex !important; }
+    .desktop-card { background: transparent !important; border: none !important; border-radius: 0 !important; padding: 0 !important; }
+    .filter-fab {
+      display: inline-flex; align-items: center; gap: 6px;
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 150;
+      padding: 9px 20px; border-radius: 20px;
+      background: #FFF; border: 1px solid #E5E7EB;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.06);
+      cursor: pointer; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #374151;
+      transition: box-shadow 0.15s, transform 0.15s;
+    }
+    .filter-fab:active { transform: translateX(-50%) scale(0.96) !important; }
+  }
+
+  .filter-mobile-header { display: none; }
+  .huddle-cta-row { display: none; }
+  @media (max-width: 767px) {
+    .huddle-cta-row { display: block; padding: 0 16px 14px; }
+    .huddle-cta-inline { display: none !important; }
+  }
+  @media (max-width: 767px) {
+    .filter-mobile-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 16px 8px; }
+  }
+
+
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useLayoutEffect, useRef } = React;
+
+const sans = "'Manrope', sans-serif";
+
+const FEED_ITEMS = [
+  { id: "f1",  img: "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=400&h=200&fit=crop", type: "deal",      sig: "positive", title: "Lisa Rodriguez",            sub: "Deal #2847 · 2024 Camry SE",          badge: "Closing today",  badgeBg: "#F0FDF4", badgeC: "#15803D", avatar: "LR", avatarC: "#2563EB", blurb: "Returning at noon to sign. Finance approved, paperwork ready. Jason Lee is the assigned salesperson.", cta: "Confirm",      ctaPrimary: false, menu: ["Open deal", "Call customer", "View finance", "Reassign salesperson"] },
+  { id: "f2",  img: "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=400&h=200&fit=crop", type: "appt",      sig: "insight",  title: "Angela Brooks",             sub: "Today 10:00 AM · Test Drive",         badge: "VIP",            badgeBg: "#FFFBEB", badgeC: "#D97706", avatar: "AB", avatarC: "#D97706", blurb: "3rd purchase, last spend $48k. High close probability — assign your best closer and pre-pull a Highlander Limited.", cta: "Assign salesperson",   ctaPrimary: false, menu: ["Open appointment", "Assign salesperson", "Reschedule", "Add note"] },
+  { id: "f3",  img: "https://images.unsplash.com/photo-1568844293986-8d0400bd4745?w=400&h=200&fit=crop", type: "deal",      sig: "action",   title: "Jennifer Patel",            sub: "Deal #3104 · Highlander recall",      badge: "Critical",       badgeBg: "#FEF2F2", badgeC: "#DC2626", avatar: "JP", avatarC: "#DC2626", blurb: "VIN matched NHTSA recall #24V-891. Unit pulled. Jennifer Patel not yet notified. Venza XLE available at $46,200.", cta: "Take action",  ctaPrimary: true,  menu: ["Open deal", "Call Jennifer Patel", "Swap to Venza XLE", "View recall details"] },
+  { id: "f4",  img: "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=400&h=200&fit=crop", type: "deal",      sig: "positive", title: "Kevin Brooks",              sub: "Deal #2991 · 2024 Corolla LE",        badge: "Ready to close", badgeBg: "#F0FDF4", badgeC: "#15803D", avatar: "KB", avatarC: "#059669", blurb: "Finance approved. Closing paperwork in progress with Marcus Green. Should wrap before lunch.", cta: null,           ctaPrimary: false, menu: ["Open deal", "View finance", "Print paperwork", "Reassign salesperson"] },
+  { id: "f5",  img: "https://images.unsplash.com/photo-1542362567-b07e54358753?w=400&h=200&fit=crop", type: "lead",      sig: "action",   title: "Kevin Morales",             sub: "Lead #L-0841 · RAV4 XLE · Cars.com",  badge: "Not Contacted",     badgeBg: "#FEF2F2", badgeC: "#DC2626", avatar: "KM", avatarC: "#7C3AED", blurb: "Submitted 2 hours ago. No response sent yet. Chris Walker assigned but hasn't called.", cta: "Call now",     ctaPrimary: true,  menu: ["Open lead", "Call now", "Send SMS", "Reassign salesperson"] },
+  { id: "f6",  img: "https://images.unsplash.com/photo-1616422285623-13ff0162193c?w=400&h=200&fit=crop", type: "appt",      sig: "insight",  title: "Robert Nguyen",             sub: "Today 1:30 PM · Sales",               badge: "High Value",     badgeBg: "#EFF6FF", badgeC: "#2563EB", avatar: "RN", avatarC: "#2563EB", blurb: "Potential 3-unit fleet deal. Has financing pre-approval from company. Pull fleet pricing before he arrives.", cta: "Prep now",     ctaPrimary: false, menu: ["Open appointment", "Assign salesperson", "Pull fleet pricing", "Add note"] },
+  { id: "f7",  img: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400&h=200&fit=crop", type: "appt",      sig: "action",   title: "Sarah Lopez",               sub: "Today 11:00 AM · Delivery",           badge: "High",           badgeBg: "#FFFBEB", badgeC: "#A16207", avatar: "SL", avatarC: "#D97706", blurb: "PDI pushed to 3 PM. Lopez hasn't been called to reschedule. Loaner arranged but not confirmed.", cta: "Call Lopez",   ctaPrimary: true,  menu: ["Open appointment", "Call Sarah Lopez", "Confirm loaner", "Reschedule to 4 PM"] },
+  { id: "f8",  img: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=400&h=200&fit=crop", type: "deal",      sig: "positive", title: "Amanda White",              sub: "Deal #3058 · 2024 RAV4 Hybrid",       badge: "3 PM appt",      badgeBg: "#EFF6FF", badgeC: "#2563EB", avatar: "AW", avatarC: "#059669", blurb: "Confirmed 3 PM appointment. Finance approved. Marcus Green assigned. High likelihood to close today.", cta: "Confirm",      ctaPrimary: false, menu: ["Open deal", "Open appointment", "View finance", "Reassign salesperson"] },
+  { id: "f9",  img: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=200&fit=crop", type: "finance",   sig: "action",   title: "Mark Henderson",            sub: "Deal #3891 · 2024 Tacoma SR5",        badge: "Pending stips",  badgeBg: "#FFFBEB", badgeC: "#A16207", avatar: "MH", avatarC: "#DC2626", blurb: "Ally Financial needs proof of residence. Day 4 on this deal. Emily is absent — Chris Walker is now owner.", cta: "Chase stip",   ctaPrimary: false, menu: ["Open finance", "Open deal", "Request stip", "Call customer"] },
+  { id: "f10", img: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=400&h=200&fit=crop", type: "lead",      sig: "insight",  title: "Rachel Kim",                sub: "Lead #L-0829 · Highlander · TrueCar", badge: "Contacted",      badgeBg: "#F0FDF4", badgeC: "#15803D", avatar: "RK", avatarC: "#D97706", blurb: "Jason contacted 1h ago. Showed strong interest. Good candidate for a same-day visit if followed up now.", cta: "Follow up",    ctaPrimary: false, menu: ["Open lead", "Schedule appointment", "Send follow-up SMS", "Reassign salesperson"] },
+  { id: "f11", img: "https://images.unsplash.com/photo-1612544448445-b8232cff3b6c?w=400&h=200&fit=crop", type: "inventory", sig: "negative", title: "Tacoma SR5 — 72 days",      sub: "Stock #T4821 · $38,400",             badge: "Aged",           badgeBg: "#FEF2F2", badgeC: "#DC2626", avatar: "T4", avatarC: "#DC2626", blurb: "Henderson deal stalled. No other active interest. Consider a price adjustment or targeted push to walk-ins today.", cta: "Adjust price", ctaPrimary: false, menu: ["Open inventory", "Adjust price", "Link to deal", "Mark for promotion"] },
+  { id: "f12", img: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&h=200&fit=crop", type: "deal",      sig: "negative", title: "Tom Vasquez",               sub: "Deal #2764 · 2024 Tacoma TRD",        badge: "Unresponsive",   badgeBg: "#F3F4F6", badgeC: "#6B7280", avatar: "TV", avatarC: "#DC2626", blurb: "Left voicemail. Day 1. Chris Walker owns this deal. One more attempt before the slot goes cold.", cta: "Call now",     ctaPrimary: false, menu: ["Open deal", "Call now", "Send SMS", "Reassign salesperson"] },
+  { id: "f13", img: "https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?w=400&h=200&fit=crop", type: "salesfloor", sig: "insight",  title: "Michael Davis",              sub: "9:30 AM · Test Drive · RAV4 XLE",     badge: "On floor",       badgeBg: "#EFF6FF", badgeC: "#2563EB", avatar: "MD", avatarC: "#2563EB", blurb: "Currently on test drive with Chris Walker. 2024 RAV4 XLE. First visit, came via website lead. High engagement.", cta: "View",         ctaPrimary: false, menu: ["Open appointment", "Assign salesperson", "Add note", "Open CRM"] },
+];
+
+const mono = sans;
+
+const NARRATIVE = "Your morning has 3 things that need you. A recall, an absent rep, and a delayed delivery. The good news: 4 carryover deals and 5 appointments give you a real shot at closing the gap on target.";
+
+const ALERTS = [
+  { id: 1, sev: "critical", action: "Pull Highlander from inventory and reroute Patel to Venza", why: "Highlander Stop-Sale Recall", context: "VIN 4T1BZ... matched NHTSA recall #24V-891. Jennifer Patel has an active deal on this unit. Venza XLE at comparable pricing is available on lot.", conf: 98, steps: ["Remove VIN 4T1BZ from active inventory", "Flag unit for service department pickup", "Call Jennifer Patel to inform", "Present Venza XLE at $46,200 as alternative"] },
+  { id: 2, sev: "high", action: "Reassign Emily Carter's 4 deals to Walker and Lee", why: "Emily Carter absent today", context: "She has 4 active deals. Two in negotiation (Thompson, Rodriguez), two pending finance (Henderson, Patel).", conf: 85, steps: ["Thompson and Henderson to Chris Walker", "Rodriguez to Jason Lee (repeat customer)", "Notify Walker and Lee via CRM task", "Hold Patel deal until Emily returns tomorrow", "Update today's floor schedule"] },
+  { id: 3, sev: "medium", action: "Reschedule Lopez delivery to 4 PM and offer loaner", why: "Camry PDI delay, 2 units", context: "Detail shop backed up. ETA pushed from 10 AM to 3 PM. Sarah Lopez has 11 AM delivery appointment.", conf: 92, steps: ["Call Sarah Lopez to reschedule", "Arrange loaner from available pool"] },
+];
+
+const AUTO_RESOLVED = [
+  { id: 101, time: "7:12 AM", rule: "Staff absence", accentColor: "#7C3AED",
+    title: "Reassigned Davis appointment",
+    summary: "Marcus Green called in late. His 9:30 with Michael Davis was moved to Chris Walker. Both notified via SMS.",
+    actions: "3 actions completed", actionDetail: "CRM updated, 2 SMS sent",
+    steps: ["Davis appointment reassigned to Walker in CRM", "Walker notified via SMS at 7:13 AM", "Davis notified of salesperson change via SMS at 7:14 AM"],
+    reversible: 1, sent: 2, sentChannels: "SMS" },
+  { id: 102, time: "6:45 AM", rule: "Overnight leads", accentColor: "#7C3AED",
+    title: "Auto-assigned 3 overnight leads",
+    summary: "Morales, White, and Kim assigned to reps by availability and pipeline load. Auto-reply emails sent to 2.",
+    actions: "5 actions completed", actionDetail: "3 CRM assignments, 2 emails sent",
+    steps: ["Morales (RAV4) assigned to Walker", "White (Camry) assigned to Lee", "Kim (Highlander) assigned to Green", "Auto-reply email sent to Morales at 6:46 AM", "Auto-reply email sent to White at 6:46 AM"],
+    reversible: 3, sent: 2, sentChannels: "Email" },
+];
+
+const DEALS = [
+  { id: 1, customer: "Daniel Thompson", vehicle: "2024 RAV4 XLE",       day: 3, last: "18h ago", rep: "Emily Carter",  fin: "pending",  gross: 3200, status: "waiting_third_party",   blocker: "Trade payoff pending",          cta: null,      ini: "DT", color: "#6B7280" },
+  { id: 2, customer: "Lisa Rodriguez",  vehicle: "2024 Camry SE",        day: 1, last: "2h ago",  rep: "Jason Lee",     fin: "approved", gross: 2800, status: "ready_to_close",        blocker: "Returning at noon to sign",      cta: "confirm", ini: "LR", color: "#2563EB" },
+  { id: 3, customer: "Mark Henderson",  vehicle: "2024 Tacoma SR5",      day: 4, last: "26h ago", rep: "Chris Walker",  fin: "pending",  gross: 4100, status: "customer_unresponsive", blocker: "No response to last 2 calls",    cta: "call",    ini: "MH", color: "#DC2626" },
+  { id: 4, customer: "Jennifer Patel",  vehicle: "2024 Highlander XLE",  day: 2, last: "4h ago",  rep: "Emily Carter",  fin: "approved", gross: 5200, status: "on_hold",               blocker: "Recall hold — unit pulled",      cta: null,      ini: "JP", color: "#7C3AED" },
+  { id: 5, customer: "Kevin Brooks",    vehicle: "2024 Corolla LE",      day: 0, last: "30m ago", rep: "Marcus Green",  fin: "approved", gross: 1800, status: "ready_to_close",        blocker: "Closing paperwork in progress",  cta: "confirm", ini: "KB", color: "#059669" },
+  { id: 6, customer: "Rachel Kim",      vehicle: "2024 Venza XLE",       day: 2, last: "6h ago",  rep: "Jason Lee",     fin: "pending",  gross: 3600, status: "waiting_third_party",   blocker: "Finance review pending",         cta: null,      ini: "RK", color: "#D97706" },
+  { id: 7, customer: "Tom Vasquez",     vehicle: "2024 Tacoma TRD",      day: 1, last: "5h ago",  rep: "Chris Walker",  fin: "pending",  gross: 4800, status: "customer_unresponsive", blocker: "Left voicemail, awaiting reply",  cta: "call",    ini: "TV", color: "#DC2626" },
+  { id: 8, customer: "Amanda White",    vehicle: "2024 RAV4 Hybrid",     day: 3, last: "12h ago", rep: "Marcus Green",  fin: "approved", gross: 2400, status: "ready_to_close",        blocker: "Confirmed 3 PM appointment",     cta: "confirm", ini: "AW", color: "#059669" },
+];
+
+const APPTS = [
+  { time: "9:30",  p: "AM", customer: "Michael Davis",   vehicle: "2024 RAV4 XLE",       type: "Test Drive", rep: "Chris Walker",  mine: true },
+  { time: "9:30",  p: "AM", customer: "Sarah Lopez",     vehicle: "2024 Corolla LE",     type: "Sales",      rep: "Jason Lee",    mine: false },
+  { time: "10:00", p: "AM", customer: "Robert Nguyen",   vehicle: "2024 Camry SE",       type: "Sales",      rep: "Marcus Green", mine: true },
+  { time: "10:00", p: "AM", customer: "Angela Brooks",   vehicle: "2024 Highlander XLE", type: "Test Drive", rep: "Chris Walker", mine: true },
+  { time: "10:30", p: "AM", customer: "Tom Richards",    vehicle: "2024 Tacoma TRD",     type: "Sales",      rep: "Jason Lee",    mine: false },
+  { time: "10:30", p: "AM", customer: "Diana Morales",   vehicle: "2024 Venza XLE",      type: "Sales",      rep: "Marcus Green", mine: false },
+  { time: "11:00", p: "AM", customer: "Kevin Foster",    vehicle: "2024 RAV4 Hybrid",    type: "Test Drive", rep: "Chris Walker", mine: true },
+  { time: "11:00", p: "AM", customer: "Priya Shah",      vehicle: "2024 Camry Hybrid",   type: "Sales",      rep: "Jason Lee",    mine: false },
+  { time: "11:15", p: "AM", customer: "James Okafor",    vehicle: "2024 Tacoma SR5",     type: "Test Drive", rep: "Marcus Green", mine: false },
+  { time: "11:15", p: "AM", customer: "Linda Chen",      vehicle: "2024 Corolla Cross",  type: "Sales",      rep: "Chris Walker", mine: true },
+  { time: "11:30", p: "AM", customer: "Marcus Bell",     vehicle: "2024 RAV4 XLE",       type: "Sales",      rep: "Jason Lee",    mine: false },
+  { time: "11:30", p: "AM", customer: "Sofia Reyes",     vehicle: "2024 Highlander Ltd", type: "Test Drive", rep: "Marcus Green", mine: true },
+];
+
+const LEADS = [
+  { name: "Kevin Morales", vehicle: "RAV4 XLE", src: "Cars.com", time: "2:14 AM", done: false },
+  { name: "Amanda White", vehicle: "Camry SE", src: "Website", time: "11:42 PM", done: false },
+  { name: "Brian Foster", vehicle: "Tacoma SR5", src: "Autotrader", time: "6:01 AM", done: true },
+  { name: "Rachel Kim", vehicle: "Highlander", src: "TrueCar", time: "5:38 AM", done: false },
+];
+
+const TEAM = [
+  { name: "Chris Walker", ini: "CW", deals: 5, gross: 4200, calls: 18, tasks: "10/12", c: "#059669", on: true },
+  { name: "Jason Lee", ini: "JL", deals: 3, gross: 3800, calls: 14, tasks: "8/9", c: "#2563EB", on: true },
+  { name: "Emily Carter", ini: "EC", deals: 4, gross: 3100, calls: 0, tasks: "0/11", c: "#D97706", on: false },
+  { name: "Marcus Green", ini: "MG", deals: 2, gross: 2900, calls: 8, tasks: "5/7", c: "#7C3AED", on: true },
+];
+
+const HOT_LEADS = [
+  { id: 1, name: "Kevin Morales",  vehicle: "2024 RAV4 XLE",    src: "Cars.com",   time: "2h ago",  rep: "Chris",  status: "not_contacted" },
+  { id: 2, name: "Rachel Kim",     vehicle: "2024 Highlander",  src: "TrueCar",    time: "4h ago",  rep: "Jason",  status: "contacted",     contactedAt: "1h ago" },
+  { id: 3, name: "Amanda White",   vehicle: "2024 Camry SE",    src: "Website",    time: "9h ago",  rep: "Marcus", status: "contacted",     contactedAt: "6h ago" },
+  { id: 4, name: "Brian Foster",   vehicle: "2024 Tacoma SR5",  src: "Autotrader", time: "3h ago",  rep: "Chris",  status: "not_contacted" },
+  { id: 5, name: "Priya Nair",     vehicle: "2024 RAV4 Hybrid", src: "CarGurus",   time: "6h ago",  rep: "Jason",  status: "contacted",     contactedAt: "3h ago" },
+];
+
+const FINANCE_Q = [
+  { id: 1, customer: "Daniel Thompson", vehicle: "2024 RAV4 XLE",   day: 3, lender: "Toyota Financial", status: "pending_stips", stip: "Proof of income",    gross: 3200, ini: "DT", color: "#2563EB" },
+  { id: 2, customer: "Mark Henderson",  vehicle: "2024 Tacoma SR5", day: 4, lender: "Ally Financial",   status: "pending_stips", stip: "Proof of residence", gross: 4100, ini: "MH", color: "#DC2626" },
+  { id: 3, customer: "Rachel Kim",      vehicle: "2024 Venza XLE",  day: 2, lender: "Chase Auto",       status: "conditional",   stip: "Co-signer required", gross: 3600, ini: "RK", color: "#7C3AED" },
+  { id: 4, customer: "Kevin Brooks",    vehicle: "2024 Corolla LE", day: 0, lender: "Toyota Financial", status: "approved",      stip: null,                 gross: 1800, ini: "KB", color: "#059669" },
+];
+
+const LEAD_SOURCES = [
+  { src: "Walk-in",  volume: 41, contactRate: 100, closeRate: 28, trend: "up" },
+  { src: "Website",  volume: 55, contactRate: 81,  closeRate: 18, trend: "up" },
+  { src: "Cars.com", volume: 47, contactRate: 73,  closeRate: 14, trend: "flat" },
+  { src: "TrueCar",  volume: 30, contactRate: 71,  closeRate: 11, trend: "flat" },
+  { src: "CarGurus", volume: 24, contactRate: 65,  closeRate: 9,  trend: "down" },
+];
+
+const PIPELINE = [
+  { label: "Active",    count: 278, color: "#6B7280" },
+  { label: "Contacted", count: 167, color: "#F59E0B" },
+  { label: "Engaged",   count: 50,  color: "#3B82F6" },
+  { label: "Visited",   count: 30,  color: "#F97316" },
+  { label: "Sold",      count: 15,  color: "#16A34A" },
+];
+
+const FINANCE = [
+  { id: 1, customer: "Daniel Thompson", vehicle: "RAV4 XLE", status: "pending", stips: "Proof of income" },
+  { id: 2, customer: "Mark Henderson", vehicle: "Tacoma SR5", status: "pending", stips: "Proof of residence" },
+];
+
+const AGED = [
+  { year: "2024", model: "Tacoma SR5", color: "Midnight Black", stock: "#T4821", price: "$38,400", days: 72, deal: "Mark Henderson active" },
+  { year: "2024", model: "Venza XLE", color: "Cavalry Blue", stock: "#V2203", price: "$41,100", days: 68, deal: null },
+  { year: "2024", model: "Venza XLE", color: "Platinum White", stock: "#V2198", price: "$40,800", days: 61, deal: null },
+  { year: "2023", model: "Camry SE", color: "Midnight Black", stock: "#C9934", price: "$28,200", days: 60, deal: "Lisa Rodriguez Day 1" },
+];
+
+const heatC = h => h >= 75 ? "#15803D" : h >= 50 ? "#A16207" : h >= 25 ? "#DC2626" : "#9CA3AF";
+const heatBg = h => h >= 75 ? "#F0FDF4" : h >= 50 ? "#FFFBEB" : h >= 25 ? "#FEF2F2" : "#F3F4F6";
+const heatIcon = h => h >= 75 ? "\u{1F525}" : h >= 50 ? "\u25D0" : h >= 25 ? "\u2198" : "\u2014";
+const heatLabel = h => h >= 75 ? "Hot" : h >= 50 ? "Warm" : h >= 25 ? "Cooling" : "Cold";
+
+function Tag({ children, bg = "#F3F4F6", c = "#374151", sx = {} }) {
+  return <span style={{ display: "inline-block", padding: "2px 7px", borderRadius: 3, fontSize: 11, fontWeight: 600, background: bg, color: c, whiteSpace: "nowrap", lineHeight: "18px", ...sx }}>{children}</span>;
+}
+
+const aiGrad = "linear-gradient(135deg, var(--primitive-color-ai-primary-start) 28.53%, var(--primitive-color-ai-primary-end) 111.04%)";
+
+function Btn({ children, primary, onClick, sx = {} }) {
+  const s = primary
+    ? { background: aiGrad, color: "#FFF", border: "none", boxShadow: "0 2px 4px rgba(0,0,0,0.08)" }
+    : { background: "#FFF", color: "#374151", border: "none", boxShadow: "inset 0 0 0 1px #E5E7EB" };
+  return (
+    <button onClick={onClick} style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "5px 12px", borderRadius: 4, fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: sans, transition: "all 0.12s", lineHeight: "18px", whiteSpace: "nowrap", ...s, ...sx }}
+      onMouseEnter={e => e.currentTarget.style.opacity = "0.85"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}
+    >{children}</button>
+  );
+}
+
+function Dot({ color, size = 6 }) { return <span style={{ display: "inline-block", width: size, height: size, borderRadius: "50%", background: color, flexShrink: 0 }} />; }
+function Row({ children, sx = {}, className = "" }) { return <div className={className} style={{ display: "flex", alignItems: "center", ...sx }}>{children}</div>; }
+
+function Sec({ label, sub }) {
+  return (<div style={{ marginBottom: 12, marginTop: 4 }}>
+    <div style={{ fontSize: 18, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em" }}>{label}</div>
+    {sub && <div style={{ fontSize: 13, fontWeight: 500, color: "#9CA3AF", marginTop: 2 }}>{sub}</div>}
+  </div>);
+}
+
+function B({ children, sx = {}, delay = 0, className = "" }) {
+  const [v, setV] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setV(true), delay); return () => clearTimeout(t); }, [delay]);
+  return (<div className={`card-hover ${className}`} style={{ background: "#FFF", borderRadius: 8, border: "1px solid #EBEBEB", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02)", opacity: v ? 1 : 0, transform: v ? "translateY(0)" : "translateY(6px)", transition: "opacity 0.3s ease, transform 0.3s ease", display: "flex", flexDirection: "column", ...sx }}>{children}</div>);
+}
+
+function Bp({ children, sx = {} }) { return <div style={{ padding: 12, flex: 1, ...sx }}>{children}</div>; }
+function ListItem({ children, last }) { return <div style={{ padding: "9px 0", borderBottom: last ? "none" : "1px solid #F5F5F5" }}>{children}</div>; }
+
+function App() {
+  const [accepted, setAccepted] = useState(new Set());
+  const [doneAlerts, setDoneAlerts] = useState([]);
+  const [showResolved, setShowResolved] = useState(false);
+  const [feedCats, setFeedCats] = useState(new Set());
+  const [feedSigs, setFeedSigs] = useState(new Set());
+  const [showFilterPanel, setShowFilterPanel] = useState(false);
+  const ALL_CATS = ["appt","deal","finance","inventory","lead","salesfloor"];
+  const [selectedBg, setSelectedBg] = useState('auto');
+  const BG_OPTIONS = [
+    { id: 'auto',     label: 'Auto',      preview: null },
+    { id: 'white',    label: 'None',       preview: '#FFFFFF' },
+    { id: 'amber',    label: 'Dawn',       preview: 'linear-gradient(to bottom,#FFFAF8,#FEF3EE 40%,#FBECE4)' },
+    { id: 'morning',  label: 'Morning',    preview: 'linear-gradient(to bottom,#FDFEFF,#F3F7FF 40%,#E8F0FF)' },
+    { id: 'midday',   label: 'Midday',     preview: 'linear-gradient(to bottom,#FDFEFF,#F2F4FB 40%,#EBEFF8)' },
+    { id: 'gold',     label: 'Afternoon',  preview: 'linear-gradient(to bottom,#FFFFFB,#FEFAEC 40%,#FBF3D5)' },
+    { id: 'lavender', label: 'Evening',    preview: 'linear-gradient(to bottom,#FDFCFF,#F3F1FB 40%,#EAE7F7)' },
+    { id: 'charcoal', label: 'Night',      preview: 'linear-gradient(to bottom,#F8F9FC,#ECEEF5 40%,#DEE2ED)' },
+  ];
+  const [showHamburgerMenu, setShowHamburgerMenu] = useState(false);
+  const [catOrder, setCatOrder] = useState(["appt","deal","finance","inventory","lead","salesfloor"]);
+  const [hiddenCatsState, setHiddenCatsState] = useState(new Set(["salesfloor"]));
+  const [feedDismissed, setFeedDismissed] = useState(new Set());
+  const [menuPos, setMenuPos] = useState({ bottom: 0, right: 0 });
+  const menuAnchorRef = React.useRef(null);
+  const [automated, setAutomated] = useState(new Set());
+  const [executing, setExecuting] = useState(null);
+  const [completedSteps, setCompletedSteps] = useState([]);
+  const [executionDone, setExecutionDone] = useState(false);
+  const [undoneAuto, setUndoneAuto] = useState(new Set());
+  const [expandedAuto, setExpandedAuto] = useState(null);
+  const [apptTab, setApptTab] = useState("all");
+  const [showHuddleScript, setShowHuddleScript] = useState("idle");
+  const [huddleExpanded, setHuddleExpanded] = useState(true);
+  const [sourcesModal, setSourcesModal] = useState(false);
+  const [showWidgetModal, setShowWidgetModal] = useState(false);
+
+  const ALL_WIDGETS = [
+    { id: "huddle",    label: "Morning Huddle",    locked: true },
+    { id: "carryover", label: "Carryover Deals",   locked: false },
+    { id: "appts",     label: "Appointments",      locked: false },
+    { id: "inventory", label: "Inventory Health",  locked: false },
+    { id: "salesfloor",label: "Sales Floor",       locked: false },
+    { id: "leads",     label: "Overnight Leads",   locked: false },
+    { id: "finance",   label: "Finance Approvals", locked: false },
+    { id: "sources",   label: "Lead Sources",      locked: false },
+    { id: "pipeline",  label: "Leads Pipeline",    locked: false },
+  ];
+
+  const [widgetSelected, setWidgetSelected] = useState(new Set(["huddle", "carryover", "appts", "inventory", "salesfloor"]));
+  const [widgetOrder, setWidgetOrder] = useState(ALL_WIDGETS.map(w => w.id));
+  const [widgetDragItem, setWidgetDragItem] = useState(null);
+  const [widgetDragOver, setWidgetDragOver] = useState(null);
+  const [draftSelected, setDraftSelected] = useState(null);
+  const [draftOrder, setDraftOrder] = useState(null);
+  const [showModifyModal, setShowModifyModal] = useState(false);
+  const [modifySteps, setModifySteps] = useState([]);
+  const [modifyPrompt, setModifyPrompt] = useState("");
+  const [modifyPromptFocused, setModifyPromptFocused] = useState(false);
+  const [modifyThinking, setModifyThinking] = useState(false);
+  const [modifyApplied, setModifyApplied] = useState(false);
+  const [newStepText, setNewStepText] = useState("");
+  const [addingStep, setAddingStep] = useState(false);
+  const [dragItem, setDragItem] = useState(null);
+  const [dragOverItem, setDragOverItem] = useState(null);
+
+  const CITATIONS = {
+    1: { type: "rep", name: "Jason Lee", ini: "JL", c: "#2563EB", id: "Rep #JL-204", detail: "RAV4 XLE sold at MSRP $38,400", sub: "68 days on lot, 0% discount", metric: "1 Unit Sold" },
+    2: { type: "rep", name: "Chris Walker", ini: "CW", c: "#059669", id: "Rep #CW-187", detail: "Tacoma SR5 back-end: 3pts held", sub: "F&I gross $1,840", metric: "3pts Held" },
+    3: { type: "rep", name: "Marcus Green", ini: "MG", c: "#7C3AED", id: "Rep #MG-312", detail: "Rachel Kim, Highlander via TrueCar", sub: "Response time: 3.2 hours", metric: "Lead Convert" },
+    4: { type: "rep", name: "Emily Carter", ini: "EC", c: "#D97706", id: "Rep #EC-156", detail: "Absent today, 4 open deals", sub: "0/11 tasks this week", metric: "4 Deals" },
+    5: { type: "deal", name: "Daniel Thompson", ini: "DT", c: "#374151", id: "Deal #4821", detail: "RAV4 XLE, Day 3, 62 heat", sub: "Reassigned to Chris Walker", metric: "Pending" },
+    6: { type: "deal", name: "Mark Henderson", ini: "MH", c: "#374151", id: "Deal #3891", detail: "Tacoma SR5, Day 4, 45 heat", sub: "Reassigned to Chris Walker", metric: "Cold" },
+    7: { type: "deal", name: "Lisa Rodriguez", ini: "LR", c: "#374151", id: "Deal #2847", detail: "Camry SE, Day 1, 78 heat", sub: "Reassigned to Jason Lee", metric: "Hot" },
+    8: { type: "appt", name: "Michael Davis", ini: "MD", c: "#D97706", id: "Appt 9:30 AM", detail: "RAV4 XLE Test Drive", sub: "Rep: Chris Walker", metric: "Test Drive" },
+    9: { type: "appt", name: "Sarah Lopez", ini: "SL", c: "#2563EB", id: "Appt 11:00 AM", detail: "Corolla LE Delivery", sub: "Rep: Jason Lee", metric: "Delivery" },
+    10: { type: "appt", name: "Robert Nguyen", ini: "RN", c: "#2563EB", id: "Appt 1:30 PM", detail: "Camry SE Return Visit", sub: "Rep: Marcus Green", metric: "Sales" },
+    11: { type: "appt", name: "Angela Brooks", ini: "AB", c: "#D97706", id: "Appt 4:00 PM", detail: "Highlander XLE Referral", sub: "Rep: Chris Walker", metric: "Test Drive" },
+    12: { type: "appt", name: "Tom Richards", ini: "TR", c: "#2563EB", id: "Appt 5:30 PM", detail: "Tacoma TRD Phone Lead", sub: "Rep: Jason Lee", metric: "Sales" },
+    13: { type: "inv", name: "Highlander Recall", ini: "HL", c: "#DC2626", id: "NHTSA #24V-891", detail: "VIN 4T1BZ... stop-sale", sub: "Jennifer Patel deal affected", metric: "Recall" },
+    14: { type: "inv", name: "Venza XLE (x2)", ini: "VZ", c: "#D97706", id: "Stock #V2203, #V2198", detail: "$41,100 / $40,800", sub: "61-68 days on lot, no active deals", metric: ">60 Days" },
+    15: { type: "inv", name: "Tacoma SR5", ini: "TC", c: "#DC2626", id: "Stock #T4821", detail: "$38,400, 72 days", sub: "Mark Henderson active but stalled", metric: "72 Days" },
+  };
+
+  const [promptFocused, setPromptFocused] = useState(false);
+  const [promptQuery, setPromptQuery] = useState("");
+  const [alertIndex, setAlertIndex] = useState(0);
+  const [showAllSteps, setShowAllSteps] = useState(null);
+  const [loaded, setLoaded] = useState(false);
+  const promptRef = useRef(null);
+  const scrollLock = useRef(null);
+
+  useLayoutEffect(() => {
+    if (scrollLock.current !== null) {
+      window.scrollTo({ top: scrollLock.current, behavior: "instant" });
+      scrollLock.current = null;
+    }
+  });
+
+  React.useEffect(() => {
+    if (showFilterPanel) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [showFilterPanel]);
+
+  React.useEffect(() => {
+    if (!expandedAuto || !expandedAuto.startsWith("fdot-")) return;
+    const update = () => {
+      if (menuAnchorRef.current) {
+        const r = menuAnchorRef.current.getBoundingClientRect();
+        setMenuPos({ bottom: window.innerHeight - r.top + 6, right: window.innerWidth - r.right });
+      }
+    };
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, [expandedAuto]);
+
+  const toggleFeedFilter = (setFn, id) => {
+    scrollLock.current = window.scrollY;
+    setFn(prev => { const next = new Set(prev); next.has(id) ? next.delete(id) : next.add(id); return next; });
+  };
+
+
+  useEffect(() => { setTimeout(() => setLoaded(true), 30); }, []);
+  useEffect(() => {
+    if (promptRef.current) {
+      const el = promptRef.current;
+      el.style.height = "20px";
+      el.style.height = Math.min(el.scrollHeight, 120) + "px";
+    }
+  }, [promptQuery]);
+
+  const runExecution = (alert) => {
+    setExecuting(alert.id); setCompletedSteps([]); setExecutionDone(false); setShowAllSteps(null);
+    alert.steps.forEach((_, i) => { setTimeout(() => setCompletedSteps(prev => [...prev, i]), 800 + i * 1500); });
+    setTimeout(() => setExecutionDone(true), 800 + alert.steps.length * 1500 + 600);
+  };
+  const dismissExecution = (id) => {
+    const alert = ALERTS.find(a => a.id === id);
+    if (alert) setDoneAlerts(p => [...p, { ...alert, doneAt: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) }]);
+    setAccepted(p => new Set([...p, id]));
+    setExecuting(null); setCompletedSteps([]); setExecutionDone(false); setAlertIndex(0); setShowAllSteps(null);
+  };
+
+  const [chipSet, setChipSet] = useState(0);
+  const ALL_CHIPS = [
+    [
+      { label: "Who's closing today?",    icon: "🔥", q: "Which deals are most likely to close today? Give me names, vehicles, and the one thing I need to do for each." },
+      { label: "Stalled deals",           icon: "⏸", q: "Which deals have gone quiet for 24+ hours? Tell me why they stalled and the best way to re-engage each customer." },
+      { label: "Coach someone today",     icon: "🎯", q: "Based on this week's numbers, which salesperson needs coaching and what specific behavior should I address?" },
+      { label: "Move aged units",         icon: "📦", q: "Which units have been sitting the longest and what's the best action — price drop, incentive, or targeted push?" },
+    ],
+    [
+      { label: "My floor right now",      icon: "👁", q: "Give me a real-time floor status: who's with a customer, who's available, any coverage gaps I need to fill?" },
+      { label: "Protect back-end",        icon: "💰", q: "Which deals closing today have the best F&I opportunity? What products should I push and to whom?" },
+      { label: "Recall exposure",         icon: "🚨", q: "How many active deals and lot units are affected by open recalls? What's my risk and what do I do about each?" },
+      { label: "Best lead to call now",   icon: "📞", q: "Which lead sitting in my pipeline is most likely to buy today if someone calls them right now? Why?" },
+    ],
+    [
+      { label: "End of month push",       icon: "📈", q: "Where do I stand vs target? What's the fastest path to close the gap before month end — rank options by ROI." },
+      { label: "Lost deals this week",    icon: "📉", q: "Walk me through deals we lost this week. What were the real reasons and which ones can I still recover?" },
+      { label: "Where is my gross?",      icon: "💵", q: "Break down my gross this month by salesperson and deal type. Where am I leaving money on the table?" },
+      { label: "Lot gaps right now",      icon: "🚗", q: "What segments or price points am I missing inventory on? Which ones are costing me lost sales today?" },
+    ],
+  ];
+  const chips = ALL_CHIPS[chipSet];
+
+  // ── Derived filter state (App level, accessible by sidebar portal) ──
+  const CAT_FILTERS_ALL_APP = [
+    { id: "appt",      label: "Appointments", icon: "📅", match: i => i.type === "appt" },
+    { id: "deal",      label: "Deals",        icon: "💼", match: i => i.type === "deal" },
+    { id: "finance",   label: "Finance",      icon: "🏦", match: i => i.type === "finance" },
+    { id: "inventory", label: "Inventory",    icon: "🚗", match: i => i.type === "inventory" },
+    { id: "lead",      label: "Leads",        icon: "📥", match: i => i.type === "lead" },
+    { id: "salesfloor", label: "Sales Floor", icon: "🏢", match: i => i.type === "salesfloor" },
+  ];
+  const CAT_FILTERS_APP = [...CAT_FILTERS_ALL_APP].sort((a, b) => catOrder.indexOf(a.id) - catOrder.indexOf(b.id)).filter(f => !hiddenCatsState.has(f.id));
+  const SIG_FILTERS_APP = [
+    { id: "action",   label: "Action Needed", icon: "🚨" },
+    { id: "insight",  label: "Insights",      icon: "✨" },
+    { id: "negative", label: "Negative",      icon: "👎" },
+    { id: "positive", label: "Positive",      icon: "👍" },
+  ];
+  const sigColorsApp = { action: "#DC2626", insight: "#2563EB", negative: "#D97706", positive: "#059669" };
+  const allSelectedApp = feedCats.size === 0 && feedSigs.size === 0;
+  const catMatchApp = feedCats.size === 0 ? i => !hiddenCatsState.has(i.type) : i => feedCats.has(i.type) && !hiddenCatsState.has(i.type);
+  const sigMatchApp = feedSigs.size === 0 ? () => true : i => feedSigs.has(i.sig);
+  const catCountsApp = Object.fromEntries(CAT_FILTERS_APP.map(f => [f.id, FEED_ITEMS.filter(i => !feedDismissed.has(i.id) && i.type === f.id && !hiddenCatsState.has(i.type) && (feedSigs.size === 0 || feedSigs.has(i.sig))).length]));
+  const sigCountsApp = Object.fromEntries(SIG_FILTERS_APP.map(f => [f.id, FEED_ITEMS.filter(i => !feedDismissed.has(i.id) && i.sig === f.id && (feedCats.size === 0 || feedCats.has(i.type))).length]));
+
+    const getTimeGradient = () => {
+    const h = new Date().getHours();
+    if (h >= 5 && h < 8)   return 'linear-gradient(to bottom, #FFFAF8 0%, #FEF3EE 40%, #FBECE4 100%)'; // dawn 5-8
+    if (h >= 8 && h < 11)  return 'linear-gradient(to bottom, #FDFEFF 0%, #F3F7FF 40%, #E8F0FF 100%)'; // morning 8-11
+    if (h >= 11 && h < 13) return 'linear-gradient(to bottom, #FDFEFF 0%, #F2F4FB 40%, #EBEFF8 100%)'; // midday 11-1
+    if (h >= 13 && h < 16) return 'linear-gradient(to bottom, #FFFFFB 0%, #FEFAEC 40%, #FBF3D5 100%)'; // afternoon 1-4
+    if (h >= 16 && h < 18) return 'linear-gradient(to bottom, #FEFDFB 0%, #FAF4EB 40%, #F5ECD9 100%)'; // late afternoon 4-6
+    if (h >= 18 && h < 21) return 'linear-gradient(to bottom, #FDFCFF 0%, #F3F1FB 40%, #EAE7F7 100%)'; // evening 6-9
+    return 'linear-gradient(to bottom, #F8F9FC 0%, #ECEEF5 40%, #DEE2ED 100%)'; // night 9-5
+  };
+  const timeGradient = selectedBg === 'auto' ? getTimeGradient() : (BG_OPTIONS.find(o => o.id === selectedBg)?.preview || '#FFFFFF');
+
+  return (
+    <div style={{ minHeight: "100vh", background: timeGradient, fontFamily: sans, color: "#18181B", opacity: loaded ? 1 : 0, transition: "opacity 0.4s" }}>
+
+      {/* title bar */}
+      <div className="page-header" style={{ position: "sticky", top: 0, zIndex: 50, background: '#FFFFFF', backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", borderBottom: "1px solid #F0F0F0", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+        <div className="title-bar" style={{ padding: "0 24px", height: 52, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          {/* hamburger */}
+          <div style={{ position: "relative" }}>
+            <button onClick={() => setShowHamburgerMenu(m => !m)}
+              style={{ width: 36, height: 36, borderRadius: 6, border: "none", background: showHamburgerMenu ? "#F3F4F6" : "transparent", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 4, padding: 0, transition: "background 0.15s" }}
+              onMouseEnter={e => e.currentTarget.style.background = "#F3F4F6"}
+              onMouseLeave={e => !showHamburgerMenu && (e.currentTarget.style.background = "transparent")}>
+              <span style={{ display: "block", width: 16, height: 1.5, background: "#374151", borderRadius: 2 }} />
+              <span style={{ display: "block", width: 16, height: 1.5, background: "#374151", borderRadius: 2 }} />
+              <span style={{ display: "block", width: 16, height: 1.5, background: "#374151", borderRadius: 2 }} />
+            </button>
+            {showHamburgerMenu && (
+              <>
+                <div onClick={() => setShowHamburgerMenu(false)} style={{ position: "fixed", inset: 0, zIndex: 98 }} />
+                <div style={{ position: "absolute", top: 42, left: 0, zIndex: 99, background: "#FFF", borderRadius: 10, border: "1px solid #EBEBEB", boxShadow: "0 8px 24px rgba(0,0,0,0.10)", minWidth: 224, padding: "10px 12px 12px" }}>
+                  <div style={{ fontSize: 9, fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 10 }}>Background</div>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
+                    {BG_OPTIONS.map(opt => {
+                      const swatch = opt.id === "auto" ? getTimeGradient() : (opt.preview || "#FFF");
+                      const active = selectedBg === opt.id;
+                      return (
+                        <div key={opt.id} onClick={() => { setSelectedBg(opt.id); setShowHamburgerMenu(false); }}
+                          style={{ cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 5 }}>
+                          <div style={{ width: 40, height: 28, borderRadius: 6, background: swatch, border: active ? "2px solid #7C3AED" : "1.5px solid #E5E7EB", boxShadow: active ? "0 0 0 2px #EDE9FE" : "none", transition: "all 0.15s", position: "relative" }}>
+                            {opt.id === "auto" && <div style={{ position: "absolute", bottom: 3, right: 3, width: 6, height: 6, borderRadius: "50%", background: "linear-gradient(135deg,#4A7CF7,#A855F7)" }} />}
+                          </div>
+                          <span style={{ fontSize: 10, fontWeight: active ? 700 : 500, color: active ? "#7C3AED" : "#6B7280", whiteSpace: "nowrap" }}>{opt.label}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* center label */}
+          <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B", letterSpacing: "-0.01em" }}>Home</span>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+            {/* add widget */}
+            <button onClick={() => { setDraftSelected(new Set(ALL_CATS.filter(id => !hiddenCatsState.has(id)))); setDraftOrder([...catOrder]); setShowWidgetModal(true); document.body.style.overflow = "hidden"; }} style={{ width: 36, height: 36, borderRadius: 6, border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.15s" }}
+              onMouseEnter={e => e.currentTarget.style.background = "#F3F4F6"}
+              onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+              title="Customize">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
+                <path d="M17 14v6M14 17h6"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <main className="main-wrap" style={{ maxWidth: 1280, margin: "0 auto", padding: "32px 32px 48px" }}>
+
+        {/* logo above greeting */}
+        <div className="logo-entrance" style={{ marginBottom: 4, marginTop: 24 }}>
+          <svg width="32" height="32" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3.90234 12.1417C4.35913 11.3507 5.37099 11.0796 6.1621 11.5362C6.95276 11.993 7.22378 13.004 6.76757 13.795C6.31077 14.5862 5.299 14.8573 4.50781 14.4005C3.71688 13.9436 3.44577 12.9327 3.90234 12.1417Z" fill="url(#lg0)"/>
+            <path d="M9.85253 11.5362C10.6436 11.0795 11.6554 11.3507 12.1123 12.1417C12.5687 12.9327 12.2976 13.9436 11.5068 14.4005C10.7156 14.8573 9.70386 14.5862 9.24706 13.795C8.79076 13.0039 9.06163 11.9929 9.85253 11.5362Z" fill="url(#lg1)"/>
+            <path d="M1.82714 6.87897C2.61816 6.42229 3.62997 6.69366 4.08691 7.48444C4.5437 8.27563 4.27262 9.2874 3.48144 9.74421C2.69025 10.201 1.67846 9.92992 1.22167 9.13874C0.765282 8.34764 1.03617 7.3357 1.82714 6.87897Z" fill="url(#lg2)"/>
+            <path d="M9.84667 2.22175C10.6377 1.76509 11.6495 2.03645 12.1064 2.82721C12.2712 3.11258 12.342 3.42711 12.3271 3.73346C12.2949 4.39469 12.144 5.12681 12.4746 5.70026C12.8057 6.27373 13.5156 6.50978 14.1045 6.81257C14.3772 6.95281 14.6145 7.17081 14.7793 7.45612C15.2361 8.24727 14.9649 9.25905 14.1738 9.71589C13.3826 10.1727 12.3709 9.90162 11.9141 9.11042C11.7494 8.82504 11.6794 8.51051 11.6943 8.20417C11.7266 7.54286 11.8768 6.81076 11.5459 6.23737C11.2147 5.66396 10.5049 5.42789 9.91601 5.12507C9.64334 4.98476 9.40593 4.76682 9.2412 4.48151C8.78485 3.69046 9.05581 2.67851 9.84667 2.22175Z" fill="url(#lg3)"/>
+            <path d="M4.50781 2.27839C5.2989 1.82171 6.31071 2.0929 6.76757 2.88385C7.22408 3.67496 6.95309 4.68685 6.1621 5.14362C5.37103 5.60035 4.35924 5.32907 3.90234 4.53815C3.44576 3.74699 3.7167 2.73513 4.50781 2.27839Z" fill="url(#lg4)"/>
+            <defs>
+              <linearGradient id="lg0" x1="1" y1="2" x2="16.8697" y2="5.1208" gradientUnits="userSpaceOnUse"><stop stopColor="#25C8A5"/><stop offset="0.5" stopColor="#1B90B4"/><stop offset="1" stopColor="#1A6CC4"/></linearGradient>
+              <linearGradient id="lg1" x1="1" y1="2" x2="16.8697" y2="5.1208" gradientUnits="userSpaceOnUse"><stop stopColor="#25C8A5"/><stop offset="0.5" stopColor="#1B90B4"/><stop offset="1" stopColor="#1A6CC4"/></linearGradient>
+              <linearGradient id="lg2" x1="1" y1="2" x2="16.8697" y2="5.1208" gradientUnits="userSpaceOnUse"><stop stopColor="#25C8A5"/><stop offset="0.5" stopColor="#1B90B4"/><stop offset="1" stopColor="#1A6CC4"/></linearGradient>
+              <linearGradient id="lg3" x1="1" y1="2" x2="16.8697" y2="5.1208" gradientUnits="userSpaceOnUse"><stop stopColor="#25C8A5"/><stop offset="0.5" stopColor="#1B90B4"/><stop offset="1" stopColor="#1A6CC4"/></linearGradient>
+              <linearGradient id="lg4" x1="1" y1="2" x2="16.8697" y2="5.1208" gradientUnits="userSpaceOnUse"><stop stopColor="#25C8A5"/><stop offset="0.5" stopColor="#1B90B4"/><stop offset="1" stopColor="#1A6CC4"/></linearGradient>
+            </defs>
+          </svg>
+          <div style={{ fontSize: 11, fontWeight: 500, color: "#C0C0C0", marginTop: 6 }}></div>
+        </div>
+
+        {/* greeting */}
+        <h1 className="greeting-entrance" style={{ fontSize: 24, fontWeight: 700, letterSpacing: "-0.02em", color: "#18181B", marginBottom: 6 }}>Good morning, Mike.</h1>
+        <p className="narrative-entrance" style={{ fontSize: 14, fontWeight: 500, color: "#6B7280", lineHeight: 1.65, margin: "0 0 20px", maxWidth: 720 }}>3 things need your attention — a stop-sale recall, Emily out with 4 open deals, and a delayed delivery. AI already handled 2 items before you opened this. You have 8 carryover deals and 12 appointments today.</p>
+
+        {/* prompt bar */}
+        <div className="prompt-entrance" style={{ marginBottom: 20 }}>
+
+          <div style={{
+            borderRadius: 8,
+            background: "#FFF",
+            border: (promptFocused || promptQuery.length > 0) ? "1.5px solid rgba(74,124,247,0.25)" : "1.5px solid #EBEBEB",
+            boxShadow: (promptFocused || promptQuery.length > 0) ? "0 0 20px rgba(74,124,247,0.08), 0 0 40px rgba(168,85,247,0.04)" : "0 1px 2px rgba(0,0,0,0.03)",
+            animation: (promptFocused || promptQuery.length > 0) ? "glowPulse 3s ease-in-out infinite" : "none",
+            transition: "border-color 0.6s ease, box-shadow 0.6s ease",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px" }}>
+              <textarea ref={promptRef} value={promptQuery} rows={1}
+                onChange={e => setPromptQuery(e.target.value)}
+                onFocus={() => setPromptFocused(true)}
+                onBlur={() => setTimeout(() => setPromptFocused(false), 800)}
+                onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) e.preventDefault(); }}
+                placeholder="Ask · Decide · Execute"
+                style={{ flex: 1, border: "none", outline: "none", background: "transparent", fontSize: 14, fontWeight: 500, color: "#18181B", fontFamily: sans, resize: "none", overflow: "hidden", lineHeight: "20px", height: 20, minHeight: 20, maxHeight: 120, padding: 0, margin: 0, display: "block", verticalAlign: "middle" }}
+              />
+              <button disabled={promptQuery.length === 0} style={{
+                width: 28, height: 28, borderRadius: 6, border: "none", flexShrink: 0,
+                background: promptQuery.length > 0 ? aiGrad : "#F3F4F6",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                cursor: promptQuery.length > 0 ? "pointer" : "default",
+                transition: "all 0.2s",
+              }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={promptQuery.length > 0 ? "#FFF" : "#C0C0C0"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+          </div>
+          <div style={{ display: "flex", gap: 6, marginTop: 8, flexWrap: "wrap", alignItems: "center" }}>
+            {chips.map((ch, ci) => (
+              <button key={`${chipSet}-${ci}`}
+                className="prompt-chip chip-entrance"
+                style={{ animationDelay: `${0.35 + ci * 0.06}s`, display: "flex", alignItems: "center", gap: 5, padding: "5px 11px", borderRadius: 4, background: "#FFF", border: "1px solid #EBEBEB", fontSize: 11, fontWeight: 600, color: "#6B7280", cursor: "pointer", fontFamily: sans, whiteSpace: "nowrap" }}
+                onClick={() => { setPromptQuery(ch.q); setPromptFocused(true); promptRef.current?.focus(); }}
+              ><span style={{ fontSize: 12 }}>{ch.icon}</span>{ch.label}</button>
+            ))}
+            <button onClick={() => setChipSet(s => (s + 1) % ALL_CHIPS.length)} className="new-suggestions-btn" style={{ display: "flex", alignItems: "center", gap: 5, padding: "2px 0", background: "transparent", border: "none", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: sans, whiteSpace: "nowrap", marginLeft: "auto", textDecoration: "underline", textUnderlineOffset: 3, textDecorationColor: "rgba(74,124,247,0.4)" }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                <defs><linearGradient id="shuffle-grad" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse"><stop stopColor="#4A7CF7"/><stop offset="1" stopColor="#A855F7"/></linearGradient></defs>
+                <path d="M16 3h5v5" stroke="url(#shuffle-grad)"/><path d="M21 3l-7 7" stroke="url(#shuffle-grad)"/><path d="M16 21h5v-5" stroke="url(#shuffle-grad)"/><path d="M21 21l-7-7" stroke="url(#shuffle-grad)"/><path d="M3 7h3a4 4 0 0 1 4 4 4 4 0 0 0 4 4h2" stroke="url(#shuffle-grad)"/><path d="M3 17h3a4 4 0 0 0 4-4 4 4 0 0 1 4-4h2" stroke="url(#shuffle-grad)"/>
+              </svg>
+              <span style={{ background: aiGrad, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>New suggestions</span>
+            </button>
+          </div>
+        </div>
+
+        {/* separator */}
+        <div className="divider-entrance" style={{ margin: "40px 0 0", height: 1, background: "#E5E7EB" }} />
+
+
+        {/* ── UNIFIED FEED ── */}
+        <div className="feed-entrance">
+        {(() => {
+
+          const typeIcon = {
+            deal:      { icon: "💼", label: "Deal",        color: "#2563EB" },
+            appt:      { icon: "📅", label: "Appointment", color: "#D97706" },
+            lead:      { icon: "📥", label: "Lead",        color: "#7C3AED" },
+            finance:   { icon: "🏦", label: "Finance",     color: "#059669" },
+            alert:     { icon: "⚠️", label: "Alert",       color: "#DC2626" },
+            inventory: { icon: "🚗", label: "Inventory",   color: "#6B7280" },
+            salesfloor: { icon: "🏢", label: "Sales Floor", color: "#0EA5E9" },
+          };
+
+          const CAT_FILTERS_ALL = [
+            { id: "appt",      label: "Appointments", icon: "📅", match: i => i.type === "appt" },
+            { id: "deal",      label: "Deals",        icon: "💼", match: i => i.type === "deal" },
+            { id: "finance",   label: "Finance",      icon: "🏦", match: i => i.type === "finance" },
+            { id: "inventory", label: "Inventory",    icon: "🚗", match: i => i.type === "inventory" },
+            { id: "lead",      label: "Leads",        icon: "📥", match: i => i.type === "lead" },
+            { id: "salesfloor", label: "Sales Floor", icon: "🏢", match: i => i.type === "salesfloor" },
+          ];
+          const CAT_FILTERS = [...CAT_FILTERS_ALL].sort((a, b) => catOrder.indexOf(a.id) - catOrder.indexOf(b.id)).filter(f => !hiddenCatsState.has(f.id));
+          const SIG_FILTERS = [
+            { id: "action",   label: "Action Needed", icon: "🚨", match: i => i.sig === "action" },
+            { id: "insight",  label: "Insights",      icon: "✨", match: i => i.sig === "insight" },
+            { id: "negative", label: "Negative",      icon: "👎", match: i => i.sig === "negative" },
+            { id: "positive", label: "Positive",      icon: "👍", match: i => i.sig === "positive" },
+          ];
+          const sigColors = { action: "#DC2626", insight: "#2563EB", negative: "#D97706", positive: "#059669" };
+
+          const catMatch = feedCats.size === 0 ? i => !hiddenCatsState.has(i.type) : i => feedCats.has(i.type) && !hiddenCatsState.has(i.type);
+          const sigMatch = feedSigs.size === 0 ? () => true : i => feedSigs.has(i.sig);
+          const allSelected = feedCats.size === 0 && feedSigs.size === 0;
+          const CAT_ORDER = catOrder;
+          const SIG_ORDER = ["action","insight","negative","positive"];
+          const baseFiltered = FEED_ITEMS.filter(i => !feedDismissed.has(i.id) && catMatch(i) && sigMatch(i));
+          const filtered = [...baseFiltered].sort((a, b) => {
+            const catDiff = CAT_ORDER.indexOf(a.type) - CAT_ORDER.indexOf(b.type);
+            if (catDiff !== 0) return catDiff;
+            return SIG_ORDER.indexOf(a.sig) - SIG_ORDER.indexOf(b.sig);
+          });
+          const catCounts = Object.fromEntries(CAT_FILTERS.map(f => [f.id, FEED_ITEMS.filter(i => !feedDismissed.has(i.id) && i.type === f.id && !hiddenCatsState.has(i.type) && (feedSigs.size === 0 || feedSigs.has(i.sig))).length]));
+          const sigCounts = Object.fromEntries(SIG_FILTERS.map(f => [f.id, FEED_ITEMS.filter(i => !feedDismissed.has(i.id) && i.sig === f.id && (feedCats.size === 0 || feedCats.has(i.type))).length]));
+
+          return (
+            <div style={{ marginTop: 28, marginBottom: 48 }}>
+
+              {/* briefing line — above huddle */}
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+                <span style={{ display: "inline-flex", alignItems: "center", padding: "1px 5px", borderRadius: 3, background: "#F3F0FF", color: "#7C3AED", fontSize: 9, fontWeight: 700, letterSpacing: "0.03em" }}>AI</span>
+                <span style={{ fontSize: 12, fontWeight: 600, color: "#18181B" }}>Morning briefing · Generated at 9:02 AM · {FEED_ITEMS.length} items ranked by relevance</span>
+              </div>
+
+              {/* Morning Huddle — full width */}
+              <div style={{ background: "#FFF", borderRadius: 8, border: "1px solid #EBEBEB", boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02)", overflow: "hidden", marginBottom: 20 }}>
+                <div style={{ padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <Row sx={{ gap: 10 }}>
+                    <div style={{ width: 32, height: 32, borderRadius: 6, background: "#F3F0FF", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: "#18181B" }}>Morning Huddle</div>
+                      <div style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", marginTop: 2 }}>A ready-to-read morning huddle script with today's wins, coverage, priorities, and focus.</div>
+                    </div>
+                  </Row>
+                  <span className="huddle-cta-inline">
+                    {showHuddleScript === "idle" && <Btn onClick={() => { setShowHuddleScript("generating"); setTimeout(() => { setShowHuddleScript("ready"); setHuddleExpanded(true); }, 3000); }} sx={{ background: aiGrad, color: "#FFF", padding: "6px 16px", fontSize: 12, boxShadow: "0 2px 4px rgba(0,0,0,0.08)", flexShrink: 0 }}>Generate</Btn>}
+                    {showHuddleScript === "generating" && <span style={{ fontSize: 11, fontWeight: 600, color: "#7C3AED", flexShrink: 0 }}>Generating...</span>}
+                    {showHuddleScript === "ready" && <Btn onClick={() => setHuddleExpanded(e => !e)} sx={{ flexShrink: 0, fontSize: 12, padding: "5px 12px" }}>{huddleExpanded ? "Hide" : "Show"}</Btn>}
+                  </span>
+                </div>
+                {/* Mobile full-width CTA row */}
+                <div className="huddle-cta-row">
+                  {showHuddleScript === "idle" && <button onClick={() => { setShowHuddleScript("generating"); setTimeout(() => { setShowHuddleScript("ready"); setHuddleExpanded(true); }, 3000); }} style={{ width: "100%", padding: "9px", borderRadius: 8, border: "none", background: aiGrad, color: "#FFF", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: sans, boxShadow: "0 2px 8px rgba(74,124,247,0.3)" }}>Generate</button>}
+                  {showHuddleScript === "generating" && <div style={{ textAlign: "center", fontSize: 13, fontWeight: 600, color: "#7C3AED", padding: "8px 0" }}>Generating...</div>}
+                  {showHuddleScript === "ready" && <button onClick={() => setHuddleExpanded(e => !e)} style={{ width: "100%", padding: "9px", borderRadius: 8, border: "1.5px solid #E5E7EB", background: "#FFF", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: sans, color: "#374151" }}>{huddleExpanded ? "Hide script" : "Show script"}</button>}
+                </div>
+                {showHuddleScript === "generating" && (() => {
+                  const bar = (w, h = 10, mb = 0) => ({ width: w, height: h, borderRadius: 4, marginBottom: mb, background: "linear-gradient(90deg,#F3F4F6 0%,#E5E7EB 40%,#F3F4F6 80%)", backgroundSize: "800px 100%", animation: "shimmer 1.8s ease-in-out infinite" });
+                  return (
+                    <div style={{ padding: "0 16px 14px", borderTop: "1px solid #F3F4F6" }}>
+                      <div style={{ paddingTop: 14, display: "flex", flexDirection: "column", gap: 18 }}>
+                        {[{ titleW: "30%", lines: ["88%","65%"] }, { titleW: "38%", lines: ["92%","55%"] }].map((s, si) => (
+                          <div key={si} style={{ opacity: 1 - si * 0.08 }}>
+                            <div style={{ ...bar(s.titleW, 12, 10), animationDelay: si * 0.15 + "s" }} />
+                            <div style={{ paddingLeft: 20, display: "flex", flexDirection: "column", gap: 6 }}>
+                              {s.lines.map((w, li) => <div key={li} style={{ ...bar(w, 9), animationDelay: si * 0.15 + li * 0.08 + "s" }} />)}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <div style={{ fontSize: 11, fontWeight: 500, color: "#C0C0C0", marginTop: 14, textAlign: "center" }}>Pulling from yesterday's results, today's schedule, and team data</div>
+                    </div>
+                  );
+                })()}
+                {showHuddleScript === "ready" && huddleExpanded && (
+                  <div style={{ padding: "0 16px 14px" }}>
+                    <div style={{ paddingTop: 14, display: "flex", flexDirection: "column", gap: 12 }}>
+                      {[
+                        { label: "🏆 Wins", color: "#D97706", items: [<><span style={{ fontWeight: 700 }}>Jason</span> — moved aged RAV4 at full sticker, 68 days, zero discount.</>, <><span style={{ fontWeight: 700 }}>Chris</span> — held 3 back-end points on the Tacoma. Clean F&amp;I.</>, <><span style={{ fontWeight: 700 }}>Marcus</span> — converted an overnight TrueCar lead same morning.</>] },
+                        { label: "👥 Coverage", color: "#2563EB", items: [<><span style={{ fontWeight: 700 }}>Emily is out.</span> Walker takes Thompson + Henderson. Lee takes Rodriguez. Patel deal holds until tomorrow.</>, <><span style={{ fontWeight: 700 }}>Marcus</span> arriving at 10 AM — Davis moved to Walker at 9:30.</>] },
+                        { label: "📅 Today", color: "#059669", items: [<>5 appointments — Lopez delivery pushed to 4 PM (PDI delay, loaner arranged)</>, <>Rodriguez returning at noon to sign · Brooks closing paperwork now</>, <><span style={{ fontWeight: 700 }}>Recall:</span> Patel's Highlander pulled. Push Venza XLE at $46,200 as swap.</>] },
+                        { label: "📦 Inventory", color: "#7C3AED", items: [<>2 Venza XLEs at <span style={{ fontWeight: 700, color: "#D97706" }}>60+ days</span> — steer walk-ins there today</>, <>Tacoma SR5 at <span style={{ fontWeight: 700, color: "#DC2626" }}>72 days</span>, Henderson stalled</>] },
+                        { label: "🎯 Coaching", color: "#374151", items: [<><span style={{ fontWeight: 700 }}>Lee</span> — riding along on Lopez test drive.</>, <><span style={{ fontWeight: 700 }}>Green</span> — great overnight response. Keep it under 4 hours.</>] },
+                      ].map((section, si) => (
+                        <div key={si} style={{ display: "flex", gap: 10 }}>
+                          <div style={{ width: 3, borderRadius: 2, background: section.color, flexShrink: 0, opacity: 0.45, alignSelf: "stretch" }} />
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: 11, fontWeight: 700, color: section.color, marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.04em" }}>{section.label}</div>
+                            <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                              {section.items.map((item, ii) => (
+                                <div key={ii} style={{ fontSize: 13, fontWeight: 500, color: "#374151", lineHeight: 1.6, display: "flex", gap: 6 }}>
+                                  <span style={{ color: "#D4D4D4", flexShrink: 0 }}>·</span><span>{item}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      <div style={{ paddingTop: 8, borderTop: "1px solid #F3F4F6" }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: "#18181B" }}>Let's have a good day. Floor's open.</div>
+                      </div>
+                    </div>
+                    <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid #F3F4F6", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                      <span style={{ fontSize: 11, fontWeight: 500, color: "#9CA3AF" }}>
+                        <span style={{ display: "inline-flex", alignItems: "center", padding: "1px 5px", borderRadius: 3, background: "#F3F0FF", color: "#7C3AED", fontSize: 9, fontWeight: 700, letterSpacing: "0.03em", marginRight: 6, verticalAlign: "middle" }}>AI</span>
+                        Generated at 9:02 AM. Review before sharing.
+                      </span>
+                      <button onClick={() => setSourcesModal(true)} style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF", background: "none", border: "none", cursor: "pointer", fontFamily: sans }}>View sources</button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+
+              {/* left sidebar + main column */}
+              <div className="feed-layout">
+
+                {/* Desktop filter sidebar */}
+                <div className="feed-sidebar-desktop">
+                  <div style={{ background: "#FFF", borderRadius: 8, border: "1px solid #EBEBEB", overflow: "hidden", padding: "6px 0" }}>
+                    {/* All */}
+                    <div style={{ padding: "4px 4px 6px" }}>
+                      <button onClick={() => { scrollLock.current = window.scrollY; setFeedCats(new Set()); setFeedSigs(new Set()); }}
+                        style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", padding: "5px 8px", borderRadius: 6, border: "none", background: allSelectedApp ? "#F5F3FF" : "transparent", cursor: "pointer", fontFamily: sans }}>
+                        <span style={{ fontSize: 12, fontWeight: allSelectedApp ? 700 : 600, color: allSelectedApp ? "#7C3AED" : "#374151" }}>All items</span>
+                        <span style={{ fontSize: 10, fontWeight: 700, background: allSelectedApp ? "#EDE9FE" : "#F3F4F6", color: allSelectedApp ? "#7C3AED" : "#9CA3AF", borderRadius: 10, padding: "1px 6px" }}>{FEED_ITEMS.filter(i => !feedDismissed.has(i.id)).length}</span>
+                      </button>
+                    </div>
+                    {/* Category */}
+                    <div style={{ padding: "4px 4px" }}>
+                      <div style={{ fontSize: 9, fontWeight: 500, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.07em", padding: "0 4px 4px" }}>Category</div>
+                      {CAT_FILTERS_APP.map(f => {
+                        const active = feedCats.has(f.id);
+                        return (
+                          <button key={f.id} onClick={() => toggleFeedFilter(setFeedCats, f.id)}
+                            style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", padding: "5px 6px", borderRadius: 6, border: "none", background: active ? "#F5F3FF" : "transparent", cursor: "pointer", fontFamily: sans, marginBottom: 1 }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                              <span style={{ width: 13, height: 13, borderRadius: 3, flexShrink: 0, border: active ? "none" : "1.5px solid #D1D5DB", background: active ? "#7C3AED" : "#FFF", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+                                {active && <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="#FFF" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>}
+                              </span>
+                              <span style={{ fontSize: 12, fontWeight: active ? 700 : 500, color: active ? "#7C3AED" : "#374151" }}>{f.label}</span>
+                            </div>
+                            <span style={{ fontSize: 10, fontWeight: 700, background: active ? "#EDE9FE" : "#F3F4F6", color: active ? "#7C3AED" : "#9CA3AF", borderRadius: 10, padding: "1px 5px", flexShrink: 0 }}>{catCountsApp[f.id]}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {/* Signal */}
+                    <div style={{ padding: "4px 4px" }}>
+                      <div style={{ fontSize: 9, fontWeight: 500, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.07em", padding: "0 4px 4px" }}>Signal</div>
+                      {SIG_FILTERS_APP.map(f => {
+                        const active = feedSigs.has(f.id);
+                        const sc = sigColorsApp[f.id];
+                        return (
+                          <button key={f.id} onClick={() => toggleFeedFilter(setFeedSigs, f.id)}
+                            style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", padding: "5px 6px", borderRadius: 6, border: "none", background: active ? sc + "12" : "transparent", cursor: "pointer", fontFamily: sans, marginBottom: 1 }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                              <span style={{ width: 13, height: 13, borderRadius: 3, flexShrink: 0, border: active ? "none" : "1.5px solid #D1D5DB", background: active ? sc : "#FFF", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+                                {active && <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="#FFF" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>}
+                              </span>
+                              <span style={{ fontSize: 12, fontWeight: active ? 700 : 500, color: active ? sc : "#374151" }}>{f.label}</span>
+                            </div>
+                            <span style={{ fontSize: 10, fontWeight: 700, background: active ? sc + "22" : "#F3F4F6", color: active ? sc : "#9CA3AF", borderRadius: 10, padding: "1px 5px", flexShrink: 0 }}>{sigCountsApp[f.id]}</span>
+                          </button>
+                        );
+                      })}
+                      {!allSelectedApp && (
+                        <button onClick={() => { scrollLock.current = window.scrollY; setFeedCats(new Set()); setFeedSigs(new Set()); }}
+                          style={{ marginTop: 6, fontSize: 11, fontWeight: 600, color: "#9CA3AF", background: "none", border: "none", cursor: "pointer", padding: "2px 8px", fontFamily: sans }}>
+                          Clear all
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+
+
+
+                {/* main column */}
+                <div className="feed-main">
+
+              {/* feed — grouped by category with KPI header per section */}
+              {(() => {
+                const ALL_KPIS = {
+                  appt:      { label: "Appointments", color: "#D97706", icon: "📅", kpis: [{ label: "Today", value: "12", color: "#D97706" }, { label: "Confirmed", value: "9", color: "#15803D" }, { label: "Unconfirmed", value: "3", color: "#DC2626" }, { label: "Test drives", value: "5", color: "#374151" }] },
+                  deal:      { label: "Deals",         color: "#2563EB", icon: "💼", kpis: [{ label: "Active", value: "8", color: "#2563EB" }, { label: "Ready to close", value: "3", color: "#15803D" }, { label: "Stalled", value: "2", color: "#DC2626" }, { label: "Avg gross", value: "$3.4k", color: "#374151" }] },
+                  finance:   { label: "Finance",       color: "#059669", icon: "🏦", kpis: [{ label: "In queue", value: "4", color: "#059669" }, { label: "Approved", value: "1", color: "#15803D" }, { label: "Pending stips", value: "2", color: "#D97706" }, { label: "Conditional", value: "1", color: "#7C3AED" }] },
+                  inventory: { label: "Inventory",     color: "#6B7280", icon: "🚗", kpis: [{ label: "On lot", value: "247", color: "#6B7280" }, { label: "60d+", value: "14", color: "#DC2626" }, { label: "In transit", value: "18", color: "#2563EB" }, { label: "Days supply", value: "28d", color: "#374151" }] },
+                  lead:      { label: "Leads",         color: "#7C3AED", icon: "📥", kpis: [{ label: "Overnight", value: "5", color: "#7C3AED" }, { label: "Contacted", value: "3", color: "#15803D" }, { label: "Not contacted", value: "2", color: "#DC2626" }, { label: "Avg response", value: "2.1h", color: "#374151" }] },
+                  salesfloor: { label: "Sales Floor", color: "#0EA5E9", icon: "🏢", kpis: [{ label: "On floor", value: "1", color: "#0EA5E9" }, { label: "Test drives", value: "1", color: "#15803D" }, { label: "Avg time", value: "24m", color: "#374151" }, { label: "Walk-ins", value: "0", color: "#9CA3AF" }] },
+                };
+                // Group filtered items by category in CAT_ORDER
+                const activeCats = CAT_ORDER.filter(cat => filtered.some(i => i.type === cat));
+                let cardIndex = 0;
+                return (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 0, minHeight: "60vh" }}>
+                    {activeCats.map(cat => {
+                      const catItems = filtered.filter(i => i.type === cat);
+                      const meta = ALL_KPIS[cat];
+                      return (
+                        <div key={cat} style={{ marginBottom: 36 }}>
+                          {/* Category KPI header — hidden when only signal is selected */}
+                          {feedSigs.size === 0 || feedCats.size > 0 ? (
+                          <div style={{ background: "#FFF", borderRadius: 8, border: "1px solid #EBEBEB", overflow: "hidden", marginBottom: 10 }}>
+                            <div style={{ padding: "10px 16px 0", display: "flex", alignItems: "center", gap: 6, borderBottom: "1px solid #F5F5F5", paddingBottom: 8 }}>
+                              <span style={{ fontSize: 13 }}>{meta.icon}</span>
+                              <span style={{ fontSize: 12, fontWeight: 700, color: meta.color }}>{meta.label}</span>
+                              
+                            </div>
+                            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", padding: "10px 16px" }}>
+                              {meta.kpis.map((kpi, ki) => (
+                                <div key={ki} style={{ paddingRight: 16, paddingLeft: ki > 0 ? 16 : 0 }}>
+                                  <div style={{ fontSize: 18, fontWeight: 800, color: kpi.color, letterSpacing: "-0.02em", lineHeight: 1 }}>{kpi.value}</div>
+                                  <div style={{ fontSize: 10, fontWeight: 500, color: "#9CA3AF", marginTop: 3 }}>{kpi.label}</div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                          ) : null}
+                          {/* Cards in this category */}
+                          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                            {catItems.map((item, ii) => { const globalIdx = filtered.indexOf(item);
+                  const tc = typeIcon[item.type];
+                  const menuOpen = expandedAuto === ("fdot-" + item.id);
+                  const palettes = {
+                    deal:      { from: "#0f2044", accent: "#3b82f6" },
+                    appt:      { from: "#431407", accent: "#f59e0b" },
+                    lead:      { from: "#1e1b4b", accent: "#8b5cf6" },
+                    finance:   { from: "#052e16", accent: "#10b981" },
+                    alert:     { from: "#450a0a", accent: "#ef4444" },
+                    inventory: { from: "#0c0a09", accent: "#a8a29e" },
+                  };
+                  const pal = palettes[item.type] || palettes.deal;
+
+                  const sigIcon = SIG_FILTERS.find(f => f.id === item.sig)?.icon;
+                  const sigColor = sigColors[item.sig];
+                  const sigLabel = SIG_FILTERS.find(f => f.id === item.sig)?.label;
+
+                  return (
+                    <React.Fragment key={item.id}>
+                    <div className="card-hover card-enter" style={{ animationDelay: (1.0 + globalIdx * 0.08) + "s", background: "#FFF", borderRadius: 12, border: "1px solid #EBEBEB", boxShadow: "0 1px 4px rgba(0,0,0,0.04), 0 4px 14px rgba(0,0,0,0.03)", overflow: "hidden", display: "flex" }}>
+
+                      {/* thumbnail */}
+                      <div style={{ width: 96, flexShrink: 0, position: "relative", overflow: "hidden", background: pal.from }}>
+                        <img src={item.img} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} onError={e => e.target.style.display = "none"} />
+                        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.25)" }} />
+                        <div style={{ position: "absolute", bottom: 7, left: 7, zIndex: 1, fontSize: 14, lineHeight: 1, opacity: 0.65 }}>
+                          {sigIcon}
+                        </div>
+                      </div>
+
+                      {/* body */}
+                      <div style={{ padding: "12px 14px", flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                        <div>
+                          <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 4 }}>
+                            <span style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "2px 8px", borderRadius: 4, background: "#F3F4F6", fontSize: 10, fontWeight: 700, color: tc.color }}><span>{tc.icon}</span><span style={{ marginLeft: 1 }}>{tc.label}</span></span>
+                            <span style={{ padding: "1px 7px", borderRadius: 20, fontSize: 10, fontWeight: 700, background: item.badgeBg, color: item.badgeC, marginLeft: "auto", whiteSpace: "nowrap" }}>{item.badge}</span>
+                          </div>
+                          <div style={{ fontSize: 14, fontWeight: 700, color: "#18181B", lineHeight: 1.3, marginBottom: 2 }}>{item.title}</div>
+                          <div style={{ fontSize: 11, fontWeight: 500, color: "#9CA3AF", marginBottom: 6 }}>{item.sub}</div>
+                          <div style={{ fontSize: 12, fontWeight: 500, color: "#374151", lineHeight: 1.6, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{item.blurb}</div>
+                        </div>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 10 }}>
+                          <div style={{ display: "flex", gap: 6 }}>
+                            {item.cta && (item.sig === "action"
+                              ? <Btn primary sx={{ padding: "5px 14px", fontSize: 12 }}>Take action</Btn>
+                              : <Btn sx={{ padding: "5px 14px", fontSize: 12 }}>{item.cta}</Btn>
+                            )}
+                          </div>
+                          <div style={{ display: "flex", gap: 4 }}>
+                            <button
+                              onClick={() => setAutomated(p => { const n = new Set(p); n.has(item.id) ? n.delete(item.id) : n.add(item.id); return n; })}
+                              style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid #F0F0F0", background: "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s", color: automated.has(item.id) ? "#E11D48" : "#C0C0C0" }}
+                              onMouseEnter={e => { e.currentTarget.style.borderColor = "#FECDD3"; e.currentTarget.style.color = "#E11D48"; }}
+                              onMouseLeave={e => { e.currentTarget.style.borderColor = "#F0F0F0"; e.currentTarget.style.color = automated.has(item.id) ? "#E11D48" : "#C0C0C0"; }}>
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill={automated.has(item.id) ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                            </button>
+                            <button onClick={e => { menuAnchorRef.current = e.currentTarget; const r = e.currentTarget.getBoundingClientRect(); setMenuPos({ bottom: window.innerHeight - r.top + 6, right: window.innerWidth - r.right }); setExpandedAuto(menuOpen ? null : ("fdot-" + item.id)); }}
+                              style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid #F0F0F0", background: "#FFF", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#C0C0C0", transition: "all 0.15s" }}
+                              onMouseEnter={e => { e.currentTarget.style.borderColor = "#C0C0C0"; e.currentTarget.style.color = "#374151"; }}
+                              onMouseLeave={e => { e.currentTarget.style.borderColor = "#F0F0F0"; e.currentTarget.style.color = "#C0C0C0"; }}>
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    </React.Fragment>
+                  );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })()}{/* end feed */}
+                </div>{/* end main column */}
+              </div>{/* end sidebar+main row */}
+
+
+            </div>
+          );
+        })()}
+        </div>
+      </main>
+
+
+
+      {/* Global dropdown portal */}
+      {expandedAuto && expandedAuto.startsWith("fdot-") && (() => {
+        const openItem = FEED_ITEMS.find(i => "fdot-" + i.id === expandedAuto);
+        if (!openItem) return null;
+        return (
+          <>
+            <div onClick={() => setExpandedAuto(null)} style={{ position: "fixed", inset: 0, zIndex: 100 }} />
+            <div style={{ position: "fixed", bottom: menuPos.bottom, right: menuPos.right, zIndex: 101, background: "#FFF", borderRadius: 8, border: "1px solid #E5E7EB", boxShadow: "0 8px 24px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06)", minWidth: 180, overflow: "hidden" }}>
+              {[...openItem.menu, "Don't show this"].map((label, mi) => (
+                <button key={mi} onClick={() => { if (label === "Don't show this") setFeedDismissed(p => new Set([...p, openItem.id])); setExpandedAuto(null); }}
+                  style={{ display: "block", width: "100%", padding: "9px 14px", textAlign: "left", background: "transparent", border: "none", borderBottom: mi < openItem.menu.length ? "1px solid #F5F5F5" : "none", fontSize: 13, fontWeight: 500, color: label === "Don't show this" ? "#DC2626" : "#374151", cursor: "pointer", fontFamily: sans }}
+                  onMouseEnter={e => e.currentTarget.style.background = "#F8F9FA"}
+                  onMouseLeave={e => e.currentTarget.style.background = "transparent"}>{label}</button>
+              ))}
+            </div>
+          </>
+        );
+      })()}
+
+      {/* Mobile filter portal */}
+      {showFilterPanel && (
+        <div className="mobile-filter-portal" onClick={e => { if (e.target === e.currentTarget) setShowFilterPanel(false); }}>
+          <div className="mobile-filter-sheet">
+            {/* drag handle */}
+            <div style={{ display: "flex", justifyContent: "center", padding: "12px 0 6px" }}>
+              <div style={{ width: 36, height: 4, borderRadius: 2, background: "#E5E7EB" }} />
+            </div>
+            {/* Filter header */}
+            <div className="filter-mobile-header">
+              <span style={{ fontSize: 15, fontWeight: 700, color: "#18181B" }}>Filter</span>
+              <button onClick={() => setShowFilterPanel(false)} style={{ width: 30, height: 30, borderRadius: 8, border: "none", background: "#F3F4F6", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#6B7280" }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+              </button>
+            </div>
+            <div style={{ padding: "0 16px 8px" }}>
+              {/* All */}
+              <button onClick={() => { scrollLock.current = window.scrollY; setFeedCats(new Set()); setFeedSigs(new Set()); setShowFilterPanel(false); }}
+                style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", padding: "10px 12px", borderRadius: 8, border: "none", background: allSelectedApp ? "#F5F3FF" : "#F9FAFB", cursor: "pointer", fontFamily: sans, marginBottom: 8 }}>
+                <span style={{ fontSize: 14, fontWeight: allSelectedApp ? 700 : 500, color: allSelectedApp ? "#7C3AED" : "#374151" }}>All items</span>
+                <span style={{ fontSize: 11, fontWeight: 700, background: allSelectedApp ? "#EDE9FE" : "#F3F4F6", color: allSelectedApp ? "#7C3AED" : "#9CA3AF", borderRadius: 10, padding: "2px 8px" }}>{FEED_ITEMS.filter(i => !feedDismissed.has(i.id)).length}</span>
+              </button>
+              {/* Category */}
+              <div style={{ fontSize: 10, fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6 }}>Category</div>
+              {CAT_FILTERS_APP.map(f => {
+                const active = feedCats.has(f.id);
+                return (
+                  <button key={f.id} onClick={() => toggleFeedFilter(setFeedCats, f.id)}
+                    style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", padding: "10px 12px", borderRadius: 8, border: "none", background: active ? "#F5F3FF" : "#F9FAFB", cursor: "pointer", fontFamily: sans, marginBottom: 6 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <span style={{ width: 18, height: 18, borderRadius: 4, flexShrink: 0, border: active ? "none" : "1.5px solid #D1D5DB", background: active ? "#7C3AED" : "#FFF", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+                        {active && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#FFF" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>}
+                      </span>
+                      <span style={{ fontSize: 14, fontWeight: active ? 700 : 400, color: active ? "#7C3AED" : "#374151" }}>{f.label}</span>
+                    </div>
+                    <span style={{ fontSize: 12, fontWeight: 700, background: active ? "#EDE9FE" : "#F3F4F6", color: active ? "#7C3AED" : "#9CA3AF", borderRadius: 10, padding: "2px 8px" }}>{catCountsApp[f.id]}</span>
+                  </button>
+                );
+              })}
+              {/* Signal */}
+              <div style={{ fontSize: 10, fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.07em", margin: "12px 0 6px" }}>Signal</div>
+              {SIG_FILTERS_APP.map(f => {
+                const active = feedSigs.has(f.id);
+                const sc = sigColorsApp[f.id];
+                return (
+                  <button key={f.id} onClick={() => toggleFeedFilter(setFeedSigs, f.id)}
+                    style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", padding: "10px 12px", borderRadius: 8, border: "none", background: active ? sc + "12" : "#F9FAFB", cursor: "pointer", fontFamily: sans, marginBottom: 6 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <span style={{ width: 18, height: 18, borderRadius: 4, flexShrink: 0, border: active ? "none" : "1.5px solid #D1D5DB", background: active ? sc : "#FFF", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+                        {active && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#FFF" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>}
+                      </span>
+                      <span style={{ fontSize: 14, fontWeight: active ? 700 : 400, color: active ? sc : "#374151" }}>{f.label}</span>
+                    </div>
+                    <span style={{ fontSize: 12, fontWeight: 700, background: active ? sc + "22" : "#F3F4F6", color: active ? sc : "#9CA3AF", borderRadius: 10, padding: "2px 8px" }}>{sigCountsApp[f.id]}</span>
+                  </button>
+                );
+              })}
+              {!allSelectedApp && (
+                <button onClick={() => { scrollLock.current = window.scrollY; setFeedCats(new Set()); setFeedSigs(new Set()); }}
+                  style={{ marginTop: 8, fontSize: 13, fontWeight: 600, color: "#9CA3AF", background: "none", border: "none", cursor: "pointer", fontFamily: sans }}>
+                  Clear all
+                </button>
+              )}
+            </div>
+            {/* Footer buttons */}
+            <div style={{ display: "flex", gap: 10, padding: "12px 16px 4px", borderTop: "1px solid #F3F4F6" }}>
+              <button onClick={() => setShowFilterPanel(false)}
+                style={{ flex: 1, padding: "12px", borderRadius: 10, border: "1.5px solid #E5E7EB", background: "#FFF", fontSize: 14, fontWeight: 600, color: "#374151", cursor: "pointer", fontFamily: sans }}>
+                Cancel
+              </button>
+              <button onClick={() => setShowFilterPanel(false)}
+                style={{ flex: 1, padding: "12px", borderRadius: 10, border: "none", background: "linear-gradient(135deg,#4A7CF7 28%,#A855F7 111%)", fontSize: 14, fontWeight: 700, color: "#FFF", cursor: "pointer", fontFamily: sans }}>
+                Apply
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* FAB — mobile filter button, fixed outside main */}
+      <button className="filter-fab" onClick={() => setShowFilterPanel(true)}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/>
+        </svg>
+        Filter
+        {(feedCats.size + feedSigs.size) > 0 && (
+          <span style={{ background: "linear-gradient(135deg,#4A7CF7 28%,#A855F7 111%)", color: "#FFF", borderRadius: 10, padding: "0 6px", fontSize: 11, fontWeight: 700, minWidth: 18, textAlign: "center" }}>{feedCats.size + feedSigs.size}</span>
+        )}
+      </button>
+
+      {/* Sources Modal */}
+      {sourcesModal && (
+        <div onClick={() => setSourcesModal(false)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.2)", zIndex: 50, backdropFilter: "blur(2px)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div onClick={e => e.stopPropagation()} style={{ background: "#FFF", borderRadius: 12, width: 480, maxWidth: "92vw", maxHeight: "80vh", boxShadow: "0 20px 60px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.06)", display: "flex", flexDirection: "column", opacity: 0, animation: "fadeSlideIn 0.2s ease forwards" }}>
+            <div style={{ padding: 16, borderBottom: "1px solid #F3F4F6", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: "#18181B" }}>Sources</div>
+                <div style={{ fontSize: 11, fontWeight: 500, color: "#9CA3AF", marginTop: 2 }}>{Object.keys(CITATIONS).length} data points used to generate this script</div>
+              </div>
+              <button onClick={() => setSourcesModal(false)} style={{ width: 28, height: 28, borderRadius: 6, border: "none", background: "#F3F4F6", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, color: "#9CA3AF" }}>{"\u2715"}</button>
+            </div>
+            <div style={{ overflowY: "auto", flex: 1 }}>
+              {Object.values(CITATIONS).map((c, i) => (
+                <div key={i} style={{ padding: "12px 16px", borderBottom: i < Object.keys(CITATIONS).length - 1 ? "1px solid #F5F5F5" : "none" }}>
+                  <Row sx={{ gap: 12 }}>
+                    <div style={{ width: 36, height: 36, borderRadius: "50%", flexShrink: 0, background: `${c.c}12`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: c.c }}>{c.ini}</div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <Row sx={{ gap: 6 }}><span style={{ fontSize: 13, fontWeight: 700, color: "#18181B" }}>{c.name}</span><span style={{ fontSize: 11, fontWeight: 500, color: "#9CA3AF" }}>{c.id}</span></Row>
+                      <div style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", marginTop: 2 }}>{c.detail} · {c.sub}</div>
+                    </div>
+                    <div style={{ textAlign: "right", flexShrink: 0 }}><div style={{ fontSize: 12, fontWeight: 700, color: c.c, fontFamily: mono }}>{c.metric}</div></div>
+                  </Row>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Modify Modal */}
+      {showModifyModal && (<>
+        <div onClick={() => { setShowModifyModal(false); setModifyPrompt(""); setModifyApplied(false); }} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.3)", zIndex: 49, backdropFilter: "blur(2px)" }} />
+        <div style={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 520, maxWidth: "92vw", maxHeight: "88vh", background: "#FFF", borderRadius: 12, boxShadow: "0 20px 48px rgba(0,0,0,0.18), 0 6px 16px rgba(0,0,0,0.08)", zIndex: 50, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+          {/* header */}
+          <div style={{ padding: "16px 20px 14px", borderBottom: "1px solid #F0F0F0", flexShrink: 0 }}>
+            <Row sx={{ justifyContent: "space-between", alignItems: "center" }}>
+              <Row sx={{ gap: 8 }}>
+                <div style={{ width: 28, height: 28, borderRadius: 6, background: aiGrad, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </div>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: "#18181B" }}>Modify with AI</div>
+                  <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 1 }}>Describe what to change — AI will update the steps</div>
+                </div>
+              </Row>
+              <span onClick={() => { setShowModifyModal(false); setModifyPrompt(""); setModifyApplied(false); }} style={{ width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 6, background: "#F3F4F6", cursor: "pointer", fontSize: 14, color: "#6B7280", fontWeight: 600 }}>{"\u2715"}</span>
+            </Row>
+          </div>
+
+          {/* AI prompt */}
+          <div style={{ padding: "14px 20px 12px", borderBottom: "1px solid #F5F5F5", flexShrink: 0, background: modifyPromptFocused ? "#FAFBFF" : "#FFF", transition: "background 0.3s" }}>
+            <div style={{ borderRadius: 8, border: modifyPromptFocused ? "1.5px solid rgba(74,124,247,0.4)" : "1.5px solid #E5E7EB", boxShadow: modifyPromptFocused ? "0 0 0 3px rgba(74,124,247,0.08)" : "none", transition: "all 0.25s", background: "#FFF", padding: "10px 12px", display: "flex", alignItems: "flex-start", gap: 10 }}>
+              <textarea
+                value={modifyPrompt}
+                onChange={e => { setModifyPrompt(e.target.value); setModifyApplied(false); }}
+                onFocus={() => setModifyPromptFocused(true)}
+                onBlur={() => setModifyPromptFocused(false)}
+                rows={2}
+                placeholder="e.g. Skip notifying the customer, add a manager approval step first..."
+                style={{ flex: 1, border: "none", outline: "none", background: "transparent", fontSize: 14, fontWeight: 500, color: "#18181B", fontFamily: sans, resize: "none", lineHeight: 1.55, padding: 0 }}
+              />
+              <button
+                onClick={() => { if (!modifyPrompt.trim()) return; setModifyThinking(true); setTimeout(() => { setModifyThinking(false); setModifyApplied(true); }, 1600); }}
+                disabled={!modifyPrompt.trim() || modifyThinking}
+                style={{ flexShrink: 0, padding: "5px 12px", borderRadius: 5, border: "none", background: modifyPrompt.trim() ? aiGrad : "#F3F4F6", color: modifyPrompt.trim() ? "#FFF" : "#9CA3AF", fontSize: 12, fontWeight: 600, cursor: modifyPrompt.trim() ? "pointer" : "default", fontFamily: sans, display: "flex", alignItems: "center", gap: 5, transition: "all 0.2s", marginTop: 1 }}>
+                {modifyThinking ? (<><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ animation: "spin 1s linear infinite" }}><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>Thinking</>) : "Apply"}
+              </button>
+            </div>
+            {!modifyApplied && (
+              <div style={{ display: "flex", gap: 6, marginTop: 8, flexWrap: "wrap" }}>
+                {["Remove customer notification", "Add manager approval first", "Simplify to 2 steps", "Add a loaner car step"].map((s, i) => (
+                  <button key={i} onClick={() => { setModifyPrompt(s); setModifyApplied(false); }}
+                    style={{ padding: "4px 10px", borderRadius: 20, border: "1px solid #E5E7EB", background: "#F9FAFB", fontSize: 12, fontWeight: 600, color: "#6B7280", cursor: "pointer", fontFamily: sans }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = "#A5B4FC"; e.currentTarget.style.color = "#4F46E5"; e.currentTarget.style.background = "#EEF2FF"; }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.color = "#6B7280"; e.currentTarget.style.background = "#F9FAFB"; }}
+                  >{s}</button>
+                ))}
+              </div>
+            )}
+            {modifyApplied && (
+              <Row sx={{ gap: 6, marginTop: 8 }}>
+                <div style={{ width: 16, height: 16, borderRadius: 3, background: "#D1FAE5", display: "flex", alignItems: "center", justifyContent: "center" }}><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#15803D" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                <span style={{ fontSize: 12, fontWeight: 600, color: "#15803D" }}>Steps updated based on your instruction</span>
+                <span onClick={() => { setModifyPrompt(""); setModifyApplied(false); }} style={{ fontSize: 12, fontWeight: 600, color: "#9CA3AF", cursor: "pointer", marginLeft: 4, textDecoration: "underline", textUnderlineOffset: 2 }}>Undo</span>
+              </Row>
+            )}
+          </div>
+
+          {/* Steps */}
+          <div style={{ padding: "14px 20px", overflowY: "auto", flex: 1 }}>
+            <Row sx={{ justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.05em" }}>Steps</div>
+              <span style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF" }}>{modifySteps.length} steps</span>
+            </Row>
+            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              {modifySteps.map((step, i) => {
+                const isDragging = dragItem === i;
+                const isDragOver = dragOverItem === i && dragItem !== i;
+                return (
+                  <div key={i}
+                    draggable
+                    onDragStart={() => setDragItem(i)}
+                    onDragEnter={() => setDragOverItem(i)}
+                    onDragOver={e => e.preventDefault()}
+                    onDrop={() => { if (dragItem === null || dragItem === i) { setDragOverItem(null); return; } const s = [...modifySteps]; const dragged = s.splice(dragItem, 1)[0]; s.splice(i, 0, dragged); setModifySteps(s); setDragItem(null); setDragOverItem(null); }}
+                    onDragEnd={() => { setDragItem(null); setDragOverItem(null); }}
+                    style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", borderRadius: 7, border: isDragOver ? "1.5px solid #4A7CF7" : "1px solid #F0F0F0", background: isDragOver ? "#EEF2FF" : isDragging ? "#F3F4F6" : "#FAFAFA", opacity: isDragging ? 0.45 : 1, cursor: "grab", transition: "border-color 0.12s, background 0.12s, opacity 0.12s" }}>
+                    <div style={{ flexShrink: 0, color: "#C4C4C4", cursor: "grab", display: "flex", alignItems: "center", padding: "0 1px" }}>
+                      <svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor">
+                        <circle cx="3" cy="2" r="1.2"/><circle cx="7" cy="2" r="1.2"/>
+                        <circle cx="3" cy="7" r="1.2"/><circle cx="7" cy="7" r="1.2"/>
+                        <circle cx="3" cy="12" r="1.2"/><circle cx="7" cy="12" r="1.2"/>
+                      </svg>
+                    </div>
+                    <div style={{ width: 20, height: 20, borderRadius: 4, flexShrink: 0, background: "#EFF6FF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: "#2563EB" }}>{i + 1}</div>
+                    <span style={{ flex: 1, fontSize: 14, fontWeight: 500, color: "#374151", lineHeight: 1.45 }}>{step}</span>
+                    <button onClick={() => setModifySteps(modifySteps.filter((_, j) => j !== i))} style={{ width: 24, height: 24, borderRadius: 5, border: "1px solid #FECACA", background: "#FFF5F5", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0 }} onMouseEnter={e => e.currentTarget.style.background = "#FEE2E2"} onMouseLeave={e => e.currentTarget.style.background = "#FFF5F5"}>
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+            {addingStep ? (
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8, padding: "8px 10px", borderRadius: 7, border: "1.5px solid rgba(74,124,247,0.3)", background: "#FAFBFF" }}>
+                <div style={{ width: 20, height: 20, borderRadius: 4, flexShrink: 0, background: "#EFF6FF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: "#2563EB" }}>{modifySteps.length + 1}</div>
+                <input autoFocus value={newStepText} onChange={e => setNewStepText(e.target.value)}
+                  onKeyDown={e => { if (e.key === "Enter" && newStepText.trim()) { setModifySteps([...modifySteps, newStepText.trim()]); setNewStepText(""); setAddingStep(false); } if (e.key === "Escape") { setNewStepText(""); setAddingStep(false); } }}
+                  placeholder="Describe the step..."
+                  style={{ flex: 1, border: "none", outline: "none", background: "transparent", fontSize: 14, fontWeight: 500, color: "#18181B", fontFamily: sans }} />
+                <button onClick={() => { if (newStepText.trim()) { setModifySteps([...modifySteps, newStepText.trim()]); setNewStepText(""); } setAddingStep(false); }} style={{ padding: "3px 10px", borderRadius: 5, border: "none", background: newStepText.trim() ? "#18181B" : "#F3F4F6", color: newStepText.trim() ? "#FFF" : "#9CA3AF", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: sans }}>Add</button>
+                <button onClick={() => { setNewStepText(""); setAddingStep(false); }} style={{ width: 22, height: 22, borderRadius: 4, border: "none", background: "#F3F4F6", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: 12, color: "#9CA3AF" }}>{"\u2715"}</button>
+              </div>
+            ) : (
+              <button onClick={() => setAddingStep(true)} style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 8, padding: "7px 12px", borderRadius: 6, border: "1.5px dashed #D1D5DB", background: "transparent", fontSize: 12, fontWeight: 600, color: "#6B7280", cursor: "pointer", width: "100%", fontFamily: sans }} onMouseEnter={e => { e.currentTarget.style.borderColor = "#9CA3AF"; e.currentTarget.style.color = "#374151"; }} onMouseLeave={e => { e.currentTarget.style.borderColor = "#D1D5DB"; e.currentTarget.style.color = "#6B7280"; }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                Add step
+              </button>
+            )}
+          </div>
+
+          {/* footer */}
+          <div style={{ padding: "12px 20px 16px", borderTop: "1px solid #F5F5F5", background: "#FAFAFA", display: "flex", gap: 8, justifyContent: "flex-end", flexShrink: 0 }}>
+            <Btn onClick={() => { setShowModifyModal(false); setModifyPrompt(""); setModifyApplied(false); }}>Cancel</Btn>
+            <Btn primary onClick={() => { setShowModifyModal(false); setModifyPrompt(""); setModifyApplied(false); }} sx={{ padding: "6px 16px" }}>Save</Btn>
+          </div>
+        </div>
+      </>)}
+
+      {/* Customize Modal */}
+      {showWidgetModal && (() => {
+        const CATS = [
+          { id: "appt",      icon: "📅", label: "Appointments", color: "#D97706" },
+          { id: "deal",      icon: "💼", label: "Deals",        color: "#2563EB" },
+          { id: "finance",   icon: "🏦", label: "Finance",      color: "#059669" },
+          { id: "inventory", icon: "🚗", label: "Inventory",    color: "#6B7280" },
+          { id: "lead",      icon: "📥", label: "Leads",        color: "#7C3AED" },
+          { id: "salesfloor", icon: "🏢", label: "Sales Floor",  color: "#0EA5E9" },
+        ];
+        const allCatIds = ["appt","deal","finance","inventory","lead","salesfloor"];
+        const draftCatOrder = draftOrder ? draftOrder.filter(id => CATS.some(c => c.id === id)) : [...catOrder];
+        const draftCatVisible = draftSelected || new Set(allCatIds.filter(id => !hiddenCatsState.has(id)));
+        return (<>
+          <div onClick={() => { setShowWidgetModal(false); document.body.style.overflow = ""; }} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.3)", zIndex: 49, backdropFilter: "blur(2px)" }} />
+          <div style={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 400, maxWidth: "92vw", maxHeight: "88vh", background: "#FFF", borderRadius: 12, boxShadow: "0 20px 48px rgba(0,0,0,0.18)", zIndex: 50, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+            {/* header */}
+            <div style={{ padding: "16px 20px", borderBottom: "1px solid #F0F0F0", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
+              <div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: "#18181B" }}>Customize</div>
+                <div style={{ fontSize: 12, fontWeight: 500, color: "#9CA3AF", marginTop: 2 }}>Reorder or hide categories in your feed</div>
+              </div>
+              <button onClick={() => { setShowWidgetModal(false); document.body.style.overflow = ""; setDraftSelected(null); setDraftOrder(null); }} style={{ width: 28, height: 28, borderRadius: 6, background: "#F3F4F6", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#6B7280", fontSize: 14 }}>{"\u2715"}</button>
+            </div>
+
+            {/* category list */}
+            <div style={{ overflowY: "auto", flex: 1, padding: "8px 0" }}>
+              <div style={{ padding: "6px 20px 4px" }}>
+                <span style={{ fontSize: 10, fontWeight: 700, color: "#C4C4C4", textTransform: "uppercase", letterSpacing: "0.07em" }}>Drag to reorder · toggle to show/hide</span>
+              </div>
+              {draftCatOrder.map((id, i) => {
+                const cat = CATS.find(c => c.id === id);
+                if (!cat) return null;
+                const isVisible = draftCatVisible.has(id);
+                const isDragging = widgetDragItem === i;
+                const isDragOver = widgetDragOver === i && widgetDragItem !== i;
+                return (
+                  <div key={id}
+                    draggable
+                    onDragStart={() => setWidgetDragItem(i)}
+                    onDragEnter={() => setWidgetDragOver(i)}
+                    onDragOver={e => e.preventDefault()}
+                    onDrop={() => {
+                      if (widgetDragItem === null || widgetDragItem === i) { setWidgetDragOver(null); return; }
+                      const newOrder = [...draftCatOrder];
+                      const dragged = newOrder.splice(widgetDragItem, 1)[0];
+                      newOrder.splice(i, 0, dragged);
+                      setDraftOrder(newOrder);
+                      setWidgetDragItem(null); setWidgetDragOver(null);
+                    }}
+                    onDragEnd={() => { setWidgetDragItem(null); setWidgetDragOver(null); }}
+                    style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 20px", borderBottom: i < draftCatOrder.length - 1 ? "1px solid #F5F5F5" : "none", background: isDragOver ? "#F5F3FF" : isDragging ? "#FAFAFA" : "#FFF", opacity: isDragging ? 0.45 : 1, transition: "background 0.1s", cursor: "grab" }}>
+                    {/* drag handle */}
+                    <div style={{ color: "#C4C4C4", flexShrink: 0 }}>
+                      <svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor">
+                        <circle cx="3" cy="2" r="1.2"/><circle cx="7" cy="2" r="1.2"/>
+                        <circle cx="3" cy="7" r="1.2"/><circle cx="7" cy="7" r="1.2"/>
+                        <circle cx="3" cy="12" r="1.2"/><circle cx="7" cy="12" r="1.2"/>
+                      </svg>
+                    </div>
+                    {/* icon + label */}
+                    <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 10 }}>
+                      <div style={{ width: 32, height: 32, borderRadius: 8, background: cat.color + "12", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}>{cat.icon}</div>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: isVisible ? "#18181B" : "#9CA3AF" }}>{cat.label}</span>
+                    </div>
+                    {/* toggle */}
+                    <div onClick={() => setDraftSelected(prev => {
+                        const base = prev || new Set(draftCatOrder);
+                        const next = new Set(base);
+                        next.has(id) ? next.delete(id) : next.add(id);
+                        return next;
+                      })}
+                      style={{ width: 36, height: 20, borderRadius: 10, background: isVisible ? aiGrad : "#E5E7EB", cursor: "pointer", position: "relative", transition: "background 0.2s", flexShrink: 0 }}>
+                      <div style={{ position: "absolute", top: 2, left: isVisible ? 18 : 2, width: 16, height: 16, borderRadius: "50%", background: "#FFF", boxShadow: "0 1px 3px rgba(0,0,0,0.2)", transition: "left 0.2s" }} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* footer */}
+            <div style={{ padding: "12px 20px", borderTop: "1px solid #F0F0F0", background: "#FAFAFA", display: "flex", gap: 8, justifyContent: "flex-end", flexShrink: 0 }}>
+              <Btn onClick={() => { setShowWidgetModal(false); document.body.style.overflow = ""; setDraftSelected(null); setDraftOrder(null); }}>Cancel</Btn>
+              <Btn primary onClick={() => {
+                setCatOrder(draftCatOrder);
+                const hidden = new Set(draftCatOrder.filter(id => !draftCatVisible.has(id)));
+                setHiddenCatsState(hidden);
+                setShowWidgetModal(false); document.body.style.overflow = ""; setDraftSelected(null); setDraftOrder(null);
+              }} sx={{ padding: "6px 16px" }}>Save</Btn>
+            </div>
+          </div>
+        </>);
+      })()}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
+</script>
+</body>
+</html>

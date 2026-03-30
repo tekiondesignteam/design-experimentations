@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -2854,6 +2855,7 @@
             display: none;
         }
 
+        .main-input[data-placeholder="true"]+.placeholder-wrapper,
         .main-input:empty+.placeholder-wrapper {
             display: block;
         }
@@ -5330,6 +5332,127 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="agentMarketplaceModal">
+        <div class="modal-box"
+            style="width: 650px; max-width: 90%; max-height: 80vh; display: flex; flex-direction: column;">
+            <div class="modal-title"
+                style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #E5E7EB; padding-bottom: 12px; margin-bottom: 0;">
+                <span style="display: flex; align-items: center; gap: 12px; font-size: 16px;">
+                    <button onclick="closeModals()"
+                        style="background: none; border: none; cursor: pointer; color: #6B7280; display: flex; align-items: center; padding: 4px;"
+                        title="Back to Agent Tasks">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                    </button>
+                    <span style="display: flex; align-items: center; gap: 8px;">
+                        <img src="../assets/Vector.svg"
+                            style="width: 20px; height: 20px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));">
+                        Agent Marketplace
+                    </span>
+                </span>
+            </div>
+            <div class="modal-body"
+                style="overflow-y: auto; padding: 16px; flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; background-color: var(--color-bg-surface);">
+
+                <!-- Agent 1: Installed -->
+                <div
+                    style="border: 1px solid #E5E7EB; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px; background: #FFF; box-shadow: var(--shadow-sm);">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <div
+                                style="width: 48px; height: 48px; background: var(--gradient-brand); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path
+                                        d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                                    </path>
+                                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3
+                                    style="margin: 0; font-size: 16px; color: var(--color-text-heading); font-weight: 600;">
+                                    Market Analysis</h3>
+                                <div style="font-size: 13px; color: var(--color-text-subtle);">v1.2.0 • Tekion</div>
+                            </div>
+                        </div>
+                        <span
+                            style="background: #E8F5E9; color: #2E7D32; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;">Installed</span>
+                    </div>
+                    <p style="margin: 0; font-size: 14px; color: var(--color-text-main); line-height: 1.5;">Advanced
+                        market analysis and individual price breakdown for vehicles.</p>
+                    <button
+                        style="margin-top: auto; width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #E5E7EB; background: #F9FAFB; color: var(--color-text-subtle); cursor: not-allowed; font-weight: 600;">Installed</button>
+                </div>
+
+                <!-- Agent 2: Not Installed -->
+                <div
+                    style="border: 1px solid #E5E7EB; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px; background: #FFF; box-shadow: var(--shadow-sm);">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <div
+                                style="width: 48px; height: 48px; background: linear-gradient(135deg, #FF9A9E 0%, #FECFEF 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3
+                                    style="margin: 0; font-size: 16px; color: var(--color-text-heading); font-weight: 600;">
+                                    Warranty Pro</h3>
+                                <div style="font-size: 13px; color: var(--color-text-subtle);">v2.0.1 • Tekion</div>
+                            </div>
+                        </div>
+                    </div>
+                    <p style="margin: 0; font-size: 14px; color: var(--color-text-main); line-height: 1.5;">Check and
+                        manage vehicle warranties and compliance automatically.</p>
+                    <button
+                        style="margin-top: auto; width: 100%; padding: 10px; border-radius: 8px; border: none; background: var(--color-primary); color: white; cursor: pointer; font-weight: 600; transition: background 0.2s;"
+                        onmouseover="this.style.background='#2860E1'"
+                        onmouseout="this.style.background='var(--color-primary)'">Install</button>
+                </div>
+
+                <!-- Agent 3: Installed -->
+                <div
+                    style="border: 1px solid #E5E7EB; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px; background: #FFF; box-shadow: var(--shadow-sm);">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <div
+                                style="width: 48px; height: 48px; background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                    <polyline points="10 9 9 9 8 9"></polyline>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3
+                                    style="margin: 0; font-size: 16px; color: var(--color-text-heading); font-weight: 600;">
+                                    DocuGen</h3>
+                                <div style="font-size: 13px; color: var(--color-text-subtle);">v1.0.5 • Comm</div>
+                            </div>
+                        </div>
+                        <span
+                            style="background: #E8F5E9; color: #2E7D32; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;">Installed</span>
+                    </div>
+                    <p style="margin: 0; font-size: 14px; color: var(--color-text-main); line-height: 1.5;">Automated
+                        document generation and deal structuring.</p>
+                    <button
+                        style="margin-top: auto; width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #E5E7EB; background: #F9FAFB; color: var(--color-text-subtle); cursor: not-allowed; font-weight: 600;">Installed</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     <div id="globalContextMenu">
         <button class="menu-item" id="btnPinItem" onclick="togglePin()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -6559,9 +6682,11 @@
                             <div class="chat-scroll-area">
                                 <div class="empty-state-wrapper" id="emptyState">
                                     <div class="empty-state-content content-aligner">
-                                        <div class="empty-icon">
-                                            <img src="https://tekiondesignteam.github.io/design-experimentations/ai-logo.gif"
-                                                alt="AI Assistant Logo">
+                                        <div class="empty-icon" onclick="openAgentMarketplace()"
+                                            style="cursor: pointer; display: flex; justify-content: center; align-items: center;"
+                                            title="Open Agent Marketplace">
+                                            <img src="../assets/ai-logo2.gif"
+                                                style="width: 48px; height: 48px; object-fit: contain;">
                                         </div>
                                         <h2 class="greeting-title">Hi John,</h2>
                                         <p class="greeting-subtitle">How can I help you today?</p>
@@ -6570,863 +6695,1372 @@
                                 <div class="active-chat-wrapper content-aligner" id="activeChat"></div>
 
                                 <!-- Main View Modules -->
-                                <div class="main-view-container" id="tasksView">
+                                <div class="main-view-container" id="tasksView"
+                                    style="background-color: #F8FAFC; height: 100%; overflow-y: auto;">
                                     <style>
                                         /* --- Agent Tasks Specific Styles --- */
-                                        .agent-tasks-header {
-                                            display: flex;
-                                            justify-content: space-between;
-                                            align-items: center;
-                                            padding: 0 4px 16px 4px;
+                                        .agent-tasks-v2 {
+                                            padding: 0;
+                                            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                                            max-width: 900px;
+                                            margin: 0 auto;
                                         }
 
-                                        .agent-tasks-title {
-                                            font-size: 18px;
-                                            font-weight: 700;
-                                            color: #111827;
-                                            flex: 1;
-                                            text-align: center;
-                                        }
-
-                                        .agent-header-btn {
-                                            background: none;
-                                            border: none;
-                                            cursor: pointer;
-                                            color: #4B5563;
-                                            padding: 4px;
-                                            border-radius: 4px;
-                                        }
-
-                                        .agent-header-btn:hover {
-                                            background-color: #F3F4F6;
-                                        }
-
-                                        /* Tabs */
-                                        .agent-tabs {
-                                            display: flex;
-                                            border-bottom: 1px solid #E5E7EB;
-                                            margin-bottom: 24px;
-                                            gap: 20px;
-                                            padding: 0 4px;
-                                            position: sticky;
-                                            top: 0;
+                                        .at-search-wrapper {
                                             background: #FFFFFF;
-                                            z-index: 10;
-                                            padding-top: 16px;
-                                            /* increased top padding when sticky */
-                                        }
-
-                                        .agent-tab {
-                                            padding-bottom: 12px;
-                                            font-size: 14px;
-                                            font-weight: 500;
-                                            color: #6B7280;
-                                            cursor: pointer;
-                                            position: relative;
-                                        }
-
-                                        .agent-tab.active {
-                                            color: #111827;
-                                            font-weight: 600;
-                                        }
-
-                                        .agent-tab.active::after {
-                                            content: '';
-                                            position: absolute;
-                                            bottom: -1px;
-                                            left: 0;
-                                            width: 100%;
-                                            height: 2px;
-                                            background-color: #2563EB;
-                                            border-radius: 2px 2px 0 0;
-                                        }
-
-                                        /* Card Styles (Adapted from Action Card) */
-                                        .agent-card {
-                                            border: 1px solid #E5E7EB;
-                                            border-radius: 12px;
-                                            background: #FFFFFF;
-                                            margin-bottom: 16px;
-                                            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-                                            overflow: hidden;
-                                            font-family: 'Inter', sans-serif;
-                                        }
-
-                                        .agent-card-header {
-                                            display: flex;
-                                            justify-content: space-between;
-                                            align-items: center;
-                                            padding: 12px 16px;
-                                            border-bottom: 1px solid #F3F4F6;
-                                            background: #fff;
-                                        }
-
-                                        .agent-card-title {
-                                            font-weight: 600;
-                                            font-size: 15px;
-                                            color: #111827;
-                                            margin: 0;
-                                        }
-
-                                        .agent-badge {
-                                            display: flex;
-                                            align-items: center;
-                                            gap: 6px;
-                                            background: #FFF7ED;
-                                            color: #9A3412;
-                                            font-size: 12px;
-                                            font-weight: 500;
-                                            padding: 4px 10px;
-                                            border-radius: 999px;
-                                            border: 1px solid #FFEDD5;
-                                        }
-
-                                        .agent-dot {
-                                            width: 6px;
-                                            height: 6px;
-                                            background-color: #F97316;
-                                            border-radius: 50%;
-                                        }
-
-                                        .agent-card-body {
-                                            padding: 16px;
-                                        }
-
-                                        .agent-working-box {
-                                            background: #F8FAFC;
+                                            border: 1px solid #E2E8F0;
                                             border-radius: 8px;
-                                            padding: 12px;
-                                            display: flex;
-                                            align-items: center;
-                                            justify-content: space-between;
-                                            margin-bottom: 20px;
-                                        }
-
-                                        .agent-working-left {
+                                            padding: 10px 14px;
                                             display: flex;
                                             align-items: center;
                                             gap: 10px;
+                                            margin-bottom: 24px;
                                         }
 
-                                        .agent-spinner-sun {
-                                            width: 20px;
-                                            height: 20px;
-                                            animation: spin 2s linear infinite;
-                                            color: #4B5563;
-                                        }
-
-                                        .agent-working-text {
+                                        .at-search-wrapper input {
+                                            border: none;
+                                            outline: none;
+                                            width: 100%;
                                             font-size: 14px;
-                                            color: #374151;
-                                            font-weight: 500;
+                                            color: #334155;
+                                            background: transparent;
                                         }
 
-                                        .agent-card-footer {
+                                        .at-search-wrapper input::placeholder {
+                                            color: #94A3B8;
+                                        }
+
+                                        .at-search-wrapper svg {
+                                            color: #94A3B8;
+                                            width: 16px;
+                                            height: 16px;
+                                        }
+
+                                        .at-section-title {
+                                            font-size: 12px;
+                                            font-weight: 700;
+                                            color: #64748B;
+                                            letter-spacing: 0.05em;
+                                            text-transform: uppercase;
+                                            margin-bottom: 12px;
+                                            margin-top: 24px;
+                                        }
+
+                                        .at-card {
+                                            background: #FFFFFF;
+                                            border: 1px solid #E2E8F0;
+                                            border-radius: 12px;
+                                            overflow: hidden;
+                                        }
+
+                                        .at-list-item {
+                                            display: flex;
+                                            padding: 16px;
+                                            border-bottom: 1px solid #E2E8F0;
+                                            gap: 12px;
+                                            position: relative;
+                                            transition: background 0.2s;
+                                            cursor: pointer;
+                                        }
+
+                                        .at-list-item:hover {
+                                            background: #F8FAFC;
+                                        }
+
+                                        .at-list-item:last-child {
+                                            border-bottom: none;
+                                        }
+
+                                        .at-icon-wrapper {
+                                            flex-shrink: 0;
+                                            width: 24px;
+                                            height: 24px;
+                                            display: flex;
+                                            align-items: center;
+                                            justify-content: center;
+                                        }
+
+                                        .at-content {
+                                            flex: 1;
+                                            min-width: 0;
+                                            /* allows text truncation/wrapping inside flex */
+                                        }
+
+                                        .at-item-header {
                                             display: flex;
                                             justify-content: space-between;
-                                            align-items: center;
+                                            align-items: flex-start;
+                                            margin-bottom: 6px;
+                                            flex-wrap: nowrap;
                                         }
 
-                                        .agent-chat-link {
+                                        .at-item-title {
                                             font-size: 14px;
-                                            color: #4B5563;
-                                            text-decoration: underline;
-                                            text-underline-offset: 2px;
-                                            cursor: pointer;
+                                            font-weight: 600;
+                                            color: #334155;
+                                            margin: 0;
+                                            line-height: 1.4;
                                         }
 
-                                        .agent-actions-right {
-                                            display: flex;
-                                            gap: 8px;
+                                        .at-item-time {
+                                            font-size: 12px;
+                                            color: #94A3B8;
+                                            white-space: nowrap;
+                                            margin-left: auto;
+                                            flex-shrink: 0;
                                         }
 
-                                        .agent-btn {
-                                            background: #FFFFFF;
-                                            border: 1px solid #D1D5DB;
-                                            border-radius: 6px;
-                                            padding: 6px 12px;
+                                        .at-item-desc {
                                             font-size: 13px;
+                                            color: #64748B;
+                                            margin: 0 0 12px 0;
+                                            line-height: 1.5;
+                                        }
+
+                                        .at-agent-meta {
+                                            display: flex;
+                                            align-items: center;
+                                            gap: 8px;
+                                            font-size: 12px;
                                             font-weight: 500;
-                                            color: #111827;
+                                        }
+
+                                        .at-agent-meta-badge {
+                                            padding: 4px 8px;
+                                            border-radius: 12px;
+                                            display: inline-flex;
+                                            align-items: center;
+                                            gap: 6px;
+                                        }
+
+                                        .meta-badge-running {
+                                            background: #EEF2FF;
+                                            color: #4338CA;
+                                            border: 1px solid #E0E7FF;
+                                        }
+
+                                        .meta-badge-paused {
+                                            background: #FEF2F2;
+                                            color: #B91C1C;
+                                            border: 1px solid #FEE2E2;
+                                        }
+
+                                        .meta-badge-done {
+                                            background: #F0FDF4;
+                                            color: #15803D;
+                                            border: 1px solid #DCFCE7;
+                                        }
+
+                                        .at-agent-meta span.agent-name {
+                                            color: #475569;
+                                            font-weight: 600;
+                                        }
+
+                                        .icon-warning {
+                                            width: 24px;
+                                            height: 24px;
+                                            border-radius: 50%;
+                                            background: #F59E0B;
+                                            display: flex;
+                                            align-items: center;
+                                            justify-content: center;
+                                            color: white;
+                                        }
+
+                                        .icon-warning svg {
+                                            width: 14px;
+                                            height: 14px;
+                                            stroke-width: 3;
+                                            stroke-linecap: round;
+                                            stroke-linejoin: round;
+                                        }
+
+                                        .icon-active {
+                                            width: 24px;
+                                            height: 24px;
+                                            border-radius: 50%;
+                                            background: white;
+                                            display: flex;
+                                            align-items: center;
+                                            justify-content: center;
+                                            box-sizing: border-box;
+                                            position: relative;
+                                        }
+
+                                        .icon-active::before {
+                                            content: '';
+                                            position: absolute;
+                                            inset: 0;
+                                            border-radius: 50%;
+                                            border: 3px solid #DBEAFE;
+                                            border-top-color: #2563EB;
+                                            animation: spin 1s linear infinite;
+                                        }
+
+                                        @keyframes spin {
+                                            to {
+                                                transform: rotate(360deg);
+                                            }
+                                        }
+
+                                        .icon-done {
+                                            width: 24px;
+                                            height: 24px;
+                                            border-radius: 50%;
+                                            background: #10B981;
+                                            display: flex;
+                                            align-items: center;
+                                            justify-content: center;
+                                            color: white;
+                                        }
+
+                                        .icon-done svg {
+                                            width: 14px;
+                                            height: 14px;
+                                            stroke-width: 3;
+                                            stroke-linecap: round;
+                                            stroke-linejoin: round;
+                                        }
+
+                                        /* Agent Tasks Tabs */
+                                        .at-tabs-container {
+                                            display: flex;
+                                            gap: 24px;
+                                            border-bottom: 1px solid #E2E8F0;
+                                            margin-bottom: 24px;
+                                        }
+
+                                        .at-tab {
+                                            padding: 8px 0;
+                                            font-size: 14px;
+                                            font-weight: 600;
+                                            color: #64748B;
+                                            background: none;
+                                            border: none;
+                                            border-bottom: 2px solid transparent;
                                             cursor: pointer;
                                             transition: all 0.2s;
+                                            margin-bottom: -1px;
                                         }
 
-                                        .agent-btn:hover {
-                                            background: #F9FAFB;
-                                            border-color: #9CA3AF;
+                                        .at-tab:hover {
+                                            color: #334155;
+                                        }
+
+                                        .at-tab.active {
+                                            color: #2563EB;
+                                            border-bottom-color: #2563EB;
+                                        }
+
+                                        .at-tab-content {
+                                            display: none;
+                                        }
+
+                                        .at-tab-content.active {
+                                            display: block;
+                                        }
+
+                                        .at-load-more {
+                                            margin-top: 16px;
+                                            width: 100%;
+                                            padding: 12px 12px 24px 12px;
+                                            background: transparent;
+                                            color: #2563EB;
+                                            font-weight: 500;
+                                            font-size: 14px;
+                                            border: none;
+                                            cursor: pointer;
+                                            display: flex;
+                                            align-items: center;
+                                            justify-content: center;
+                                        }
+
+                                        .at-load-more:hover {
+                                            text-decoration: underline;
+                                        }
+
+                                        .at-list-item {
+                                            position: relative;
+                                        }
+
+                                        .btn-attention-cta {
+                                            background: var(--color-danger);
+                                            color: white;
+                                            border: none;
+                                            padding: 8px 16px;
+                                            border-radius: 6px;
+                                            font-weight: 600;
+                                            font-size: 13px;
+                                            cursor: pointer;
+                                            transition: 0.2s ease;
+                                        }
+
+                                        .btn-attention-cta:hover {
+                                            background: #DC2626;
                                         }
                                     </style>
 
-                                    <!-- Header -->
-                                    <!-- Header Removed -->
+                                    <div class="agent-tasks-v2 content-aligner">
 
-                                    <!-- Tabs -->
-                                    <div class="agent-tabs">
-                                        <div class="agent-tab active">Ongoing (3)</div>
-                                        <div class="agent-tab">On Hold (5)</div>
-                                        <div class="agent-tab">Automations (10)</div>
-                                        <div class="agent-tab">History</div>
-                                    </div>
-
-                                    <!-- Tasks List -->
-                                    <div class="agent-tasks-list">
-                                        <!-- Card 1 -->
-                                        <div class="agent-card">
-                                            <div class="agent-card-header">
-                                                <h3 class="agent-card-title">Approve deal</h3>
-                                                <div class="agent-badge">
-                                                    <div class="agent-dot"></div>
-                                                    Ongoing
-                                                </div>
-                                            </div>
-                                            <div class="agent-card-body">
-                                                <div class="agent-working-box">
-                                                    <div class="agent-working-left">
-                                                        <svg class="agent-spinner-sun" viewBox="0 0 24 24" fill="none"
-                                                            stroke="currentColor" stroke-width="2"
-                                                            stroke-linecap="round" stroke-linejoin="round">
-                                                            <line x1="12" y1="2" x2="12" y2="6"></line>
-                                                            <line x1="12" y1="18" x2="12" y2="22"></line>
-                                                            <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
-                                                            <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
-                                                            <line x1="2" y1="12" x2="6" y2="12"></line>
-                                                            <line x1="18" y1="12" x2="22" y2="12"></line>
-                                                            <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
-                                                            <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
-                                                        </svg>
-                                                        <span class="agent-working-text">Opening Deals</span>
+                                        <div class="input-wrapper" style="margin-bottom: 32px; padding: 0;">
+                                            <div class="input-border-wrapper">
+                                                <div class="enhanced-input-box" style="padding: 12px 14px;">
+                                                    <div class="input-container">
+                                                        <!-- Row 2: Input & Placeholder -->
+                                                        <div style="position: relative; width: 100%;">
+                                                            <div class="main-input" id="tasksInput"
+                                                                contenteditable="true"
+                                                                style="min-height: 24px; position:relative; z-index:2;">
+                                                            </div>
+                                                            <div class="placeholder-wrapper" id="tasksPlaceholder"
+                                                                style="display: block;">
+                                                                <div class="placeholder-item visible"> Assign a task...
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                                                        stroke="currentColor" stroke-width="2" style="color:#6B7280;">
-                                                        <polyline points="6 9 12 15 18 9"></polyline>
-                                                    </svg>
-                                                </div>
-                                                <div class="agent-card-footer">
-                                                    <span class="agent-chat-link">Chat name</span>
-                                                    <div class="agent-actions-right">
-                                                        <button class="agent-btn">Notify when complete</button>
-                                                        <button class="agent-btn">Stop</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                                    <div class="input-toolbar">
+                                                        <div class="toolbar-left"
+                                                            style="display: flex; align-items: center; gap: 8px;">
+                                                            <div style="position: relative; display: flex; align-items: center; color: #64748B; transition: color 0.2s;"
+                                                                onmouseover="this.style.color='#2563EB';"
+                                                                onmouseout="this.style.color='#64748B';">
+                                                                <svg viewBox="0 0 24 24" fill="none"
+                                                                    stroke="currentColor" stroke-width="2"
+                                                                    stroke-linecap="round" stroke-linejoin="round"
+                                                                    style="width: 14px; height: 14px; margin-right: -4px;">
+                                                                    <path
+                                                                        d="M21.5 2v6h-6M2.13 15.57a9 9 0 1 0 3.87-10.46">
+                                                                    </path>
+                                                                    <path d="M2 22v-6h6"></path>
+                                                                </svg>
+                                                                <select
+                                                                    style="appearance: none; background: transparent; border: none; padding: 4px 16px 4px 8px; font-size: 13px; color: inherit; cursor: pointer; height: auto; font-weight: 500; outline: none;">
+                                                                    <option value="once">Once</option>
+                                                                    <option value="daily">Daily</option>
+                                                                    <option value="weekly">Weekly</option>
+                                                                    <option value="monthly">Monthly</option>
+                                                                    <option value="custom">Custom</option>
+                                                                </select>
+                                                                <svg viewBox="0 0 24 24" fill="none"
+                                                                    stroke="currentColor" stroke-width="2"
+                                                                    stroke-linecap="round" stroke-linejoin="round"
+                                                                    style="width: 12px; height: 12px; position: absolute; right: 0; pointer-events: none;">
+                                                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                                                </svg>
+                                                            </div>
 
-                                        <!-- Card 2 -->
-                                        <div class="agent-card">
-                                            <div class="agent-card-header">
-                                                <h3 class="agent-card-title">Approve deal</h3>
-                                                <div class="agent-badge">
-                                                    <div class="agent-dot"></div>
-                                                    Ongoing
-                                                </div>
-                                            </div>
-                                            <div class="agent-card-body">
-                                                <div class="agent-working-box">
-                                                    <div class="agent-working-left">
-                                                        <svg class="agent-spinner-sun" viewBox="0 0 24 24" fill="none"
-                                                            stroke="currentColor" stroke-width="2"
-                                                            stroke-linecap="round" stroke-linejoin="round">
-                                                            <line x1="12" y1="2" x2="12" y2="6"></line>
-                                                            <line x1="12" y1="18" x2="12" y2="22"></line>
-                                                            <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
-                                                            <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
-                                                            <line x1="2" y1="12" x2="6" y2="12"></line>
-                                                            <line x1="18" y1="12" x2="22" y2="12"></line>
-                                                            <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
-                                                            <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
-                                                        </svg>
-                                                        <span class="agent-working-text">Opening Deals</span>
-                                                    </div>
-                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                                                        stroke="currentColor" stroke-width="2" style="color:#6B7280;">
-                                                        <polyline points="6 9 12 15 18 9"></polyline>
-                                                    </svg>
-                                                </div>
-                                                <div class="agent-card-footer">
-                                                    <span class="agent-chat-link">Chat name</span>
-                                                    <div class="agent-actions-right">
-                                                        <button class="agent-btn">Notify when complete</button>
-                                                        <button class="agent-btn">Stop</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Card 3 -->
-                                        <div class="agent-card">
-                                            <div class="agent-card-header">
-                                                <h3 class="agent-card-title">Approve deal</h3>
-                                                <div class="agent-badge">
-                                                    <div class="agent-dot"></div>
-                                                    Ongoing
-                                                </div>
-                                            </div>
-                                            <div class="agent-card-body">
-                                                <div class="agent-working-box">
-                                                    <div class="agent-working-left">
-                                                        <svg class="agent-spinner-sun" viewBox="0 0 24 24" fill="none"
-                                                            stroke="currentColor" stroke-width="2"
-                                                            stroke-linecap="round" stroke-linejoin="round">
-                                                            <line x1="12" y1="2" x2="12" y2="6"></line>
-                                                            <line x1="12" y1="18" x2="12" y2="22"></line>
-                                                            <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
-                                                            <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
-                                                            <line x1="2" y1="12" x2="6" y2="12"></line>
-                                                            <line x1="18" y1="12" x2="22" y2="12"></line>
-                                                            <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
-                                                            <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
-                                                        </svg>
-                                                        <span class="agent-working-text">Opening Deals</span>
-                                                    </div>
-                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                                                        stroke="currentColor" stroke-width="2" style="color:#6B7280;">
-                                                        <polyline points="6 9 12 15 18 9"></polyline>
-                                                    </svg>
-                                                </div>
-                                                <div class="agent-card-footer">
-                                                    <span class="agent-chat-link">Chat name</span>
-                                                    <div class="agent-actions-right">
-                                                        <button class="agent-btn">Notify when complete</button>
-                                                        <button class="agent-btn">Stop</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Card 4 -->
-                                        <div class="agent-card">
-                                            <div class="agent-card-header">
-                                                <h3 class="agent-card-title">Approve deal</h3>
-                                                <div class="agent-badge">
-                                                    <div class="agent-dot"></div>
-                                                    Ongoing
-                                                </div>
-                                            </div>
-                                            <div class="agent-card-body">
-                                                <div class="agent-working-box">
-                                                    <div class="agent-working-left">
-                                                        <svg class="agent-spinner-sun" viewBox="0 0 24 24" fill="none"
-                                                            stroke="currentColor" stroke-width="2"
-                                                            stroke-linecap="round" stroke-linejoin="round">
-                                                            <line x1="12" y1="2" x2="12" y2="6"></line>
-                                                            <line x1="12" y1="18" x2="12" y2="22"></line>
-                                                            <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
-                                                            <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
-                                                            <line x1="2" y1="12" x2="6" y2="12"></line>
-                                                            <line x1="18" y1="12" x2="22" y2="12"></line>
-                                                            <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
-                                                            <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
-                                                        </svg>
-                                                        <span class="agent-working-text">Opening Deals</span>
-                                                    </div>
-                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                                                        stroke="currentColor" stroke-width="2" style="color:#6B7280;">
-                                                        <polyline points="6 9 12 15 18 9"></polyline>
-                                                    </svg>
-                                                </div>
-                                                <div class="agent-card-footer">
-                                                    <span class="agent-chat-link">Chat name</span>
-                                                    <div class="agent-actions-right">
-                                                        <button class="agent-btn">Notify when complete</button>
-                                                        <button class="agent-btn">Stop</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="main-view-container" id="insightsView">
-                                    <div class="view-header">
-                                        <h1 class="view-title">Insights</h1>
-                                        <p class="view-subtitle">AI-powered analytics and business trends.</p>
-                                    </div>
-                                    <div class="insights-grid">
-                                        <div class="insight-card">
-                                            <div style="font-size: 2rem; margin-bottom: 12px;">📈</div>
-                                            <div style="font-weight: 700; margin-bottom: 4px;">Conversion Rate Up 12%
-                                            </div>
-                                            <div style="font-size: var(--font-sm); color: var(--color-text-muted);">Your
-                                                personalized follow-ups are significantly outperforming standard
-                                                templates.</div>
-                                        </div>
-                                        <div class="insight-card">
-                                            <div style="font-size: 2rem; margin-bottom: 12px;">⚡</div>
-                                            <div style="font-weight: 700; margin-bottom: 4px;">Model 3 Interest Spike
-                                            </div>
-                                            <div style="font-size: var(--font-sm); color: var(--color-text-muted);">
-                                                Recent inquiries about Model 3 have increased by 40% in the last 48
-                                                hours.</div>
-                                        </div>
-                                        <div class="insight-card">
-                                            <div style="font-size: 2rem; margin-bottom: 12px;">⏰</div>
-                                            <div style="font-weight: 700; margin-bottom: 4px;">Top Active Times</div>
-                                            <div style="font-size: var(--font-sm); color: var(--color-text-muted);">
-                                                Clients are most responsive between 10am and 12pm on Tuesdays.</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="main-view-container" id="templatesView">
-                                    <div class="view-header">
-                                        <h1 class="view-title">Prompt Templates</h1>
-                                        <p class="view-subtitle">Quick-start actions for common CRM and sales tasks.</p>
-                                    </div>
-                                    <div class="templates-grid">
-                                        <div class="template-card" onclick="startChat('Summarize recent hot leads')">
-                                            <div style="font-weight: 600; margin-bottom: 4px;">Hot Lead Summary</div>
-                                            <div style="font-size: var(--font-sm); color: var(--color-text-muted);">Get
-                                                a quick overview of all leads with high intent scores.</div>
-                                        </div>
-                                        <div class="template-card"
-                                            onclick="startChat('What should I focus on today?', 'focus_today')">
-                                            <div style="font-weight: 600; margin-bottom: 4px;">Start My Day</div>
-                                            <div style="font-size: var(--font-sm); color: var(--color-text-muted);">
-                                                Analyze schedule and prioritize tasks for today.</div>
-                                        </div>
-                                        <div class="template-card" onclick="startChat('Service FAQ')">
-                                            <div style="font-weight: 600; margin-bottom: 4px;">Service FAQ Assistant
-                                            </div>
-                                            <div style="font-size: var(--font-sm); color: var(--color-text-muted);">
-                                                Answer technical service questions using the knowledge base.</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="main-view-container" id="settingsView">
-                                    <div class="view-header">
-                                        <h1 class="view-title">Settings</h1>
-                                        <p class="view-subtitle">Manage your account preferences and system
-                                            configuration.</p>
-                                    </div>
-
-                                    <div class="settings-list">
-                                        <div class="settings-group">
-                                            <div class="settings-group-title">
-                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                                                    stroke="currentColor" stroke-width="2">
-                                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                                    <circle cx="12" cy="7" r="4"></circle>
-                                                </svg>
-                                                Account
-                                            </div>
-                                            <div class="setting-row">
-                                                <div class="setting-info">
-                                                    <div class="setting-label">Profile Visibility</div>
-                                                    <div class="setting-desc">Control who can see your activity.</div>
-                                                </div>
-                                                <label class="toggle-switch">
-                                                    <input type="checkbox" checked>
-                                                    <span class="toggle-slider"></span>
-                                                </label>
-                                            </div>
-                                            <div class="setting-row">
-                                                <div class="setting-info">
-                                                    <div class="setting-label">Email Notifications</div>
-                                                    <div class="setting-desc">Receive updates about your leads.</div>
-                                                </div>
-                                                <label class="toggle-switch">
-                                                    <input type="checkbox" checked>
-                                                    <span class="toggle-slider"></span>
-                                                </label>
-                                            </div>
-                                        </div>
-
-                                        <div class="settings-group">
-                                            <div class="settings-group-title">
-                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                                                    stroke="currentColor" stroke-width="2">
-                                                    <circle cx="12" cy="12" r="5"></circle>
-                                                    <line x1="12" y1="1" x2="12" y2="3"></line>
-                                                    <line x1="12" y1="21" x2="12" y2="23"></line>
-                                                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                                                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                                                    <line x1="1" y1="12" x2="3" y2="12"></line>
-                                                    <line x1="21" y1="12" x2="23" y2="12"></line>
-                                                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                                                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                                                </svg>
-                                                Appearance
-                                            </div>
-                                            <div class="setting-row">
-                                                <div class="setting-info">
-                                                    <div class="setting-label">Dark Mode</div>
-                                                    <div class="setting-desc">Use the darker color palette.</div>
-                                                </div>
-                                                <label class="toggle-switch">
-                                                    <input type="checkbox">
-                                                    <span class="toggle-slider"></span>
-                                                </label>
-                                            </div>
-                                            <div class="setting-row">
-                                                <div class="setting-info">
-                                                    <div class="setting-label">Compact Mode</div>
-                                                    <div class="setting-desc">Reduce padding in the chat history.</div>
-                                                </div>
-                                                <label class="toggle-switch">
-                                                    <input type="checkbox">
-                                                    <span class="toggle-slider"></span>
-                                                </label>
-                                            </div>
-                                        </div>
-
-                                        <div class="settings-group">
-                                            <div class="settings-group-title">
-                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                                                    stroke="currentColor" stroke-width="2">
-                                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                                                </svg>
-                                                Security
-                                            </div>
-                                            <div class="setting-row">
-                                                <div class="setting-info">
-                                                    <div class="setting-label">Two-Factor Auth</div>
-                                                    <div class="setting-desc">Add an extra layer of security.</div>
-                                                </div>
-                                                <button class="action-btn"
-                                                    style="width: auto; padding: 0 var(--space-md); font-size: var(--font-sm); font-weight: 500; height: 32px; background: var(--color-bg-surface); border: 1px solid var(--color-border);">Enable</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="footer-container">
-                                <div class="suggestions-list content-aligner" id="suggestionsList">
-                                    <div class="suggestion-item" onclick="startChat('Summarize recent hot leads')">
-                                        Summarize recent hot leads</div>
-                                    <div class="suggestion-item"
-                                        onclick="startChat('What should I focus on today?', 'focus_today')">
-                                        What should I focus on today?</div>
-                                    <div class="suggestion-item" onclick="startChat('List high-priority test drives')">
-                                        List high-priority test drives for today</div>
-                                </div>
+                                                            <div
+                                                                style="width: 1px; height: 16px; background: #E2E8F0; margin: 0 4px;">
+                                                            </div>
 
 
-
-
-                                <div class="input-wrapper content-aligner">
-                                    <div class="input-border-wrapper">
-                                        <div class="enhanced-input-box" id="enhancedInputBox">
-
-                                            <div id="promptSheet" class="prompt-sheet-inline">
-                                                <div class="popup-header">
-                                                    <span>Prompt Templates</span>
-                                                    <button style="border:none; background:transparent; cursor:pointer;"
-                                                        onclick="closePromptSheet()">
-                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                                            stroke="#969AA3" stroke-width="2">
-                                                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                                                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                                                        </svg>
-                                                    </button>
-                                                </div>
-
-                                                <div class="prompt-filters">
-                                                    <button class="filter-pill active"
-                                                        onclick="filterPrompts(this, 'CRM')">CRM</button>
-                                                    <button class="filter-pill"
-                                                        onclick="filterPrompts(this, 'Sales')">Sales</button>
-                                                    <button class="filter-pill"
-                                                        onclick="filterPrompts(this, 'Service')">Service</button>
-                                                    <button class="filter-pill"
-                                                        onclick="filterPrompts(this, 'Parts')">Parts</button>
-                                                    <button class="filter-pill"
-                                                        onclick="filterPrompts(this, 'Accounting')">Accounting</button>
-                                                </div>
-
-                                                <div class="popup-list" id="promptList"></div>
-
-                                                <div class="popup-search-container">
-                                                    <div class="popup-search-input-wrapper" id="promptSearchWrapper">
-                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                                            stroke="currentColor" stroke-width="2">
-                                                            <circle cx="11" cy="11" r="8"></circle>
-                                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                                        </svg>
-                                                        <input type="text" placeholder="Search prompts..."
-                                                            id="promptSearchInput">
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div id="contextMenu" class="popup-menu">
-                                                <div class="popup-header">
-                                                    <div class="popup-header-left">
-                                                        <button id="btnContextBack" style="display:none;"
-                                                            onclick="goBackContext()">
-                                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                                                stroke="currentColor" stroke-width="2">
-                                                                <line x1="19" y1="12" x2="5" y2="12"></line>
-                                                                <polyline points="12 19 5 12 12 5"></polyline>
-                                                            </svg>
-                                                        </button>
-                                                        <span id="contextTitle">Add Context</span>
-                                                    </div>
-                                                    <button onclick="closeAllMenus()">
-                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                                            stroke="#969AA3" stroke-width="2">
-                                                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                                                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                                                        </svg>
-                                                    </button>
-                                                </div>
-
-                                                <div class="popup-list" id="contextList"></div>
-
-                                                <div class="popup-search-container" id="contextSearchContainer"
-                                                    style="display:none;">
-                                                    <div class="popup-search-input-wrapper" id="contextSearchWrapper">
-                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                                            stroke="currentColor" stroke-width="2">
-                                                            <circle cx="11" cy="11" r="8"></circle>
-                                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                                        </svg>
-                                                        <input type="text" id="contextSearchInput"
-                                                            placeholder="Search... or Paste a link">
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div id="customerMenu" class="popup-menu">
-                                                <div class="popup-header">
-                                                    <span>Customers</span>
-                                                    <button onclick="closeAllMenus()">
-                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                                            stroke="#969AA3" stroke-width="2">
-                                                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                                                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                                                        </svg>
-                                                    </button>
-                                                </div>
-                                                <div class="popup-list" id="customerList"></div>
-                                                <div class="popup-search-container">
-                                                    <div class="popup-search-input-wrapper" id="customerSearchWrapper">
-                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                                            stroke="currentColor" stroke-width="2">
-                                                            <circle cx="11" cy="11" r="8"></circle>
-                                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                                        </svg>
-                                                        <input type="text" id="customerSearchInput"
-                                                            placeholder="Search Customers...">
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div id="vehicleMenu" class="popup-menu">
-                                                <div class="popup-header">
-                                                    <span>Vehicles</span>
-                                                    <button onclick="closeAllMenus()">
-                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                                            stroke="#969AA3" stroke-width="2">
-                                                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                                                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                                                        </svg>
-                                                    </button>
-                                                </div>
-                                                <div class="popup-list" id="vehicleList"></div>
-                                                <div class="popup-search-container">
-                                                    <div class="popup-search-input-wrapper" id="vehicleSearchWrapper">
-                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                                            stroke="currentColor" stroke-width="2">
-                                                            <circle cx="11" cy="11" r="8"></circle>
-                                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                                        </svg>
-                                                        <input type="text" id="vehicleSearchInput"
-                                                            placeholder="Search Vehicles">
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div id="vinMenu" class="popup-menu">
-                                                <div class="popup-header">
-                                                    <span>VIN</span>
-                                                    <button onclick="closeAllMenus()">
-                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                                            stroke="#969AA3" stroke-width="2">
-                                                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                                                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                                                        </svg>
-                                                    </button>
-                                                </div>
-                                                <div class="popup-list" id="vinList"></div>
-                                                <div class="popup-search-container">
-                                                    <div class="popup-search-input-wrapper" id="vinSearchWrapper">
-                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                                            stroke="currentColor" stroke-width="2">
-                                                            <circle cx="11" cy="11" r="8"></circle>
-                                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                                        </svg>
-                                                        <input type="text" id="vinSearchInput"
-                                                            placeholder="Search VIN...">
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div id="datetimeMenu" class="popup-menu">
-                                                <div class="popup-header">
-                                                    <span>Available Slots</span>
-                                                    <button onclick="closeAllMenus()">
-                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                                            stroke="#969AA3" stroke-width="2">
-                                                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                                                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                                                        </svg>
-                                                    </button>
-                                                </div>
-                                                <div class="popup-list" id="datetimeList"></div>
-                                                <div class="popup-search-container">
-                                                    <div class="popup-search-input-wrapper" id="datetimeSearchWrapper">
-                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                                            stroke="currentColor" stroke-width="2">
-                                                            <circle cx="11" cy="11" r="8"></circle>
-                                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                                        </svg>
-                                                        <input type="text" id="datetimeSearchInput"
-                                                            placeholder="Search Date & Time...">
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- LISTENING OVERLAY -->
-                                            <div class="listening-overlay" id="listeningOverlay">
-                                                <button class="listen-close-btn" id="btnListenClose">
-                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                        stroke-linejoin="round">
-                                                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                                                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                                                    </svg>
-                                                </button>
-                                                <div class="listen-visualizer">
-                                                    <!-- Dynamic bars will be handled via CSS/JS or static repetitive HTML -->
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                    <div class="v-bar"></div>
-                                                </div>
-                                                <div class="listen-right-group">
-                                                    <div class="listen-timer" id="listenTimer">00:00</div>
-                                                    <button class="listen-stop-btn" id="btnListenStop">
-                                                        <svg width="12" height="12" viewBox="0 0 24 24"
-                                                            fill="currentColor">
-                                                            <rect x="2" y="2" width="20" height="20" rx="4"></rect>
-                                                        </svg>
-                                                    </button>
-                                                </div>
-                                            </div>
-
-
-
-                                            <!-- Input Container (Middle Line) -->
-                                            <div class="input-container">
-
-                                                <!-- Row 1: Attachments Area -->
-                                                <div class="input-context-row" id="contextRow" style="display: none;">
-                                                    <div id="attachmentArea" class="attachment-area"></div>
-                                                </div>
-
-                                                <!-- Row 2: Input & Placeholder -->
-                                                <div style="position: relative; width: 100%;">
-                                                    <div id="mainInput" class="main-input" contenteditable="true">
-                                                    </div>
-                                                    <div class="placeholder-wrapper" id="placeholderWrapper">
-                                                        <div class="placeholder-item visible" id="phItem1">Ask •
-                                                            Find •
-                                                            Summarize</div>
-                                                        <div class="placeholder-item hidden-down" id="phItem2">
+                                                            <button class="tool-icon-btn" title="Attach">
+                                                                <svg viewBox="0 0 24 24" fill="none"
+                                                                    stroke="currentColor" stroke-linecap="round"
+                                                                    stroke-linejoin="round">
+                                                                    <path
+                                                                        d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48">
+                                                                    </path>
+                                                                </svg>
+                                                            </button>
+                                                        </div>
+                                                        <div class="toolbar-right">
+                                                            <button class="tool-icon-btn"><svg viewBox="0 0 24 24"
+                                                                    fill="none" stroke="currentColor"
+                                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                                    <path
+                                                                        d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z">
+                                                                    </path>
+                                                                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                                                    <line x1="12" y1="19" x2="12" y2="23"></line>
+                                                                    <line x1="8" y1="23" x2="16" y2="23"></line>
+                                                                </svg></button>
+                                                            <button class="send-btn-square" id="btnTasksSend" disabled>
+                                                                <svg viewBox="0 0 24 24" fill="none"
+                                                                    stroke="currentColor" stroke-linecap="round"
+                                                                    stroke-linejoin="round">
+                                                                    <line x1="12" y1="19" x2="12" y2="5"></line>
+                                                                    <polyline points="5 12 12 5 19 12"></polyline>
+                                                                </svg>
+                                                            </button>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
 
-                                            <!-- Toolbar (Bottom Line) -->
-                                            <div class="input-toolbar">
-                                                <div class="toolbar-left">
-                                                    <button class="tool-icon-btn" id="btnSlashMenu"
-                                                        title="Open Templates">
-                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                            stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2">
-                                                            <rect x="3" y="3" width="18" height="18" rx="4" ry="4">
-                                                            </rect>
-                                                            <line x1="10" y1="16" x2="14" y2="8"></line>
-                                                        </svg>
-                                                    </button>
-                                                    <button class="tool-icon-btn" title="Attach" id="btnAttach">
-                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                            stroke-linecap="round" stroke-linejoin="round">
-                                                            <path
-                                                                d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48">
-                                                            </path>
-                                                        </svg>
-                                                    </button>
-                                                    <input type="file" id="fileInput" style="display: none;" />
+                                        <!-- Search Bar -->
+                                        <div class="at-search-wrapper">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                <circle cx="11" cy="11" r="8"></circle>
+                                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                            </svg>
+                                            <input type="text" placeholder="Search recent automations...">
+                                        </div>
+
+                                        <!-- TABS CONTAINER -->
+                                        <div class="at-tabs-container">
+                                            <button class="at-tab active"
+                                                onclick="switchATTab('recents')">Recents</button>
+                                            <button class="at-tab" onclick="switchATTab('routines')">Routines</button>
+                                        </div>
+
+                                        <!-- RECENTS TAB CONTENT -->
+                                        <div id="at-tab-recents" class="at-tab-content active">
+
+                                            <!-- NEEDS ATTENTION CARD -->
+                                            <div class="at-section-title" style="margin-top: 0;">Needs Attention</div>
+                                            <div class="at-card" style="margin-bottom: 32px;">
+
+                                                <div class="at-list-item"
+                                                    onclick="startChat('Draft lease-end retention sequences for Q2 expiries', 'tasks')">
+                                                    <div class="at-icon-wrapper">
+                                                        <div class="icon-warning">
+                                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+                                                    <div class="at-content">
+                                                        <div class="at-item-header">
+                                                            <h4 class="at-item-title">Draft lease-end retention
+                                                                sequences for Q2 expiries</h4>
+                                                        </div>
+                                                        <p class="at-item-desc">3 personalized sequences ready. Review
+                                                            required for trade-in valuation logic.</p>
+                                                        <div class="at-agent-meta">
+                                                            <span class="agent-name">CRM Retention Agent</span>
+                                                        </div>
+                                                        <div style="margin-top: 12px;">
+                                                            <button class="btn-attention-cta"
+                                                                onclick="event.stopPropagation(); startChat('Draft lease-end retention sequences for Q2 expiries', 'tasks')">Review
+                                                                Sentences</button>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        style="flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; margin-left: 16px;">
+                                                        <span class="at-item-time" style="margin-left: 0;">15m
+                                                            ago</span>
+                                                    </div>
                                                 </div>
-                                                <div class="toolbar-right">
-                                                    <!-- Context Pill Removed from here -->
-                                                    <button class="tool-icon-btn" id="btnMic"><svg viewBox="0 0 24 24"
-                                                            fill="none" stroke="currentColor" stroke-linecap="round"
-                                                            stroke-linejoin="round">
-                                                            <path
-                                                                d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z">
-                                                            </path>
-                                                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-                                                            <line x1="12" y1="19" x2="12" y2="23"></line>
-                                                            <line x1="8" y1="23" x2="16" y2="23"></line>
-                                                        </svg></button>
-                                                    <button class="send-btn-square" id="btnSend" disabled><svg
-                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                            stroke-linecap="round" stroke-linejoin="round">
-                                                            <line x1="12" y1="19" x2="12" y2="5"></line>
-                                                            <polyline points="5 12 12 5 19 12"></polyline>
-                                                        </svg></button>
+
+                                                <div class="at-list-item"
+                                                    onclick="startChat('Verify high-value trade-in appraisal for Customer #9921', 'tasks')">
+                                                    <div class="at-icon-wrapper">
+                                                        <div class="icon-warning">
+                                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+                                                    <div class="at-content">
+                                                        <div class="at-item-header">
+                                                            <h4 class="at-item-title">Verify high-value trade-in
+                                                                appraisal for Customer #9921</h4>
+                                                        </div>
+                                                        <p class="at-item-desc">Agent flagged a $2,500 variance against
+                                                            Black Book. Manual override needed.</p>
+                                                        <div class="at-agent-meta">
+                                                            <span class="agent-name">Appraisal Agent</span>
+                                                        </div>
+                                                        <div style="margin-top: 12px;">
+                                                            <button class="btn-attention-cta"
+                                                                onclick="event.stopPropagation(); startChat('Verify high-value trade-in appraisal for Customer #9921', 'tasks')">Review
+                                                                Valuation</button>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        style="flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; margin-left: 16px;">
+                                                        <span class="at-item-time" style="margin-left: 0;">6h ago</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="at-list-item"
+                                                    onclick="startChat('Generate final invoice for Deal #44002', 'tasks')">
+                                                    <div class="at-icon-wrapper">
+                                                        <div class="icon-warning">
+                                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+                                                    <div class="at-content">
+                                                        <div class="at-item-header">
+                                                            <h4 class="at-item-title">Generate final invoice for Deal
+                                                                #44002</h4>
+                                                        </div>
+                                                        <p class="at-item-desc">Missing customer secondary signature on
+                                                            document 4.</p>
+                                                        <div class="at-agent-meta">
+                                                            <span class="agent-name">DocuGen Agent</span>
+                                                        </div>
+                                                        <div style="margin-top: 12px;">
+                                                            <button class="btn-attention-cta"
+                                                                onclick="event.stopPropagation(); startChat('Generate final invoice for Deal #44002', 'tasks')">Request
+                                                                E-Sign</button>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        style="flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; margin-left: 16px;">
+                                                        <span class="at-item-time" style="margin-left: 0;">20m
+                                                            ago</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- RECENT AUTOMATIONS CARD -->
+                                            <div class="at-card">
+
+                                                <div class="at-list-item"
+                                                    onclick="startChat('Syncing CRM contacts with Mailchimp', 'tasks')">
+                                                    <div class="at-icon-wrapper">
+                                                        <div class="icon-active"></div>
+                                                    </div>
+                                                    <div class="at-content">
+                                                        <div class="at-item-header">
+                                                            <h4 class="at-item-title">Syncing CRM contacts with active
+                                                                email server</h4>
+                                                        </div>
+                                                        <p class="at-item-desc">Processing batch 2 of 5. Found 450 new
+                                                            emails.</p>
+                                                        <div class="at-agent-meta">
+                                                            <span class="agent-name">Data Sync Agent</span>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        style="flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; margin-left: 16px;">
+                                                        <span class="at-item-time">5m ago</span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- 9 Completed Items to make 15 total -->
+                                                <div class="at-list-item">
+                                                    <div class="at-icon-wrapper">
+                                                        <div class="icon-done"><svg viewBox="0 0 24 24" fill="none"
+                                                                stroke="currentColor">
+                                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                                            </svg></div>
+                                                    </div>
+                                                    <div class="at-content">
+                                                        <div class="at-item-header">
+                                                            <h4 class="at-item-title">Extract stipulations from loan
+                                                                apps</h4>
+                                                        </div>
+                                                        <p class="at-item-desc">Extracted terms for 23 applications.</p>
+                                                        <div class="at-agent-meta"><span class="agent-name">Finance
+                                                                Agent</span>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        style="flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; margin-left: 16px;">
+                                                        <span class="at-item-time">1h ago</span>
+                                                    </div>
+                                                </div>
+                                                <div class="at-list-item">
+                                                    <div class="at-icon-wrapper">
+                                                        <div class="icon-done"><svg viewBox="0 0 24 24" fill="none"
+                                                                stroke="currentColor">
+                                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                                            </svg></div>
+                                                    </div>
+                                                    <div class="at-content">
+                                                        <div class="at-item-header">
+                                                            <h4 class="at-item-title">Summarize incoming customer
+                                                                feedback</h4>
+                                                        </div>
+                                                        <p class="at-item-desc">Aggregated 50 reviews from Google and
+                                                            Yelp.</p>
+                                                        <div class="at-agent-meta"><span class="agent-name">Reputation
+                                                                Agent</span>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        style="flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; margin-left: 16px;">
+                                                        <span class="at-item-time">2h ago</span>
+                                                    </div>
+                                                </div>
+                                                <div class="at-list-item">
+                                                    <div class="at-icon-wrapper">
+                                                        <div class="icon-done"><svg viewBox="0 0 24 24" fill="none"
+                                                                stroke="currentColor">
+                                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                                            </svg></div>
+                                                    </div>
+                                                    <div class="at-content">
+                                                        <div class="at-item-header">
+                                                            <h4 class="at-item-title">Update pricing on dealership site
+                                                            </h4>
+                                                        </div>
+                                                        <p class="at-item-desc">Applied new OEM discounts to 80 units.
+                                                        </p>
+                                                        <div class="at-agent-meta"><span class="agent-name">Content Sync
+                                                                Agent</span>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        style="flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; margin-left: 16px;">
+                                                        <span class="at-item-time">3h ago</span>
+                                                    </div>
+                                                </div>
+                                                <div class="at-list-item">
+                                                    <div class="at-icon-wrapper">
+                                                        <div class="icon-done"><svg viewBox="0 0 24 24" fill="none"
+                                                                stroke="currentColor">
+                                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                                            </svg></div>
+                                                    </div>
+                                                    <div class="at-content">
+                                                        <div class="at-item-header">
+                                                            <h4 class="at-item-title">Sort unread inbox emails</h4>
+                                                        </div>
+                                                        <p class="at-item-desc">Categorized 150 emails, forwarded 5 to
+                                                            manager.</p>
+                                                        <div class="at-agent-meta"><span class="agent-name">Inbox
+                                                                Agent</span>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        style="flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; margin-left: 16px;">
+                                                        <span class="at-item-time">4h ago</span>
+                                                    </div>
+                                                </div>
+                                                <div class="at-list-item">
+                                                    <div class="at-icon-wrapper">
+                                                        <div class="icon-done"><svg viewBox="0 0 24 24" fill="none"
+                                                                stroke="currentColor">
+                                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                                            </svg></div>
+                                                    </div>
+                                                    <div class="at-content">
+                                                        <div class="at-item-header">
+                                                            <h4 class="at-item-title">Prepare Friday sales meeting
+                                                                report</h4>
+                                                        </div>
+                                                        <p class="at-item-desc">Generated PDF with team-wide KPIs.</p>
+                                                        <div class="at-agent-meta"><span class="agent-name">Reporting
+                                                                Agent</span>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        style="flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; margin-left: 16px;">
+                                                        <span class="at-item-time">5h ago</span>
+                                                    </div>
+                                                </div>
+                                                <div class="at-list-item">
+                                                    <div class="at-icon-wrapper">
+                                                        <div class="icon-done"><svg viewBox="0 0 24 24" fill="none"
+                                                                stroke="currentColor">
+                                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                                            </svg></div>
+                                                    </div>
+                                                    <div class="at-content">
+                                                        <div class="at-item-header">
+                                                            <h4 class="at-item-title">Verify warranty claims</h4>
+                                                        </div>
+                                                        <p class="at-item-desc">Verified 18 claims against OEM database.
+                                                        </p>
+                                                        <div class="at-agent-meta"><span class="agent-name">Warranty
+                                                                Pro</span>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        style="flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; margin-left: 16px;">
+                                                        <span class="at-item-time">6h ago</span>
+                                                    </div>
+                                                </div>
+                                                <div class="at-list-item">
+                                                    <div class="at-icon-wrapper">
+                                                        <div class="icon-done"><svg viewBox="0 0 24 24" fill="none"
+                                                                stroke="currentColor">
+                                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                                            </svg></div>
+                                                    </div>
+                                                    <div class="at-content">
+                                                        <div class="at-item-header">
+                                                            <h4 class="at-item-title">Scan competitor ad spend</h4>
+                                                        </div>
+                                                        <p class="at-item-desc">Compiled local Facebook and Google Ads
+                                                            data.</p>
+                                                        <div class="at-agent-meta"><span class="agent-name">Market
+                                                                Analysis Agent</span>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        style="flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; margin-left: 16px;">
+                                                        <span class="at-item-time">7h ago</span>
+                                                    </div>
+                                                </div>
+                                                <div class="at-list-item">
+                                                    <div class="at-icon-wrapper">
+                                                        <div class="icon-done"><svg viewBox="0 0 24 24" fill="none"
+                                                                stroke="currentColor">
+                                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                                            </svg></div>
+                                                    </div>
+                                                    <div class="at-content">
+                                                        <div class="at-item-header">
+                                                            <h4 class="at-item-title">Audit vehicle photo uploads</h4>
+                                                        </div>
+                                                        <p class="at-item-desc">Detected 4 listings missing interior
+                                                            shots.</p>
+                                                        <div class="at-agent-meta"><span class="agent-name">Inventory
+                                                                Sync Agent</span>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        style="flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; margin-left: 16px;">
+                                                        <span class="at-item-time">8h ago</span>
+                                                    </div>
+                                                </div>
+                                                <div class="at-list-item">
+                                                    <div class="at-icon-wrapper">
+                                                        <div class="icon-done"><svg viewBox="0 0 24 24" fill="none"
+                                                                stroke="currentColor">
+                                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                                            </svg></div>
+                                                    </div>
+                                                    <div class="at-content">
+                                                        <div class="at-item-header">
+                                                            <h4 class="at-item-title">Check DMV registration statuses
+                                                            </h4>
+                                                        </div>
+                                                        <p class="at-item-desc">Checked 30 pending tags. All clear.</p>
+                                                        <div class="at-agent-meta"><span class="agent-name">Compliance
+                                                                Agent</span>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        style="flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; margin-left: 16px;">
+                                                        <span class="at-item-time">9h ago</span>
+                                                    </div>
+                                                </div>
+
+                                                <button class="at-load-more">Load more past tasks</button>
+                                            </div>
+                                        </div>
+
+                                        <!-- ROUTINES TAB CONTENT -->
+                                        <div id="at-tab-routines" class="at-tab-content">
+                                            <div class="at-card">
+                                                <div class="at-list-item"
+                                                    onclick="startChat('Sync incoming Toyota inventory with floor reservations', 'tasks')">
+                                                    <div class="at-icon-wrapper">
+                                                        <div class="icon-done">
+                                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+                                                    <div class="at-content">
+                                                        <div class="at-item-header">
+                                                            <h4 class="at-item-title">Sync incoming Toyota inventory
+                                                                with floor reservations</h4>
+                                                            <span class="at-item-time">Daily</span>
+                                                        </div>
+                                                        <p class="at-item-desc">Processing shipment manifest and
+                                                            matching VINs to waitlist.</p>
+                                                        <div class="at-agent-meta">Inventory Sync Agent
+                                                            <span>&bull;</span> Last run 12h ago <span>&bull;</span>
+                                                            Completed in 3m 10s
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="at-list-item"
+                                                    onclick="startChat('Update dealership website with latest OEM incentives', 'tasks')">
+                                                    <div class="at-icon-wrapper">
+                                                        <div class="icon-done">
+                                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+                                                    <div class="at-content">
+                                                        <div class="at-item-header">
+                                                            <h4 class="at-item-title">Update dealership website with
+                                                                latest OEM incentives</h4>
+                                                            <span class="at-item-time">Weekly</span>
+                                                        </div>
+                                                        <p class="at-item-desc">Updates banners and finance specials
+                                                            across CMS.</p>
+                                                        <div class="at-agent-meta">Content Sync Agent
+                                                            <span>&bull;</span> Completed in 4m 45s
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <script>
+                                            window.switchATTab = function (tabId) {
+                                                document.querySelectorAll('.at-tab').forEach(t => t.classList.remove('active'));
+                                                document.querySelectorAll('.at-tab-content').forEach(c => c.classList.remove('active'));
+
+                                                // Find the button that was clicked and activate it based on text
+                                                document.querySelectorAll('.at-tab').forEach(t => {
+                                                    if (t.innerText.toLowerCase() === tabId) {
+                                                        t.classList.add('active');
+                                                    }
+                                                });
+                                                document.getElementById('at-tab-' + tabId).classList.add('active');
+                                            };
+
+                                            document.addEventListener('DOMContentLoaded', () => {
+                                                const tasksInput = document.getElementById('tasksInput');
+                                                const btnTasksSend = document.getElementById('btnTasksSend');
+                                                const tasksPlaceholder = document.getElementById('tasksPlaceholder');
+
+                                                if (tasksInput && btnTasksSend) {
+                                                    tasksInput.addEventListener('input', () => {
+                                                        const text = tasksInput.innerText.trim();
+
+                                                        if (text.length > 0) {
+                                                            if (tasksPlaceholder) tasksPlaceholder.style.opacity = '0';
+                                                            btnTasksSend.disabled = false;
+                                                            btnTasksSend.classList.add('active');
+                                                        } else {
+                                                            if (tasksPlaceholder) tasksPlaceholder.style.opacity = '1';
+                                                            btnTasksSend.disabled = true;
+                                                            btnTasksSend.classList.remove('active');
+                                                        }
+                                                    });
+
+                                                    btnTasksSend.addEventListener('click', () => {
+                                                        const text = tasksInput.innerText.trim();
+                                                        if (text.length > 0) {
+                                                            if (typeof startChat === 'function') {
+                                                                startChat(text, 'tasks');
+                                                            }
+                                                            tasksInput.innerText = '';
+                                                            tasksInput.dispatchEvent(new Event('input'));
+                                                        }
+                                                    });
+
+                                                    tasksInput.addEventListener('keydown', (e) => {
+                                                        if (e.key === 'Enter' && !e.shiftKey) {
+                                                            e.preventDefault();
+                                                            btnTasksSend.click();
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        </script>
+                                    </div>
+
+
+                                    <div class="main-view-container" id="insightsView">
+                                        <div class="view-header">
+                                            <h1 class="view-title">Insights</h1>
+                                            <p class="view-subtitle">AI-powered analytics and business trends.</p>
+                                        </div>
+                                        <div class="insights-grid">
+                                            <div class="insight-card">
+                                                <div style="font-size: 2rem; margin-bottom: 12px;">📈</div>
+                                                <div style="font-weight: 700; margin-bottom: 4px;">Conversion Rate Up
+                                                    12%
+                                                </div>
+                                                <div style="font-size: var(--font-sm); color: var(--color-text-muted);">
+                                                    Your
+                                                    personalized follow-ups are significantly outperforming standard
+                                                    templates.</div>
+                                            </div>
+                                            <div class="insight-card">
+                                                <div style="font-size: 2rem; margin-bottom: 12px;">⚡</div>
+                                                <div style="font-weight: 700; margin-bottom: 4px;">Model 3 Interest
+                                                    Spike
+                                                </div>
+                                                <div style="font-size: var(--font-sm); color: var(--color-text-muted);">
+                                                    Recent inquiries about Model 3 have increased by 40% in the last 48
+                                                    hours.</div>
+                                            </div>
+                                            <div class="insight-card">
+                                                <div style="font-size: 2rem; margin-bottom: 12px;">⏰</div>
+                                                <div style="font-weight: 700; margin-bottom: 4px;">Top Active Times
+                                                </div>
+                                                <div style="font-size: var(--font-sm); color: var(--color-text-muted);">
+                                                    Clients are most responsive between 10am and 12pm on Tuesdays.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="main-view-container" id="templatesView">
+                                        <div class="view-header">
+                                            <h1 class="view-title">Prompt Templates</h1>
+                                            <p class="view-subtitle">Quick-start actions for common CRM and sales tasks.
+                                            </p>
+                                        </div>
+                                        <div class="templates-grid">
+                                            <div class="template-card"
+                                                onclick="startChat('Summarize recent hot leads')">
+                                                <div style="font-weight: 600; margin-bottom: 4px;">Hot Lead Summary
+                                                </div>
+                                                <div style="font-size: var(--font-sm); color: var(--color-text-muted);">
+                                                    Get
+                                                    a quick overview of all leads with high intent scores.</div>
+                                            </div>
+                                            <div class="template-card"
+                                                onclick="startChat('What should I focus on today?', 'focus_today')">
+                                                <div style="font-weight: 600; margin-bottom: 4px;">Start My Day</div>
+                                                <div style="font-size: var(--font-sm); color: var(--color-text-muted);">
+                                                    Analyze schedule and prioritize tasks for today.</div>
+                                            </div>
+                                            <div class="template-card" onclick="startChat('Service FAQ')">
+                                                <div style="font-weight: 600; margin-bottom: 4px;">Service FAQ Assistant
+                                                </div>
+                                                <div style="font-size: var(--font-sm); color: var(--color-text-muted);">
+                                                    Answer technical service questions using the knowledge base.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="main-view-container" id="settingsView">
+                                        <div class="view-header">
+                                            <h1 class="view-title">Settings</h1>
+                                            <p class="view-subtitle">Manage your account preferences and system
+                                                configuration.</p>
+                                        </div>
+
+                                        <div class="settings-list">
+                                            <div class="settings-group">
+                                                <div class="settings-group-title">
+                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="2">
+                                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                                        <circle cx="12" cy="7" r="4"></circle>
+                                                    </svg>
+                                                    Account
+                                                </div>
+                                                <div class="setting-row">
+                                                    <div class="setting-info">
+                                                        <div class="setting-label">Profile Visibility</div>
+                                                        <div class="setting-desc">Control who can see your activity.
+                                                        </div>
+                                                    </div>
+                                                    <label class="toggle-switch">
+                                                        <input type="checkbox" checked>
+                                                        <span class="toggle-slider"></span>
+                                                    </label>
+                                                </div>
+                                                <div class="setting-row">
+                                                    <div class="setting-info">
+                                                        <div class="setting-label">Email Notifications</div>
+                                                        <div class="setting-desc">Receive updates about your leads.
+                                                        </div>
+                                                    </div>
+                                                    <label class="toggle-switch">
+                                                        <input type="checkbox" checked>
+                                                        <span class="toggle-slider"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                            <div class="settings-group">
+                                                <div class="settings-group-title">
+                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="2">
+                                                        <circle cx="12" cy="12" r="5"></circle>
+                                                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                                                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                                                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                                                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                                                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                                                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                                                    </svg>
+                                                    Appearance
+                                                </div>
+                                                <div class="setting-row">
+                                                    <div class="setting-info">
+                                                        <div class="setting-label">Dark Mode</div>
+                                                        <div class="setting-desc">Use the darker color palette.</div>
+                                                    </div>
+                                                    <label class="toggle-switch">
+                                                        <input type="checkbox">
+                                                        <span class="toggle-slider"></span>
+                                                    </label>
+                                                </div>
+                                                <div class="setting-row">
+                                                    <div class="setting-info">
+                                                        <div class="setting-label">Compact Mode</div>
+                                                        <div class="setting-desc">Reduce padding in the chat history.
+                                                        </div>
+                                                    </div>
+                                                    <label class="toggle-switch">
+                                                        <input type="checkbox">
+                                                        <span class="toggle-slider"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                            <div class="settings-group">
+                                                <div class="settings-group-title">
+                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="2">
+                                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                                    </svg>
+                                                    Security
+                                                </div>
+                                                <div class="setting-row">
+                                                    <div class="setting-info">
+                                                        <div class="setting-label">Two-Factor Auth</div>
+                                                        <div class="setting-desc">Add an extra layer of security.</div>
+                                                    </div>
+                                                    <button class="action-btn"
+                                                        style="width: auto; padding: 0 var(--space-md); font-size: var(--font-sm); font-weight: 500; height: 32px; background: var(--color-bg-surface); border: 1px solid var(--color-border);">Enable</button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="disclaimer-text content-aligner">AI Assistant can make mistakes, so
-                                        please verify responses.</div>
+                                </div>
+                                <div class="footer-container">
+                                    <div class="suggestions-list content-aligner" id="suggestionsList">
+                                        <div class="suggestion-item" onclick="startChat('Summarize recent hot leads')">
+                                            Summarize recent hot leads</div>
+                                        <div class="suggestion-item"
+                                            onclick="startChat('What should I focus on today?', 'focus_today')">
+                                            What should I focus on today?</div>
+                                        <div class="suggestion-item"
+                                            onclick="startChat('List high-priority test drives')">
+                                            List high-priority test drives for today</div>
+                                    </div>
+
+
+
+
+                                    <div class="input-wrapper content-aligner">
+                                        <div class="input-border-wrapper">
+                                            <div class="enhanced-input-box" id="enhancedInputBox">
+
+                                                <div id="promptSheet" class="prompt-sheet-inline">
+                                                    <div class="popup-header">
+                                                        <span>Prompt Templates</span>
+                                                        <button
+                                                            style="border:none; background:transparent; cursor:pointer;"
+                                                            onclick="closePromptSheet()">
+                                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                                stroke="#969AA3" stroke-width="2">
+                                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="prompt-filters">
+                                                        <button class="filter-pill active"
+                                                            onclick="filterPrompts(this, 'CRM')">CRM</button>
+                                                        <button class="filter-pill"
+                                                            onclick="filterPrompts(this, 'Sales')">Sales</button>
+                                                        <button class="filter-pill"
+                                                            onclick="filterPrompts(this, 'Service')">Service</button>
+                                                        <button class="filter-pill"
+                                                            onclick="filterPrompts(this, 'Parts')">Parts</button>
+                                                        <button class="filter-pill"
+                                                            onclick="filterPrompts(this, 'Accounting')">Accounting</button>
+                                                    </div>
+
+                                                    <div class="popup-list" id="promptList"></div>
+
+                                                    <div class="popup-search-container">
+                                                        <div class="popup-search-input-wrapper"
+                                                            id="promptSearchWrapper">
+                                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                                stroke="currentColor" stroke-width="2">
+                                                                <circle cx="11" cy="11" r="8"></circle>
+                                                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                                            </svg>
+                                                            <input type="text" placeholder="Search prompts..."
+                                                                id="promptSearchInput">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div id="contextMenu" class="popup-menu">
+                                                    <div class="popup-header">
+                                                        <div class="popup-header-left">
+                                                            <button id="btnContextBack" style="display:none;"
+                                                                onclick="goBackContext()">
+                                                                <svg width="16" height="16" viewBox="0 0 24 24"
+                                                                    fill="none" stroke="currentColor" stroke-width="2">
+                                                                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                                                                    <polyline points="12 19 5 12 12 5"></polyline>
+                                                                </svg>
+                                                            </button>
+                                                            <span id="contextTitle">Add Context</span>
+                                                        </div>
+                                                        <button onclick="closeAllMenus()">
+                                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                                stroke="#969AA3" stroke-width="2">
+                                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="popup-list" id="contextList"></div>
+
+                                                    <div class="popup-search-container" id="contextSearchContainer"
+                                                        style="display:none;">
+                                                        <div class="popup-search-input-wrapper"
+                                                            id="contextSearchWrapper">
+                                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                                stroke="currentColor" stroke-width="2">
+                                                                <circle cx="11" cy="11" r="8"></circle>
+                                                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                                            </svg>
+                                                            <input type="text" id="contextSearchInput"
+                                                                placeholder="Search... or Paste a link">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div id="customerMenu" class="popup-menu">
+                                                    <div class="popup-header">
+                                                        <span>Customers</span>
+                                                        <button onclick="closeAllMenus()">
+                                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                                stroke="#969AA3" stroke-width="2">
+                                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                    <div class="popup-list" id="customerList"></div>
+                                                    <div class="popup-search-container">
+                                                        <div class="popup-search-input-wrapper"
+                                                            id="customerSearchWrapper">
+                                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                                stroke="currentColor" stroke-width="2">
+                                                                <circle cx="11" cy="11" r="8"></circle>
+                                                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                                            </svg>
+                                                            <input type="text" id="customerSearchInput"
+                                                                placeholder="Search Customers...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div id="vehicleMenu" class="popup-menu">
+                                                    <div class="popup-header">
+                                                        <span>Vehicles</span>
+                                                        <button onclick="closeAllMenus()">
+                                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                                stroke="#969AA3" stroke-width="2">
+                                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                    <div class="popup-list" id="vehicleList"></div>
+                                                    <div class="popup-search-container">
+                                                        <div class="popup-search-input-wrapper"
+                                                            id="vehicleSearchWrapper">
+                                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                                stroke="currentColor" stroke-width="2">
+                                                                <circle cx="11" cy="11" r="8"></circle>
+                                                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                                            </svg>
+                                                            <input type="text" id="vehicleSearchInput"
+                                                                placeholder="Search Vehicles">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div id="vinMenu" class="popup-menu">
+                                                    <div class="popup-header">
+                                                        <span>VIN</span>
+                                                        <button onclick="closeAllMenus()">
+                                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                                stroke="#969AA3" stroke-width="2">
+                                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                    <div class="popup-list" id="vinList"></div>
+                                                    <div class="popup-search-container">
+                                                        <div class="popup-search-input-wrapper" id="vinSearchWrapper">
+                                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                                stroke="currentColor" stroke-width="2">
+                                                                <circle cx="11" cy="11" r="8"></circle>
+                                                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                                            </svg>
+                                                            <input type="text" id="vinSearchInput"
+                                                                placeholder="Search VIN...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div id="datetimeMenu" class="popup-menu">
+                                                    <div class="popup-header">
+                                                        <span>Available Slots</span>
+                                                        <button onclick="closeAllMenus()">
+                                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                                stroke="#969AA3" stroke-width="2">
+                                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                    <div class="popup-list" id="datetimeList"></div>
+                                                    <div class="popup-search-container">
+                                                        <div class="popup-search-input-wrapper"
+                                                            id="datetimeSearchWrapper">
+                                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                                stroke="currentColor" stroke-width="2">
+                                                                <circle cx="11" cy="11" r="8"></circle>
+                                                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                                            </svg>
+                                                            <input type="text" id="datetimeSearchInput"
+                                                                placeholder="Search Date & Time...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- LISTENING OVERLAY -->
+                                                <div class="listening-overlay" id="listeningOverlay">
+                                                    <button class="listen-close-btn" id="btnListenClose">
+                                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                                            stroke="currentColor" stroke-width="2"
+                                                            stroke-linecap="round" stroke-linejoin="round">
+                                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                        </svg>
+                                                    </button>
+                                                    <div class="listen-visualizer">
+                                                        <!-- Dynamic bars will be handled via CSS/JS or static repetitive HTML -->
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                        <div class="v-bar"></div>
+                                                    </div>
+                                                    <div class="listen-right-group">
+                                                        <div class="listen-timer" id="listenTimer">00:00</div>
+                                                        <button class="listen-stop-btn" id="btnListenStop">
+                                                            <svg width="12" height="12" viewBox="0 0 24 24"
+                                                                fill="currentColor">
+                                                                <rect x="2" y="2" width="20" height="20" rx="4"></rect>
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+
+
+                                                <!-- Input Container (Middle Line) -->
+                                                <div class="input-container">
+
+                                                    <!-- Row 1: Attachments Area -->
+                                                    <div class="input-context-row" id="contextRow"
+                                                        style="display: none;">
+                                                        <div id="attachmentArea" class="attachment-area"></div>
+                                                    </div>
+
+                                                    <!-- Row 2: Input & Placeholder -->
+                                                    <div style="position: relative; width: 100%;">
+                                                        <div id="mainInput" class="main-input" contenteditable="true">
+                                                        </div>
+                                                        <div class="placeholder-wrapper" id="placeholderWrapper">
+                                                            <div class="placeholder-item visible" id="phItem1">Ask •
+                                                                Find •
+                                                                Summarize</div>
+                                                            <div class="placeholder-item hidden-down" id="phItem2">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Toolbar (Bottom Line) -->
+                                                <div class="input-toolbar">
+                                                    <div class="toolbar-left">
+                                                        <button class="tool-icon-btn" id="btnSlashMenu"
+                                                            title="Open Templates">
+                                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2">
+                                                                <rect x="3" y="3" width="18" height="18" rx="4" ry="4">
+                                                                </rect>
+                                                                <line x1="10" y1="16" x2="14" y2="8"></line>
+                                                            </svg>
+                                                        </button>
+                                                        <button class="tool-icon-btn" title="Attach" id="btnAttach">
+                                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-linecap="round" stroke-linejoin="round">
+                                                                <path
+                                                                    d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48">
+                                                                </path>
+                                                            </svg>
+                                                        </button>
+                                                        <input type="file" id="fileInput" style="display: none;" />
+                                                    </div>
+                                                    <div class="toolbar-right">
+                                                        <!-- Context Pill Removed from here -->
+                                                        <button class="tool-icon-btn" id="btnMic"><svg
+                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-linecap="round" stroke-linejoin="round">
+                                                                <path
+                                                                    d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z">
+                                                                </path>
+                                                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                                                <line x1="12" y1="19" x2="12" y2="23"></line>
+                                                                <line x1="8" y1="23" x2="16" y2="23"></line>
+                                                            </svg></button>
+                                                        <button class="send-btn-square" id="btnSend" disabled><svg
+                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-linecap="round" stroke-linejoin="round">
+                                                                <line x1="12" y1="19" x2="12" y2="5"></line>
+                                                                <polyline points="5 12 12 5 19 12"></polyline>
+                                                            </svg></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="disclaimer-text content-aligner">AI Assistant can make mistakes, so
+                                            please verify responses.</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                 </aside>
 
                 <main class="main-content pushed-by-dock" id="mainContent">
@@ -7786,11 +8420,12 @@
         const btnStopIcon = '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="5" y="5" width="14" height="14" rx="1.5" ry="1.5"></rect></svg>';
         const HEADER_NEW_CHAT_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" /><path d="M8 12h8" /><path d="M12 8v8" /></svg>';
         const HEADER_ADD_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>';
+        const HEADER_AGENT_ICON = '<img src="../assets/Vector.svg" style="width: 20px; height: 20px; opacity: 0.6; transition: transform 0.2s; filter: opacity(0.5) drop-shadow(0 0 0 #64748B);" onmouseover="this.style.opacity=\'0.8\';" onmouseout="this.style.opacity=\'0.6\';">';
         const AI_LOGO_SVG = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.94922 14.2996C8.41854 14.2998 8.79948 14.6805 8.79948 15.1498C8.79934 15.619 8.41845 15.9999 7.94922 16C7.47986 16 7.0991 15.6191 7.09896 15.1498C7.09896 14.6804 7.47978 14.2996 7.94922 14.2996Z" fill="url(#aiLogoGradient)"/><path d="M12.1497 13.3973C12.5086 13.3973 12.7993 13.6882 12.7995 14.047C12.7995 14.406 12.5087 14.6967 12.1497 14.6967C11.7909 14.6966 11.5 14.4059 11.5 14.047C11.5001 13.6883 11.791 13.3975 12.1497 13.3973Z" fill="url(#aiLogoGradient)"/><path d="M3.45052 12.7997C3.86473 12.7997 4.20052 13.1355 4.20052 13.5497C4.20052 13.9639 3.86473 14.2996 3.45052 14.2996C3.03631 14.2996 2.70052 13.9639 2.70052 13.5497C2.70052 13.1355 3.03631 12.7997 3.45052 12.7997Z" fill="url(#aiLogoGradient)"/><path d="M6.25 10.3976C6.94036 10.3976 7.5 10.9572 7.5 11.6475C7.5 12.3378 6.94036 12.8974 6.25 12.8974C5.55964 12.8974 5 12.3378 5 11.6475C5 10.9572 5.55964 10.3976 6.25 10.3976Z" fill="url(#aiLogoGradient)"/><path d="M10.3503 10.3976C10.9853 10.3976 11.4999 10.9123 11.5 11.5472C11.5 12.1823 10.9854 12.6969 10.3503 12.6969C9.71525 12.6967 9.20052 12.1822 9.20052 11.5472C9.20066 10.9124 9.71534 10.3977 10.3503 10.3976Z" fill="url(#aiLogoGradient)"/><path d="M13.6497 10.1984C14.1191 10.1985 14.5 10.5793 14.5 11.0486C14.4999 11.5178 14.119 11.8986 13.6497 11.8988C13.1804 11.8988 12.7996 11.5179 12.7995 11.0486C12.7995 10.5792 13.1803 10.1984 13.6497 10.1984Z" fill="url(#aiLogoGradient)"/><path d="M3.41667 6.86923C3.73903 6.32538 4.45228 6.13871 5.01042 6.4526C5.56871 6.7668 5.75983 7.46295 5.4375 8.00716C5.36588 8.12803 5.27483 8.23174 5.17057 8.31573C4.68818 8.70417 3.97429 8.90987 3.66146 9.43803L3.625 9.49923C3.39616 9.88587 3.47637 10.4224 3.2474 10.809C3.0482 11.1453 2.60674 11.2609 2.26172 11.0668C1.91679 10.8727 1.79845 10.4422 1.9974 10.1059C2.23484 9.70506 2.78461 9.50557 3.02214 9.10473L3.04948 9.05656C3.35255 8.54486 3.18708 7.86584 3.27083 7.28066C3.291 7.13974 3.3392 7.00003 3.41667 6.86923Z" fill="url(#aiLogoGradient)"/><path d="M8.2487 6.60103C9.15988 6.60103 9.8983 7.33955 9.89844 8.25063C9.89844 9.16183 9.15997 9.90024 8.2487 9.90024C7.33755 9.9001 6.59896 9.16174 6.59896 8.25063C6.5991 7.33964 7.33763 6.60117 8.2487 6.60103Z" fill="url(#aiLogoGradient)"/><path d="M9.68229 3.55049C10.2406 3.23631 10.955 3.42298 11.2773 3.96713C11.3936 4.16346 11.4428 4.38 11.4323 4.59077C11.4095 5.04569 11.3042 5.54911 11.5378 5.94353C11.7715 6.33786 12.272 6.50082 12.6875 6.70909C12.8796 6.8055 13.0466 6.95463 13.1628 7.15046C13.4851 7.69466 13.294 8.39082 12.7357 8.70502C12.1774 9.01922 11.4643 8.8326 11.1419 8.28839C11.0257 8.09219 10.9752 7.87667 10.9857 7.66604C11.0084 7.21104 11.1152 6.7065 10.8815 6.31199C10.6478 5.91782 10.1472 5.75593 9.73177 5.54773C9.53925 5.45123 9.3715 5.30139 9.25521 5.10505C8.93305 4.56095 9.12424 3.86473 9.68229 3.55049Z" fill="url(#aiLogoGradient)"/><path d="M0.75 7.30019C1.16421 7.30019 1.5 7.63595 1.5 8.05013C1.5 8.46431 1.16421 8.80007 0.75 8.80007C0.335786 8.80007 0 8.46431 0 8.05013C0 7.63595 0.335786 7.30019 0.75 7.30019Z" fill="url(#aiLogoGradient)"/><path d="M15.25 7.30019C15.6642 7.30019 16 7.63595 16 8.05013C16 8.46431 15.6642 8.80007 15.25 8.80007C14.8358 8.80007 14.5 8.46431 14.5 8.05013C14.5 7.63595 14.8358 7.30019 15.25 7.30019Z" fill="url(#aiLogoGradient)"/><path d="M2.04948 3.49972C2.6292 3.49972 3.09998 3.9695 3.10026 4.54911C3.10026 5.12896 2.62938 5.5998 2.04948 5.5998C1.46982 5.59952 1 5.12879 1 4.54911C1.00028 3.96967 1.46999 3.5 2.04948 3.49972Z" fill="url(#aiLogoGradient)"/><path d="M6.54948 2.8982C7.23984 2.8982 7.79948 3.4578 7.79948 4.1481C7.79948 4.8384 7.23984 5.398 6.54948 5.398C5.85912 5.398 5.29948 4.8384 5.29948 4.1481C5.29948 3.4578 5.85912 2.8982 6.54948 2.8982Z" fill="url(#aiLogoGradient)"/><path d="M13.2005 2.4998C13.7528 2.4998 14.2005 2.94748 14.2005 3.49972C14.2005 4.05196 13.7528 4.49963 13.2005 4.49963C12.6482 4.49963 12.2005 4.05196 12.2005 3.49972C12.2005 2.94748 12.6482 2.4998 13.2005 2.4998Z" fill="url(#aiLogoGradient)"/><path d="M4.55078 0.800716C4.90968 0.800716 5.20038 1.09157 5.20052 1.4504C5.20052 1.80936 4.90977 2.10009 4.55078 2.10009C4.19192 2.09995 3.90104 1.80927 3.90104 1.4504C3.90118 1.09165 4.192 0.800857 4.55078 0.800716Z" fill="url(#aiLogoGradient)"/><path d="M8.75 0C9.16421 0 9.5 0.335759 9.5 0.749939C9.5 1.16412 9.16421 1.49988 8.75 1.49988C8.33579 1.49988 8 1.16412 8 0.749939C8 0.335759 8.33579 0 8.75 0Z" fill="url(#aiLogoGradient)"/></svg>';
 
         // Data Placeholders
-        const customers = ["James T. Kirk", "Sarah Connor", "Marty McFly", "Ellen Ripley", "Tony Stark"];
-        const vehicles = ["2024 Toyota Camry SE", "2023 Ford F-150 XLT", "2024 Honda CR-V EX-L", "2023 Tesla Model Y Long Range", "2024 Chevrolet Silverado 1500 RST"];
+        const customers = ["James T. Kirk", "Sarah Connor", "Marty McFly", "Ellen Ripley", "Tony Stark", "Luke Skywalker", "Leia Organa", "Han Solo", "Darth Vader", "Yoda", "Obi-Wan Kenobi", "Anakin Skywalker", "Padmé Amidala", "Chewbacca", "R2-D2", "C-3PO", "Lando Calrissian", "Boba Fett", "Jabba the Hutt", "Mace Windu"];
+        const vehicles = ["2024 Toyota Camry SE", "2023 Ford F-150 XLT", "2024 Honda CR-V EX-L", "2023 Tesla Model Y Long Range", "2024 Chevrolet Silverado 1500 RST", "2022 BMW 3 Series", "2023 Mercedes-Benz C-Class", "2024 Audi A4", "2023 Hyundai Elantra", "2024 Nissan Rogue", "2022 Subaru Outback", "2023 Mazda CX-5", "2024 Volkswagen Jetta", "2023 Jeep Wrangler", "2024 Ram 1500", "2022 Porsche 911", "2023 Ford Mustang", "2024 Chevrolet Corvette", "2023 Toyota RAV4", "2024 Honda Civic"];
 
         // Full VIN strings
         const vins = [
@@ -8352,6 +8987,13 @@
 
 
         // --- MODAL LOGIC ---
+        window.openAgentMarketplace = function () {
+            const modal = document.getElementById('agentMarketplaceModal');
+            if (modal) modal.classList.add('visible');
+            globalContextMenu.classList.remove('visible');
+            chatDropdown.classList.remove('visible');
+        };
+
         window.openRenameModal = function () {
             let initialName = "";
             if (currentItem) {
@@ -8407,6 +9049,8 @@
             deleteModal.classList.remove('visible');
             const procModal = document.getElementById('processModal');
             if (procModal) procModal.classList.remove('visible');
+            const marketModal = document.getElementById('agentMarketplaceModal');
+            if (marketModal) marketModal.classList.remove('visible');
         };
 
         window.showProcessModal = function (status) {
@@ -8779,10 +9423,8 @@
             startChat(text, logicKey, attachmentHTML);
         }
 
-        // NEW CHAT BTN HANDLER
-        btnHeaderNewChat.onclick = () => {
-            resetChat();
-        };
+        // NEW CHAT BTN HANDLER (Handled dynamically in switchView based on view mode)
+        btnHeaderNewChat.onclick = () => { resetChat(); }; // Fallback
 
         btnChatMenu.onclick = (e) => {
             e.stopPropagation();
@@ -8809,6 +9451,7 @@
             }
             if (e.target === renameModal) closeModals();
             if (e.target === deleteModal) closeModals();
+            if (e.target.id === 'agentMarketplaceModal') closeModals();
         });
 
         async function typeWriter(container, htmlString, controller, sourcesData = { count: 0 }) {
@@ -10109,6 +10752,7 @@
             if (btnHeaderNewChat) {
                 btnHeaderNewChat.style.display = 'flex';
                 btnHeaderNewChat.innerHTML = HEADER_NEW_CHAT_ICON;
+                btnHeaderNewChat.onclick = () => resetChat();
             }
             if (chatMenuContainer) chatMenuContainer.style.display = 'flex';
             if (btnHeaderRefresh) btnHeaderRefresh.style.display = 'none';
@@ -10123,7 +10767,8 @@
                     if (btnHeaderNewChat) {
                         btnHeaderNewChat.style.display = 'flex';
                         btnHeaderNewChat.disabled = false;
-                        btnHeaderNewChat.innerHTML = HEADER_ADD_ICON;
+                        btnHeaderNewChat.innerHTML = HEADER_AGENT_ICON;
+                        btnHeaderNewChat.onclick = () => openAgentMarketplace();
                     }
                 } else if (viewId === 'insightsView') {
                     if (chatHeaderTitle) chatHeaderTitle.innerText = "Insights";
@@ -10147,6 +10792,7 @@
                         btnHeaderNewChat.style.display = 'flex';
                         btnHeaderNewChat.disabled = false;
                         btnHeaderNewChat.innerHTML = HEADER_ADD_ICON;
+                        btnHeaderNewChat.onclick = () => resetChat();
                     }
                 }
 

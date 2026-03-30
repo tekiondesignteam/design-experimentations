@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minimal Dashboard Tab</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Cabinet+Grotesk:wght@400;500;700;800&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.24.7/babel.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      font-family: 'Cabinet Grotesk', sans-serif; 
+      -webkit-font-smoothing: antialiased; 
+      background: #F3F2EF; 
+    }
+    button { transition: transform 0.12s ease, opacity 0.12s ease, background 0.15s, border-color 0.15s, box-shadow 0.15s; cursor: pointer; }
+    button:active { transform: scale(0.96); }
+
+    /* Layout for Tab 1 */
+    .tab1-grid {
+      display: grid;
+      grid-template-columns: 180px 648px 180px;
+      grid-template-rows: repeat(3, 150px);
+      gap: 16px;
+      width: 1040px;
+      margin: 0 auto;
+    }
+    .grid-pos-0 { grid-column: 1; grid-row: 1; }
+    .grid-pos-1 { grid-column: 1; grid-row: 2; }
+    .grid-pos-2 { grid-column: 1; grid-row: 3; }
+    .grid-pos-3 { grid-column: 2; grid-row: 1 / 4; }
+    .grid-pos-4 { grid-column: 3; grid-row: 1; }
+    .grid-pos-5 { grid-column: 3; grid-row: 2; }
+    .grid-pos-6 { grid-column: 3; grid-row: 3; }
+
+    .t1-card {
+      background: #FFF;
+      border-radius: 12px;
+      border: 1px solid #E5E7EB;
+      box-shadow: 0 1px 3px rgba(0,0,0,.04);
+      padding: 16px;
+      cursor: pointer;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s, border-color 0.2s;
+    }
+    .t1-card.is-center { 
+      cursor: default; 
+      padding: 28px 32px;
+      box-shadow: 0 4px 12px rgba(0,0,0,.03);
+    }
+    .t1-card.is-side:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,.06);
+      border-color: #D1D5DB;
+    }
+    
+    ::view-transition-group(*) { animation-duration: 0.4s; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 10px; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+    const aiGrad = "linear-gradient(135deg, #4A7CF7, #A855F7)";
+
+    const AILogo = () => (
+      <svg width="48" height="48" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+         <path d="M3.90234 12.1417C4.35913 11.3507 5.37099 11.0796 6.1621 11.5362C6.95276 11.993 7.22378 13.004 6.76757 13.795C6.31077 14.5862 5.299 14.8573 4.50781 14.4005C3.71688 13.9436 3.44577 12.9327 3.90234 12.1417Z" fill="url(#h6g0)" />
+         <path d="M9.85253 11.5362C10.6436 11.0795 11.6554 11.3507 12.1123 12.1417C12.5687 12.9327 12.2976 13.9436 11.5068 14.4005C10.7156 14.8573 9.70386 14.5862 9.24706 13.795C8.79076 13.0039 9.06163 11.9929 9.85253 11.5362Z" fill="url(#h6g1)" />
+         <path d="M1.82714 6.87897C2.61816 6.42229 3.62997 6.69366 4.08691 7.48444C4.5437 8.27563 4.27262 9.2874 3.48144 9.74421C2.69025 10.201 1.67846 9.92992 1.22167 9.13874C0.765282 8.34764 1.03617 7.3357 1.82714 6.87897Z" fill="url(#h6g2)" />
+         <path d="M9.84667 2.22175C10.6377 1.76509 11.6495 2.03645 12.1064 2.82721C12.2712 3.11258 12.342 3.42711 12.3271 3.73346C12.2949 4.39469 12.144 5.12681 12.4746 5.70026C12.8057 6.27373 13.5156 6.50978 14.1045 6.81257C14.3772 6.95281 14.6145 7.17081 14.7793 7.45612C15.2361 8.24727 14.9649 9.25905 14.1738 9.71589C13.3826 10.1727 12.3709 9.90162 11.9141 9.11042C11.7494 8.82504 11.6794 8.51051 11.6943 8.20417C11.7266 7.54286 11.8768 6.81076 11.5459 6.23737C11.2147 5.66396 10.5049 5.42789 9.91601 5.12507C9.64334 4.98476 9.40593 4.76682 9.2412 4.48151C8.78485 3.69046 9.05581 2.67851 9.84667 2.22175Z" fill="url(#h6g3)" />
+         <path d="M4.50781 2.27839C5.2989 1.82171 6.31071 2.0929 6.76757 2.88385C7.22408 3.67496 6.95309 4.68685 6.1621 5.14362C5.37103 5.60035 4.35924 5.32907 3.90234 4.53815C3.44576 3.74699 3.7167 2.73513 4.50781 2.27839Z" fill="url(#h6g4)" />
+         <defs>
+             {[0,1,2,3,4].map(n => <linearGradient key={n} id={`h6g${n}`} x1="1" y1="2" x2="16.87" y2="5.12" gradientUnits="userSpaceOnUse"><stop stopColor="#4A7CF7" /><stop offset="1" stopColor="#A855F7" /></linearGradient>)}
+         </defs>
+      </svg>
+    );
+
+    // Small Card Renderers
+    function SmallCardContent({ id }) {
+      const S = { fontSize: 12, color: '#6B7280', lineHeight: 1.5, fontWeight: 500 };
+      const H = { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', fontSize: 13, color: '#374151', marginBottom: 12, fontWeight: 600, letterSpacing: '0.01em' };
+      const B = { fontSize: 11, background: '#F9FAFB', border: '1px solid #E5E7EB', padding: '2px 8px', borderRadius: 4, color: '#4B5563', display: 'inline-block', marginTop: 4 };
+
+      const ExpandIcon = () => (
+         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{marginTop: 2}}>
+           <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+         </svg>
+      );
+
+      switch (id) {
+        case 'meetings':
+          return (
+            <div>
+              <div style={H}><div>Meetings</div><ExpandIcon /></div>
+              <div style={S}>Next: in 10 mins</div>
+              <span style={B}>Desk Appointment</span>
+            </div>
+          );
+        case 'communication':
+          return (
+            <div>
+              <div style={H}><div>Missed<br/>Communication</div><ExpandIcon /></div>
+              <div style={{ display: 'grid', gridTemplateColumns: '20px 1fr', gap: '6px 4px', ...S, marginTop: 12 }}>
+                <span style={{color: '#9CA3AF'}}>02</span><span>Mails</span>
+                <span style={{color: '#9CA3AF'}}>04</span><span>Chats</span>
+              </div>
+            </div>
+          );
+        case 'opportunities':
+          return (
+            <div>
+              <div style={H}><div>Opportunities</div><ExpandIcon /></div>
+              <div style={{...S, paddingLeft: 12, position: 'relative', marginBottom: 6}}>
+                <span style={{position:'absolute', left: 0, color: '#D1D5DB'}}>•</span> 2 VIP leads wait
+              </div>
+              <div style={{...S, paddingLeft: 12, position: 'relative'}}>
+                <span style={{position:'absolute', left: 0, color: '#D1D5DB'}}>•</span> 2 Deals near $4k gross
+              </div>
+            </div>
+          );
+        case 'actions':
+          return (
+            <div>
+              <div style={H}><div>Actions required</div><ExpandIcon /></div>
+              <div style={S}>10 total items</div>
+              <div style={{...S, color: '#EF4444', marginTop: 4}}>2 high priority</div>
+            </div>
+          );
+        case 'risk':
+          return (
+            <div>
+              <div style={H}><div>At Risk Items</div><ExpandIcon /></div>
+              <div style={{...S, marginTop: 12}}>2 aged units (60+ days)</div>
+            </div>
+          );
+        case 'workload':
+          return (
+            <div>
+              <div style={H}><div>Workload<br/>Distribution</div><ExpandIcon /></div>
+              <div style={{ display: 'grid', gridTemplateColumns: '30px 1fr', gap: '6px 4px', ...S, marginTop: 12 }}>
+                <span style={{color: '#9CA3AF'}}>30%</span><span>Done</span>
+                <span style={{color: '#9CA3AF'}}>40%</span><span>Sarah</span>
+                <span style={{color: '#9CA3AF'}}>30%</span><span>Mark</span>
+              </div>
+            </div>
+          );
+        case 'metrics':
+          return (
+            <div>
+              <div style={H}><div>Today's estimated<br/>metrics</div><ExpandIcon /></div>
+              <div style={{...S, marginTop: 12}}>MTD Gross: $172K</div>
+              <div style={{...S, fontSize: 11, color: '#10B981', marginTop: 4}}>Ahead of target</div>
+            </div>
+          );
+        default: return null;
+      }
+    }
+
+    // Large Card Renderers
+    function LargeCardContent({ id }) {
+      const H = { fontSize: 18, color: '#18181B', fontWeight: 700 };
+      const sub = { fontSize: 13, color: '#6B7280', fontWeight: 500, marginTop: 4 };
+      const InnerBox = ({ children }) => (<div style={{ background: '#F9FAFB', border: '1px solid #F0F0F0', borderRadius: 10, padding: 16, display: 'flex', flexDirection: 'column' }}>{children}</div>);
+      
+      if (id === 'actions') {
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24 }}>
+              <div>
+                <div style={H}>Actions required</div>
+                <div style={sub}>2 critical blocks holding deals right now.</div>
+              </div>
+              <div style={{ display: 'flex', gap: 6 }}>
+                <button style={{ width: 28, height: 28, borderRadius: 6, border: '1px solid #E5E7EB', background: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>&lt;</button>
+                <button style={{ width: 28, height: 28, borderRadius: 6, border: '1px solid #E5E7EB', background: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>&gt;</button>
+              </div>
+            </div>
+            
+            <div style={{ display: 'flex', gap: 16, flex: 1 }}>
+              <InnerBox>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                  <div style={{ fontSize: 14, color: '#18181B', fontWeight: 600 }}>Stipulation missing</div>
+                  <span style={{ fontSize: 10, background: '#FEF2F2', color: '#DC2626', padding: '3px 8px', borderRadius: 12, fontWeight: 700 }}>Priority</span>
+                </div>
+                <div style={{ fontSize: 12, color: '#6B7280', marginBottom: 16 }}>Deal #839 · Rodriguez · F&I Blocked</div>
+                <div style={{ fontSize: 13, color: '#374151', lineHeight: 1.5, marginBottom: 16, flex: 1 }}>
+                  Proof of income stip has been missing for 48 hours. Lender approval expires tomorrow at noon.
+                  <div style={{ marginTop: 8, padding: 12, background: '#FFF', borderRadius: 6, border: '1px dashed #D1D5DB' }}>
+                    <span style={{ fontWeight: 600, color: '#18181B' }}>AI Suggestion:</span> Send an automated SMS reminder with a secure upload link directly to the customer.
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button style={{ background: '#18181B', color: '#FFF', border: 'none', padding: '8px 16px', borderRadius: 6, fontSize: 12, fontWeight: 600, flex: 1 }}>Send SMS Link</button>
+                  <button style={{ background: '#FFF', color: '#374151', border: '1px solid #E5E7EB', padding: '8px 16px', borderRadius: 6, fontSize: 12, fontWeight: 600 }}>Review Deal</button>
+                </div>
+              </InnerBox>
+
+              <InnerBox>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                  <div style={{ fontSize: 14, color: '#18181B', fontWeight: 600 }}>Trade Appraisal Overdue</div>
+                  <span style={{ fontSize: 10, background: '#FFFBEB', color: '#D97706', padding: '3px 8px', borderRadius: 12, fontWeight: 700 }}>Warning</span>
+                </div>
+                <div style={{ fontSize: 12, color: '#6B7280', marginBottom: 16 }}>2019 F-150 · Walk-in · Waiting since 9 AM</div>
+                <div style={{ fontSize: 13, color: '#374151', lineHeight: 1.5, marginBottom: 16, flex: 1 }}>
+                  The customer has been waiting for an assigned appraiser for 45 minutes. Conversion risk is high.
+                  <div style={{ marginTop: 8, padding: 12, background: '#FFF', borderRadius: 6, border: '1px dashed #D1D5DB' }}>
+                    <span style={{ fontWeight: 600, color: '#18181B' }}>AI Suggestion:</span> Assign to Jason, he just closed out his morning delivery and is available on the floor.
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button style={{ background: '#18181B', color: '#FFF', border: 'none', padding: '8px 16px', borderRadius: 6, fontSize: 12, fontWeight: 600, flex: 1 }}>Assign Jason</button>
+                </div>
+              </InnerBox>
+            </div>
+          </div>
+        );
+      }
+      
+      if (id === 'meetings') {
+        const meetings = [
+           { t: '10:30 AM', title: 'Desk Deal Review', rep: 'Sarah & Mark', dot: '#F59E0B' },
+           { t: '12:00 PM', title: 'Customer Delivery (RAV4)', rep: 'Jason', dot: '#10B981' },
+           { t: '02:30 PM', title: 'F&I Yield Check-in', rep: 'Finance Team', dot: '#6B7280' }
+        ];
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <div style={H}>Meetings & Schedule</div>
+            <div style={sub}>3 appointments remaining today</div>
+            <div style={{ flex: 1, marginTop: 24, overflowY: 'auto', paddingRight: 8 }}>
+               {meetings.map((m,i) => (
+                 <div key={i} style={{ display: 'flex', gap: 16, marginBottom: 12, alignItems: 'center', background: '#F9FAFB', border: '1px solid #F0F0F0', padding: '12px 16px', borderRadius: 8 }}>
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: m.dot }}></div>
+                    <div style={{ fontSize: 13, color: '#4B5563', width: 64, fontWeight: 500 }}>{m.t}</div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 14, color: '#18181B', fontWeight: 600 }}>{m.title}</div>
+                      <div style={{ fontSize: 12, color: '#6B7280', marginTop: 2 }}>w/ {m.rep}</div>
+                    </div>
+                 </div>
+               ))}
+            </div>
+          </div>
+        );
+      }
+
+      if (id === 'opportunities') {
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <div style={H}>Revenue Opportunities</div>
+            <div style={sub}>2 deals near maximum profit thresholds</div>
+            <div style={{ flex: 1, marginTop: 24, display: 'flex', gap: 16 }}>
+               {[
+                 { rep: "Mark's Deal", car: "Accord Touring", gap: "$210 to target", act: "Pitch wheel protection" },
+                 { rep: "Sarah's Deal", car: "CR-V Hybrid", gap: "$400 to target", act: "Hold rate by 0.5%" }
+               ].map((opp, i) => (
+                 <InnerBox key={i}>
+                    <div style={{ fontSize: 11, color: '#059669', marginBottom: 6, fontWeight: 600, background: '#D1FAE5', padding: '2px 8px', borderRadius: 10, alignSelf: 'flex-start' }}>{opp.gap}</div>
+                    <div style={{ fontSize: 15, color: '#18181B', fontWeight: 600, marginTop: 8 }}>{opp.car}</div>
+                    <div style={{ fontSize: 12, color: '#6B7280', marginTop: 4 }}>{opp.rep}</div>
+                    <div style={{ marginTop: 'auto', paddingTop: 16 }}>
+                      <div style={{ fontSize: 12, color: '#374151', marginBottom: 12 }}><strong>AI Action:</strong> {opp.act}</div>
+                      <button style={{ background: '#18181B', color: '#FFF', border: 'none', padding: '8px', borderRadius: 6, width: '100%', fontSize: 12, fontWeight: 600 }}>Apply Push</button>
+                    </div>
+                 </InnerBox>
+               ))}
+            </div>
+          </div>
+        );
+      }
+      
+      if (id === 'risk') {
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <div style={H}>Inventory at Risk</div>
+            <div style={sub}>2 units hit the 60-day threshold this morning</div>
+            <div style={{ flex: 1, marginTop: 24 }}>
+               <InnerBox>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <div style={{ fontSize: 14, fontWeight: 600 }}>2020 Civic EX-L</div>
+                    <div style={{ fontSize: 13, color: '#EF4444', fontWeight: 600 }}>62 Days</div>
+                  </div>
+                  <div style={{ fontSize: 12, color: '#6B7280', marginTop: 8 }}>4 test drives, 0 offers this week. Currently parked in the back lot.</div>
+                  <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
+                    <button style={{ flex: 1, background: '#FFF', border: '1px solid #E5E7EB', padding: '8px', borderRadius: 6, fontSize: 12, fontWeight: 600 }}>Move to Front Lot</button>
+                    <button style={{ flex: 1, background: '#18181B', color: '#FFF', border: 'none', padding: '8px', borderRadius: 6, fontSize: 12, fontWeight: 600 }}>Drop Price $500</button>
+                  </div>
+               </InnerBox>
+            </div>
+          </div>
+        );
+      }
+      
+      if (id === 'workload') {
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <div style={H}>Floor Workload</div>
+            <div style={sub}>Sarah is saturated, Mark has capacity</div>
+            <div style={{ flex: 1, marginTop: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
+               {[
+                 { n: 'Sarah', w: '85%', text: '4 Active Deals', color: '#EF4444' },
+                 { n: 'Mark', w: '25%', text: '1 Info Check', color: '#10B981' },
+                 { n: 'Jason', w: '45%', text: '1 Delivery Prep', color: '#F59E0B' }
+               ].map((r, i) => (
+                 <div key={i}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, fontWeight: 500, marginBottom: 8 }}>
+                       <span style={{color: '#18181B'}}>{r.n}</span>
+                       <span style={{color: '#6B7280'}}>{r.text}</span>
+                    </div>
+                    <div style={{ height: 6, background: '#F0F0F0', borderRadius: 3, overflow: 'hidden' }}>
+                       <div style={{ width: r.w, background: r.color, height: '100%', borderRadius: 3 }}></div>
+                    </div>
+                 </div>
+               ))}
+               <button style={{ background: '#FFF', border: '1px solid #E5E7EB', color: '#18181B', padding: '8px', borderRadius: 6, fontSize: 12, fontWeight: 600, marginTop: 'auto' }}>Re-route next 2 walk-ins to Mark</button>
+            </div>
+          </div>
+        );
+      }
+      
+      if (id === 'metrics') {
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <div style={H}>Performance vs Target</div>
+            <div style={sub}>You are tracking 12% ahead of last month</div>
+            <div style={{ flex: 1, marginTop: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
+               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, width: '100%' }}>
+                 <InnerBox>
+                    <div style={{ fontSize: 12, color: '#6B7280', fontWeight: 500 }}>MTD Gross</div>
+                    <div style={{ fontSize: 28, color: '#18181B', fontWeight: 700, margin: '4px 0 8px' }}>$172K</div>
+                    <div style={{ fontSize: 11, color: '#10B981', fontWeight: 600 }}>+12% vs last month</div>
+                 </InnerBox>
+                 <InnerBox>
+                    <div style={{ fontSize: 12, color: '#6B7280', fontWeight: 500 }}>Units Sold</div>
+                    <div style={{ fontSize: 28, color: '#18181B', fontWeight: 700, margin: '4px 0 8px' }}>38</div>
+                    <div style={{ fontSize: 11, color: '#10B981', fontWeight: 600 }}>+4 units vs last month</div>
+                 </InnerBox>
+               </div>
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+           <div style={H}>Missed Communication</div>
+           <div style={sub}>Pending threads needing your input</div>
+           <div style={{ flex: 1, marginTop: 24, display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <div style={{ padding: 16, background: '#F9FAFB', border: '1px solid #F0F0F0', borderRadius: 8 }}>
+                 <div style={{ fontSize: 13, fontWeight: 600, color: '#18181B' }}>Finance Dept (Chat)</div>
+                 <div style={{ fontSize: 12, color: '#4B5563', margin: '4px 0 12px' }}>"Need your sign-off on the discount for deal #829 before we submit to lender."</div>
+                 <button style={{ background: '#FFF', border: '1px solid #E5E7EB', padding: '6px 12px', fontSize: 11, fontWeight: 600, borderRadius: 4 }}>Reply</button>
+              </div>
+           </div>
+        </div>
+      );
+    }
+
+    function Tab1() {
+      const [slots, setSlots] = useState(['meetings', 'communication', 'opportunities', 'actions', 'risk', 'workload', 'metrics']);
+      const [promptVal, setPromptVal] = useState('');
+      const [viewTab, setViewTab] = useState('Home');
+
+      const handleSlotClick = (slotIndex) => {
+        if (slotIndex === 3) return; // Middle card doesn't swap with itself
+        const doSwap = () => {
+          setSlots(prev => {
+            const next = [...prev];
+            const temp = next[3];
+            next[3] = next[slotIndex];
+            next[slotIndex] = temp;
+            return next;
+          });
+        };
+        
+        if (document.startViewTransition) {
+          document.startViewTransition(doSwap);
+        } else {
+          doSwap();
+        }
+      };
+
+      return (
+        <div style={{ maxWidth: 1040, margin: '0 auto', paddingBottom: 140 }}>
+          {/* TOP GREETING */}
+          <div style={{ textAlign: 'center', marginBottom: 44, marginTop: 12 }}>
+            <div style={{ margin: '0 auto 16px', display: 'flex', justifyContent: 'center' }}>
+               <AILogo />
+            </div>
+            <h1 style={{ fontSize: 24, fontWeight: 500, color: '#18181B', letterSpacing: '-0.02em', margin: 0 }}>Hey Juniper! It is good to see you</h1>
+          </div>
+          
+          {/* PRE-GRID CONTROLS -- Exact width of grid (1040px) */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, width: 1040, margin: '0 auto 24px' }}>
+            {/* Left: Segmented Control */}
+            <div style={{ display: 'flex', background: '#E5E7EB', padding: 4, borderRadius: 8 }}>
+              {['Home', 'Feeds'].map(t => (
+                <button key={t} onClick={() => setViewTab(t)} style={{ 
+                  padding: '6px 16px', 
+                  background: viewTab === t ? '#18181B' : 'transparent', 
+                  borderRadius: 6, 
+                  border: 'none', 
+                  boxShadow: viewTab === t ? '0 2px 6px rgba(0,0,0,0.15)' : 'none', 
+                  fontSize: 13, 
+                  fontWeight: viewTab === t ? 600 : 500, 
+                  color: viewTab === t ? '#FFF' : '#6B7280' 
+                }}>
+                  {t}
+                </button>
+              ))}
+            </div>
+
+            {/* Right: Buttons */}
+            <div style={{ display: 'flex', gap: 12 }}>
+              <button style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', background: '#FFF', border: '1px solid #D1D5DB', borderRadius: 8, fontSize: 13, fontWeight: 600, color: '#374151' }}
+                onMouseEnter={e => e.currentTarget.style.background = '#F9FAFB'}
+                onMouseLeave={e => e.currentTarget.style.background = '#FFF'}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><path d="M15.54 8.46a5 5 0 0 1 0 7.07" /><path d="M19.07 4.93a10 10 0 0 1 0 14.14" /></svg>
+                Take me through
+              </button>
+              <button style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', background: '#FFF', border: '1px solid #D1D5DB', borderRadius: 8, fontSize: 13, fontWeight: 600, color: '#374151' }}
+                onMouseEnter={e => e.currentTarget.style.background = '#F9FAFB'}
+                onMouseLeave={e => e.currentTarget.style.background = '#FFF'}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>
+                Quick actions
+              </button>
+            </div>
+          </div>
+
+          {/* CONTENT AREA */}
+          {viewTab === 'Home' ? (
+            <div className="tab1-grid">
+              {slots.map((cardId, idx) => {
+                const isCenter = idx === 3;
+                return (
+                  <div 
+                    key={cardId} 
+                    onClick={() => handleSlotClick(idx)}
+                    className={`t1-card grid-pos-${idx} ${isCenter ? 'is-center' : 'is-side'}`}
+                    style={{ viewTransitionName: `card-${cardId}` }}
+                  >
+                    {isCenter ? <LargeCardContent id={cardId} /> : <SmallCardContent id={cardId} />}
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div style={{ maxWidth: 640, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 40, paddingBottom: 60, opacity: 0, animation: 'fadeIn 0.3s forwards' }}>
+              {[
+                { 
+                  source: "Juniper Market Insight", time: "2h ago", 
+                  title: "Local Market Spike: Used Midsize SUVs are clearing 14% faster than last month.", 
+                  body: "Inventory on CR-V and RAV4 models under 50k miles are selling within 12 days on average in your primary zip code. Recommendation: Hold gross on trade-ins matching this profile today.",
+                  customVisual: (
+                    <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, #18181B 0%, #27272A 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 32 }}>
+                       <div style={{ textAlign: 'center' }}>
+                          <span style={{ fontSize: 52, fontWeight: 800, color: '#FFF', letterSpacing: '-0.04em' }}>14% Faster</span>
+                          <div style={{ fontSize: 13, fontWeight: 500, color: '#A1A1AA', marginTop: 6, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Used SUV turnaround rate</div>
+                       </div>
+                    </div>
+                  )
+                },
+                { 
+                  source: "Dealership Analytics", time: "4h ago", 
+                  title: "Bottleneck Alert: Lube tech station is averaging 55 minute turnaround.", 
+                  body: "Wait times for express service exceed your 40-minute SLA today. This restricts your CSI score trajectory for the week. Consider pulling a master tech for 1 hour to clear the queue.",
+                  customVisual: (
+                    <div style={{ width: '100%', height: '100%', background: '#F9FAFB', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 32 }}>
+                       <div style={{ display: 'flex', alignItems: 'flex-end', gap: 16, height: 120 }}>
+                         {[30, 45, 25, 60, 85].map((h, i) => (
+                           <div key={i} style={{ width: 36, height: 120, background: '#E5E7EB', borderRadius: 6, display: 'flex', alignItems: 'flex-end', overflow: 'hidden' }}>
+                             <div style={{ width: '100%', height: `${h}%`, background: h > 60 ? '#EF4444' : '#10B981', borderRadius: '0 0 6px 6px' }} />
+                           </div>
+                         ))}
+                       </div>
+                       <div style={{ display: 'flex', gap: 16, marginTop: 16, color: '#9CA3AF', fontSize: 11, fontWeight: 700 }}>
+                         <span>MON</span>
+                         <span>TUE</span>
+                         <span>WED</span>
+                         <span>THU</span>
+                         <span style={{ color: '#EF4444' }}>FRI</span>
+                       </div>
+                    </div>
+                  )
+                },
+                { 
+                  source: "Automotive Network Digest", time: "Yesterday", 
+                  title: "Interest rate drops expected next quarter could alleviate finance friction.", 
+                  body: "The Federal Reserve hints at a .25 point drop in Q3. Regional dealerships prepping promotional leasing events to capitalize on early buyer interest.",
+                  customVisual: (
+                    <div style={{ width: '100%', height: '100%', background: '#F0FDF4', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 32 }}>
+                       <div style={{ width: 80, height: 80, borderRadius: '50%', background: '#D1FAE5', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10B981' }}>
+                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                       </div>
+                    </div>
+                  )
+                }
+              ].map((feed, idx) => (
+                <div key={idx} style={{ background: '#FFF', borderRadius: 24, border: '1px solid #E5E7EB', overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.03)' }}>
+                  {/* Visual Top */}
+                  <div style={{ width: '100%', height: 260, borderBottom: '1px solid #E5E7EB' }}>
+                     {feed.customVisual}
+                  </div>
+                  {/* Text Bottom */}
+                  <div style={{ padding: '24px 32px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{stroke: "url(#sg6)"}}><defs><linearGradient id="sg6" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse"><stop stopColor="#4A7CF7" /><stop offset="1" stopColor="#A855F7" /></linearGradient></defs><path d="M16 3h5v5"/><path d="M21 3l-7 7"/><path d="M16 21h5v-5"/><path d="M21 21l-7-7"/><path d="M3 7h3a4 4 0 0 1 4 4 4 4 0 0 0 4 4h2"/><path d="M3 17h3a4 4 0 0 0 4-4 4 4 0 0 1 4-4h2"/></svg>
+                      <span style={{ fontSize: 13, fontWeight: 700, color: '#374151' }}>{feed.source}</span>
+                      <span style={{ fontSize: 13, fontWeight: 500, color: '#9CA3AF' }}>• {feed.time}</span>
+                    </div>
+                    <div style={{ fontSize: 20, fontWeight: 700, color: '#18181B', marginBottom: 10, lineHeight: 1.3, letterSpacing: '-0.01em' }}>{feed.title}</div>
+                    <div style={{ fontSize: 15, color: '#4B5563', lineHeight: 1.6 }}>{feed.body}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* HOME 5 PROMPT BAR (Sticky at bottom viewport) */}
+          <div style={{ position: 'fixed', bottom: 32, left: 0, right: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', pointerEvents: 'none', zIndex: 100 }}>
+             
+             {/* Suggestion Pills above input */}
+             <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap', justifyContent: 'center', pointerEvents: 'auto' }}>
+               {[
+                 "Where is my gross?",
+                 "Lot gaps right now",
+                 "Coach someone today",
+                 "Stalled deals"
+               ].map((ch, ci) => (
+                 <button key={ci} style={{ display: "flex", alignItems: "center", gap: 5, padding: "6px 14px", borderRadius: 20, background: "rgba(255,255,255,0.75)", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.4)", boxShadow: "0 2px 10px rgba(0,0,0,0.03)", fontSize: 12, fontWeight: 600, color: "#4B5563", cursor: "pointer", fontFamily: 'inherit', transition: "transform .2s" }}
+                   onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+                   onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+                   onClick={() => setPromptVal(ch)}
+                 >
+                   {ch}
+                 </button>
+               ))}
+             </div>
+
+             {/* Input Bar */}
+             <div style={{ width: '100%', maxWidth: 720, position: 'relative', pointerEvents: 'auto', padding: '0 16px' }}>
+               <div style={{ position: 'relative', zIndex: 1, borderRadius: 12, background: "rgba(255,255,255,0.9)", backdropFilter: "blur(20px)", border: promptVal.length > 0 ? "1.5px solid rgba(74,124,247,.35)" : "1.5px solid #F3F4F6", boxShadow: promptVal.length > 0 ? "0 4px 24px rgba(74,124,247,.12), 0 2px 8px rgba(0,0,0,.04)" : "0 8px 32px rgba(0,0,0,0.06)", transition: "all .4s ease" }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 18px' }}>
+                    <textarea 
+                      value={promptVal} rows={1}
+                      onChange={e => setPromptVal(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) e.preventDefault(); }}
+                      placeholder="Ask · Decide · Execute" 
+                      style={{ flex: 1, border: 'none', outline: 'none', background: 'transparent', fontSize: 15, fontWeight: 500, color: '#18181B', fontFamily: 'inherit', resize: 'none', overflow: 'hidden', lineHeight: '22px', height: 22, minHeight: 22, maxHeight: 120, padding: 0, margin: 0 }} 
+                    />
+                    <button disabled={promptVal.length === 0} style={{ width: 34, height: 34, borderRadius: 8, border: 'none', flexShrink: 0, background: promptVal.length > 0 ? aiGrad : '#F3F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .2s' }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={promptVal.length > 0 ? '#FFF' : '#C0C0C0'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="M12 5l7 7-7 7" /></svg>
+                    </button>
+                  </div>
+               </div>
+             </div>
+          </div>
+        </div>
+      );
+    }
+
+    function Tab2() {
+      const [promptVal, setPromptVal] = useState('');
+
+      const pillStyles = {
+        'Action': { bg: '#FFFBEB', text: '#D97706' },
+        'Blocked': { bg: '#FEE2E2', text: '#DC2626' },
+        'Opportunity': { bg: '#ECFDF5', text: '#059669' },
+        'At Risk': { bg: '#FEF2F2', text: '#EF4444' },
+        'Later': { bg: '#F3F4F6', text: '#6B7280' }
+      };
+
+      const Column = ({ title, icon, items, count }) => (
+        <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 16, padding: '20px 16px', display: 'flex', flexDirection: 'column', gap: 12, height: '100%' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, padding: '0 4px' }}>
+            <span style={{ color: '#9CA3AF', display: 'flex' }}>{icon}</span>
+            <div style={{ fontSize: 13, fontWeight: 800, color: '#4B5563', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{title}</div>
+          </div>
+          {items.map((it, i) => (
+            <div key={i} style={{ padding: '12px 0', borderBottom: i < items.length - 1 ? '1px solid #E5E7EB' : 'none', display: 'flex', flexDirection: 'column', gap: 6, cursor: 'pointer', transition: 'opacity 0.2s' }}
+              onMouseEnter={e => e.currentTarget.style.opacity = 0.7}
+              onMouseLeave={e => e.currentTarget.style.opacity = 1}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <span style={{ fontSize: 14, fontWeight: 700, color: '#18181B' }}>{it.title}</span>
+                {it.pill && (
+                  <span style={{ fontSize: 10, fontWeight: 700, padding: '3px 8px', background: pillStyles[it.pill]?.bg || '#F3F4F6', color: pillStyles[it.pill]?.text || '#4B5563', borderRadius: 12, marginLeft: 8, whiteSpace: 'nowrap' }}>
+                    {it.pill}
+                  </span>
+                )}
+              </div>
+              <div style={{ fontSize: 13, color: '#6B7280', lineHeight: 1.5 }}>{it.desc}</div>
+            </div>
+          ))}
+          <button style={{ marginTop: 'auto', background: 'transparent', border: 'none', padding: '12px 4px 0', fontSize: 13, fontWeight: 700, color: '#6B7280', cursor: 'pointer', transition: 'color 0.15s', textAlign: 'left', display: 'flex', alignItems: 'center', gap: 6 }}
+            onMouseEnter={e => e.currentTarget.style.color = '#18181B'}
+            onMouseLeave={e => e.currentTarget.style.color = '#6B7280'}>
+            View All ({count}) <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+          </button>
+        </div>
+      );
+
+      return (
+        <div style={{ maxWidth: 1240, margin: '0 auto', paddingBottom: 60, width: '100%' }}>
+          {/* HEADER SECTION */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 80, marginTop: 40, textAlign: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, justifyContent: 'center', marginBottom: 20 }}>
+              <div style={{ height: 1, width: 40, background: '#D1D5DB' }} />
+              <span style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#6B7280' }}>Thursday · 26 March 2026</span>
+              <div style={{ height: 1, width: 40, background: '#D1D5DB' }} />
+            </div>
+            <h1 style={{ fontSize: 44, fontWeight: 500, color: '#18181B', letterSpacing: '-0.02em', margin: '0 0 44px', lineHeight: 1.1 }}>
+               Hey Juniper, your dealership<br/>is <em style={{ fontStyle: 'italic', fontFamily: "'Instrument Serif', serif", fontWeight: 400, color: '#d4500a' }}>looking good</em> today.
+            </h1>
+
+            {/* INPUT PROMPT BAR */}
+            <div style={{ width: '100%', maxWidth: 760, position: 'relative' }}>
+               <div style={{ position: 'relative', zIndex: 1, borderRadius: 16, background: "#FFF", border: promptVal.length > 0 ? "1.5px solid rgba(74,124,247,.35)" : "1.5px solid #E5E7EB", boxShadow: promptVal.length > 0 ? "0 4px 24px rgba(74,124,247,.12), 0 2px 8px rgba(0,0,0,.02)" : "0 8px 32px rgba(0,0,0,0.03)", transition: "all .4s ease" }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '16px 20px' }}>
+                    <textarea 
+                      value={promptVal} rows={1}
+                      onChange={e => setPromptVal(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) e.preventDefault(); }}
+                      placeholder="Ask your assistant to find leads, schedule meetings, or draft emails..." 
+                      style={{ flex: 1, border: 'none', outline: 'none', background: 'transparent', fontSize: 16, fontWeight: 500, color: '#18181B', fontFamily: 'inherit', resize: 'none', overflow: 'hidden', lineHeight: '24px', height: 24, minHeight: 24, maxHeight: 120, padding: 0, margin: 0 }} 
+                    />
+                    <button disabled={promptVal.length === 0} style={{ width: 36, height: 36, borderRadius: 10, border: 'none', flexShrink: 0, background: promptVal.length > 0 ? aiGrad : '#F3F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .2s' }}>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={promptVal.length > 0 ? '#FFF' : '#C0C0C0'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="M12 5l7 7-7 7" /></svg>
+                    </button>
+                  </div>
+               </div>
+               
+               {/* SUGGESTION PILLS */}
+               <div style={{ display: 'flex', gap: 8, marginTop: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
+                 {["Draft reply to Mark", "Find stalled deals", "Review pipeline"].map((ch, ci) => (
+                   <button key={ci} onClick={() => setPromptVal(ch)} style={{ display: "flex", alignItems: "center", gap: 5, padding: "6px 16px", borderRadius: 20, background: "rgba(255,255,255,0.6)", border: "1px solid #E5E7EB", fontSize: 13, fontWeight: 600, color: "#4B5563", cursor: "pointer", fontFamily: 'inherit', transition: 'background 0.2s, border-color 0.2s' }}
+                     onMouseEnter={e => { e.currentTarget.style.background = '#FFF'; e.currentTarget.style.borderColor = '#D1D5DB'; }}
+                     onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.6)'; e.currentTarget.style.borderColor = '#E5E7EB'; }}>
+                     {ch}
+                   </button>
+                 ))}
+               </div>
+            </div>
+          </div>
+
+          {/* 4-COLUMN LAYOUT */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, alignItems: 'stretch' }}>
+            <Column title="Missed Comms" count={5}
+              icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>}
+              items={[
+                { title: <span style={{display: 'flex', alignItems: 'center', gap: 6}}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> Service Dept</span>, desc: "Waiting on RO #512 approval for the Highlander.", pill: "Action" },
+                { title: <span style={{display: 'flex', alignItems: 'center', gap: 6}}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"/><path d="M2 4l10 8 10-8"/></svg> David Smith</span>, desc: "\"Can you do $45k out the door?\"", pill: "Opportunity" }
+              ]} 
+            />
+            <Column title="Leads" count={8}
+              icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>}
+              items={[
+                { title: "Sarah P.", desc: "TrueCar lead for 2024 CR-V. Viewed pricing 3 times.", pill: "Opportunity" },
+                { title: "Michael Ross", desc: "Requested lease quotes for Accord EX.", pill: "Later" }
+              ]} 
+            />
+            <Column title="Deals" count={4}
+              icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>}
+              items={[
+                { title: "Deal #839", desc: "Stip missing: Proof of income. Lender cutoff at 5PM.", pill: "Blocked" },
+                { title: "Deal #841", desc: "Trade appraisal completed. Needs manager sign-off.", pill: "Action" }
+              ]} 
+            />
+            <Column title="Appointments" count={3}
+              icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>}
+              items={[
+                { title: "Desk Review", desc: "10:30 AM · Manager's Office w/ Mark", pill: "Action" },
+                { title: "VIP Test Drive", desc: "1:00 PM · Front Lot · 2024 Pilot Touring", pill: "Later" }
+              ]} 
+            />
+            
+          </div>
+        </div>
+      );
+    }
+
+    function Tab3() {
+      const [promptVal, setPromptVal] = useState('');
+      const [activeHash, setActiveHash] = useState('actions');
+
+      useEffect(() => {
+        const handleScroll = () => {
+          const sections = ['actions', 'monitor', 'opportunities', 'insights'];
+          for (let s of sections) {
+            const el = document.getElementById(s);
+            if (el) {
+              const rect = el.getBoundingClientRect();
+              if (rect.top >= 0 && rect.top <= 240) {
+                setActiveHash(s);
+                break;
+              }
+            }
+          }
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+      }, []);
+
+      const scrollTo = (id) => {
+        const el = document.getElementById(id);
+        if(el) {
+          const y = el.getBoundingClientRect().top + window.scrollY - 100;
+          window.scrollTo({top: y, behavior: 'smooth'});
+        }
+      };
+
+      const AnchorTabs = () => (
+        <div style={{ position: 'sticky', top: 20, zIndex: 50, display: 'flex', justifyContent: 'center', margin: '80px 0 60px' }}>
+          <div style={{ background: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(16px)', borderRadius: 20, padding: 6, display: 'flex', gap: 6, border: '1px solid rgba(229,231,235,0.7)', boxShadow: '0 4px 16px rgba(0,0,0,0.06)' }}>
+             {[ 
+               { id: 'actions', label: 'Actions', count: 5 },
+               { id: 'monitor', label: 'Monitor', count: 4 },
+               { id: 'opportunities', label: 'Opportunities', count: 3 },
+               { id: 'insights', label: 'Insights', count: 3 }
+             ].map(t => (
+               <button key={t.id} onClick={() => scrollTo(t.id)} style={{ padding: '8px 18px', borderRadius: 14, background: activeHash === t.id ? '#18181B' : 'transparent', color: activeHash === t.id ? '#FFF' : '#6B7280', fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: 6 }}>
+                 {t.label} <span style={{ opacity: activeHash === t.id ? 0.9 : 0.6, fontSize: 11 }}>({t.count})</span>
+               </button>
+             ))}
+          </div>
+        </div>
+      );
+
+      return (
+        <div style={{ maxWidth: 1040, margin: '0 auto', paddingBottom: 100, width: '100%' }}>
+           {/* HEADER (Circular AI Logo & Prompt Bar) */}
+           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 40 }}>
+             <div style={{ width: 64, height: 64, borderRadius: '50%', background: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', border: '1px solid #F3F4F6', marginBottom: 32 }}>
+                <AILogo />
+             </div>
+             {/* PROMPT BAR */}
+             <div style={{ width: '100%', maxWidth: 760, position: 'relative' }}>
+               <div style={{ position: 'relative', zIndex: 1, borderRadius: 16, background: "#FFF", border: promptVal.length > 0 ? "1.5px solid rgba(74,124,247,.35)" : "1.5px solid #E5E7EB", boxShadow: promptVal.length > 0 ? "0 4px 24px rgba(74,124,247,.12), 0 2px 8px rgba(0,0,0,.02)" : "0 8px 32px rgba(0,0,0,0.03)", transition: "all .4s ease" }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '16px 20px' }}>
+                    <textarea 
+                      value={promptVal} rows={1}
+                      onChange={e => setPromptVal(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) e.preventDefault(); }}
+                      placeholder="Ask Juniper to handle a task or lookup data..." 
+                      style={{ flex: 1, border: 'none', outline: 'none', background: 'transparent', fontSize: 16, fontWeight: 500, color: '#18181B', fontFamily: 'inherit', resize: 'none', overflow: 'hidden', lineHeight: '24px', height: 24, minHeight: 24, maxHeight: 120, padding: 0, margin: 0 }} 
+                    />
+                    <button disabled={promptVal.length === 0} style={{ width: 36, height: 36, borderRadius: 10, border: 'none', flexShrink: 0, background: promptVal.length > 0 ? aiGrad : '#F3F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .2s' }}>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={promptVal.length > 0 ? '#FFF' : '#C0C0C0'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="M12 5l7 7-7 7" /></svg>
+                    </button>
+                  </div>
+               </div>
+               
+               {/* SUGGESTION PILLS */}
+               <div style={{ display: 'flex', gap: 8, marginTop: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
+                 {["Find stalled deals over 30 days", "Send email update to Ross", "Check service SLA risks"].map((ch, ci) => (
+                   <button key={ci} onClick={() => setPromptVal(ch)} style={{ display: "flex", alignItems: "center", gap: 5, padding: "6px 16px", borderRadius: 20, background: "rgba(255,255,255,0.6)", border: "1px solid #E5E7EB", fontSize: 13, fontWeight: 600, color: "#4B5563", cursor: "pointer", fontFamily: 'inherit', transition: 'background 0.2s, border-color 0.2s' }}
+                     onMouseEnter={e => { e.currentTarget.style.background = '#FFF'; e.currentTarget.style.borderColor = '#D1D5DB'; }}
+                     onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.6)'; e.currentTarget.style.borderColor = '#E5E7EB'; }}>
+                     {ch}
+                   </button>
+                 ))}
+               </div>
+             </div>
+           </div>
+
+           <AnchorTabs />
+
+           {/* CONTENT SECTIONS */}
+           <div style={{ display: 'flex', flexDirection: 'column', gap: 64, maxWidth: 840, margin: '0 auto' }}>
+              
+              {/* ACTIONS */}
+              <section id="actions" style={{ scrollMarginTop: 100 }}>
+                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 20 }}>
+                    <h2 style={{ fontSize: 18, fontWeight: 700, color: '#18181B', margin: 0, letterSpacing: '-0.01em' }}>Actions</h2>
+                    {/* eslint-disable-next-line */}
+                    <a href="#actions" style={{ fontSize: 14, fontWeight: 600, color: '#6B7280', textDecoration: 'none' }}
+                      onMouseEnter={e => e.currentTarget.style.color = '#18181B'}
+                      onMouseLeave={e => e.currentTarget.style.color = '#6B7280'}>View all (5)</a>
+                 </div>
+                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                   {[
+                     { title: "Approve trade exception for Rodriguez deal", desc: "Requires DP sign-off. Deal #8839 is pending since 11:00 AM.", status: "Critical" },
+                     { title: "Submit stip details for Bank of America", desc: "Remaining documents cleared. Finance queue blocked.", status: "Pending" }
+                   ].map((wk, i) => (
+                     <div key={i} style={{ padding: '14px 18px', background: '#FFF', borderRadius: 12, border: '1px solid #E5E7EB', display: 'flex', alignItems: 'center', gap: 16, cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}
+                       onMouseEnter={e => { e.currentTarget.style.borderColor='#D1D5DB'; e.currentTarget.style.boxShadow='0 4px 12px rgba(0,0,0,0.04)'; e.currentTarget.style.transform='translateY(-1px)' }}
+                       onMouseLeave={e => { e.currentTarget.style.borderColor='#E5E7EB'; e.currentTarget.style.boxShadow='0 1px 3px rgba(0,0,0,0.02)'; e.currentTarget.style.transform='translateY(0)' }}>
+                       <div style={{ flex: 1, minWidth: 0 }}>
+                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                           {wk.status === 'Critical' && <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#EF4444' }} />}
+                           <div style={{ fontSize: 14, fontWeight: 600, color: '#18181B' }}>{wk.title}</div>
+                         </div>
+                         <div style={{ fontSize: 12, fontWeight: 500, color: '#6B7280' }}>{wk.desc}</div>
+                       </div>
+                       <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+                         <button style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '7px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap', border: '1px solid #DBEAFE', background: '#EFF6FF', color: '#1D4ED8', transition: 'background 0.2s' }}
+                           onMouseEnter={e => e.currentTarget.style.background = '#DBEAFE'} onMouseLeave={e => e.currentTarget.style.background = '#EFF6FF'}>
+                           <svg width="10" height="10" viewBox="0 0 10 10" fill="#2563EB"><path d="M5 0L10 5L5 10L0 5Z" /></svg>
+                           AI Suggests
+                         </button>
+                         <button style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '7px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap', border: '1px solid #E5E7EB', background: '#FFF', color: '#374151', transition: 'background 0.2s' }}
+                           onMouseEnter={e => e.currentTarget.style.background = '#F9FAFB'} onMouseLeave={e => e.currentTarget.style.background = '#FFF'}>
+                           Get context
+                         </button>
+                       </div>
+                     </div>
+                   ))}
+                 </div>
+              </section>
+
+              {/* MONITOR */}
+              <section id="monitor" style={{ scrollMarginTop: 100 }}>
+                 <h2 style={{ fontSize: 18, fontWeight: 700, color: '#18181B', margin: '0 0 20px', letterSpacing: '-0.01em' }}>Monitor</h2>
+                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                    
+                    {/* Appointments Widget */}
+                    <div style={{ padding: '16px 20px', background: '#FFF', borderRadius: 16, border: '1px solid #E5E7EB', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+                        <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                          <span style={{ fontSize: 14, fontWeight: 700, color: '#374151' }}>Appointments</span>
+                          <span style={{ fontSize: 12, fontWeight: 500, color: '#9CA3AF' }}>12 today</span>
+                        </div>
+                        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                          <div style={{ display: 'flex', gap: 2, background: '#F3F4F6', borderRadius: 6, padding: 3 }}>
+                            <span style={{ padding: "4px 10px", borderRadius: 4, background: "#FFF", color: "#18181B", fontSize: 11, fontWeight: 700, boxShadow: "0 1px 3px rgba(0,0,0,.08)" }}>All</span>
+                            <span style={{ padding: "4px 10px", borderRadius: 4, background: "transparent", color: "#6B7280", fontSize: 11, fontWeight: 600 }}>Mine</span>
+                          </div>
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{transform: 'rotate(180deg)'}}><path d="M6 9l6 6 6-6"/></svg>
+                        </div>
+                      </div>
+                      <div style={{ display: "flex", gap: 12, alignItems: "flex-start", marginBottom: 12 }}>
+                        <div style={{ width: 44, flexShrink: 0, marginTop: 4 }}>
+                          <div style={{ fontSize: 13, fontWeight: 800, color: "#18181B", lineHeight: 1 }}>9:30</div>
+                          <div style={{ fontSize: 10, fontWeight: 700, color: "#C0C0C0", marginTop: 4 }}>AM</div>
+                        </div>
+                        <div style={{ flex: 1, display: "flex", alignItems: "stretch" }}>
+                          <div style={{ width: 3, borderRadius: 2, background: "#D97706", flexShrink: 0 }} />
+                          <div style={{ flex: 1, padding: "10px 14px", borderRadius: "0 8px 8px 0", background: `rgba(217, 119, 6, 0.05)` }}>
+                            <div style={{ display: "flex", justifyContent: "space-between", gap: 6 }}>
+                              <span style={{ fontSize: 13, fontWeight: 700, color: "#18181B" }}>Michael Davis</span>
+                              <span style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF" }}>Walker</span>
+                            </div>
+                            <div style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", marginTop: 4 }}>2024 Tacoma · <span style={{ color: "#D97706", fontWeight: 700 }}>Test Drive</span></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+                        <div style={{ width: 44, flexShrink: 0, marginTop: 4 }}>
+                          <div style={{ fontSize: 13, fontWeight: 800, color: "#18181B", lineHeight: 1 }}>11:00</div>
+                          <div style={{ fontSize: 10, fontWeight: 700, color: "#C0C0C0", marginTop: 4 }}>AM</div>
+                        </div>
+                        <div style={{ flex: 1, display: "flex", alignItems: "stretch" }}>
+                          <div style={{ width: 3, borderRadius: 2, background: "#059669", flexShrink: 0 }} />
+                          <div style={{ flex: 1, padding: "10px 14px", borderRadius: "0 8px 8px 0", background: `rgba(5, 150, 105, 0.05)` }}>
+                            <div style={{ display: "flex", justifyContent: "space-between", gap: 6 }}>
+                              <span style={{ fontSize: 13, fontWeight: 700, color: "#18181B" }}>Sarah Jenkins</span>
+                              <span style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF" }}>Patel</span>
+                            </div>
+                            <div style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", marginTop: 4 }}>2022 RAV4 XLE · <span style={{ color: "#059669", fontWeight: 700 }}>Delivery</span></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div style={{ paddingTop: 12, borderTop: "1px solid #F5F5F5", marginTop: 16 }}>
+                        <span style={{ fontSize: 12, fontWeight: 600, color: "#2563EB", cursor: "pointer" }}>View all 12 appointments →</span>
+                      </div>
+                    </div>
+
+                    {/* Inventory Health Widget */}
+                    <div style={{ padding: '16px 20px', background: '#FFF', borderRadius: 16, border: '1px solid #E5E7EB', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: '#374151' }}>Inventory Health</div>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{transform: 'rotate(180deg)'}}><path d="M6 9l6 6 6-6"/></svg>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 20 }}>
+                        <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                          <span style={{ fontSize: 32, fontWeight: 800, color: '#18181B', letterSpacing: '-0.03em' }}>247</span>
+                          <span style={{ fontSize: 13, fontWeight: 600, color: '#9CA3AF' }}>vehicles</span>
+                        </div>
+                        <span style={{ padding: "4px 10px", borderRadius: 12, background: "#EFF6FF", color: "#1D4ED8", fontSize: 11, fontWeight: 700 }}>+18 in transit</span>
+                      </div>
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "0 1px" }}>
+                        {[
+                          { label: "0–30d", value: "142", pct: "58%", delta: "+12", color: "#10B981" },
+                          { label: "31–45d", value: "61", pct: "25%", delta: "+3", color: "#F59E0B" },
+                          { label: "46–60d", value: "30", pct: "12%", delta: "-2", color: "#F97316" },
+                          { label: "60d+", value: "14", pct: "5%", delta: "+1", color: "#DC2626" },
+                        ].map((col, ci) => (
+                          <div key={ci} style={{ padding: "0 8px", borderRight: ci < 3 ? "1px solid #F0F0F0" : "none" }}>
+                            <div style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF", marginBottom: 6 }}>{col.label}</div>
+                            <div style={{ fontSize: 20, fontWeight: 800, color: "#18181B", letterSpacing: "-.02em", marginBottom: 2 }}>{col.value}</div>
+                            <div style={{ fontSize: 12, fontWeight: 700, color: col.color }}>{col.pct}</div>
+                          </div>
+                        ))}
+                      </div>
+                      <div style={{ display: "flex", borderRadius: 4, overflow: "hidden", height: 6, marginTop: 16, gap: 2 }}>
+                        {[{ pct: 58, c: "#10B981" }, { pct: 25, c: "#F59E0B" }, { pct: 12, c: "#F97316" }, { pct: 5, c: "#DC2626" }].map((s, i) => (
+                          <div key={i} style={{ width: `${s.pct}%`, background: s.c, borderRadius: i === 0 ? "4px 0 0 4px" : i === 3 ? "0 4px 4px 0" : 0 }} />
+                        ))}
+                      </div>
+                      <div style={{ marginTop: 16, paddingTop: 12, borderTop: "1px solid #F5F5F5", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span style={{ fontSize: 12, fontWeight: 600, color: "#DC2626" }}>⚠ 4 units aging 60d+</span>
+                        <span style={{ fontSize: 12, fontWeight: 600, color: "#2563EB", cursor: "pointer" }}>View aged inventory →</span>
+                      </div>
+                    </div>
+
+                    {/* Overnight Leads Widget */}
+                    <div style={{ padding: '16px 20px', background: '#FFF', borderRadius: 16, border: '1px solid #E5E7EB', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+                        <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                          <span style={{ fontSize: 14, fontWeight: 700, color: '#374151' }}>Overnight Leads</span>
+                          <span style={{ fontSize: 12, fontWeight: 500, color: '#9CA3AF' }}>5</span>
+                        </div>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{transform: 'rotate(180deg)'}}><path d="M6 9l6 6 6-6"/></svg>
+                      </div>
+                      <div style={{ display: "flex", flexDirection: "column" }}>
+                        <div style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "12px 0", borderBottom: "1px solid #F5F5F5" }}>
+                          <div style={{ width: 36, height: 36, borderRadius: "50%", background: `rgba(220, 38, 38, 0.1)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, color: '#DC2626' }}>BF</div>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 4 }}>
+                              <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B" }}>Brian Foster</span>
+                              <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "2px 6px", borderRadius: 4, background: "#FEF2F2", fontSize: 10, fontWeight: 700, color: "#DC2626" }}>
+                                <span style={{ width: 4, height: 4, borderRadius: "50%", background: "#DC2626" }} />No contact
+                              </span>
+                            </div>
+                            <div style={{ fontSize: 12, fontWeight: 500, color: "#6B7280" }}>2024 Accord Hybrid · TrueCar · 10h ago</div>
+                          </div>
+                          <span style={{ padding: "4px 12px", borderRadius: 6, border: "1px solid #E5E7EB", color: '#374151', fontSize: 12, fontWeight: 600 }}>Assign</span>
+                        </div>
+                        <div style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "12px 0", borderBottom: "1px solid #F5F5F5" }}>
+                          <div style={{ width: 36, height: 36, borderRadius: "50%", background: `rgba(37, 99, 235, 0.1)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, color: '#2563EB' }}>JL</div>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 4 }}>
+                              <span style={{ fontSize: 14, fontWeight: 700, color: "#18181B" }}>Jennifer Lee</span>
+                            </div>
+                            <div style={{ fontSize: 12, fontWeight: 500, color: "#6B7280" }}>2021 Civic EX · Cars.com · 7h ago</div>
+                          </div>
+                          <span style={{ fontSize: 10, fontWeight: 700, color: "#15803D", background: "#F0FDF4", padding: "4px 8px", borderRadius: 6 }}>Contacted</span>
+                        </div>
+                        <div style={{ paddingTop: 12, marginTop: 4 }}>
+                          <span style={{ fontSize: 12, fontWeight: 600, color: "#2563EB", cursor: "pointer" }}>View all 5 leads →</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Finance Queue Widget */}
+                    <div style={{ padding: '16px 20px', background: '#FFF', borderRadius: 16, border: '1px solid #E5E7EB', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+                        <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                          <span style={{ fontSize: 14, fontWeight: 700, color: '#374151' }}>Finance Queue</span>
+                          <span style={{ fontSize: 12, fontWeight: 500, color: '#9CA3AF' }}>4</span>
+                        </div>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{transform: 'rotate(180deg)'}}><path d="M6 9l6 6 6-6"/></svg>
+                      </div>
+                      <div style={{ display: "flex", flexDirection: "column" }}>
+                        <div style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "12px 0", borderBottom: "1px solid #F5F5F5" }}>
+                          <div style={{ width: 36, height: 36, borderRadius: "50%", background: `rgba(217, 119, 6, 0.1)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, color: '#D97706' }}>DT</div>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: 14, fontWeight: 700, color: "#18181B", marginBottom: 2 }}>Daniel Thompson</div>
+                            <div style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", marginBottom: 6 }}>2024 CR-V · Chase Auto</div>
+                            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#D97706" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>
+                              <span style={{ fontSize: 12, fontWeight: 600, color: "#D97706" }}>Needs: Proof of Income</span>
+                            </div>
+                          </div>
+                          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
+                            <span style={{ padding: "4px 8px", borderRadius: 6, background: '#FFFBEB', color: '#B45309', fontSize: 11, fontWeight: 700 }}>Stips needed</span>
+                            <span style={{ fontSize: 13, fontWeight: 700, color: "#18181B" }}>$3,450</span>
+                          </div>
+                        </div>
+                        <div style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "12px 0", borderBottom: "1px solid #F5F5F5" }}>
+                          <div style={{ width: 36, height: 36, borderRadius: "50%", background: `rgba(124, 58, 237, 0.1)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, color: '#7C3AED' }}>JP</div>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: 14, fontWeight: 700, color: "#18181B", marginBottom: 2 }}>Jennifer Patel</div>
+                            <div style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", marginBottom: 6 }}>2022 Pilot · Capital One</div>
+                          </div>
+                          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
+                            <span style={{ padding: "4px 8px", borderRadius: 6, background: '#F5F3FF', color: '#7C3AED', fontSize: 11, fontWeight: 700 }}>Conditional</span>
+                            <span style={{ fontSize: 13, fontWeight: 700, color: "#18181B" }}>$1,820</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                 </div>
+              </section>
+
+              {/* OPPORTUNITIES */}
+              <section id="opportunities" style={{ scrollMarginTop: 100 }}>
+                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 20 }}>
+                    <h2 style={{ fontSize: 18, fontWeight: 700, color: '#18181B', margin: 0, letterSpacing: '-0.01em' }}>Opportunities</h2>
+                    <a href="#opportunities" style={{ fontSize: 14, fontWeight: 600, color: '#6B7280', textDecoration: 'none' }}
+                      onMouseEnter={e => e.currentTarget.style.color = '#18181B'}
+                      onMouseLeave={e => e.currentTarget.style.color = '#6B7280'}>View all (3)</a>
+                 </div>
+                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                   {[
+                     { title: "Price match requested on Accord EX", desc: "Customer offered $29k. Gross is strong. Ready to deal.", tag: "$2.1k Gross" },
+                     { title: "Service Lane Conversion", desc: "RO #4092 needs major engine work. Owner interested in upgrading.", tag: "Equity +" }
+                   ].map((wk, i) => (
+                     <div key={i} style={{ padding: '14px 18px', background: '#FFF', borderRadius: 12, border: '1px solid #E5E7EB', display: 'flex', alignItems: 'center', gap: 16, cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}
+                       onMouseEnter={e => { e.currentTarget.style.borderColor='#D1D5DB'; e.currentTarget.style.boxShadow='0 4px 12px rgba(0,0,0,0.04)'; e.currentTarget.style.transform='translateY(-1px)' }}
+                       onMouseLeave={e => { e.currentTarget.style.borderColor='#E5E7EB'; e.currentTarget.style.boxShadow='0 1px 3px rgba(0,0,0,0.02)'; e.currentTarget.style.transform='translateY(0)' }}>
+                       <div style={{ flex: 1, minWidth: 0 }}>
+                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                           <div style={{ fontSize: 14, fontWeight: 600, color: '#18181B' }}>{wk.title}</div>
+                           <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', background: '#ECFDF5', color: '#059669', border: '1px solid #A7F3D0', borderRadius: 12 }}>{wk.tag}</span>
+                         </div>
+                         <div style={{ fontSize: 12, fontWeight: 500, color: '#6B7280' }}>{wk.desc}</div>
+                       </div>
+                       <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+                         <button style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '7px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap', border: '1px solid #DBEAFE', background: '#EFF6FF', color: '#1D4ED8', transition: 'background 0.2s' }}
+                           onMouseEnter={e => e.currentTarget.style.background = '#DBEAFE'} onMouseLeave={e => e.currentTarget.style.background = '#EFF6FF'}>
+                           <svg width="10" height="10" viewBox="0 0 10 10" fill="#2563EB"><path d="M5 0L10 5L5 10L0 5Z" /></svg>
+                           AI Suggests
+                         </button>
+                         <button style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '7px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap', border: '1px solid #E5E7EB', background: '#FFF', color: '#374151', transition: 'background 0.2s' }}
+                           onMouseEnter={e => e.currentTarget.style.background = '#F9FAFB'} onMouseLeave={e => e.currentTarget.style.background = '#FFF'}>
+                           Get context
+                         </button>
+                       </div>
+                     </div>
+                   ))}
+                 </div>
+              </section>
+
+              {/* INSIGHTS */}
+              <section id="insights" style={{ scrollMarginTop: 100 }}>
+                 <h2 style={{ fontSize: 18, fontWeight: 700, color: '#18181B', margin: '0 0 20px', letterSpacing: '-0.01em' }}>Today's insights</h2>
+                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
+                    <div style={{ padding: 24, background: '#FFF', borderRadius: 20, border: '1px solid #E5E7EB', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+                       <div style={{ width: 44, height: 44, borderRadius: 12, background: '#EFF6FF', color: '#2563EB', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                       </div>
+                       <div style={{ fontSize: 15, fontWeight: 800, color: '#18181B', marginBottom: 8 }}>Front Gross is up</div>
+                       <div style={{ fontSize: 14, color: '#6B7280', lineHeight: 1.5 }}>Averaging $200 higher front gross this week than usual.</div>
+                    </div>
+                    <div style={{ padding: 24, background: '#FFF', borderRadius: 20, border: '1px solid #E5E7EB', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+                       <div style={{ width: 44, height: 44, borderRadius: 12, background: '#FEF2F2', color: '#DC2626', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                       </div>
+                       <div style={{ fontSize: 15, fontWeight: 800, color: '#18181B', marginBottom: 8 }}>High Turnaround</div>
+                       <div style={{ fontSize: 14, color: '#6B7280', lineHeight: 1.5 }}>Service wait times are exceeding 45 minutes right now.</div>
+                    </div>
+                    <div style={{ padding: 24, background: '#FFF', borderRadius: 20, border: '1px solid #E5E7EB', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+                       <div style={{ width: 44, height: 44, borderRadius: 12, background: '#F0FDF4', color: '#16A34A', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                       </div>
+                       <div style={{ fontSize: 15, fontWeight: 800, color: '#18181B', marginBottom: 8 }}>Contract Rate Peak</div>
+                       <div style={{ fontSize: 14, color: '#6B7280', lineHeight: 1.5 }}>Finance contracting is perfectly paced today. No backlog.</div>
+                    </div>
+                 </div>
+              </section>
+           </div>
+        </div>
+      );
+    }
+
+    function App() {
+      const [homeTab, setHomeTab] = useState(1);
+      const [loaded, setLoaded] = useState(false);
+      useEffect(() => { setTimeout(() => setLoaded(true), 30); }, []);
+
+      return (
+        <div style={{
+          minHeight: "100vh", fontFamily: "'Cabinet Grotesk', sans-serif", color: "#18181B", 
+          opacity: loaded ? 1 : 0, transition: "opacity .4s"
+        }}>
+          {/* ── STICKY HEADER ── */}
+          <div style={{ position: "sticky", top: 0, zIndex: 50, background: "rgba(243,242,239,.88)", backdropFilter: "blur(14px)", borderBottom: "1px solid #E5E7EB" }}>
+            <div style={{ padding: "0 24px", height: 52, display: "flex", alignItems: "center", justifyContent: "space-between", maxWidth: 1040, margin: '0 auto' }}>
+              <div style={{ width: 36 }}></div>
+              <div style={{ display: "flex", gap: 2, background: "#E5E7EB", borderRadius: 7, padding: 3 }}>
+                {[1, 2, 3, 4, 5].map(n => (
+                  <button key={n} onClick={() => setHomeTab(n)} style={{
+                    padding: "4px 11px", borderRadius: 5, border: "none", fontFamily: "inherit",
+                    fontSize: 12, fontWeight: homeTab === n ? 700 : 600, cursor: "pointer",
+                    background: homeTab === n ? "#18181B" : "transparent",
+                    color: homeTab === n ? "#FFF" : "#6B7280"
+                  }}>Home {n}</button>
+                ))}
+              </div>
+              <div style={{ width: 36 }}></div>
+            </div>
+          </div>
+
+          <main style={{ padding: "40px 24px", margin: "0 auto", display: 'flex', justifyContent: 'center', width: '100%' }}>
+            {homeTab === 1 && <Tab1 />}
+            {homeTab === 2 && <Tab2 />}
+            {homeTab === 3 && <Tab3 />}
+            {homeTab > 3 && (
+              <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9CA3AF', fontSize: 18, border: '1px dashed #D1D5DB', borderRadius: 12, width: '100%', maxWidth: 1040, background: '#FFF' }}>
+                Home {homeTab} Content (Empty)
+              </div>
+            )}
+          </main>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
