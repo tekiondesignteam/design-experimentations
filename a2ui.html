@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A2UI Component Showcase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:    #0E0C0A;
+  --card:  #1A1714;
+  --card2: #221E1A;
+  --bdr:   rgba(255,255,255,0.07);
+  --amber: #E8A838;
+  --coral: #FF7F5C;
+  --green: #4ADE80;
+  --blue:  #60A5FA;
+  --vio:   #A78BFA;
+  --red:   #F87171;
+  --text:  #F0EBE4;
+  --mut:   #7A7168;
+  --faint: rgba(255,255,255,0.03);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:135%;}
+html,body{width:100vw;height:100vh;overflow:hidden;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;align-items:center;}
+
+/* ── HEADER ─────────────────────────── */
+.hdr{width:100%;max-width:960px;padding:1.2rem 0 0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.hdr-l{display:flex;align-items:center;gap:.65rem;}
+.hdr-ico{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--amber),var(--coral));display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:#1A1008;}
+.hdr-name{font-family:'Playfair Display',serif;font-size:1rem;font-weight:800;}
+.hdr-sub{font-size:.65rem;color:var(--mut);font-family:'JetBrains Mono',monospace;margin-top:.06rem;}
+.pill-live{display:flex;align-items:center;gap:.4rem;background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.18);padding:.25rem .65rem;border-radius:100px;font-size:.62rem;color:var(--green);font-family:'JetBrains Mono',monospace;}
+.live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+.sep{width:100%;max-width:960px;height:1px;background:var(--bdr);margin:.9rem 0 0;flex-shrink:0;}
+
+/* ── CHAT ───────────────────────────── */
+.chat{width:100%;max-width:960px;flex:1;overflow-y:auto;padding:1.5rem 0 1rem;display:flex;flex-direction:column;gap:2rem;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.06) transparent;}
+
+/* ── MESSAGE ────────────────────────── */
+.mrow{display:flex;gap:.75rem;align-items:flex-start;opacity:0;transform:translateY(10px);transition:opacity .38s,transform .38s;}
+.mrow.show{opacity:1;transform:translateY(0);}
+.mav{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--amber),var(--coral));display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#1A1008;flex-shrink:0;margin-top:2px;}
+.mbody{flex:1;min-width:0;}
+.mmeta{display:flex;align-items:baseline;gap:.5rem;margin-bottom:.35rem;}
+.mname{font-size:.78rem;font-weight:600;color:var(--amber);}
+.mtime{font-size:.6rem;color:var(--mut);font-family:'JetBrains Mono',monospace;}
+.mtext{font-size:.91rem;line-height:1.65;color:rgba(240,235,228,.72);max-width:580px;}
+
+/* ── TYPING ─────────────────────────── */
+.trow{display:flex;gap:.75rem;align-items:flex-start;opacity:0;transition:opacity .25s;}
+.trow.show{opacity:1;}
+.tbbl{background:var(--faint);border:1px solid var(--bdr);border-radius:10px;padding:.5rem .75rem;display:flex;gap:4px;align-items:center;margin-top:2px;}
+.td{width:5px;height:5px;border-radius:50%;background:var(--mut);animation:bnc 1s infinite;}
+.td:nth-child(2){animation-delay:.15s;} .td:nth-child(3){animation-delay:.3s;}
+
+/* ── WIDGET ROW ─────────────────────── */
+.wrow{display:flex;gap:.75rem;align-items:flex-start;opacity:0;transform:translateY(8px) scale(.985);transition:opacity .42s,transform .42s cubic-bezier(.34,1.25,.64,1);}
+.wrow.show{opacity:1;transform:translateY(0) scale(1);}
+.wspc{width:30px;flex-shrink:0;}
+.wwrap{flex:1;min-width:0;}
+
+/* ── CHIPS ──────────────────────────── */
+.crow{display:flex;gap:.4rem;flex-wrap:wrap;padding-left:1.85rem;opacity:0;transform:translateY(6px);transition:opacity .3s ease .05s,transform .3s ease .05s;}
+.crow.show{opacity:1;transform:translateY(0);}
+.chip{background:rgba(232,168,56,.07);border:1px solid rgba(232,168,56,.22);color:var(--amber);padding:.3rem .72rem;border-radius:100px;font-size:.74rem;font-weight:500;cursor:pointer;transition:all .18s;font-family:'DM Sans',sans-serif;white-space:nowrap;}
+.chip:hover:not(.used){background:rgba(232,168,56,.16);border-color:var(--amber);color:#fff;}
+.chip.used{opacity:.25;cursor:default;pointer-events:none;}
+
+/* ── FOOTER ─────────────────────────── */
+.ftr{width:100%;max-width:960px;padding:.7rem 0 1.2rem;border-top:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.ftr-l{font-size:.65rem;color:var(--mut);font-family:'JetBrains Mono',monospace;}
+.ftr-r{display:flex;align-items:center;gap:.4rem;font-size:.62rem;color:var(--mut);font-family:'JetBrains Mono',monospace;}
+.ftag{background:rgba(232,168,56,.09);color:var(--amber);border:1px solid rgba(232,168,56,.18);padding:.1rem .42rem;border-radius:4px;font-size:.6rem;}
+
+/* ═══════════════ SHARED ════════════════ */
+.wcard{background:var(--card);border:1px solid var(--bdr);border-radius:16px;overflow:hidden;}
+.whdr{padding:1.1rem 1.4rem .9rem;border-bottom:1px solid var(--bdr);}
+.wh-t{font-family:'Playfair Display',serif;font-size:1rem;font-weight:800;}
+.wh-s{font-size:.76rem;color:var(--mut);margin-top:.22rem;}
+.ai-trigger{display:flex;align-items:flex-start;gap:.5rem;font-size:.74rem;color:var(--mut);margin-bottom:.85rem;padding:.55rem .75rem;background:rgba(255,255,255,.025);border-left:2px solid rgba(232,168,56,.3);border-radius:0 7px 7px 0;line-height:1.55;}
+.ai-trigger em{font-style:normal;color:rgba(240,235,228,.6);}
+
+/* ═══════════════ W1 HERO ════════════════ */
+.w-hero{background:var(--card);border:1px solid rgba(232,168,56,.2);border-radius:16px;overflow:hidden;}
+.hero-top{padding:1.5rem 1.75rem 1.25rem;background:linear-gradient(135deg,rgba(232,168,56,.1),rgba(255,127,92,.05));border-bottom:1px solid var(--bdr);position:relative;overflow:hidden;}
+.hero-glow{position:absolute;right:-20px;top:-20px;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(232,168,56,.18),transparent 70%);}
+.hero-eye{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.2em;color:var(--amber);text-transform:uppercase;margin-bottom:.6rem;}
+.hero-title{font-family:'Playfair Display',serif;font-size:2.1rem;font-weight:900;line-height:1.08;letter-spacing:-.02em;margin-bottom:.55rem;}
+.hero-title em{font-style:normal;color:var(--amber);}
+.hero-sub{font-size:.9rem;color:rgba(240,235,228,.5);line-height:1.65;max-width:480px;}
+.hero-stats{padding:1rem 1.75rem;display:flex;align-items:center;gap:1.5rem;}
+.hs{display:flex;flex-direction:column;gap:.06rem;}
+.hs-v{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:800;line-height:1;}
+.hs-l{font-size:.61rem;color:var(--mut);text-transform:uppercase;letter-spacing:.1em;}
+.hs-d{width:1px;height:30px;background:var(--bdr);}
+
+/* ═══════════════ W2 PROBLEM ════════════════ */
+.prob-cols{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bdr);}
+.prob-col{padding:1rem 1.25rem;}
+.prob-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;padding:.18rem .5rem;border-radius:4px;display:inline-flex;align-items:center;gap:.35rem;margin-bottom:.7rem;}
+.pt-bad{background:rgba(248,113,113,.1);color:var(--red);}
+.pt-bad2{background:rgba(248,113,113,.1);color:var(--red);}
+.prob-name{font-family:'Playfair Display',serif;font-size:.92rem;font-weight:800;margin-bottom:.4rem;}
+.prob-desc{font-size:.78rem;color:var(--mut);line-height:1.6;margin-bottom:.7rem;}
+.prob-mock{background:rgba(255,255,255,.03);border:1px solid var(--bdr);border-radius:8px;padding:.6rem .75rem;}
+.pm-bar{height:6px;border-radius:3px;background:rgba(255,255,255,.08);margin-bottom:.35rem;}
+.pm-bar:last-child{margin-bottom:0;}
+.pm-bars{display:flex;flex-direction:column;gap:.25rem;}
+.pm-iframe{background:rgba(255,127,92,.08);border:1px solid rgba(255,127,92,.2);border-radius:6px;padding:.5rem .6rem;}
+.pm-iframe-lbl{font-size:.62rem;color:var(--coral);font-family:'JetBrains Mono',monospace;margin-bottom:.3rem;}
+.pm-iframe-inner{background:rgba(255,255,255,.04);border-radius:4px;padding:.4rem .5rem;}
+.pm-iframe-txt{font-size:.65rem;color:rgba(255,255,255,.3);font-family:'JetBrains Mono',monospace;}
+.prob-bottom{padding:.75rem 1.25rem;border-top:1px solid var(--bdr);font-size:.78rem;color:var(--mut);font-style:italic;text-align:center;}
+
+/* ═══════════════ W3 SOLUTION ════════════════ */
+.sol-body{padding:1.1rem 1.25rem;display:flex;flex-direction:column;gap:1rem;}
+.sol-tagline{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:800;line-height:1.2;}
+.sol-tagline em{font-style:normal;color:var(--amber);}
+.sol-flow{display:flex;align-items:stretch;gap:0;background:var(--bdr);border-radius:10px;overflow:hidden;}
+.sol-step{flex:1;background:var(--card2);padding:.75rem .85rem;text-align:center;}
+.sol-step-ico{font-size:1.2rem;margin-bottom:.3rem;}
+.sol-step-lbl{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);margin-bottom:.2rem;}
+.sol-step-name{font-size:.8rem;font-weight:600;}
+.sol-arrow{display:flex;align-items:center;justify-content:center;width:28px;flex-shrink:0;background:var(--card2);color:var(--mut);font-size:.8rem;}
+.sol-principles{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;}
+.sol-p{background:var(--card2);border:1px solid var(--bdr);border-radius:9px;padding:.7rem .85rem;display:flex;gap:.6rem;align-items:flex-start;}
+.sol-p-ico{font-size:1rem;flex-shrink:0;margin-top:.05rem;}
+.sol-p-lbl{font-size:.82rem;font-weight:600;margin-bottom:.15rem;}
+.sol-p-desc{font-size:.72rem;color:var(--mut);line-height:1.5;}
+
+/* ═══════════════ W4 RECIPE ════════════════ */
+.recipe-body{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bdr);}
+.recipe-col{background:var(--card);padding:1rem 1.25rem;}
+.recipe-role{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;margin-bottom:.5rem;}
+.recipe-title{font-family:'Playfair Display',serif;font-size:.95rem;font-weight:800;margin-bottom:.35rem;}
+.recipe-desc{font-size:.78rem;color:var(--mut);line-height:1.6;margin-bottom:.75rem;}
+.recipe-items{display:flex;flex-direction:column;gap:.3rem;}
+.recipe-item{background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-radius:7px;padding:.38rem .6rem;font-size:.75rem;display:flex;align-items:center;gap:.5rem;}
+.ri-ico{font-size:.85rem;flex-shrink:0;}
+.ri-lbl{flex:1;color:rgba(240,235,228,.7);}
+.ri-sub{font-size:.65rem;color:var(--mut);}
+.curator-tag{display:inline-block;background:rgba(232,168,56,.1);border:1px solid rgba(232,168,56,.25);color:var(--amber);font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;padding:.15rem .5rem;border-radius:100px;margin-bottom:.5rem;}
+.curator-items{display:flex;flex-direction:column;gap:.3rem;}
+.ci-item{background:rgba(232,168,56,.05);border:1px solid rgba(232,168,56,.15);border-radius:7px;padding:.38rem .6rem;font-size:.75rem;display:flex;align-items:center;gap:.5rem;}
+.ci-item .ri-lbl{color:rgba(240,235,228,.85);}
+.recipe-footer{padding:.75rem 1.25rem;border-top:1px solid var(--bdr);background:var(--card);}
+.recipe-footer-txt{font-size:.78rem;color:var(--mut);line-height:1.6;font-style:italic;}
+.recipe-footer-txt strong{color:var(--text);font-style:normal;}
+
+/* ═══════════════ W5 EXAMPLES ════════════════ */
+.gtabs{display:flex;border-bottom:1px solid var(--bdr);padding:0 1.25rem;overflow-x:auto;gap:0;}
+.gtab{padding:.65rem .85rem;font-size:.74rem;cursor:pointer;color:var(--mut);border-bottom:2px solid transparent;white-space:nowrap;transition:all .18s;font-weight:500;}
+.gtab:hover{color:var(--text);}
+.gtab.on{color:var(--amber);border-bottom-color:var(--amber);}
+.gpanel{display:none;padding:1.25rem 1.4rem;}
+.gpanel.on{display:block;}
+
+/* ── EX SHARED ── */
+input[type=range]{width:100%;accent-color:var(--amber);cursor:pointer;}
+
+/* ── EX 1: Deal Desk ── */
+.deal-wrap{background:var(--card2);border:1px solid rgba(232,168,56,.2);border-radius:14px;overflow:hidden;}
+.deal-top{padding:1.25rem 1.25rem 1rem;background:linear-gradient(135deg,rgba(232,168,56,.08),rgba(255,127,92,.04));border-bottom:1px solid var(--bdr);}
+.deal-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.7rem;}
+.deal-name{font-weight:700;font-size:.92rem;}
+.deal-badges{display:flex;gap:.35rem;}
+.deal-badge{padding:.14rem .45rem;border-radius:100px;font-size:.6rem;font-weight:600;}
+.db-green{background:rgba(74,222,128,.1);color:var(--green);border:1px solid rgba(74,222,128,.25);}
+.db-amber{background:rgba(232,168,56,.12);color:var(--amber);border:1px solid rgba(232,168,56,.3);}
+.deal-price-row{display:flex;align-items:baseline;gap:.55rem;margin-bottom:.2rem;}
+.deal-num{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:900;line-height:1;color:var(--amber);}
+.deal-num-sub{font-size:.75rem;color:var(--mut);}
+.deal-savings{display:inline-flex;align-items:center;gap:.3rem;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);color:var(--green);font-size:.65rem;font-weight:600;padding:.15rem .5rem;border-radius:100px;margin-bottom:.9rem;}
+.deal-terms{display:flex;gap:.35rem;margin-bottom:.9rem;}
+.deal-term{flex:1;background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-radius:6px;padding:.42rem .45rem;text-align:center;cursor:pointer;font-size:.7rem;font-weight:500;transition:all .15s;color:var(--mut);}
+.deal-term:hover,.deal-term.on{border-color:var(--amber);background:rgba(232,168,56,.07);color:var(--text);}
+.sl-row{display:flex;justify-content:space-between;font-size:.68rem;color:var(--mut);margin-bottom:.3rem;}
+.deal-bottom{padding:1rem 1.25rem 1.1rem;}
+.deal-breakdown{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-bottom:.9rem;}
+.dbb{background:rgba(255,255,255,.04);border-radius:8px;padding:.6rem .7rem;}
+.dbb-l{font-size:.62rem;color:var(--mut);margin-bottom:.2rem;}
+.dbb-v{font-size:.8rem;font-weight:600;}
+.deal-btns{display:flex;gap:.45rem;}
+.db{flex:1;padding:.56rem;border-radius:8px;border:none;font-size:.74rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .18s;}
+.db-p{background:var(--amber);color:#1A1008;} .db-p:hover{opacity:.85;}
+.db-s{background:rgba(255,255,255,.07);color:rgba(255,255,255,.6);} .db-s:hover{background:rgba(255,255,255,.12);}
+
+/* ── EX 2: Trade-In ── */
+.ti-wrap{background:var(--card2);border:1px solid var(--bdr);border-radius:14px;overflow:hidden;}
+.ti-vehicle{padding:1rem 1.1rem;border-bottom:1px solid var(--bdr);display:flex;justify-content:space-between;align-items:flex-start;}
+.ti-v-name{font-weight:700;font-size:.88rem;}
+.ti-v-spec{font-size:.67rem;color:var(--mut);margin-top:.1rem;}
+.ti-v-badge{background:rgba(74,222,128,.1);color:var(--green);border:1px solid rgba(74,222,128,.22);padding:.14rem .5rem;border-radius:100px;font-size:.6rem;font-weight:600;white-space:nowrap;margin-top:.15rem;}
+.ti-factors{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bdr);border-bottom:1px solid var(--bdr);}
+.ti-factor{background:var(--card2);padding:.85rem .75rem;text-align:center;}
+.ti-factor-ico{font-size:.95rem;margin-bottom:.3rem;}
+.ti-factor-lbl{font-size:.6rem;color:var(--mut);font-family:'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;}
+.ti-factor-val{font-size:.78rem;font-weight:600;margin-top:.15rem;}
+.ti-offer-block{padding:1.5rem 1.1rem 1.25rem;text-align:center;border-bottom:1px solid var(--bdr);}
+.ti-offer-lbl{font-size:.62rem;color:var(--mut);text-transform:uppercase;letter-spacing:.14em;margin-bottom:.6rem;font-family:'JetBrains Mono',monospace;}
+.ti-offer-val{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:900;color:var(--green);line-height:1;margin-bottom:.5rem;}
+.ti-offer-range{font-size:.72rem;color:rgba(74,222,128,.55);line-height:1.6;}
+.ti-bar-wrap{padding:1rem 1.1rem 1rem;}
+.ti-bar-lbl{display:flex;justify-content:space-between;font-size:.63rem;color:var(--mut);margin-bottom:.4rem;}
+.ti-bar-track{height:5px;background:rgba(255,255,255,.07);border-radius:3px;position:relative;}
+.ti-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--amber),var(--green));width:73%;}
+.ti-bar-marker{position:absolute;top:-3px;left:73%;width:11px;height:11px;border-radius:50%;background:var(--green);border:2px solid var(--card2);transform:translateX(-50%);}
+.ti-actions{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bdr);}
+.ti-act{background:var(--card2);padding:.95rem;text-align:center;cursor:pointer;font-size:.8rem;font-weight:600;transition:background .18s;}
+.ti-act:hover{background:rgba(255,255,255,.04);}
+.ti-act.yes{color:var(--green);}
+.ti-act.no{color:var(--mut);}
+
+/* ── EX 3: Finance vs Lease ── */
+.fl-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;}
+.fl-opt{background:var(--card2);border:2px solid var(--bdr);border-radius:13px;padding:1.1rem;cursor:pointer;transition:all .2s;position:relative;}
+.fl-opt:hover{border-color:rgba(232,168,56,.3);}
+.fl-opt.s{border-color:var(--amber);background:rgba(232,168,56,.07);}
+.fl-rec{position:absolute;top:-.5rem;left:50%;transform:translateX(-50%);background:var(--amber);color:#1A1008;font-size:.55rem;font-weight:800;padding:.1rem .45rem;border-radius:100px;white-space:nowrap;letter-spacing:.06em;text-transform:uppercase;}
+.fl-lbl{font-size:.62rem;font-family:'JetBrains Mono',monospace;color:var(--mut);text-transform:uppercase;letter-spacing:.14em;margin-bottom:.5rem;}
+.fl-opt.s .fl-lbl{color:var(--amber);}
+.fl-amt{font-family:'Playfair Display',serif;font-size:1.75rem;font-weight:900;line-height:1;margin-bottom:.2rem;}
+.fl-period{font-size:.67rem;color:var(--mut);margin-bottom:.9rem;}
+.fl-divider{height:1px;background:var(--bdr);margin-bottom:.75rem;}
+.fl-rows{display:flex;flex-direction:column;gap:.4rem;}
+.fl-r{display:flex;justify-content:space-between;font-size:.72rem;align-items:center;}
+.fl-r-l{color:var(--mut);}
+.fl-cost-bar{margin:.75rem 0 .2rem;}
+.fl-cost-lbl{display:flex;justify-content:space-between;font-size:.62rem;color:var(--mut);margin-bottom:.35rem;}
+.fl-cost-track{height:4px;background:rgba(255,255,255,.07);border-radius:2px;}
+.fl-cost-fill{height:100%;border-radius:2px;}
+.fl-cta-wrap{grid-column:1/-1;margin-top:.25rem;}
+.fl-cta{width:100%;background:var(--amber);border:none;border-radius:9px;color:#1A1008;padding:.6rem;font-size:.78rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .18s;}
+.fl-cta:hover{opacity:.85;}
+
+/* ── EX 4: Delivery ── */
+.del-progress{margin-bottom:1rem;}
+.del-prog-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem;}
+.del-car-info{}
+.del-name{font-weight:700;font-size:.9rem;}
+.del-vin{font-size:.62rem;color:var(--mut);font-family:'JetBrains Mono',monospace;margin-top:.1rem;}
+.del-badge{background:rgba(96,165,250,.1);color:var(--blue);border:1px solid rgba(96,165,250,.25);padding:.15rem .5rem;border-radius:100px;font-size:.62rem;font-weight:600;white-space:nowrap;}
+.del-prog-bar{height:4px;background:rgba(255,255,255,.07);border-radius:2px;margin-bottom:.4rem;}
+.del-prog-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--amber),var(--blue));width:72%;}
+.del-prog-labels{display:flex;justify-content:space-between;font-size:.6rem;color:var(--mut);font-family:'JetBrains Mono',monospace;}
+.del-eta-row{display:flex;align-items:center;gap:.6rem;background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.15);border-radius:8px;padding:.65rem .85rem;margin-bottom:1rem;}
+.del-eta-ico{font-size:.9rem;}
+.del-eta-txt{font-size:.76rem;font-weight:500;}
+.del-eta-date{color:var(--blue);}
+.del-steps{display:flex;flex-direction:column;}
+.dstep{display:flex;gap:.75rem;align-items:flex-start;padding-bottom:.85rem;position:relative;}
+.dstep:last-child{padding-bottom:0;}
+.dstep:not(:last-child)::after{content:'';position:absolute;left:12px;top:26px;width:1px;height:calc(100% - 18px);background:rgba(255,255,255,.08);}
+.ddot{width:25px;height:25px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.62rem;}
+.dd-done{background:var(--green);color:#062F14;}
+.dd-live{background:var(--blue);color:#0A1F4E;box-shadow:0 0 0 3px rgba(96,165,250,.18);}
+.dd-pend{background:rgba(255,255,255,.07);color:var(--mut);}
+.dstep-r{flex:1;}
+.ds-name{font-size:.82rem;font-weight:600;}
+.ds-name.p{color:var(--mut);}
+.ds-note{font-size:.67rem;color:var(--mut);margin-top:.15rem;}
+.ds-tag{font-size:.6rem;font-family:'JetBrains Mono',monospace;color:var(--green);margin-top:.1rem;}
+
+/* ── EX 5: Service Booking ── */
+.svc-vehicle{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.9rem;}
+.svc-v-info{}
+.svc-v-name{font-weight:700;font-size:.88rem;}
+.svc-v-odometer{font-size:.67rem;color:var(--mut);margin-top:.08rem;}
+.svc-recall{display:inline-flex;align-items:center;gap:.35rem;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.22);border-radius:100px;padding:.2rem .6rem;font-size:.65rem;color:var(--red);font-weight:600;}
+.svc-services{display:flex;flex-direction:column;gap:.4rem;margin-bottom:.9rem;}
+.svc-item{display:flex;align-items:center;gap:.7rem;background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-radius:9px;padding:.65rem .8rem;cursor:pointer;transition:all .18s;}
+.svc-item:hover,.svc-item.on{border-color:rgba(232,168,56,.3);background:rgba(232,168,56,.05);}
+.svc-item-chk{width:18px;height:18px;border-radius:5px;border:1.5px solid rgba(255,255,255,.2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.75rem;transition:all .18s;}
+.svc-item.on .svc-item-chk{background:var(--amber);border-color:var(--amber);color:#1A1008;font-weight:900;}
+.svc-item-info{flex:1;}
+.svc-item-name{font-size:.8rem;font-weight:600;}
+.svc-item-note{font-size:.63rem;color:var(--mut);margin-top:.08rem;}
+.svc-item-price{font-size:.78rem;font-weight:600;color:var(--amber);}
+.svc-item-price.free{color:var(--green);}
+.svc-total{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.04);border-radius:9px;padding:.6rem .85rem;margin-bottom:.9rem;font-size:.76rem;}
+.svc-total-l{color:var(--mut);}
+.svc-total-v{font-weight:700;font-family:'Playfair Display',serif;font-size:.95rem;}
+.svc-days{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;margin-bottom:.75rem;}
+.svc-day{background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-radius:8px;padding:.6rem .6rem;cursor:pointer;transition:all .18s;}
+.svc-day:hover,.svc-day.on{border-color:var(--amber);background:rgba(232,168,56,.07);}
+.svc-day-name{font-size:.72rem;font-weight:600;}
+.svc-day-slots{font-size:.61rem;color:var(--mut);margin-top:.1rem;}
+.svc-times{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.85rem;}
+.svc-time{background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-radius:6px;padding:.35rem .65rem;font-size:.72rem;cursor:pointer;transition:all .15s;}
+.svc-time:hover,.svc-time.on{border-color:var(--amber);background:rgba(232,168,56,.07);color:var(--amber);}
+.svc-btn{width:100%;background:var(--amber);border:none;border-radius:8px;color:#1A1008;font-size:.76rem;font-weight:700;padding:.58rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .18s;}
+.svc-btn:hover{opacity:.85;}
+
+/* ── EX 6: Inventory ── */
+.inv-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.9rem;}
+.inv-criteria{display:flex;flex-wrap:wrap;gap:.35rem;}
+.inv-crit{background:rgba(255,255,255,.05);border:1px solid var(--bdr);color:rgba(255,255,255,.5);padding:.2rem .55rem;border-radius:100px;font-size:.65rem;}
+.inv-count{background:rgba(232,168,56,.1);color:var(--amber);border:1px solid rgba(232,168,56,.25);padding:.2rem .55rem;border-radius:100px;font-size:.65rem;font-weight:600;font-family:'JetBrains Mono',monospace;white-space:nowrap;}
+.inv-cars{display:flex;flex-direction:column;gap:.5rem;}
+.inv-car{background:var(--card2);border:1px solid var(--bdr);border-radius:12px;padding:.9rem 1rem;cursor:pointer;transition:all .18s;}
+.inv-car:hover:not(.dim){border-color:rgba(232,168,56,.3);background:rgba(232,168,56,.04);}
+.inv-car.dim{opacity:.45;}
+.inv-car-top{display:flex;align-items:flex-start;gap:.8rem;}
+.inv-sw{width:38px;height:38px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1rem;}
+.inv-main{flex:1;}
+.inv-name{font-size:.86rem;font-weight:700;}
+.inv-spec{font-size:.67rem;color:var(--mut);margin-top:.08rem;}
+.inv-right{text-align:right;}
+.inv-price{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:800;color:var(--amber);}
+.inv-avail{font-size:.61rem;color:var(--green);margin-top:.08rem;}
+.inv-avail.over{color:var(--mut);}
+.inv-tags{display:flex;gap:.35rem;margin-top:.65rem;flex-wrap:wrap;}
+.inv-tag{background:rgba(255,255,255,.04);border:1px solid var(--bdr);color:var(--mut);padding:.14rem .45rem;border-radius:4px;font-size:.62rem;font-family:'JetBrains Mono',monospace;}
+.inv-tag.hi{background:rgba(74,222,128,.07);border-color:rgba(74,222,128,.2);color:var(--green);}
+.inv-match-bar{height:3px;background:rgba(255,255,255,.06);border-radius:2px;margin-top:.7rem;}
+.inv-match-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--amber),var(--green));}
+
+/* ═══════════════ W6 BRIEF ════════════════ */
+.brief-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bdr);}
+.bcat{background:var(--card);padding:1.1rem 1.1rem;cursor:pointer;transition:background .18s;position:relative;}
+.bcat:hover{background:rgba(232,168,56,.04);}
+.bcat.on{background:rgba(232,168,56,.07);}
+.bcat-arr{position:absolute;right:.8rem;top:1.1rem;font-size:.6rem;color:var(--mut);transition:transform .25s,color .2s;}
+.bcat.on .bcat-arr{transform:rotate(90deg);color:var(--amber);}
+.bcat-ico{font-size:1.2rem;margin-bottom:.4rem;}
+.bcat-name{font-size:.82rem;font-weight:600;margin-bottom:.15rem;}
+.bcat-tag{font-family:'JetBrains Mono',monospace;font-size:.57rem;color:var(--mut);letter-spacing:.08em;text-transform:uppercase;}
+.bcat-desc{font-size:.73rem;color:rgba(240,235,228,.45);line-height:1.6;max-height:0;overflow:hidden;transition:max-height .35s,margin-top .28s;}
+.bcat.on .bcat-desc{max-height:120px;margin-top:.55rem;}
+
+/* ═══════════════ W7 RUBRIC ════════════════ */
+.ritem{display:flex;gap:.85rem;align-items:flex-start;padding:1.1rem 1.4rem;border-bottom:1px solid var(--bdr);transition:background .18s;}
+.ritem:last-child{border-bottom:none;}
+.ritem:hover{background:var(--faint);}
+.rnum{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:600;flex-shrink:0;margin-top:.1rem;}
+.rbody{flex:1;}
+.rname{font-size:.88rem;font-weight:600;margin-bottom:.25rem;}
+.rdesc{font-size:.77rem;color:var(--mut);line-height:1.6;}
+
+/* ═══════════════ W8 TIMELINE ════════════════ */
+.tl-wrap{padding:1.2rem 1.25rem;}
+.tl-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;}
+.tl-cycle{background:rgba(232,168,56,.1);border:1px solid rgba(232,168,56,.25);color:var(--amber);font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;padding:.2rem .55rem;border-radius:100px;}
+.tl-track{display:flex;position:relative;}
+.tl-track::before{display:none;}
+.tnode{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;z-index:1;}
+.tdot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:#1A1008;margin-bottom:.6rem;box-shadow:0 0 0 3px var(--card);transition:transform .2s;}
+.tnode:hover .tdot{transform:scale(1.15);}
+.tweek{font-family:'JetBrains Mono',monospace;font-size:.57rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.22rem;}
+.tlabel{font-size:.8rem;font-weight:600;margin-bottom:.18rem;}
+.tdetail{font-size:.68rem;color:var(--mut);line-height:1.45;}
+.tl-repeat{margin-top:1.1rem;padding-top:.9rem;border-top:1px solid var(--bdr);display:flex;align-items:center;gap:.6rem;font-size:.76rem;color:var(--mut);}
+
+/* ═══════════════ W9 SUBMIT ════════════════ */
+.sub-steps{display:flex;flex-direction:column;}
+.sstep{display:flex;gap:.8rem;align-items:flex-start;padding:.8rem 1.25rem;border-bottom:1px solid var(--bdr);cursor:pointer;transition:background .18s;}
+.sstep:last-child{border-bottom:none;}
+.sstep:hover{background:var(--faint);}
+.schk{width:22px;height:22px;border-radius:6px;border:1.5px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .2s;font-size:.6rem;}
+.sstep.on .schk{background:var(--green);border-color:var(--green);color:#062F14;font-weight:700;}
+.sstep-b{flex:1;}
+.sstep-t{font-size:.88rem;font-weight:600;margin-bottom:.18rem;transition:color .2s;}
+.sstep.on .sstep-t{color:var(--mut);text-decoration:line-through;}
+.sstep-d{font-size:.77rem;color:var(--mut);line-height:1.55;}
+.b-opt{display:inline-block;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.4);font-family:'JetBrains Mono',monospace;font-size:.6rem;padding:.1rem .38rem;border-radius:4px;margin-left:.35rem;}
+.b-code{display:inline;background:rgba(96,165,250,.1);color:var(--blue);font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:.1rem .38rem;border-radius:4px;}
+.sub-footer{padding:.8rem 1.25rem;border-top:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;}
+.sub-prog{font-size:.7rem;color:var(--mut);font-family:'JetBrains Mono',monospace;}
+.sub-cta{background:var(--amber);color:#1A1008;border:none;border-radius:8px;padding:.44rem .95rem;font-size:.78rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .18s;}
+.sub-cta:hover{opacity:.85;}
+
+/* ═══════════════ W10 LEARN ════════════════ */
+.learn-intro{padding:.7rem 1.25rem;font-size:.79rem;color:var(--mut);line-height:1.6;border-bottom:1px solid var(--bdr);}
+.learn-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bdr);}
+.lcard{background:var(--card);padding:.9rem 1rem;text-decoration:none;color:var(--text);transition:background .18s;display:block;}
+.lcard:hover{background:rgba(232,168,56,.04);}
+.lcard-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.35rem;}
+.lcard-ico{font-size:1.05rem;}
+.lcard-arr{font-size:.7rem;color:var(--mut);transition:color .18s,transform .18s;}
+.lcard:hover .lcard-arr{color:var(--amber);transform:translate(2px,-2px);}
+.lcard-src{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--mut);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.2rem;}
+.lcard-title{font-size:.84rem;font-weight:600;margin-bottom:.18rem;line-height:1.3;}
+.lcard-desc{font-size:.73rem;color:var(--mut);line-height:1.5;}
+.ltag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.57rem;padding:.11rem .4rem;border-radius:4px;margin-top:.4rem;letter-spacing:.06em;text-transform:uppercase;}
+.lt-new{background:rgba(74,222,128,.1);color:var(--green);}
+.lt-oss{background:rgba(232,168,56,.1);color:var(--amber);}
+.lt-guide{background:rgba(167,139,250,.1);color:var(--vio);}
+.lt-pdf{background:rgba(96,165,250,.1);color:var(--blue);}
+
+/* ═══════════════ W11 META ════════════════ */
+.w-meta{background:linear-gradient(135deg,rgba(232,168,56,.1),rgba(255,127,92,.06));border:1px solid rgba(232,168,56,.28);border-radius:16px;padding:1.4rem 1.5rem;position:relative;overflow:hidden;}
+.w-meta::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top right,rgba(232,168,56,.08),transparent 60%);}
+.meta-eye{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.2em;color:var(--amber);text-transform:uppercase;margin-bottom:.55rem;position:relative;}
+.meta-hl{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:900;line-height:1.2;margin-bottom:.6rem;position:relative;}
+.meta-body{font-size:.88rem;color:rgba(240,235,228,.58);line-height:1.68;position:relative;max-width:530px;}
+.meta-body strong{color:var(--text);}
+
+@keyframes bnc{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+</style>
+</head>
+<body>
+  
+</div>
+<div class="sep"></div>
+<div class="chat" id="chat"></div>
+<div class="ftr">
+  <span class="ftr-l">Design Team · 2026</span>
+  <span class="ftr-r"><span class="ftag">A2UI Component Showcase</span>
+</div>
+
+<script>
+const chat = document.getElementById('chat');
+let activeStep = -1;
+const ts = () => new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+const wait = ms => new Promise(r=>setTimeout(r,ms));
+
+function append(html) {
+  const d=document.createElement('div'); d.innerHTML=html;
+  const el=d.firstElementChild; chat.appendChild(el); scroll(el); return el;
+}
+const show=(el,d=0)=>d===0?requestAnimationFrame(()=>el.classList.add('show')):setTimeout(()=>{el.classList.add('show');scroll(el);},d);
+function scroll(el){if(el){setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),60);}else{chat.scrollTo({top:chat.scrollHeight,behavior:'smooth'});}}
+
+const msgHTML=(txt,t)=>`<div class="mrow"><div class="mav">✦</div><div class="mbody"><div class="mmeta"><span class="mname">Tekion Design Assistant</span><span class="mtime">${t}</span></div><div class="mtext">${txt}</div></div></div>`;
+const wHTML=inner=>`<div class="wrow"><div class="wspc"></div><div class="wwrap">${inner}</div></div>`;
+const cHTML=chips=>`<div class="crow">${chips.map(c=>`<button class="chip" onclick="adv(${c.s},this)">${c.l}</button>`).join('')}</div>`;
+
+// ══════════════ WIDGETS ══════════════
+
+const W1=`<div class="w-hero">
+  <div class="hero-top">
+    <div class="hero-glow"></div>
+    <div class="hero-eye">✦ A2UI · Bi-weekly</div>
+    <div class="hero-title">Design the UI your<br>AI will <em>speak through.</em></div>
+    <div class="hero-sub">AI can answer any question. What it can't do yet, without designers, is show the answer in a way that actually moves someone to act.</div>
+  </div>
+</div>`;
+
+const W2=`<div class="wcard">
+  <div class="whdr"><div class="wh-t">The problem with AI interfaces today</div><div class="wh-s">Two patterns designers deal with, and why both break the experience.</div></div>
+  <div class="prob-cols">
+    <div class="prob-col">
+      <div class="prob-tag pt-bad">✕ &nbsp;The Text Trap</div>
+      <div class="prob-name">Too much text,<br>too little action.</div>
+      <div class="prob-desc">AI buries everything in paragraphs. Users read, re-read, then type the same thing back. 7 turns to book a service slot.</div>
+      <div class="prob-mock">
+        <div class="pm-bars">
+          <div class="pm-bar" style="width:90%;opacity:.5"></div>
+          <div class="pm-bar" style="width:75%;opacity:.4"></div>
+          <div class="pm-bar" style="width:85%;opacity:.35"></div>
+          <div class="pm-bar" style="width:60%;opacity:.3"></div>
+          <div class="pm-bar" style="width:80%;opacity:.25"></div>
+          <div class="pm-bar" style="width:70%;opacity:.2"></div>
+        </div>
+      </div>
+    </div>
+    <div class="prob-col" style="border-left:1px solid var(--bdr)">
+      <div class="prob-tag pt-bad2">✕ &nbsp;The iframe Ghetto</div>
+      <div class="prob-name">Widgets that feel<br>dropped in from outside.</div>
+      <div class="prob-desc">Iframe-based UI breaks brand consistency, feels isolated, and carries real security risk. Not native. Just embedded.</div>
+      <div class="prob-mock">
+        <div class="pm-bar" style="width:80%;opacity:.3;margin-bottom:.5rem"></div>
+        <div class="pm-iframe">
+          <div class="pm-iframe-lbl">iframe widget</div>
+          <div class="pm-iframe-inner">
+            <div class="pm-iframe-txt">font: Comic Sans</div>
+            <div class="pm-iframe-txt">color: #FFFF00</div>
+            <div class="pm-iframe-txt">border: 3px dashed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="prob-bottom">The Designer's Dilemma: give AI free rein and the experience breaks. Lock it to text and it loses all utility. A2UI finds the middle ground: expressive UI, fully in your control.</div>
+</div>`;
+
+const W3=`<div class="wcard">
+  <div class="whdr"><div class="wh-t">Enter A2UI: safe like data, expressive like code.</div><div class="wh-s">The protocol that lets agents render UI without breaking your design.</div></div>
+  <div class="sol-body">
+    <div class="sol-tagline">The agent asks for a <em>capability.</em><br>Your app renders your brand.</div>
+    <div class="sol-flow">
+      <div class="sol-step"><div class="sol-step-ico">🤖</div><div class="sol-step-lbl">Agent</div><div class="sol-step-name">Sends JSON spec</div></div>
+      <div class="sol-arrow">→</div>
+      <div class="sol-step" style="background:rgba(232,168,56,.06);border-left:1px solid rgba(232,168,56,.15);border-right:1px solid rgba(232,168,56,.15)"><div class="sol-step-ico">📋</div><div class="sol-step-lbl">A2UI</div><div class="sol-step-name">"type: booking-slot"</div></div>
+      <div class="sol-arrow">→</div>
+      <div class="sol-step"><div class="sol-step-ico">✨</div><div class="sol-step-lbl">Your App</div><div class="sol-step-name">Renders natively</div></div>
+    </div>
+    <div class="sol-principles">
+      <div class="sol-p"><div class="sol-p-ico">🔒</div><div><div class="sol-p-lbl">Safe like data</div><div class="sol-p-desc">Declarative JSON, not executable code. Agents can only call what you've approved.</div></div></div>
+      <div class="sol-p"><div class="sol-p-ico">🎨</div><div><div class="sol-p-lbl">Native-first</div><div class="sol-p-desc">No iframes. Renders with your existing components across web, iOS, Android.</div></div></div>
+      <div class="sol-p"><div class="sol-p-ico">⚡</div><div><div class="sol-p-lbl">Progressive rendering</div><div class="sol-p-desc">Streams as the AI thinks. The UI builds itself in real-time, matching the speed of thought.</div></div></div>
+      <div class="sol-p"><div class="sol-p-ico">🔄</div><div><div class="sol-p-lbl">Alive, not static</div><div class="sol-p-desc">Two-way data binding. State updates instantly on the client. No server round-trip until submit.</div></div></div>
+    </div>
+    <div style="background:rgba(255,255,255,.03);border:1px solid var(--bdr);border-radius:10px;overflow:hidden;">
+      <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr;border-bottom:1px solid var(--bdr);">
+        <div style="padding:.5rem .75rem;font-size:.62rem;font-family:'JetBrains Mono',monospace;color:var(--mut);text-transform:uppercase;letter-spacing:.1em;"></div>
+        <div style="padding:.5rem .75rem;font-size:.62rem;font-family:'JetBrains Mono',monospace;color:var(--mut);text-transform:uppercase;letter-spacing:.1em;text-align:center;">MCP-UI / Sandbox</div>
+        <div style="padding:.5rem .75rem;font-size:.62rem;font-family:'JetBrains Mono',monospace;color:var(--amber);text-transform:uppercase;letter-spacing:.1em;text-align:center;background:rgba(232,168,56,.05);">A2UI / Native-First</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr;border-bottom:1px solid var(--bdr);">
+        <div style="padding:.48rem .75rem;font-size:.74rem;color:var(--mut);">Rendering</div>
+        <div style="padding:.48rem .75rem;font-size:.74rem;color:var(--red);text-align:center;opacity:.7;">Web / iframes</div>
+        <div style="padding:.48rem .75rem;font-size:.74rem;color:var(--green);text-align:center;background:rgba(232,168,56,.03);">Native components</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr;border-bottom:1px solid var(--bdr);">
+        <div style="padding:.48rem .75rem;font-size:.74rem;color:var(--mut);">Feel</div>
+        <div style="padding:.48rem .75rem;font-size:.74rem;color:var(--red);text-align:center;opacity:.7;">Isolated widget</div>
+        <div style="padding:.48rem .75rem;font-size:.74rem;color:var(--green);text-align:center;background:rgba(232,168,56,.03);">Seamless &amp; integrated</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr;">
+        <div style="padding:.48rem .75rem;font-size:.74rem;color:var(--mut);">Styling</div>
+        <div style="padding:.48rem .75rem;font-size:.74rem;color:var(--red);text-align:center;opacity:.7;">Inconsistent</div>
+        <div style="padding:.48rem .75rem;font-size:.74rem;color:var(--green);text-align:center;background:rgba(232,168,56,.03);">Brand-consistent</div>
+      </div>
+    </div>
+  </div>
+</div>`;
+
+const W4=`<div class="wcard">
+  <div class="whdr"><div class="wh-t">From Maker to Curator</div><div class="wh-s">A2UI changes your role as a designer. Here's how.</div></div>
+  <div class="recipe-body">
+    <div class="recipe-col">
+      <div class="recipe-role" style="color:var(--mut)">The old role</div>
+      <div class="recipe-title">The Maker</div>
+      <div class="recipe-desc">You design every screen, every state, every instance. The AI gets text; you build the UI around it manually.</div>
+      <div class="recipe-items">
+        <div class="recipe-item"><div class="ri-ico">📄</div><div class="ri-lbl">Design screen A</div><div class="ri-sub" style="color:var(--mut)">×48 screens</div></div>
+        <div class="recipe-item"><div class="ri-ico">📄</div><div class="ri-lbl">Design screen B</div><div class="ri-sub" style="color:var(--mut)">×48 screens</div></div>
+        <div class="recipe-item"><div class="ri-ico">📄</div><div class="ri-lbl">Design screen C…</div><div class="ri-sub" style="color:var(--coral)">never ends</div></div>
+      </div>
+    </div>
+    <div class="recipe-col" style="border-left:1px solid var(--bdr)">
+      <div class="curator-tag">↺ &nbsp;Your new role</div>
+      <div class="recipe-title" style="color:var(--amber)">The Curator</div>
+      <div class="recipe-desc">You design the ingredients: the components. The AI is the waiter, reading the order (JSON) and sending it to your kitchen. <strong>You're the chef.</strong></div>
+      <div class="curator-items">
+        <div class="ci-item"><div class="ri-ico">🧩</div><div class="ri-lbl">Design booking-slot</div><div class="ri-sub" style="color:var(--green)">reusable ∞</div></div>
+        <div class="ci-item"><div class="ri-ico">🧩</div><div class="ri-lbl">Design payment-card</div><div class="ri-sub" style="color:var(--green)">reusable ∞</div></div>
+        <div class="ci-item"><div class="ri-ico">🧩</div><div class="ri-lbl">Design status-tracker</div><div class="ri-sub" style="color:var(--green)">reusable ∞</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="recipe-footer">
+    <div style="display:flex;gap:1.5rem;align-items:flex-start;">
+      <div style="flex:1;">
+        <div style="font-size:.7rem;font-family:'JetBrains Mono',monospace;color:var(--green);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.35rem;">✓ Allowed by catalog</div>
+        <div style="display:flex;flex-direction:column;gap:.2rem;">
+          <div style="font-size:.74rem;color:rgba(240,235,228,.55);display:flex;align-items:center;gap:.4rem;"><span style="color:var(--green)">✓</span> Payment card</div>
+          <div style="font-size:.74rem;color:rgba(240,235,228,.55);display:flex;align-items:center;gap:.4rem;"><span style="color:var(--green)">✓</span> Status tracker</div>
+          <div style="font-size:.74rem;color:rgba(240,235,228,.55);display:flex;align-items:center;gap:.4rem;"><span style="color:var(--green)">✓</span> Booking form</div>
+        </div>
+      </div>
+      <div style="width:1px;background:var(--bdr);align-self:stretch;"></div>
+      <div style="flex:1;">
+        <div style="font-size:.7rem;font-family:'JetBrains Mono',monospace;color:var(--red);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.35rem;">✕ Blocked by catalog</div>
+        <div style="display:flex;flex-direction:column;gap:.2rem;">
+          <div style="font-size:.74rem;color:rgba(240,235,228,.35);display:flex;align-items:center;gap:.4rem;"><span style="color:var(--red);opacity:.6">✕</span> Raw HTML</div>
+          <div style="font-size:.74rem;color:rgba(240,235,228,.35);display:flex;align-items:center;gap:.4rem;"><span style="color:var(--red);opacity:.6">✕</span> External scripts</div>
+          <div style="font-size:.74rem;color:rgba(240,235,228,.35);display:flex;align-items:center;gap:.4rem;"><span style="color:var(--red);opacity:.6">✕</span> Unstyled elements</div>
+        </div>
+      </div>
+      <div style="width:1px;background:var(--bdr);align-self:stretch;"></div>
+      <div style="flex:1.4;display:flex;align-items:center;">
+        <div class="recipe-footer-txt">The catalog is your guardrail. Security and brand consistency are enforced by whitelisting. <strong>The agent can only render what you've explicitly designed and approved.</strong></div>
+      </div>
+    </div>
+  </div>
+</div>`;
+
+const W5=`<div class="wcard">
+  <div class="whdr">
+    <div class="wh-t">Examples: dealership moments that need a widget</div>
+    <div class="wh-s">All live and interactive. This is the kind of thing you could design.</div>
+  </div>
+  <div class="gtabs">
+    <div class="gtab on"  onclick="gTab(0,this)">Monthly Payment</div>
+    <div class="gtab"     onclick="gTab(1,this)">Trade-In Offer</div>
+    <div class="gtab"     onclick="gTab(2,this)">Finance vs Lease</div>
+    <div class="gtab"     onclick="gTab(3,this)">Delivery Status</div>
+    <div class="gtab"     onclick="gTab(4,this)">Service Booking</div>
+    <div class="gtab"     onclick="gTab(5,this)">Inventory Match</div>
+  </div>
+  <div>
+    <div class="gpanel on">
+      <div class="ai-trigger"><span>🤖</span><em>"Here's the current offer on the Camry. Adjust the down payment or term and watch your monthly change."</em></div>
+      <div class="deal-wrap">
+        <div class="deal-top">
+          <div class="deal-hd">
+            <div class="deal-name">2024 Toyota Camry XSE V6</div>
+            <div class="deal-badges"><div class="deal-badge db-green">3 in stock</div><div class="deal-badge db-amber">Hot deal</div></div>
+          </div>
+          <div class="deal-price-row">
+            <div class="deal-num" id="dpNum">$542</div>
+            <div class="deal-num-sub">/ month</div>
+          </div>
+          <div class="deal-savings" id="dpSavings">↓ Saving $2,780 vs MSRP</div>
+          <div class="deal-terms">
+            <div class="deal-term" onclick="pickTerm(this,48)">48 mo</div>
+            <div class="deal-term on" onclick="pickTerm(this,60)">60 mo</div>
+            <div class="deal-term" onclick="pickTerm(this,72)">72 mo</div>
+          </div>
+          <div class="sl-row"><span>Down payment</span><span id="dpDown">$3,000</span></div>
+          <input type="range" min="0" max="12000" step="500" value="3000" oninput="updDeal(this.value)">
+        </div>
+        <div class="deal-bottom">
+          <div class="deal-breakdown">
+            <div class="dbb"><div class="dbb-l">Vehicle price</div><div class="dbb-v" id="dpPrice">$31,420</div></div>
+            <div class="dbb"><div class="dbb-l">Total interest</div><div class="dbb-v" id="dpInt">$4,712</div></div>
+            <div class="dbb"><div class="dbb-l">APR</div><div class="dbb-v">5.9%</div></div>
+          </div>
+          <div class="deal-btns">
+            <button class="db db-p" onclick="this.textContent='✓ Price locked'">Lock this price</button>
+            <button class="db db-s">Schedule test drive</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gpanel">
+      <div class="ai-trigger"><span>🤖</span><em>"I ran your 2019 Accord through our appraisal system. Here's your instant offer based on current market data."</em></div>
+      <div class="ti-wrap">
+        <div class="ti-vehicle">
+          <div><div class="ti-v-name">2019 Honda Accord Sport 2.0T</div><div class="ti-v-spec">68,400 mi · 1 owner · No accidents · Clean title</div></div>
+          <div class="ti-v-badge">Appraised ✓</div>
+        </div>
+        <div class="ti-factors">
+          <div class="ti-factor"><div class="ti-factor-ico">🛡</div><div class="ti-factor-lbl">History</div><div class="ti-factor-val" style="color:var(--green)">Clean</div></div>
+          <div class="ti-factor"><div class="ti-factor-ico">📍</div><div class="ti-factor-lbl">Condition</div><div class="ti-factor-val" style="color:var(--amber)">Good</div></div>
+          <div class="ti-factor"><div class="ti-factor-ico">📈</div><div class="ti-factor-lbl">Demand</div><div class="ti-factor-val" style="color:var(--green)">High</div></div>
+        </div>
+        <div class="ti-offer-block">
+          <div class="ti-offer-lbl">Your instant offer</div>
+          <div class="ti-offer-val">$19,200</div>
+          <div class="ti-offer-range">Range $18,200 – $19,800 · Valid for 7 days</div>
+        </div>
+        <div class="ti-bar-wrap">
+          <div class="ti-bar-lbl"><span>Below market</span><span>Above market</span></div>
+          <div class="ti-bar-track"><div class="ti-bar-fill"></div><div class="ti-bar-marker"></div></div>
+        </div>
+        <div class="ti-actions">
+          <div class="ti-act yes" onclick="this.textContent='✓ Applied to deal'">Accept &amp; apply to deal</div>
+          <div class="ti-act no" onclick="this.textContent='Noted. Ask anytime'">Maybe later</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gpanel">
+      <div class="ai-trigger"><span>🤖</span><em>"Based on $3,000 down, here's how financing and leasing compare for the RAV4 XLE. Both use the same vehicle price."</em></div>
+      <div class="fl-grid">
+        <div class="fl-opt s" onclick="pickFL(this,'Finance')">
+          <div class="fl-rec">Recommended</div>
+          <div class="fl-lbl">Finance</div>
+          <div class="fl-amt">$489<span style="font-size:.85rem;font-weight:400;color:var(--mut)">/mo</span></div>
+          <div class="fl-period">60 months · 5.9% APR</div>
+          <div class="fl-divider"></div>
+          <div class="fl-rows">
+            <div class="fl-r"><span class="fl-r-l">Total paid</span><span>$32,340</span></div>
+            <div class="fl-r"><span class="fl-r-l">At end</span><span style="color:var(--green)">You own it ✓</span></div>
+            <div class="fl-r"><span class="fl-r-l">Mileage</span><span>Unlimited</span></div>
+            <div class="fl-r"><span class="fl-r-l">Equity</span><span style="color:var(--green)">Builds over time</span></div>
+          </div>
+          <div class="fl-cost-bar">
+            <div class="fl-cost-lbl"><span>Total cost</span><span>$32,340</span></div>
+            <div class="fl-cost-track"><div class="fl-cost-fill" style="background:var(--amber);width:100%"></div></div>
+          </div>
+        </div>
+        <div class="fl-opt" onclick="pickFL(this,'Lease')">
+          <div class="fl-lbl">Lease</div>
+          <div class="fl-amt">$349<span style="font-size:.85rem;font-weight:400;color:var(--mut)">/mo</span></div>
+          <div class="fl-period">36 months · $3k due at signing</div>
+          <div class="fl-divider"></div>
+          <div class="fl-rows">
+            <div class="fl-r"><span class="fl-r-l">Total paid</span><span>$15,564</span></div>
+            <div class="fl-r"><span class="fl-r-l">At end</span><span style="color:var(--mut)">Return or buy</span></div>
+            <div class="fl-r"><span class="fl-r-l">Mileage</span><span>12,000 / yr</span></div>
+            <div class="fl-r"><span class="fl-r-l">Equity</span><span style="color:var(--mut)">None</span></div>
+          </div>
+          <div class="fl-cost-bar">
+            <div class="fl-cost-lbl"><span>Total cost</span><span>$15,564</span></div>
+            <div class="fl-cost-track"><div class="fl-cost-fill" style="background:var(--blue);width:48%"></div></div>
+          </div>
+        </div>
+        <div class="fl-cta-wrap"><button class="fl-cta" id="flCta">Continue with Finance →</button></div>
+      </div>
+    </div>
+
+    <div class="gpanel">
+      <div class="ai-trigger"><span>🤖</span><em>"Your Camry is built and on its way. Here's live status. I'll notify you when it reaches the dealership."</em></div>
+      <div class="del-progress">
+        <div class="del-prog-top">
+          <div class="del-car-info">
+            <div class="del-name">2024 Camry XSE · Ocean Blue Pearl</div>
+            <div class="del-vin">VIN · 4T1K61AK9RU123456</div>
+          </div>
+          <div class="del-badge">In Transit</div>
+        </div>
+        <div class="del-prog-bar"><div class="del-prog-fill"></div></div>
+        <div class="del-prog-labels"><span>Order placed</span><span>72% complete</span><span>Ready for pickup</span></div>
+      </div>
+      <div class="del-eta-row">
+        <div class="del-eta-ico">🗓</div>
+        <div class="del-eta-txt">Estimated arrival <span class="del-eta-date">Thursday, Mar 6 · In ~2 days</span></div>
+      </div>
+      <div class="del-steps">
+        <div class="dstep"><div class="ddot dd-done">✓</div><div class="dstep-r"><div class="ds-name">Order confirmed</div><div class="ds-note">Feb 20 · Deal #TK-48291</div></div></div>
+        <div class="dstep"><div class="ddot dd-done">✓</div><div class="dstep-r"><div class="ds-name">Left manufacturing plant</div><div class="ds-note">Feb 23 · Toyota Georgetown, KY</div></div></div>
+        <div class="dstep"><div class="ddot dd-done">✓</div><div class="dstep-r"><div class="ds-name">Cleared port inspection</div><div class="ds-note">Feb 27 · Jacksonville, FL</div></div></div>
+        <div class="dstep"><div class="ddot dd-live">◉</div><div class="dstep-r"><div class="ds-name">In transit to dealership</div><div class="ds-note">Estimated arrival Mar 6</div><div class="ds-tag">Live tracking active</div></div></div>
+        <div class="dstep"><div class="ddot dd-pend">5</div><div class="dstep-r"><div class="ds-name p">Ready for pickup</div><div class="ds-note">You'll receive an SMS + email</div></div></div>
+      </div>
+    </div>
+
+    <div class="gpanel">
+      <div class="ai-trigger"><span>🤖</span><em>"Your RAV4 is overdue for service and has an open safety recall. I found 3 open slots this week. Pick what works."</em></div>
+      <div class="svc-vehicle">
+        <div class="svc-v-info">
+          <div class="svc-v-name">2021 Toyota RAV4 XLE</div>
+          <div class="svc-v-odometer">89,240 mi · Last serviced 8 months ago</div>
+        </div>
+        <div class="svc-recall">⚠ 1 open recall</div>
+      </div>
+      <div class="svc-services">
+        <div class="svc-item on" onclick="this.classList.toggle('on');updSvcTotal()">
+          <div class="svc-item-chk">✓</div>
+          <div class="svc-item-info"><div class="svc-item-name">Oil &amp; Filter Change</div><div class="svc-item-note">Synthetic · Due at 90k mi</div></div>
+          <div class="svc-item-price">$94</div>
+        </div>
+        <div class="svc-item on" onclick="this.classList.toggle('on');updSvcTotal()">
+          <div class="svc-item-chk">✓</div>
+          <div class="svc-item-info"><div class="svc-item-name">Recall: Fuel Pump Module</div><div class="svc-item-note">Safety recall · Required</div></div>
+          <div class="svc-item-price free">Free</div>
+        </div>
+        <div class="svc-item" onclick="this.classList.toggle('on');updSvcTotal();this.querySelector('.svc-item-chk').textContent=this.classList.contains('on')?'✓':'';">
+          <div class="svc-item-chk"></div>
+          <div class="svc-item-info"><div class="svc-item-name">Tire Rotation &amp; Balance</div><div class="svc-item-note">Recommended at this mileage</div></div>
+          <div class="svc-item-price">$55</div>
+        </div>
+      </div>
+      <div class="svc-total"><span class="svc-total-l">Estimated total</span><span class="svc-total-v" id="svcTotal">$94</span></div>
+      <div class="svc-days">
+        <div class="svc-day on" onclick="pickDay(this)"><div class="svc-day-name">Mon Mar 3</div><div class="svc-day-slots">4 slots open</div></div>
+        <div class="svc-day" onclick="pickDay(this)"><div class="svc-day-name">Wed Mar 5</div><div class="svc-day-slots">7 slots open</div></div>
+        <div class="svc-day" onclick="pickDay(this)"><div class="svc-day-name">Fri Mar 7</div><div class="svc-day-slots">2 slots open</div></div>
+      </div>
+      <div class="svc-times">
+        <div class="svc-time on" onclick="pickTime(this)">8:00 AM</div>
+        <div class="svc-time" onclick="pickTime(this)">9:30 AM</div>
+        <div class="svc-time" onclick="pickTime(this)">11:00 AM</div>
+        <div class="svc-time" onclick="pickTime(this)">2:00 PM</div>
+      </div>
+      <button class="svc-btn" onclick="this.textContent='✓ Booked · Mon Mar 3, 8:00 AM'">Confirm appointment</button>
+    </div>
+
+    <div class="gpanel">
+      <div class="ai-trigger"><span>🤖</span><em>"Based on what you told me, white or silver SUV, under $35k, AWD. Here's what we have available right now."</em></div>
+      <div class="inv-header">
+        <div class="inv-criteria">
+          <div class="inv-crit">SUV</div>
+          <div class="inv-crit">Under $35k</div>
+          <div class="inv-crit">White · Silver</div>
+          <div class="inv-crit">AWD</div>
+        </div>
+        <div class="inv-count">3 found</div>
+      </div>
+      <div class="inv-cars">
+        <div class="inv-car">
+          <div class="inv-car-top">
+            <div class="inv-sw" style="background:rgba(240,235,228,.07)">🤍</div>
+            <div class="inv-main"><div class="inv-name">2024 RAV4 XLE · Pearl White</div><div class="inv-spec">2.5L 4-cyl · AWD · 12 mi on odometer</div></div>
+            <div class="inv-right"><div class="inv-price">$33,210</div><div class="inv-avail">On lot ✓</div></div>
+          </div>
+          <div class="inv-tags"><div class="inv-tag hi">Matches all criteria</div><div class="inv-tag">Sunroof</div><div class="inv-tag">Heated seats</div></div>
+          <div class="inv-match-bar"><div class="inv-match-fill" style="width:100%"></div></div>
+        </div>
+        <div class="inv-car">
+          <div class="inv-car-top">
+            <div class="inv-sw" style="background:rgba(156,163,175,.07)">🩶</div>
+            <div class="inv-main"><div class="inv-name">2024 RAV4 Hybrid XSE · Magnetic Gray</div><div class="inv-spec">2.5L Hybrid · AWD · 8 mi on odometer</div></div>
+            <div class="inv-right"><div class="inv-price">$34,880</div><div class="inv-avail">On lot ✓</div></div>
+          </div>
+          <div class="inv-tags"><div class="inv-tag hi">42 MPG combined</div><div class="inv-tag">Sport tuned</div><div class="inv-tag">JBL Audio</div></div>
+          <div class="inv-match-bar"><div class="inv-match-fill" style="width:88%"></div></div>
+        </div>
+        <div class="inv-car dim">
+          <div class="inv-car-top">
+            <div class="inv-sw" style="background:rgba(240,235,228,.07)">🤍</div>
+            <div class="inv-main"><div class="inv-name">2024 Highlander LE · White</div><div class="inv-spec">2.4L Turbo · AWD · 5 mi on odometer</div></div>
+            <div class="inv-right"><div class="inv-price" style="color:var(--mut)">$39,100</div><div class="inv-avail over">Over budget</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>`;
+
+const W6=`<div class="wcard">
+  <div class="whdr"><div class="wh-t">The Brief: pick your direction</div><div class="wh-s">Click any category to see a concrete example. Mix directions freely, and submit more than one concept.</div></div>
+  <div class="brief-grid">
+    <div class="bcat" onclick="toggleCat(this)"><div class="bcat-arr">▶</div><div class="bcat-ico">💰</div><div class="bcat-name">Deal & Finance</div><div class="bcat-tag">Offers · Payments</div><div class="bcat-desc">e.g. A customer asks "what would my monthly be with $5k down?" Instead of a paragraph, the AI drops a live payment card with a slider. They adjust it, see the number change, and lock the price in one tap.</div></div>
+    <div class="bcat" onclick="toggleCat(this)"><div class="bcat-arr">▶</div><div class="bcat-ico">🔄</div><div class="bcat-name">Trade-In Flow</div><div class="bcat-tag">Appraisal · Offers</div><div class="bcat-desc">e.g. "What's my 2020 Civic worth?" The AI responds with an instant offer card showing the range, the factors that drove it (mileage, condition, demand), and two actions: accept and apply to deal, or save for later.</div></div>
+    <div class="bcat" onclick="toggleCat(this)"><div class="bcat-arr">▶</div><div class="bcat-ico">🔧</div><div class="bcat-name">Service & Recall</div><div class="bcat-tag">Booking · Alerts</div><div class="bcat-desc">e.g. "Can I bring my car in this week?" The AI knows the car has an open recall and overdue oil change. It surfaces both, shows available slots for the next 3 days, and confirms the appointment in two taps.</div></div>
+    <div class="bcat" onclick="toggleCat(this)"><div class="bcat-arr">▶</div><div class="bcat-ico">🚗</div><div class="bcat-name">Inventory Match</div><div class="bcat-tag">Search · Filter</div><div class="bcat-desc">e.g. "I want something white, under $35k, good for long drives." The AI responds with 3 matching cars from the live lot, each with a match score, key specs, and a prompt to schedule a test drive right there.</div></div>
+    <div class="bcat" onclick="toggleCat(this)"><div class="bcat-arr">▶</div><div class="bcat-ico">📦</div><div class="bcat-name">Delivery & Status</div><div class="bcat-tag">Tracking · Updates</div><div class="bcat-desc">e.g. "Where's my car?" The AI renders a live delivery tracker showing the vehicle's journey from factory to dealership, the current step, estimated arrival, and a notification toggle, all inside the chat.</div></div>
+    <div class="bcat" onclick="toggleCat(this)"><div class="bcat-arr">▶</div><div class="bcat-ico">💡</div><div class="bcat-name">Your own idea</div><div class="bcat-tag">Totally open</div><div class="bcat-desc">F&I product selector, finance vs lease comparison, test drive scheduler, credit pre-approval status, referral widget. If you see a moment in a dealer conversation where text fails, that's your brief.</div></div>
+  </div>
+</div>`;
+
+const W7=`<div class="wcard">
+  <div class="whdr"><div class="wh-t">How we'll judge entries</div></div>
+  <div class="ritem"><div class="rnum" style="background:rgba(232,168,56,.1);color:var(--amber)">01</div><div class="rbody"><div class="rname">Does it earn its place in the conversation?</div><div class="rdesc">The widget should replace something that would've taken 3+ text turns. If text works fine, the widget shouldn't exist.</div></div></div>
+  <div class="ritem"><div class="rnum" style="background:rgba(255,127,92,.1);color:var(--coral)">02</div><div class="rbody"><div class="rname">Does it feel native to chat, not like a dashboard dropped into a bubble?</div><div class="rdesc">The interaction model should be designed for this specific surface. Alive, not static. Single-purpose, not everything at once.</div></div></div>
+  <div class="ritem"><div class="rnum" style="background:rgba(96,165,250,.1);color:var(--blue)">03</div><div class="rbody"><div class="rname">How well do you present it?</div><div class="rdesc">You'll walk us through your concept. Can you clearly articulate the moment it solves, why a widget beats text here, and what decisions you made along the way?</div></div></div>
+  <div class="ritem"><div class="rnum" style="background:rgba(167,139,250,.1);color:var(--vio)">04</div><div class="rbody"><div class="rname">Is it well crafted?</div><div class="rdesc">Visual polish, states thought through, and the quality of your prototype. A Figma Make prototype will go a long way here.</div></div></div>
+</div>`;
+
+const W8=`<div class="wcard">
+  <div class="whdr">
+    <div class="wh-t">One sprint. One concept. One demo day.</div>
+    <div class="wh-s">This runs every two weeks, aligned to our sprint cycle. Demo day date will be shared soon.</div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--bdr);">
+    <div style="background:var(--card);padding:1.25rem 1.4rem;">
+      <div style="font-size:1.6rem;margin-bottom:.65rem;">🧭</div>
+      <div style="font-family:'Playfair Display',serif;font-size:.95rem;font-weight:800;margin-bottom:.3rem;">Explore</div>
+      <div style="font-size:.77rem;color:var(--mut);line-height:1.6;">Pick a direction from the brief. Start sketching the moment you want to solve.</div>
+    </div>
+    <div style="background:var(--card);padding:1.25rem 1.4rem;">
+      <div style="font-size:1.6rem;margin-bottom:.65rem;">🛠</div>
+      <div style="font-family:'Playfair Display',serif;font-size:.95rem;font-weight:800;margin-bottom:.3rem;">Design</div>
+      <div style="font-size:.77rem;color:var(--mut);line-height:1.6;">Build it in Figma or Figma Make. One concept minimum, more is encouraged.</div>
+    </div>
+    <div style="background:var(--card);padding:1.25rem 1.4rem;">
+      <div style="font-size:1.6rem;margin-bottom:.65rem;">🎤</div>
+      <div style="font-family:'Playfair Display',serif;font-size:.95rem;font-weight:800;margin-bottom:.3rem;">Present</div>
+      <div style="font-size:.77rem;color:var(--mut);line-height:1.6;">Walk the team through your widget on demo day. Date coming soon from DesignOps.</div>
+    </div>
+  </div>
+  <div style="padding:1rem 1.4rem;display:flex;align-items:center;gap:.65rem;border-top:1px solid var(--bdr);">
+    <span style="font-size:1rem;color:var(--amber);">↺</span>
+    <span style="font-size:.78rem;color:var(--mut);">Sprint ends, demo day runs, new cycle starts. Same brief, fresh take every two weeks.</span>
+  </div>
+</div>`;
+
+const W9=`<div class="wcard">
+  <div class="whdr"><div class="wh-t">How to get involved</div><div class="wh-s">There's no formal submission yet. We'll keep it lightweight, but structured.</div></div>
+  <div style="display:flex;flex-direction:column;gap:0;">
+    <div style="display:flex;gap:.85rem;align-items:flex-start;padding:1.1rem 1.4rem;border-bottom:1px solid var(--bdr);">
+      <div style="width:32px;height:32px;border-radius:8px;background:rgba(232,168,56,.1);border:1px solid rgba(232,168,56,.2);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;margin-top:.05rem;">✦</div>
+      <div>
+        <div style="font-size:.88rem;font-weight:600;margin-bottom:.2rem;">Let DesignOps know you're in</div>
+        <div style="font-size:.77rem;color:var(--mut);line-height:1.6;">The DesignOps team will share a short form for you to fill in with your concept details and the direction you're exploring.</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:.85rem;align-items:flex-start;padding:1.1rem 1.4rem;border-bottom:1px solid var(--bdr);">
+      <div style="width:32px;height:32px;border-radius:8px;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.2);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;margin-top:.05rem;">💬</div>
+      <div>
+        <div style="font-size:.88rem;font-weight:600;margin-bottom:.2rem;">Share what you're working on</div>
+        <div style="font-size:.77rem;color:var(--mut);line-height:1.6;">Use the form to add a quick description of your widget, the moment it solves, and any early Figma links or notes.</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:.85rem;align-items:flex-start;padding:1.1rem 1.4rem;">
+      <div style="width:32px;height:32px;border-radius:8px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.2);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;margin-top:.05rem;">🎤</div>
+      <div>
+        <div style="font-size:.88rem;font-weight:600;margin-bottom:.2rem;">Get ready to present</div>
+        <div style="font-size:.77rem;color:var(--mut);line-height:1.6;">We'll announce the next showcase date soon. Use the time to refine your idea so you're ready to walk the team through it when your slot comes up.</div>
+      </div>
+    </div>
+  </div>
+</div>`;
+
+const W10=`<div class="wcard">
+  <div class="whdr"><div class="wh-t">Go deeper: learn about A2UI</div></div>
+  <div class="learn-intro">New to generative UI? These are the best starting points, from the open-source spec to the designer's guide we used to brief this jam.</div>
+  <div class="learn-grid">
+    <a class="lcard" href="https://a2ui.org" target="_blank">
+      <div class="lcard-top"><div class="lcard-ico">🌐</div><div class="lcard-arr">↗</div></div>
+      <div class="lcard-src">a2ui.org</div>
+      <div class="lcard-title">The official A2UI home: spec, demos, and docs</div>
+      <div class="lcard-desc">Start here. The spec, renderer libraries, and interactive demos all in one place.</div>
+      <div class="ltag lt-oss">Official</div>
+    </a>
+    <a class="lcard" href="https://developers.googleblog.com/en/introducing-a2ui-an-open-project-for-agent-driven-interfaces/" target="_blank">
+      <div class="lcard-top"><div class="lcard-ico">📡</div><div class="lcard-arr">↗</div></div>
+      <div class="lcard-src">Google Developers Blog</div>
+      <div class="lcard-title">Introducing A2UI: agent-driven interfaces explained</div>
+      <div class="lcard-desc">The original announcement from Google. Best place to understand why A2UI exists.</div>
+      <div class="ltag lt-new">Dec 2025</div>
+    </a>
+    <a class="lcard" href="https://github.com/google/A2UI" target="_blank">
+      <div class="lcard-top"><div class="lcard-ico">⚙️</div><div class="lcard-arr">↗</div></div>
+      <div class="lcard-src">GitHub · google/A2UI</div>
+      <div class="lcard-title">Open-source spec and working code demos</div>
+      <div class="lcard-desc">The actual format, renderers, and quickstarts you can run locally and experiment with.</div>
+      <div class="ltag lt-oss">Open source</div>
+    </a>
+    <a class="lcard" href="https://www.copilotkit.ai/generative-ui" target="_blank">
+      <div class="lcard-top"><div class="lcard-ico">🧩</div><div class="lcard-arr">↗</div></div>
+      <div class="lcard-src">CopilotKit · Generative UI</div>
+      <div class="lcard-title">The three patterns: Controlled, Declarative, Open-ended</div>
+      <div class="lcard-desc">A clear visual breakdown of where A2UI sits in the generative UI spectrum and when to use each.</div>
+      <div class="ltag lt-guide">Guide</div>
+    </a>
+  </div>
+</div>`;
+
+const W11=`<div class="w-meta">
+  <div class="meta-eye">✦ &nbsp;One more thing</div>
+  <div class="meta-hl">This entire brief was delivered via A2UI widgets.</div>
+  <div class="meta-body">The announcement, the problem framing, the solution explainer, the Maker-to-Curator breakdown, all six live dealership examples, the brief categories, the rubric, the timeline, the checklist. <strong>Every piece of content you just read was a widget the AI chose to render.</strong> Not text. Not slides. That's what you're designing.</div>
+  <div style="margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid rgba(232,168,56,.2);position:relative;">
+    <div style="font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:900;margin-bottom:.3rem;">Your new role starts now.</div>
+    <div style="font-size:.88rem;color:rgba(240,235,228,.5);">Become the architect of the catalog.</div>
+  </div>
+</div>`;
+
+// ══════════════ SEQUENCE ══════════════
+const STEPS=[
+  {msgs:[{t:"We've been building AI that speaks. Now let's build the UI it speaks through.",d:0}],w:W1,wD:700,chips:[{l:"What's the problem we're solving?",s:1},{l:"Skip to examples →",s:4}],cD:1400},
+  {msgs:[{t:"Two patterns that break AI interfaces, and why both fail the user.",d:0}],w:W2,wD:600,chips:[{l:"So what's the fix?",s:2}],cD:1100},
+  {msgs:[{t:"A2UI. Safe like data, expressive like code.",d:0}],w:W3,wD:600,chips:[{l:"What does this mean for designers?",s:3}],cD:1100},
+  {msgs:[{t:"Your role shifts. You stop designing every screen. You start curating the capabilities.",d:0}],w:W4,wD:600,chips:[{l:"Show me dealership examples →",s:4}],cD:1100},
+  {msgs:[{t:"Six real moments, all live. Click the tabs and interact with them.",d:0}],w:W5,wD:600,chips:[{l:"What's the brief?",s:5}],cD:1200},
+  {msgs:[{t:"Open-ended on purpose. Mix directions freely, and submit more than one concept.",d:0}],w:W6,wD:600,chips:[{l:"How will entries be judged?",s:6}],cD:1100},
+  {msgs:[{t:"Four things. The first is the most important.",d:0}],w:W7,wD:500,chips:[{l:"What's the timeline?",s:7}],cD:1000},
+  {msgs:[{t:"It runs every sprint. Explore, design, present. Demo day date will be shared by DesignOps.",d:0}],w:W8,wD:500,chips:[{l:"How do I get involved?",s:8}],cD:1000},
+  {msgs:[{t:"How to get involved — there's no formal submission yet. We'll keep it lightweight, but structured.",d:0}],w:W9,wD:500,chips:[{l:"Where can I learn more about A2UI?",s:9},{l:"One more thing →",s:10}],cD:1100},
+  {msgs:[{t:"Best starting points, from the official spec to the designer's guide.",d:0}],w:W10,wD:500,chips:[{l:"One more thing →",s:10}],cD:1000},
+  {msgs:[],w:W11,wD:300,chips:[],cD:0},
+];
+
+// ══════════════ ENGINE ══════════════
+async function playStep(idx){
+  if(idx<=activeStep)return;
+  activeStep=idx;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.add('used'));
+  const step=STEPS[idx],t=ts();
+  for(const msg of step.msgs){
+    await wait(msg.d);
+    const ty=append(`<div class="trow"><div class="mav">✦</div><div class="tbbl"><div class="td"></div><div class="td"></div><div class="td"></div></div></div>`);
+    show(ty);
+    await wait(580+msg.t.length*7);
+    ty.remove();
+    const m=append(msgHTML(msg.t,t));
+    show(m);
+    await wait(160);
+  }
+  if(step.w){
+    await wait(step.wD);
+    const w=append(wHTML(step.w));
+    show(w);
+    await wait(320);
+  }
+  if(step.chips&&step.chips.length){
+    await wait(Math.max(step.cD-step.wD-320,80));
+    const c=append(cHTML(step.chips));
+    show(c);
+    scroll();
+  }
+}
+function adv(idx,el){el.classList.add('used');playStep(idx);}
+
+// ══════════════ INTERACTIONS ══════════════
+let dealTerm=60;
+function pickTerm(el,term){
+  el.closest('.deal-terms').querySelectorAll('.deal-term').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on'); dealTerm=term;
+  const rng=document.querySelector('input[type=range]');
+  updDeal(rng?rng.value:3000);
+}
+function gTab(idx,el){
+  el.closest('.wcard').querySelectorAll('.gtab').forEach((t,i)=>t.classList.toggle('on',i===idx));
+  el.closest('.wcard').querySelectorAll('.gpanel').forEach((p,i)=>p.classList.toggle('on',i===idx));
+}
+function updDeal(v){
+  const d=parseInt(v),p=31420-d,rate=0.059/12,n=dealTerm;
+  const mo=Math.round(p*(rate*Math.pow(1+rate,n))/(Math.pow(1+rate,n)-1));
+  const totalInt=Math.round((mo*n)-p);
+  if(document.getElementById('dpDown')) document.getElementById('dpDown').textContent='$'+d.toLocaleString();
+  if(document.getElementById('dpPrice')) document.getElementById('dpPrice').textContent='$'+p.toLocaleString();
+  if(document.getElementById('dpNum')) document.getElementById('dpNum').textContent='$'+mo;
+  if(document.getElementById('dpInt')) document.getElementById('dpInt').textContent='$'+totalInt.toLocaleString();
+  if(document.getElementById('dpSavings')) document.getElementById('dpSavings').textContent='↓ Saving $'+(34200-p).toLocaleString()+' vs MSRP';
+}
+function pickFL(el,label){
+  el.closest('.fl-grid').querySelectorAll('.fl-opt').forEach(o=>o.classList.remove('s'));
+  el.classList.add('s');
+  const cta=document.getElementById('flCta');
+  if(cta)cta.textContent=`Continue with ${label} →`;
+}
+function pickDay(el){el.closest('.svc-days').querySelectorAll('.svc-day').forEach(d=>d.classList.remove('on'));el.classList.add('on');}
+function pickTime(el){el.closest('.svc-times').querySelectorAll('.svc-time').forEach(t=>t.classList.remove('on'));el.classList.add('on');}
+function updSvcTotal(){
+  const prices=[94,0,55];
+  let total=0;
+  document.querySelectorAll('.svc-item').forEach((item,i)=>{if(item.classList.contains('on'))total+=prices[i];});
+  const el=document.getElementById('svcTotal');
+  if(el)el.textContent='$'+total;
+}
+function toggleCat(el){el.classList.toggle('on');}
+function toggleStep(el){
+  el.classList.toggle('on');
+  const p=document.getElementById('subProg');
+  if(p)p.textContent=`${document.querySelectorAll('.sstep.on').length} of ${document.querySelectorAll('.sstep').length} checked`;
+}
+
+setTimeout(()=>playStep(0),500);
+</script>
+</body>
+</html>
