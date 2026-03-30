@@ -525,7 +525,14 @@
                         </div>
                     `;
                     card.onclick = () => {
-                        window.open(`ai-assistant.html?action=${encodeURIComponent(uc.id)}`, '_blank');
+                        // Check if the query is a Figma link
+                        if (uc.query && (uc.query.startsWith('https://www.figma.com') || uc.query.startsWith('https://figma.com'))) {
+                            // Open the Figma link in a new tab
+                            window.open(uc.query, '_blank');
+                        } else {
+                            // Open the ai-assistant page with the action ID
+                            window.open(`ai-assistant.html?action=${encodeURIComponent(uc.id)}`, '_blank');
+                        }
                     };
                     grid.appendChild(card);
                 });
