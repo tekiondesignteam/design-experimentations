@@ -1,0 +1,2145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tachyon Motors</title>
+    <!-- Importing Inter as a high-quality substitute for Proxima Nova if it's not locally available -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #3F4757;
+            --bg-dark-border: #152532;
+            --primary-teal: #00BFA5;
+            --text-white: #FFFFFF;
+            --text-gray: #969AA3;
+            --search-bg: #FFFFFF;
+            --sidebar-width: 64px;
+            --header-height: 56px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Ensure all form elements use the main font */
+        button,
+        input,
+        select,
+        textarea {
+            font-family: 'Proxima Nova', 'Inter', 'Arial', sans-serif;
+        }
+
+        body {
+            font-family: 'Proxima Nova', 'Inter', 'Arial', sans-serif;
+            background-color: var(--bg-dark);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Icons */
+        .icon {
+            width: 24px;
+            height: 24px;
+            display: block;
+            fill: var(--text-white);
+        }
+
+        .icon-sm {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Header */
+        header {
+            height: var(--header-height);
+            background-color: var(--bg-dark);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            border-bottom: 1px solid var(--bg-dark-border);
+            /* Screenshot doesn't show a strong border, maybe shadow or just color diff. 
+               The context says 'alwaysDark/borderAlwaysDark: #152532'. */
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding-left: 4px;
+        }
+
+        .app-launcher {
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+        }
+
+        .logo {
+            width: 71px;
+            height: 32px;
+            /* Main Tekion logo */
+            color: var(--primary-teal);
+        }
+
+        .search-container {
+            flex: 0 1 480px;
+            /* Fixed width or max width */
+            margin: 0 0 0 24px;
+            position: relative;
+        }
+
+        .search-input-wrapper {
+            background: white;
+            border-radius: 4px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+        }
+
+        .search-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            /* The path has fill #969AA3 */
+        }
+
+        .search-icon path {
+            fill: #969AA3;
+        }
+
+        .search-input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 13px;
+            color: #333;
+        }
+
+        .search-input::placeholder {
+            color: #999;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: var(--text-white);
+        }
+
+        .get-help {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .icon-btn {
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .icon-btn:hover {
+            opacity: 1;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            background: #5E6C7C;
+            /* Slightly lighter for the badge */
+            border-radius: 4px;
+            height: 40px;
+            /* padding: 0 4px 0 0; */
+            cursor: pointer;
+        }
+
+        .profile-initials-box {
+            background: #78909C;
+            /* Example placeholder color */
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            border-radius: 4px 0 0 4px;
+            background-color: #798696;
+            color: white;
+            font-size: 13px;
+        }
+
+        .profile-info {
+            padding: 0 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            line-height: 1.1;
+        }
+
+        .profile-name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .profile-sub {
+            font-size: 11px;
+            opacity: 0.7;
+        }
+
+        .profile-arrow {
+            margin-right: 8px;
+        }
+
+        /* Layout */
+        .workspace {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--bg-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 8px;
+            border-right: 1px solid var(--bg-dark-border);
+        }
+
+        .sidebar-item {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            /* Ghost-like squares */
+            border-radius: 4px;
+            /* Screenshot shows slight radius? Or sharp */
+            /* Actually screenshot shows text squares: "DS", "OM" */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .sidebar-itembox {
+            background: #5E6672;
+            /* Lighter grey */
+            width: 48px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 4px;
+            border-radius: 2px;
+        }
+
+        /* The screenshot shows just text labels in boxes? 
+           "DS", "OM", "A", "CM", "CA", "SO", "PS", "PO". 
+           They look like tabs or buttons. */
+        .nav-item {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 24px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .nav-tile {
+            width: 40px;
+            height: 36px;
+            background-color: #6F7884;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 600;
+            font-size: 16px;
+            border-radius: 2px 2px 0 0;
+            transition: background-color 0.2s;
+        }
+
+        .nav-indicator {
+            width: 40px;
+            height: 4px;
+            border-radius: 0 0 2px 2px;
+        }
+
+        .nav-item:hover .nav-tile {
+            background-color: #7B8694;
+        }
+
+        /* Indicator Colors */
+        .indicator-pink {
+            background-color: #FEEAE6;
+        }
+
+        .indicator-teal {
+            background-color: #E6F9F6;
+        }
+
+        .indicator-green {
+            background-color: #EFFAEE;
+        }
+
+        .indicator-purple {
+            background-color: #F3E8FD;
+        }
+
+        .indicator-yellow {
+            background-color: #FFF8E6;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 12px;
+            width: 100%;
+        }
+
+        .clock-widget {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+            font-size: 10px;
+            opacity: 0.9;
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+
+        .clock-tile {
+            width: 40px;
+            height: 36px;
+            background-color: #6F7884;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 2px 2px 0 0;
+        }
+
+        .clock-indicator {
+            width: 40px;
+            height: 4px;
+            background-color: #FEEAE6;
+            border-radius: 0 0 2px 2px;
+            margin-bottom: 4px;
+        }
+
+        .user-circle {
+            width: 32px;
+            height: 32px;
+            background-color: #fff;
+            color: #3F4757;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .time-display {
+            font-size: 10px;
+            color: white;
+            margin-top: 4px;
+        }
+
+        .main-content {
+            flex: 1;
+            background-color: #FFFFFF;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* User Popover Styles */
+        .user-popover {
+            position: fixed;
+            bottom: 32px;
+            left: 60px;
+            width: 280px;
+            background: #FFFFFF;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(22, 22, 26, 0.12);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            animation: popIn 0.2s ease-out;
+            border: 1px solid #EAEBEB;
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translate(-10px, 0);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translate(0, 0);
+            }
+        }
+
+        .popover-arrow {
+            position: absolute;
+            left: -8px;
+            bottom: 12px;
+            width: 8px;
+            height: 14px;
+            fill: #FFFFFF;
+            transform: rotate(-90deg);
+            filter: drop-shadow(-2px 0 2px rgba(0, 0, 0, 0.05));
+        }
+
+        .popover-header {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .popover-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4F46E5, #9333EA);
+            overflow: hidden;
+        }
+
+        .popover-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .popover-user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .popover-user-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111;
+        }
+
+        .popover-user-title {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .popover-divider {
+            height: 1px;
+            background-color: #EAEBEB;
+            width: 100%;
+        }
+
+        .popover-section {
+            padding: 8px 0;
+        }
+
+        .popover-item {
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+            position: relative;
+        }
+
+        .popover-item:hover {
+            background-color: #F5F7F8;
+        }
+
+        .popover-item-text {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .popover-item-label {
+            font-size: 14px;
+            font-weight: 400;
+            color: #444F5C;
+        }
+
+        .popover-item-sub {
+            font-size: 12px;
+            color: #71717A;
+        }
+
+        .popover-icon {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .popover-icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+
+        .popover-chevron {
+            width: 16px;
+            height: 16px;
+            opacity: 0.5;
+        }
+
+        /* Role Sub-Popover */
+        .role-popover {
+            position: absolute;
+            left: 100%;
+            top: 0;
+            margin-left: 8px;
+            width: 280px;
+            background: #FFFFFF;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(22, 22, 26, 0.12);
+            border: 1px solid #EAEBEB;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .role-search {
+            padding: 12px;
+            border-bottom: 1px solid #EAEBEB;
+        }
+
+        .role-search-input-wrapper {
+            display: flex;
+            align-items: center;
+            border: 1px solid #D4D5D6;
+            border-radius: 4px;
+            height: 32px;
+            padding: 0 8px;
+        }
+
+        .role-search-icon {
+            width: 14px;
+            height: 14px;
+            margin-right: 8px;
+            fill: #969AA3;
+        }
+
+        .role-search-input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 13px;
+            color: #333;
+        }
+
+        .role-list {
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 4px 0;
+        }
+
+        .role-item {
+            padding: 8px 16px;
+            font-size: 14px;
+            color: #444F5C;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .role-item:hover {
+            background-color: #F5F7F8;
+        }
+
+        .role-item.selected {
+            background-color: #E6F7FF;
+            font-weight: 600;
+            color: #111;
+        }
+
+        .role-item.selected::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background-color: #0070F3;
+            /* Adjust to match design blue */
+        }
+
+        .role-check {
+            display: none;
+            width: 16px;
+            height: 16px;
+            fill: #0070F3;
+        }
+
+        .role-item.selected .role-check {
+            display: block;
+        }
+
+        /* Active state for parent item */
+        .popover-item.active {
+            background-color: #E6F7FF;
+        }
+
+        /* Customer Management Styles */
+        :root {
+            --leads-bg-notification: #FFF7E6;
+            --leads-border-notification: #FFEAC2;
+            --leads-text-notification: #6B4E1A;
+            --leads-primary-blue: #3B82F6;
+            --leads-text-dark: #1F2937;
+            --leads-text-gray: #6B7280;
+            --leads-border-light: #E5E7EB;
+            --leads-bg-white: #FFFFFF;
+        }
+
+        .leads-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            background-color: #FFFFFF;
+            overflow: hidden;
+            /* Added to ensure inner scroll view works properly */
+        }
+
+        .leads-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--leads-border-light);
+            height: 64px;
+        }
+
+        .leads-header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .leads-hamburger {
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            width: 18px;
+        }
+
+        .leads-hamburger span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background-color: var(--leads-text-gray);
+            border-radius: 1px;
+        }
+
+        .leads-title {
+            font-family: 'Proxima Nova', 'Inter', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: #161616;
+            line-height: 32px;
+        }
+
+        .leads-header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .leads-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background-color: #F4F5F6;
+            border-radius: 20px;
+            height: 32px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .leads-pill:hover {
+            background-color: #E5E7EB;
+        }
+
+        .leads-pill-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        .leads-pill-text {
+            font-family: 'Proxima Nova', 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            color: #161616;
+            white-space: nowrap;
+        }
+
+        .leads-pill-text strong {
+            font-weight: 600;
+        }
+
+        .btn-calendar {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #6B7280;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .btn-calendar:hover {
+            background-color: #F3F4F6;
+            color: #111827;
+        }
+
+        .btn-primary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 16px;
+            height: 32px;
+            background-color: var(--leads-primary-blue);
+            border: 1px solid var(--leads-primary-blue);
+            border-radius: 4px;
+            font-family: 'Proxima Nova', 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563EB;
+        }
+
+        .leads-notification {
+            background-color: var(--leads-bg-notification);
+            border: 1px solid var(--leads-border-notification);
+            border-radius: 4px;
+            padding: 12px 24px;
+            margin: 10px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .leads-notification-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            color: var(--leads-text-notification);
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .leads-notification-icon {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            margin-top: 1px;
+        }
+
+        .leads-notification-link {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--leads-primary-blue);
+            text-decoration: none;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .leads-notification-link:hover {
+            text-decoration: underline;
+        }
+
+        .leads-filter-bar {
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            border-bottom: 1px solid transparent;
+        }
+
+        .leads-filter-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .filter-icon-container {
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            color: #6B7280;
+            margin-top: 16px;
+        }
+
+        .filter-badge {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            background-color: var(--leads-primary-blue);
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid white;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .filter-label {
+            font-size: 12px;
+            color: #6B7280;
+            font-weight: 500;
+        }
+
+        .date-input-wrapper {
+            display: flex;
+            align-items: center;
+            border: 1px solid #D1D5DB;
+            border-radius: 4px;
+            padding: 6px 10px;
+            background: white;
+            width: 220px;
+            gap: 8px;
+        }
+
+        .date-input {
+            border: none;
+            outline: none;
+            font-size: 14px;
+            color: #374151;
+            width: 100%;
+        }
+
+        .calendar-icon {
+            width: 16px;
+            height: 16px;
+            color: #9CA3AF;
+        }
+
+        .filter-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        /* Updated Filter Bar Styles matching Figma */
+        .leads-filter-bar {
+            padding: 12px 24px 8px 24px;
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 24px;
+            border-bottom: none;
+            /* Removed border as per new design flow might suggest, or keep if needed. Sticky header covers it. */
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            background-color: #FFFFFF;
+        }
+
+        .leads-filter-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            height: 32px;
+        }
+
+        .filter-main-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #444F5C;
+            font-size: 14px;
+            font-weight: 400;
+            cursor: pointer;
+            border: none;
+            background: none;
+            padding: 0;
+            font-family: inherit;
+        }
+
+        .filter-icon-wrapper {
+            position: relative;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .filter-badge-new {
+            position: absolute;
+            top: -4px;
+            right: -6px;
+            background-color: #2563EB;
+            color: white;
+            font-size: 9px;
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid white;
+        }
+
+        .filter-divider {
+            width: 1px;
+            height: 16px;
+            background-color: #D4D5D6;
+        }
+
+        .filter-result-text {
+            color: #6D707A;
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .sort-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            color: #444F5C;
+            cursor: pointer;
+            border: none;
+            background: none;
+            padding: 0;
+        }
+
+        .leads-filter-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            height: 32px;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            width: 274px;
+            height: 32px;
+            border: 1px solid #D4D5D6;
+            border-radius: 4px;
+            padding: 0 8px;
+            background-color: white;
+        }
+
+        .search-icon {
+            color: #444F5C;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input-new {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            color: #444F5C;
+            margin: 0 8px;
+            height: 100%;
+        }
+
+        .info-icon {
+            color: #969AA3;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .action-icon-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #444F5C;
+            cursor: pointer;
+            border: none;
+            background: none;
+            border-radius: 4px;
+        }
+
+        .action-icon-btn:hover {
+            background-color: #F3F4F6;
+        }
+
+        .actions-dropdown-btn {
+            height: 32px;
+            padding: 0 12px;
+            border: 1px solid #D4D5D6;
+            border-radius: 4px;
+            background-color: white;
+            color: #444F5C;
+            font-size: 14px;
+            font-weight: 400;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: inherit;
+        }
+
+        .actions-dropdown-btn:hover {
+            background-color: #F9FAFB;
+        }
+
+        .leads-quick-filters {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 24px 16px 24px;
+            background-color: white;
+            gap: 16px;
+        }
+
+        .leads-quick-filter-scroll {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .leads-quick-filter-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .leads-quick-filter-btn {
+            padding: 12px 16px;
+            background-color: #F4F5F6;
+            border-radius: 4px;
+            border: none;
+            color: #444F5C;
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+            font-family: 'Proxima Nova', 'Inter', sans-serif;
+            transition: background 0.2s;
+            line-height: 16px;
+        }
+
+        .leads-quick-filter-btn:hover {
+            background-color: #E5E7EB;
+        }
+
+        .leads-quick-filter-edit {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #374151;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+
+        .leads-quick-filter-edit:hover {
+            background-color: #1F2937;
+        }
+
+        .leads-content-body {
+            /* flex: 1; Removed to allow natural height in scroll view */
+            background-color: white;
+            padding: 0 24px;
+            display: flex;
+            flex-direction: column;
+            /* overflow: hidden; Removed */
+        }
+
+        /* Generic Table Styles */
+        .leads-table-container {
+            /* flex: 1; Removed */
+            overflow-x: auto;
+            width: 100%;
+        }
+
+        .leads-table thead {
+            background-color: #F9FAFB;
+            position: sticky;
+            top: 73px;
+            /* Approximate height of filter bar (padding + content) to stick below it */
+            z-index: 20;
+            box-shadow: 0 1px 0 #E5E7EB;
+        }
+
+
+        .leads-scroll-view {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            scroll-behavior: smooth;
+        }
+
+        .leads-filter-bar {
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            background-color: #FFFFFF;
+        }
+
+        .leads-content-body {
+            /* flex: 1; Removed to allow natural height in scroll view */
+            background-color: white;
+            padding: 0 24px;
+            display: flex;
+            flex-direction: column;
+            /* overflow: hidden; Removed */
+        }
+
+        /* Generic Table Styles */
+        .leads-table-container {
+            /* flex: 1; Removed */
+            overflow-x: auto;
+            width: 100%;
+        }
+
+        .leads-table thead {
+            background-color: #F9FAFB;
+            position: sticky;
+            top: 0px;
+            /* Adjusted to 88px to clear the filter bar height */
+            z-index: 20;
+            box-shadow: 0 1px 0 #E5E7EB;
+        }
+
+        .leads-table th {
+            text-align: left;
+            padding: 12px 24px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #161616;
+            background-color: #F9FAFB;
+            /* Ensure opacity */
+            border-bottom: none;
+            /* Handled by box-shadow on thead or container border */
+            white-space: nowrap;
+            min-width: 150px;
+        }
+
+        .leads-table th.col-checkbox {
+            width: 40px;
+            min-width: 40px;
+            padding: 12px 8px 12px 12px;
+            position: sticky;
+            left: 0;
+            z-index: 25;
+            background-color: #F9FAFB;
+        }
+
+        .leads-table th.col-gear {
+            width: 40px;
+            min-width: 40px;
+            padding: 6px 12px;
+            text-align: center;
+            position: sticky;
+            right: 0;
+            z-index: 25;
+            background-color: #F9FAFB;
+            box-shadow: -1px 0 0 #E5E7EB;
+            /* Optional separator shadow */
+        }
+
+
+        /* Custom Checkbox Styles */
+        .custom-checkbox {
+            width: 16px;
+            height: 16px;
+            background-color: white;
+            border: 1px solid #969AA3;
+            border-radius: 2px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .custom-checkbox input {
+            display: none;
+        }
+
+        .leads-table td {
+            height: 40px;
+            padding: 0 24px;
+            border-bottom: 1px solid #D4D5D6;
+            font-size: 13px;
+            color: #374151;
+            white-space: nowrap;
+            background-color: white;
+            /* Ensure non-sticky cells also have bg for consistency if needed, though mostly for sticky ones */
+        }
+
+        .leads-table td.col-checkbox {
+            width: 40px;
+            min-width: 40px;
+            padding: 0 8px 0 12px;
+            /* Top/Bottom padding 0 because height is fixed */
+            position: sticky;
+            left: 0;
+            z-index: 20;
+            /* Lower than th z-index 25 */
+            background-color: white;
+            border-bottom: 1px solid #D4D5D6;
+        }
+
+        .leads-table td.col-gear {
+            width: 40px;
+            min-width: 40px;
+            padding: 0 12px;
+            text-align: center;
+            position: sticky;
+            right: 0;
+            z-index: 20;
+            background-color: white;
+            border-bottom: 1px solid #D4D5D6;
+            box-shadow: -1px 0 0 #E5E7EB;
+            /* Match header shadow */
+        }
+
+        /* Adjust specific column widths if necessary, e.g. Address */
+        .leads-table th.col-wide {
+            min-width: 200px;
+        }
+
+        .leads-table th.col-contact {
+            min-width: 240px;
+        }
+
+        .contact-cell {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .overview-link {
+            display: none;
+            color: #2563EB;
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            font-family: inherit;
+        }
+
+        .overview-link:hover {
+            text-decoration: underline;
+        }
+
+        .leads-table tr:hover .overview-link {
+            display: inline-block;
+        }
+
+
+
+        /* Salesperson Cell Styles */
+        .salesperson-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .table-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #E2E8F0;
+            color: #475569;
+            font-size: 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+        }
+
+        .assign-link {
+            color: #2563EB;
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            font-family: inherit;
+        }
+
+        .assign-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer / Pagination Styles */
+        .leads-pagination {
+            background-color: white;
+            border-top: 1px solid #D4D5D6;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            flex-shrink: 0;
+            z-index: 40;
+        }
+
+        .pagination-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-right: 8px;
+        }
+
+        .pagination-dropdown {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            height: 32px;
+            padding: 0 12px 0 16px;
+            background: white;
+            border: 1px solid #969AA3;
+            border-radius: 2px;
+            cursor: pointer;
+            font-family: 'Proxima Nova', 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #161616;
+        }
+
+        .pagination-label {
+            font-family: 'Proxima Nova', 'Inter', sans-serif;
+            font-size: 14px;
+            color: #444F5C;
+        }
+
+        .pagination-divider {
+            width: 1px;
+            height: 24px;
+            background-color: #D4D5D6;
+        }
+
+        .pagination-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .page-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: 'Proxima Nova', 'Inter', sans-serif;
+            font-size: 14px;
+            color: #0066FF;
+            /* Blue for active */
+            padding: 4px 8px;
+        }
+
+        .page-nav-btn:disabled {
+            color: #D4D5D6;
+            cursor: not-allowed;
+        }
+
+        .page-numbers-list {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .page-number {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-family: 'Proxima Nova', 'Inter', sans-serif;
+            font-size: 14px;
+            color: #161616;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        .page-number.active {
+            background-color: #EBF5FF;
+            color: #0066FF;
+            font-weight: 600;
+        }
+
+        .page-number:hover:not(.active) {
+            background-color: #F3F4F6;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="header-left">
+            <!-- App Launcher (9 dots) -->
+            <div class="app-launcher">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g id="Icon Size">
+                        <path id="Icon Color"
+                            d="M5 17C6.10457 17 7 17.8954 7 19C7 20.1046 6.10457 21 5 21C3.89543 21 3 20.1046 3 19C3 17.8954 3.89543 17 5 17ZM12 17C13.1046 17 14 17.8954 14 19C14 20.1046 13.1046 21 12 21C10.8954 21 10 20.1046 10 19C10 17.8954 10.8954 17 12 17ZM19 17C20.1046 17 21 17.8954 21 19C21 20.1046 20.1046 21 19 21C17.8954 21 17 20.1046 17 19C17 17.8954 17.8954 17 19 17ZM5 10C6.10457 10 7 10.8954 7 12C7 13.1046 6.10457 14 5 14C3.89543 14 3 13.1046 3 12C3 10.8954 3.89543 10 5 10ZM12 10C13.1046 10 14 10.8954 14 12C14 13.1046 13.1046 14 12 14C10.8954 14 10 13.1046 10 12C10 10.8954 10.8954 10 12 10ZM19 10C20.1046 10 21 10.8954 21 12C21 13.1046 20.1046 14 19 14C17.8954 14 17 13.1046 17 12C17 10.8954 17.8954 10 19 10ZM5 3C6.10457 3 7 3.89543 7 5C7 6.10457 6.10457 7 5 7C3.89543 7 3 6.10457 3 5C3 3.89543 3.89543 3 5 3ZM12 3C13.1046 3 14 3.89543 14 5C14 6.10457 13.1046 7 12 7C10.8954 7 10 6.10457 10 5C10 3.89543 10.8954 3 12 3ZM19 3C20.1046 3 21 3.89543 21 5C21 6.10457 20.1046 7 19 7C17.8954 7 17 6.10457 17 5C17 3.89543 17.8954 3 19 3Z"
+                            fill="white" />
+                    </g>
+                </svg>
+            </div>
+
+            <!-- Logo (Tekion) -->
+            <div class="logo">
+                <img src="assets/TachyonMotors_bw.png" alt="Tachyon Motors" style="width: 100%; height: 100%;">
+            </div>
+        </div>
+
+        <div class="search-container">
+            <div class="search-input-wrapper">
+                <div class="search-icon">
+                    <img src="./assets/search.svg" alt="Search" style="width: 100%; height: 100%;">
+                </div>
+                <input type="text" class="search-input" placeholder="Search">
+            </div>
+        </div>
+
+        <div class="header-right">
+            <!-- Get Help -->
+            <div class="get-help">
+                <img src="./assets/concierge.svg" class="icon-sm" alt="Get Help"
+                    style="filter: brightness(0) invert(1);">
+                <span>Get Help</span>
+                <img src="./assets/chevron-down.svg" class="icon-sm" alt="Menu"
+                    style="opacity: 0.7; filter: brightness(0) invert(1);">
+            </div>
+
+            <!-- Bell -->
+            <div class="icon-btn">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M12.0001 3.25C15.728 3.25008 18.7501 6.27213 18.7501 10V13.7725L20.6242 16.584C20.7775 16.814 20.7916 17.1097 20.6613 17.3535C20.5308 17.5973 20.2767 17.7499 20.0001 17.75H15.675C15.3275 19.4616 13.8143 20.7499 12.0001 20.75C10.186 20.75 8.67282 19.4616 8.32534 17.75H4.00015C3.72355 17.75 3.46953 17.5974 3.33902 17.3535C3.20861 17.1097 3.22273 16.8141 3.37613 16.584L5.25015 13.7725V10C5.25015 6.27208 8.27223 3.25 12.0001 3.25ZM9.87808 17.75C10.187 18.6239 11.0205 19.25 12.0001 19.25C12.9797 19.2499 13.8134 18.6238 14.1222 17.75H9.87808ZM12.0001 4.75C9.10065 4.75 6.75015 7.10051 6.75015 10V14C6.75015 14.148 6.70628 14.2928 6.62417 14.416L5.40152 16.25H18.5988L17.3761 14.416C17.294 14.2928 17.2501 14.1481 17.2501 14V10C17.2501 7.10055 14.8996 4.75008 12.0001 4.75ZM12.0001 6.25C12.4143 6.25008 12.7501 6.58584 12.7501 7C12.7501 7.41416 12.4143 7.74992 12.0001 7.75C10.7575 7.75 9.75015 8.75736 9.75015 10C9.75015 10.4142 9.41429 10.7499 9.00015 10.75C8.58593 10.75 8.25015 10.4142 8.25015 10C8.25015 7.92893 9.92908 6.25 12.0001 6.25Z"
+                        fill="white" />
+                </svg>
+            </div>
+
+            <!-- Message (Chat) -->
+            <div class="icon-btn">
+                <img src="./assets/message.svg" class="icon" alt="Message" style="filter: brightness(0) invert(1);">
+            </div>
+
+            <!-- Mail -->
+            <div class="icon-btn">
+                <img src="./assets/mail.svg" class="icon" alt="Mail" style="filter: brightness(0) invert(1);">
+            </div>
+
+            <!-- Profile (TM) -->
+            <div class="user-profile">
+                <div class="profile-initials-box">TM</div>
+                <div class="profile-info">
+                    <div class="profile-name">Tachyon Motors</div>
+                    <div class="profile-sub">Main site</div>
+                </div>
+                <!-- Small chevron -->
+                <div class="profile-arrow">
+                    <img src="./assets/chevron-down.svg" class="icon-sm" alt="Menu"
+                        style="filter: brightness(0) invert(1);">
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <div class="workspace">
+        <aside class="sidebar">
+            <div class="nav-item">
+                <div class="nav-tile">DS</div>
+                <div class="nav-indicator indicator-pink"></div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-tile">OM</div>
+                <div class="nav-indicator indicator-teal"></div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-tile">A</div>
+                <div class="nav-indicator indicator-green"></div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-tile">CM</div>
+                <div class="nav-indicator indicator-purple"></div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-tile">CA</div>
+                <div class="nav-indicator indicator-purple"></div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-tile">SO</div>
+                <div class="nav-indicator indicator-pink"></div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-tile">PS</div>
+                <div class="nav-indicator indicator-yellow"></div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-tile">PO</div>
+                <div class="nav-indicator indicator-yellow"></div>
+            </div>
+
+            <div class="sidebar-bottom">
+                <div class="clock-widget">
+                    <div class="clock-tile">
+                        <svg class="icon" style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M12 3.25C16.8325 3.25 20.75 7.16751 20.75 12C20.75 16.8325 16.8325 20.75 12 20.75C7.16751 20.75 3.25 16.8325 3.25 12C3.25 7.16751 7.16751 3.25 12 3.25ZM12 4.75C7.99594 4.75 4.75 7.99594 4.75 12C4.75 16.0041 7.99594 19.25 12 19.25C16.0041 19.25 19.25 16.0041 19.25 12C19.25 7.99594 16.0041 4.75 12 4.75ZM12 6.25C12.4142 6.25 12.75 6.58579 12.75 7V12.5361L16.335 14.3291C16.7053 14.5143 16.8558 14.9646 16.6709 15.335C16.4857 15.7053 16.0354 15.8558 15.665 15.6709L11.665 13.6709C11.411 13.5439 11.25 13.2841 11.25 13V7C11.25 6.58579 11.5858 6.25 12 6.25Z"
+                                fill="white" />
+                        </svg>
+                    </div>
+                    <div class="clock-indicator"></div>
+                    <div>00.00 Hrs</div>
+                </div>
+
+                <div class="user-circle">AP</div>
+                <div class="time-display">12:50 PM</div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="leads-container">
+                <!-- Page Header -->
+                <div class="leads-header">
+                    <div class="leads-header-left">
+                        <!-- Removed Hamburger as it wasn't in the new design snippet, but design had "01 Nav bar" -> "Container" -> "Title". 
+                             The provided design doesn't show a hamburger menu in the header bar itself, only "Leads". 
+                             However, typically sidebars have triggers. The Figma design node "155:12727" has "03 Icon Button" hidden. 
+                             I will keep the .leads-title but remove the hamburger to match the design strictness, or keep it if it's outside the design scope?
+                             The request is "Replace the .leads-header with...". The design shows "Leads" text on the left.
+                             I will match the design exactly as requested (Title only).
+                        -->
+                        <div class="leads-title">Leads</div>
+                    </div>
+                    <div class="leads-header-right">
+                        <!-- Unclaimed Leads Pill -->
+                        <div class="leads-pill">
+                            <div class="leads-pill-icon">
+                                <img src="./assets/hand.svg" alt="Hand" style="width: 100%; height: 100%;">
+                            </div>
+                            <span class="leads-pill-text"><strong>24</strong> Unclaimed Leads</span>
+                        </div>
+
+                        <!-- New Leads Pill -->
+                        <div class="leads-pill">
+                            <div class="leads-pill-icon">
+                                <img src="./assets/lightning.svg" alt="New" style="width: 100%; height: 100%;">
+                            </div>
+                            <span class="leads-pill-text"><strong>22</strong> New Leads</span>
+                        </div>
+
+                        <!-- Calendar Icon -->
+                        <button class="btn-calendar">
+                            <img src="./assets/calendar.svg" width="20" height="20" alt="Calendar">
+                        </button>
+
+                        <!-- Create Lead Button -->
+                        <button class="btn-primary">
+                            Create Lead
+                        </button>
+                    </div>
+                </div>
+
+                <div class="leads-scroll-view">
+                    <!-- Filter Bar -->
+                    <div class="leads-filter-bar">
+                        <div class="leads-filter-left">
+                            <button class="filter-main-btn">
+                                <div class="filter-icon-wrapper">
+                                    <img src="./assets/filter.svg" width="16" height="16" alt="Filter">
+                                    <span class="filter-badge-new">2</span>
+                                </div>
+                                Active Leads Last 30 days
+                            </button>
+
+                            <div class="filter-divider"></div>
+                            <span class="filter-result-text">23,312 Result(s)</span>
+
+                            <button class="sort-btn">
+                                <img src="./assets/sort.svg" width="16" height="16" alt="Sort">
+                            </button>
+                        </div>
+
+                        <div class="leads-filter-right">
+                            <div class="search-container">
+                                <div class="search-icon">
+                                    <img src="./assets/search.svg" width="14" height="14" alt="Search">
+                                </div>
+                                <input type="text" class="search-input-new">
+                                <div class="info-icon">
+                                    <img src="./assets/info.svg" width="14" height="14" alt="Info">
+                                </div>
+                            </div>
+
+                            <button class="action-icon-btn">
+                                <img src="./assets/download.svg" width="16" height="16" alt="Task">
+                            </button>
+
+                            <button class="actions-dropdown-btn">
+                                Actions
+                                <img src="./assets/chevron-down.svg" width="10" height="10" alt="Actions">
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="leads-quick-filters">
+                        <div class="leads-quick-filter-scroll">
+                            <button class="leads-quick-filter-btn">Active Leads last 30 days</button>
+                            <button class="leads-quick-filter-btn">All Active Leads</button>
+                            <button class="leads-quick-filter-btn">Active with Proposals</button>
+                            <button class="leads-quick-filter-btn">Unsold Visits Last 30 Days</button>
+                            <button class="leads-quick-filter-btn">Recently Viewed</button>
+                            <button class="leads-quick-filter-btn">Active Leads Last Contacted > 2d</button>
+                        </div>
+                        <button class="leads-quick-filter-edit">
+                            <img src="./assets/edit.svg" width="16" height="16" alt="Edit"
+                                style="filter: brightness(0) invert(1);">
+                        </button>
+                    </div>
+
+                    <!-- Empty Content Body -->
+                    <!-- Table Content Body -->
+                    <div class="leads-content-body">
+                        <div class="leads-table-container">
+                            <table class="leads-table">
+                                <thead>
+                                    <tr>
+                                        <th class="col-checkbox">
+                                            <div class="custom-checkbox">
+                                                <input type="checkbox">
+                                            </div>
+                                        </th>
+                                        <th class="col-contact">Contact Name</th>
+                                        <th>Lead ID</th>
+                                        <th>Buyer Type</th>
+                                        <th>Stock Type</th>
+                                        <th>Department</th>
+                                        <th>Vehicle of Interest</th>
+                                        <th>Salesperson</th>
+                                        <th>Stock#</th>
+                                        <th>Status</th>
+                                        <th class="col-gear">
+                                            <img src="./assets/gear-simple.svg" width="24" height="24" alt="Settings">
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody">
+                                    <!-- Rows will be generated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <!-- Pagination -->
+                <div class="leads-pagination">
+                    <div class="pagination-left">
+                        <button class="pagination-dropdown">
+                            50
+                            <img src="./assets/chevron-down.svg" width="12" height="12" alt="Select">
+                        </button>
+
+                        <span class="pagination-label">Results per page</span>
+                    </div>
+                    <div class="pagination-divider"></div>
+                    <div class="pagination-right">
+                        <!-- First -->
+                        <button class="page-nav-btn" disabled>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M11 12L7 8L11 4M7 12L3 8L7 4" stroke="currentColor" stroke-width="1.5"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            First
+                        </button>
+                        <!-- Prev -->
+                        <button class="page-nav-btn" disabled>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            Prev
+                        </button>
+
+                        <div class="page-numbers-list">
+                            <button class="page-number active">1</button>
+                            <button class="page-number">2</button>
+                            <button class="page-number">3</button>
+                            <button class="page-number">4</button>
+                            <button class="page-number">5</button>
+                            <button class="page-number">6</button>
+                            <button class="page-number">7</button>
+                            <button class="page-number">8</button>
+                            <button class="page-number">9</button>
+                            <button class="page-number">10</button>
+                        </div>
+
+                        <!-- Next -->
+                        <button class="page-nav-btn">
+                            Next
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                        <!-- Last -->
+                        <button class="page-nav-btn">
+                            Last
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M5 4L9 8L5 12M9 4L13 8L9 12" stroke="currentColor" stroke-width="1.5"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Popover -->
+            <div id="userPopover" class="user-popover">
+                <svg class="popover-arrow" viewBox="0 0 24.2487 14.25">
+                    <path d="M12.1244 0L24.2487 14.25H0L12.1244 0Z" fill="white" />
+                </svg>
+
+                <div class="popover-header">
+                    <div class="popover-avatar">
+                        <img src="http://localhost:3845/assets/e3ae1831f52d29fc9adebc0b12a8a2355bfadbcf.png"
+                            alt="Avatar">
+                    </div>
+                    <div class="popover-user-info">
+                        <div class="popover-user-name">Alex Parker</div>
+                        <div class="popover-user-title">Service Director</div>
+                    </div>
+                </div>
+
+                <div class="popover-divider"></div>
+
+                <div class="popover-section">
+                    <div class="popover-item" id="roleItem">
+                        <div class="popover-item-text">
+                            <div class="popover-item-sub">Role</div>
+                            <div class="popover-item-label" id="currentRole">Service Director</div>
+                        </div>
+                        <div class="popover-chevron">
+                            <svg viewBox="0 0 16 16" fill="none">
+                                <path
+                                    d="M5.14645 1.14645C5.34171 0.951184 5.65829 0.951184 5.85355 1.14645L11.8536 7.14645C12.0488 7.34171 12.0488 7.65829 11.8536 7.85355L5.85355 13.8536C5.65829 14.0488 5.34171 14.0488 5.14645 13.8536C4.95118 13.6583 4.95118 13.3417 5.14645 13.1464L10.7929 7.5L5.14645 1.85355C4.95118 1.65829 4.95118 1.34171 5.14645 1.14645Z"
+                                    fill="#71717A" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Role Sub Popover -->
+                <div id="rolePopover" class="role-popover">
+                    <div class="role-search">
+                        <div class="role-search-input-wrapper">
+                            <svg class="role-search-icon" viewBox="0 0 16 16">
+                                <path
+                                    d="M6.5 1C9.53757 1 12 3.46243 12 6.5C12 7.83872 11.5206 9.06482 10.7256 10.0186L14.3535 13.6465C14.5488 13.8417 14.5488 14.1583 14.3535 14.3535C14.1583 14.5488 13.8417 14.5488 13.6465 14.3535L10.0186 10.7256C9.06482 11.5206 7.83872 12 6.5 12C3.46243 12 1 9.53757 1 6.5C1 3.46243 3.46243 1 6.5 1ZM6.5 2C4.01472 2 2 4.01472 2 6.5C2 8.98528 4.01472 11 6.5 11C8.98528 11 11 8.98528 11 6.5C11 4.01472 8.98528 2 6.5 2Z"
+                                    fill="#969AA3" />
+                            </svg>
+                            <input type="text" class="role-search-input" placeholder="Search">
+                        </div>
+                    </div>
+                    <div class="role-list" id="roleList">
+                        <div class="role-item">Controller <svg class="role-check" viewBox="0 0 16 16">
+                                <path
+                                    d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
+                            </svg></div>
+                        <div class="role-item">Salesperson <svg class="role-check" viewBox="0 0 16 16">
+                                <path
+                                    d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
+                            </svg></div>
+                        <div class="role-item">Service Advisor <svg class="role-check" viewBox="0 0 16 16">
+                                <path
+                                    d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
+                            </svg></div>
+                        <div class="role-item selected">Service Director <svg class="role-check" viewBox="0 0 16 16">
+                                <path
+                                    d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
+                            </svg></div>
+                        <div class="role-item">General Manager <svg class="role-check" viewBox="0 0 16 16">
+                                <path
+                                    d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
+                            </svg></div>
+                    </div>
+                </div>
+
+
+                <div class="popover-divider"></div>
+
+                <div class="popover-section">
+                    <div class="popover-item">
+                        <div class="popover-item-text">
+                            <div class="popover-item-sub">Printer Location</div>
+                            <div class="popover-item-label">Default Site</div>
+                        </div>
+                        <div class="popover-chevron">
+                            <svg viewBox="0 0 16 16" fill="none">
+                                <path
+                                    d="M5.14645 1.14645C5.34171 0.951184 5.65829 0.951184 5.85355 1.14645L11.8536 7.14645C12.0488 7.34171 12.0488 7.65829 11.8536 7.85355L5.85355 13.8536C5.65829 14.0488 5.34171 14.0488 5.14645 13.8536C4.95118 13.6583 4.95118 13.3417 5.14645 13.1464L10.7929 7.5L5.14645 1.85355C4.95118 1.65829 4.95118 1.34171 5.14645 1.14645Z"
+                                    fill="#71717A" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="popover-divider"></div>
+
+                <div class="popover-section">
+                    <div class="popover-item">
+                        <div class="popover-icon">
+                            <svg viewBox="0 0 16 16" fill="none">
+                                <path
+                                    d="M8 0.5C12.142 0.5 15.5 3.858 15.5 8C15.5 12.142 12.142 15.5 8 15.5C3.858 15.5 0.5 12.142 0.5 8C0.5 3.858 3.858 0.5 8 0.5ZM7.5 8.5L5.009 8.501C5.12 11.503 6.214 13.899 7.5 14.402V8.5ZM10.991 8.501L8.5 8.5L8.501 14.402C9.786 13.898 10.88 11.503 10.991 8.501V8.501ZM4.008 8.501H1.519C1.711 11.025 3.344 13.145 5.598 14.042C4.679 12.765 4.086 10.762 4.009 8.501H4.008ZM14.481 8.5H11.992C11.915 10.761 11.322 12.764 10.404 14.042C12.657 13.144 14.29 11.023 14.482 8.5H14.481ZM5.597 1.957L5.572 1.968C3.332 2.871 1.71 4.985 1.519 7.5H4.009C4.086 5.239 4.679 3.235 5.598 1.957H5.597ZM7.5 1.598C6.214 2.102 5.119 4.497 5.009 7.5H7.5V1.598ZM10.402 1.958L10.447 2.02C11.341 3.3 11.916 5.276 11.991 7.5H14.481C14.289 4.976 12.656 2.855 10.402 1.958V1.958ZM8.501 1.598L8.5 7.5H10.991C10.88 4.498 9.786 2.103 8.501 1.598V1.598Z"
+                                    fill="#444F5C" />
+                            </svg>
+                        </div>
+                        <div class="popover-item-text">
+                            <div class="popover-item-label">Download Centre</div>
+                        </div>
+                        <div class="popover-chevron">
+                            <svg viewBox="0 0 16 16" fill="none">
+                                <path
+                                    d="M5.14645 1.14645C5.34171 0.951184 5.65829 0.951184 5.85355 1.14645L11.8536 7.14645C12.0488 7.34171 12.0488 7.65829 11.8536 7.85355L5.85355 13.8536C5.65829 14.0488 5.34171 14.0488 5.14645 13.8536C4.95118 13.6583 4.95118 13.3417 5.14645 13.1464L10.7929 7.5L5.14645 1.85355C4.95118 1.65829 4.95118 1.34171 5.14645 1.14645Z"
+                                    fill="#71717A" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="popover-divider"></div>
+
+                <div class="popover-section">
+                    <div class="popover-item">
+                        <div class="popover-icon">
+                            <svg viewBox="0 0 16 16" fill="none">
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                    d="M1.5 9.5C1.77614 9.5 2 9.72386 2 10V12.5C2 12.7761 2.22386 13 2.5 13H12.5C12.7761 13 13 12.7761 13 12.5V10C13 9.72386 13.2239 9.5 13.5 9.5C13.7761 9.5 14 9.72386 14 10V12.5C14 13.3284 13.3284 14 12.5 14H2.5C1.67157 14 1 13.3284 12.5 14H2.5C1.67157 14 1 13.3284 1 12.5V10C1 9.72386 1.22386 9.5 1.5 9.5ZM7.5 2C7.77614 2 8 2.22386 8 2.5V9.5C8 9.77614 7.77614 10 7.5 10C7.22386 10 7 9.77614 7 9.5V2.5C7 2.22386 7.22386 2 7.5 2ZM4.14645 7.14645C4.34171 6.95118 4.65829 6.95118 4.85355 7.14645L7.5 9.79289L10.1464 7.14645C10.3417 6.95118 10.6583 6.95118 10.8536 7.14645C11.0488 7.34171 11.0488 7.65829 10.8536 7.85355L7.85355 10.8536C7.65829 11.0488 7.34171 11.0488 7.14645 10.8536L4.14645 7.85355C3.95118 7.65829 3.95118 7.34171 4.14645 7.14645Z"
+                                    fill="#444F5C" />
+                            </svg>
+                        </div>
+                        <div class="popover-item-text">
+                            <div class="popover-item-label">Download Centre</div>
+                        </div>
+                    </div>
+                    <div class="popover-item">
+                        <div class="popover-icon">
+                            <img src="./assets/print.svg" alt="Print" style="width: 100%; height: 100%;">
+                        </div>
+                        <div class="popover-item-text">
+                            <div class="popover-item-label">Print Status</div>
+                        </div>
+                    </div>
+                    <div class="popover-item">
+                        <div class="popover-icon">
+                            <img src="./assets/kabab-menu.svg" alt="Settings" style="width: 100%; height: 100%;">
+                        </div>
+                        <div class="popover-item-text">
+                            <div class="popover-item-label">View Profile Setting</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="popover-divider"></div>
+
+                <div class="popover-section">
+                    <div class="popover-item">
+                        <div class="popover-icon">
+                            <svg viewBox="0 0 16 16" fill="none">
+                                <path
+                                    d="M9.658 3.969V1.922C9.658 1.495 9.296 1.143 8.843 1.143H1.959C1.505 1.143 1.144 1.495 1.144 1.922V14.078C1.144 14.505 1.506 14.857 1.959 14.857H8.843C9.297 14.857 9.658 14.505 9.658 14.078V12.06C9.658 11.744 9.914 11.489 10.229 11.489C10.544 11.489 10.8 11.745 10.8 12.06V14.078C10.8 15.143 9.92 16 8.842 16H1.958C0.88 16 -4.66825e-08 15.143 -4.66825e-08 14.078V1.922C-4.66825e-08 0.857 0.88 0 1.958 0H8.842C9.92 0 10.8 0.857 10.8 1.922V3.969C10.8 4.285 10.544 4.54 10.229 4.54C9.914 4.54 9.658 4.284 9.658 3.969V3.969ZM13.676 7.429L11.542 5.826C11.295 5.641 11.24 5.283 11.419 5.028C11.598 4.773 11.943 4.716 12.189 4.901L15.773 7.594C16.077 7.822 16.077 8.291 15.773 8.519L12.189 11.212C11.942 11.397 11.598 11.34 11.419 11.085C11.24 10.83 11.295 10.472 11.542 10.287L13.824 8.573H3.981C3.676 8.573 3.43 8.317 3.43 8.002C3.43 7.687 3.677 7.431 3.981 7.431H13.676V7.429Z"
+                                    fill="#444F5C" />
+                            </svg>
+                        </div>
+                        <div class="popover-item-text">
+                            <div class="popover-item-label">Logout</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="navigation.js"></script>
+    <script>
+        const userCircle = document.querySelector('.user-circle');
+        const userPopover = document.getElementById('userPopover');
+        const roleItem = document.getElementById('roleItem');
+        const rolePopover = document.getElementById('rolePopover');
+        const roleList = document.getElementById('roleList');
+        const currentRoleLabel = document.getElementById('currentRole');
+        const searchInput = document.querySelector('.role-search-input');
+
+        // Toggle User Popover
+        userCircle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isVisible = userPopover.style.display === 'flex';
+            if (isVisible) {
+                userPopover.style.display = 'none';
+                rolePopover.style.display = 'none';
+                roleItem.classList.remove('active');
+            } else {
+                userPopover.style.display = 'flex';
+            }
+        });
+
+        // Toggle Role Sub-Popover
+        roleItem.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isVisible = rolePopover.style.display === 'flex';
+            if (isVisible) {
+                rolePopover.style.display = 'none';
+                roleItem.classList.remove('active');
+            } else {
+                rolePopover.style.display = 'flex';
+                roleItem.classList.add('active');
+            }
+        });
+
+        // Role Selection
+        roleList.addEventListener('click', (e) => {
+            const item = e.target.closest('.role-item');
+            if (item) {
+                // Update selected visual
+                document.querySelectorAll('.role-item').forEach(el => el.classList.remove('selected'));
+                item.classList.add('selected');
+
+                // Update label
+                const newRole = item.innerText; // or textContent to remove leading/trailing space if any
+                currentRoleLabel.textContent = newRole.trim();
+
+                // Close sub popover
+                rolePopover.style.display = 'none';
+                roleItem.classList.remove('active');
+                e.stopPropagation();
+            }
+        });
+
+        // Search Filter
+        searchInput.addEventListener('click', e => e.stopPropagation());
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const items = roleList.querySelectorAll('.role-item');
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(term) ? 'flex' : 'none';
+            });
+        });
+
+        // Outside Click
+        document.addEventListener('click', (e) => {
+            if (!userPopover.contains(e.target) && e.target !== userCircle) {
+                userPopover.style.display = 'none';
+                rolePopover.style.display = 'none';
+                roleItem.classList.remove('active');
+            }
+        });
+
+
+        // Data Generation for Table
+        const buyerTypes = ["Individual", "Business", "Fleet"];
+        const stockTypes = ["New", "Used", "CPO"];
+        const departments = ["Sales", "Service", "Finance"];
+        const statuses = ["Active", "Inactive", "New", "Contacted", "Proposal Sent"];
+
+        function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+        function randomItem(arr) { return arr && arr.length > 0 ? arr[Math.floor(Math.random() * arr.length)] : "Unknown"; }
+
+        async function initTableData() {
+            const customerNames = [];
+            const employeeNames = [];
+            const vehicles = [];
+
+            try {
+                const response = await fetch('mktng-data-formats.csv');
+                if (!response.ok) throw new Error('Network response was not ok');
+                const text = await response.text();
+
+                // Simple CSV parser assuming no commas in values for the target columns
+                const lines = text.split('\n');
+                lines.forEach(line => {
+                    // Skip empty lines or comments
+                    if (!line || line.trim().startsWith('#') || line.trim().startsWith('Section')) return;
+
+                    const columns = line.split(',').map(c => c.trim());
+                    if (columns.length < 3) return;
+
+                    const type = columns[0];
+                    const value = columns[2]; // Value is at index 2 based on CSV headers: Section,Attribute,Value
+
+                    if (type === 'Customer') {
+                        customerNames.push(value);
+                    } else if (type === 'Employee') {
+                        employeeNames.push(value);
+                    } else if (type === 'Vehicle') {
+                        vehicles.push(value);
+                    }
+                });
+
+            } catch (error) {
+                console.warn('Failed to load CSV data, using placeholders or empty data:', error);
+                // Fallbacks could be added here if critical
+                customerNames.push("Customer Load Failed");
+                employeeNames.push("Employee Load Failed");
+                vehicles.push("Vehicle Load Failed");
+            }
+
+            // Ensure we have data to avoid infinite loops or errors if CSV is empty
+            if (customerNames.length === 0) customerNames.push("Generic Customer");
+            if (employeeNames.length === 0) employeeNames.push("Generic Agent");
+            if (vehicles.length === 0) vehicles.push("Generic Vehicle");
+
+            const tableBody = document.getElementById('tableBody');
+            let rowsHtml = '';
+
+            for (let i = 0; i < 50; i++) {
+                const contactName = randomItem(customerNames);
+                const leadId = randomInt(100000, 999999);
+                const buyerType = randomItem(buyerTypes);
+                const stockType = randomItem(stockTypes);
+                const department = randomItem(departments);
+
+                const vehicle = randomItem(vehicles);
+
+                const salesperson = randomItem(employeeNames);
+                const stockNum = `STK-${randomInt(1000, 9999)}`;
+                const status = randomItem(statuses);
+
+                // Salesperson Logic
+                let salespersonHtml;
+                const isUnassigned = Math.random() < 0.2; // 20% chance of being unassigned
+
+                if (isUnassigned) {
+                    salespersonHtml = `<button class="assign-link">Assign</button>`;
+                } else {
+                    const initials = salesperson.split(' ').map(n => n[0]).join('').substring(0, 2);
+                    salespersonHtml = `
+                        <div class="salesperson-cell">
+                            <div class="table-avatar">${initials}</div>
+                            <span>${salesperson}</span>
+                        </div>
+                    `;
+                }
+
+                rowsHtml += `
+                    <tr>
+                        <td class="col-checkbox">
+                            <div class="custom-checkbox">
+                                <input type="checkbox">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="contact-cell">
+                                <span>${contactName}</span>
+                                <button class="overview-link">Overview</button>
+                            </div>
+                        </td>
+                        <td>${leadId}</td>
+                        <td>${buyerType}</td>
+                        <td>${stockType}</td>
+                        <td>${department}</td>
+                        <td>${vehicle}</td>
+                        <td>${salespersonHtml}</td>
+                        <td>${stockNum}</td>
+                        <td>${status}</td>
+                        <td class="col-gear">
+                            <img src="./assets/kabab-menu.svg" width="16" height="16" alt="Settings">
+                        </td>
+                    </tr>
+                `;
+            }
+
+            tableBody.innerHTML = rowsHtml;
+        }
+
+        // Initialize
+        initTableData();
+    </script>
+</body>
+
+</html>

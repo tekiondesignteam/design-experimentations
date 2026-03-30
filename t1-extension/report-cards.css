@@ -1,0 +1,165 @@
+/* --- REPORT DOWNLOAD CARD --- */
+.report-download-card {
+    background: #FFFFFF !important;
+    border: 1px solid #E8E9EB !important;
+    border-radius: 8px !important;
+    padding: 10px 12px !important;
+    margin-top: 12px !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    width: 100% !important;
+    max-width: 400px !important;
+    box-sizing: border-box !important;
+}
+
+.report-download-card:hover {
+    border-color: #4285f4 !important;
+    background: #F8FAFC !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+}
+
+.report-icon-box {
+    width: 48px !important;
+    height: 58px !important;
+    border-radius: 8px !important;
+    background: rgba(0, 191, 165, 0.08) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+}
+
+.report-icon-box svg {
+    width: 32px !important;
+    height: 32px !important;
+    display: block !important;
+}
+
+.report-info {
+    flex: 1 !important;
+    min-width: 0 !important;
+}
+
+.report-name {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #161616 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    white-space: normal !important;
+    line-height: 1.4 !important;
+    margin-bottom: 2px !important;
+}
+
+.report-meta {
+    font-size: 13px !important;
+    color: #4285f4 !important;
+    font-weight: 500 !important;
+}
+
+.report-view-link {
+    color: #4285f4 !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+}
+
+.report-view-link:hover {
+    text-decoration: underline !important;
+}
+
+/* --- AI DELAY CARD --- */
+.ai-delay-card {
+    background: #FFFFFF !important;
+    border: 1px solid #E8E9EB !important;
+    border-radius: 12px !important;
+    padding: 16px !important;
+    margin-top: 12px !important;
+    margin-bottom: 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04) !important;
+    animation: fadeIn 0.4s ease-out !important;
+    width: 100% !important;
+    max-width: 400px !important;
+    box-sizing: border-box !important;
+}
+
+.delay-card-content {
+    display: flex !important;
+    gap: 12px !important;
+    align-items: flex-start !important;
+}
+
+.delay-icon-wrapper {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 8px !important;
+    background: #F1F5F9 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #969AA3 !important;
+    flex-shrink: 0 !important;
+}
+
+.delay-icon-wrapper svg {
+    width: 18px !important;
+    height: 18px !important;
+}
+
+.delay-title {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #161616 !important;
+    margin-bottom: 2px !important;
+}
+
+.delay-desc {
+    font-size: 12px !important;
+    color: #969AA3 !important;
+    line-height: 1.4 !important;
+}
+
+.notify-btn {
+    height: 36px !important;
+    background: #4285f4 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+}
+
+.notify-btn:hover {
+    opacity: 0.9 !important;
+}
+
+/* --- OPEN BUTTON COMPACT --- */
+.open-btn-compact {
+    background: #4285f4 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 2px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    font-family: inherit !important;
+}
+
+.open-btn-compact:hover {
+    background: #3367D6 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}

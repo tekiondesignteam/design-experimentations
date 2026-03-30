@@ -1,0 +1,3386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tachyon Motors</title>
+    <title>Tachyon Motors</title>
+    <style>
+        :root {
+            --bg-dark: #3F4757;
+            --bg-dark-border: #152532;
+            --primary-teal: #00BFA5;
+            --text-white: #FFFFFF;
+            --text-gray: #969AA3;
+            --search-bg: #FFFFFF;
+            --sidebar-width: 64px;
+            --header-height: 56px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Proxima Nova', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Icons */
+        .icon {
+            width: 24px;
+            height: 24px;
+            display: block;
+            fill: var(--text-white);
+        }
+
+        .icon-sm {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Header */
+        header {
+            height: var(--header-height);
+            background-color: var(--bg-dark);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            border-bottom: 1px solid var(--bg-dark-border);
+            /* Screenshot doesn't show a strong border, maybe shadow or just color diff. 
+               The context says 'alwaysDark/borderAlwaysDark: #152532'. */
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding-left: 4px;
+        }
+
+        .app-launcher {
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+        }
+
+        .logo {
+            width: 71px;
+            height: 32px;
+            /* Main Tekion logo */
+            color: var(--primary-teal);
+        }
+
+        .search-container {
+            flex: 0 1 480px;
+            /* Fixed width or max width */
+            margin: 0 24px;
+            position: relative;
+        }
+
+        .search-input-wrapper {
+            background: white;
+            border-radius: 4px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+        }
+
+        .search-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            /* The path has fill #969AA3 */
+        }
+
+        .search-icon path {
+            fill: #969AA3;
+        }
+
+        .search-input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 13px;
+            color: #333;
+        }
+
+        .search-input::placeholder {
+            color: #999;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: var(--text-white);
+        }
+
+        .get-help {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .icon-btn {
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .icon-btn:hover {
+            opacity: 1;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            background: #5E6C7C;
+            /* Slightly lighter for the badge */
+            border-radius: 4px;
+            height: 40px;
+            /* padding: 0 4px 0 0; */
+            cursor: pointer;
+        }
+
+        .profile-initials-box {
+            background: #78909C;
+            /* Example placeholder color */
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border-radius: 4px 0 0 4px;
+            background-color: #798696;
+            color: white;
+            font-size: 13px;
+        }
+
+        .profile-info {
+            padding: 0 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            line-height: 1.1;
+        }
+
+        .profile-name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .profile-sub {
+            font-size: 11px;
+            opacity: 0.7;
+        }
+
+        .profile-arrow {
+            margin-right: 8px;
+        }
+
+        /* Layout */
+        .workspace {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--bg-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 8px;
+            border-right: 1px solid var(--bg-dark-border);
+        }
+
+        .sidebar-item {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            /* Ghost-like squares */
+            border-radius: 4px;
+            /* Screenshot shows slight radius? Or sharp */
+            /* Actually screenshot shows text squares: "DS", "OM" */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .sidebar-itembox {
+            background: #5E6672;
+            /* Lighter grey */
+            width: 48px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 4px;
+            border-radius: 2px;
+        }
+
+        /* The screenshot shows just text labels in boxes? 
+           "DS", "OM", "A", "CM", "CA", "SO", "PS", "PO". 
+           They look like tabs or buttons. */
+        .nav-item {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 24px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .nav-tile {
+            width: 40px;
+            height: 36px;
+            background-color: #6F7884;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 600;
+            font-size: 16px;
+            border-radius: 2px 2px 0 0;
+            transition: background-color 0.2s;
+        }
+
+        .nav-indicator {
+            width: 40px;
+            height: 4px;
+            border-radius: 0 0 2px 2px;
+        }
+
+        .nav-item:hover .nav-tile {
+            background-color: #7B8694;
+        }
+
+        /* Indicator Colors */
+        .indicator-pink {
+            background-color: #FEEAE6;
+        }
+
+        .indicator-teal {
+            background-color: #E6F9F6;
+        }
+
+        .indicator-green {
+            background-color: #EFFAEE;
+        }
+
+        .indicator-purple {
+            background-color: #F3E8FD;
+        }
+
+        .indicator-yellow {
+            background-color: #FFF8E6;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 12px;
+            width: 100%;
+        }
+
+        .clock-widget {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+            font-size: 10px;
+            opacity: 0.9;
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+
+        .clock-tile {
+            width: 40px;
+            height: 36px;
+            background-color: #6F7884;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 2px 2px 0 0;
+        }
+
+        .clock-indicator {
+            width: 40px;
+            height: 4px;
+            background-color: #FEEAE6;
+            border-radius: 0 0 2px 2px;
+            margin-bottom: 4px;
+        }
+
+        .user-circle {
+            width: 32px;
+            height: 32px;
+            background-color: #fff;
+            color: #3F4757;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .time-display {
+            font-size: 10px;
+            color: white;
+            margin-top: 4px;
+        }
+
+        .main-content {
+            flex: 1;
+            background-color: #f4f5f6;
+            overflow: auto;
+            position: relative;
+            padding: 24px;
+            display: flex;
+            gap: 24px;
+        }
+
+        /* User Popover Styles */
+        .user-popover {
+            position: fixed;
+            bottom: 32px;
+            left: 60px;
+            width: 280px;
+            background: #FFFFFF;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(22, 22, 26, 0.12);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            animation: popIn 0.2s ease-out;
+            border: 1px solid #EAEBEB;
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translate(-10px, 0);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translate(0, 0);
+            }
+        }
+
+        .popover-arrow {
+            position: absolute;
+            left: -8px;
+            bottom: 12px;
+            width: 8px;
+            height: 14px;
+            fill: #FFFFFF;
+            transform: rotate(-90deg);
+            filter: drop-shadow(-2px 0 2px rgba(0, 0, 0, 0.05));
+        }
+
+        .popover-header {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .popover-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4F46E5, #9333EA);
+            overflow: hidden;
+        }
+
+        .popover-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .popover-user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .popover-user-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111;
+        }
+
+        .popover-user-title {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .popover-divider {
+            height: 1px;
+            background-color: #EAEBEB;
+            width: 100%;
+        }
+
+        .popover-section {
+            padding: 8px 0;
+        }
+
+        .popover-item {
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+            position: relative;
+        }
+
+        .popover-item:hover {
+            background-color: #F5F7F8;
+        }
+
+        .popover-item-text {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .popover-item-label {
+            font-size: 14px;
+            font-weight: 400;
+            color: #444F5C;
+        }
+
+        .popover-item-sub {
+            font-size: 12px;
+            color: #71717A;
+        }
+
+        .popover-icon {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .popover-icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+
+        .popover-chevron {
+            width: 16px;
+            height: 16px;
+            opacity: 0.5;
+        }
+
+        /* Role Sub-Popover */
+        .role-popover {
+            position: absolute;
+            left: 100%;
+            top: 0;
+            margin-left: 8px;
+            width: 280px;
+            background: #FFFFFF;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(22, 22, 26, 0.12);
+            border: 1px solid #EAEBEB;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .role-search {
+            padding: 12px;
+            border-bottom: 1px solid #EAEBEB;
+        }
+
+        .role-search-input-wrapper {
+            display: flex;
+            align-items: center;
+            border: 1px solid #D4D5D6;
+            border-radius: 4px;
+            height: 32px;
+            padding: 0 8px;
+        }
+
+        .role-search-icon {
+            width: 14px;
+            height: 14px;
+            margin-right: 8px;
+            fill: #969AA3;
+        }
+
+        .role-search-input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 13px;
+            color: #333;
+        }
+
+        .role-list {
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 4px 0;
+        }
+
+        .role-item {
+            padding: 8px 16px;
+            font-size: 14px;
+            color: #444F5C;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .role-item:hover {
+            background-color: #F5F7F8;
+        }
+
+        .role-item.selected {
+            background-color: #E6F7FF;
+            font-weight: 600;
+            color: #111;
+        }
+
+        .role-item.selected::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background-color: #0070F3;
+            /* Adjust to match design blue */
+        }
+
+        .role-check {
+            display: none;
+            width: 16px;
+            height: 16px;
+            fill: #0070F3;
+        }
+
+        .role-item.selected .role-check {
+            display: block;
+        }
+
+        /* Active state for parent item */
+        .popover-item.active {
+            background-color: #E6F7FF;
+        }
+
+        /* Active state for parent item */
+        .popover-item.active {
+            background-color: #E6F7FF;
+        }
+
+        /* Leads Panel */
+        .leads-panel {
+            width: 288px;
+            background-color: #FFFFFF;
+            border-right: 1px solid #D4D5D6;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            flex-shrink: 0;
+            user-select: none;
+            position: relative;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .leads-panel-header {
+            padding: 16px 16px 0px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .leads-header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .leads-title-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #111;
+            cursor: pointer;
+        }
+
+        .leads-back-arrow {
+            width: 20px;
+            height: 20px;
+            stroke: #444F5C;
+        }
+
+        .leads-external-link {
+            width: 14px;
+            height: 14px;
+            stroke: #444F5C;
+            opacity: 0.7;
+        }
+
+        .leads-menu-icon {
+            width: 24px;
+            height: 24px;
+            fill: #969AA3;
+            cursor: pointer;
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            z-index: 10;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .leads-stats-row {
+            display: flex;
+            gap: 16px;
+        }
+
+        .leads-stat-pill {
+            background-color: #F4F5F6;
+            border-radius: 20px;
+            padding: 8px 16px;
+            /* Reduced vertical padding slightly to fit header constraints if needed, but design says 12px. Let's try 8px first as 12px might be too tall for the compact list view, or wait, design says 12px. Let's stick to 8px to be safe with vertical space or 10px? 
+            Design code: py-[12px]. Let's match design 12px. */
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #444F5C;
+            cursor: pointer;
+            line-height: 16px;
+            /* From design */
+        }
+
+        .leads-stat-pill img {
+            width: 16px;
+            height: 16px;
+            display: block;
+        }
+
+        .leads-tools-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding-top: 16px;
+            /* Figma has gap 8px */
+        }
+
+        .filter-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            /* margin-right approx 8px */
+        }
+
+        .filter-icon {
+            width: 16px;
+            height: 16px;
+            display: block;
+        }
+
+        .filter-badge {
+            position: absolute;
+            background-color: #4285F4;
+            border: 1px solid #F4F5F6;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            top: -10px;
+            left: 8px;
+            /* Visual adjustment */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .sort-pill {
+            background-color: #EBF5FF;
+            /* Light blue ish from screenshot/code */
+            border-radius: 20px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            padding: 4px 10px;
+            gap: 4px;
+            color: #0070F3;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .sort-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        .leads-search-row {
+            width: 100%;
+        }
+
+        .leads-search-input-wrapper {
+            position: relative;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            border: 1px solid #969AA3;
+            border-radius: 4px;
+            height: 32px;
+            overflow: hidden;
+        }
+
+        .leads-search-input {
+            flex: 1;
+            height: 100%;
+            border: none;
+            padding: 0 8px 0 34px;
+            /* Left padding for search icon */
+            font-size: 14px;
+            outline: none;
+            color: #111;
+            background: transparent;
+        }
+
+        .leads-search-input::placeholder {
+            color: #969AA3;
+        }
+
+        .leads-search-icon-left {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 14px;
+            height: 14px;
+            display: block;
+        }
+
+        .leads-info-section {
+            width: 32px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-left: 1px solid #969AA3;
+            cursor: pointer;
+        }
+
+        .leads-info-icon {
+            width: 14px;
+            height: 14px;
+            display: block;
+        }
+
+        .leads-count {
+            font-size: 14px;
+            color: #969AA3;
+            padding: 4px 16px 8px 16px;
+            font-weight: 400;
+        }
+
+        .leads-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .lead-item {
+            display: flex;
+            padding: 12px 16px;
+            border-bottom: 1px solid #F5F7F8;
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+
+        .lead-item:hover {
+            background-color: #F9FAFB;
+        }
+
+        .lead-item.selected {
+            background-color: #E6F7FF;
+        }
+
+        /* Blue bar on the left for selected item */
+        .lead-item.selected::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            /* Needs surrounding relative but design doesn't clearly show it, maybe just bg */
+        }
+
+        .lead-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .avatar-purple {
+            background-color: #9333EA;
+        }
+
+        .avatar-teal {
+            background-color: #2DD4BF;
+        }
+
+        .avatar-orange {
+            background-color: #F97316;
+        }
+
+        .avatar-pink {
+            background-color: #EC4899;
+        }
+
+        .avatar-blue {
+            background-color: #3B82F6;
+        }
+
+        .avatar-red {
+            background-color: #F43F5E;
+        }
+
+        .lead-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 0;
+        }
+
+        .lead-name {
+            font-weight: 400;
+            font-size: 14px;
+            color: #111;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .lead-status {
+            font-size: 12px;
+            color: #444F5C;
+        }
+
+        .lead-time {
+            font-size: 12px;
+            color: #71717A;
+            text-align: right;
+            margin-left: 8px;
+            white-space: nowrap;
+        }
+
+        /* Lead Info Panel */
+        .lead-info-panel {
+            width: 360px;
+            background-color: #FFFFFF;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            /* overflow-y: auto;  <-- Removing internal scroll */
+            flex-shrink: 0;
+            height: fit-content;
+            /* Ensure it wraps content */
+        }
+
+        .panel-tabs {
+            display: flex;
+            border-bottom: 1px solid #EAEBEB;
+            padding: 0 16px;
+        }
+
+        .panel-tab {
+            padding: 16px 4px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #969AA3;
+            cursor: pointer;
+            margin-right: 24px;
+            position: relative;
+        }
+
+        .panel-tab.active {
+            color: #111;
+        }
+
+        .panel-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #3B82F6;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .panel-section {
+            padding: 24px;
+            border-bottom: 1px solid #EAEBEB;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .contact-card {
+            display: flex;
+            gap: 12px;
+        }
+
+        .contact-avatar-lg {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            position: relative;
+        }
+
+        .contact-avatar-lg.orange {
+            background-color: #FFAB91;
+            /* Light Orange */
+            color: white;
+        }
+
+        .avatar-badge {
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #5E6C7C;
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 10px;
+            white-space: nowrap;
+        }
+
+        .contact-details {
+            flex: 1;
+        }
+
+        .contact-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111;
+            margin-bottom: 2px;
+        }
+
+        .contact-meta {
+            font-size: 12px;
+            color: #444F5C;
+            line-height: 1.4;
+        }
+
+        .action-icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            opacity: 0.7;
+        }
+
+        .contact-row {
+            display: grid;
+            grid-template-columns: 16px 1fr auto;
+            column-gap: 12px;
+            align-items: center;
+            /* Default center for single lines */
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: #111;
+        }
+
+        .contact-row.align-start {
+            align-items: start;
+        }
+
+        .contact-row div:first-child:empty {
+            /* Keeps the empty first cell for indentation */
+            width: 16px;
+            height: 1px;
+        }
+
+        .contact-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .contact-icon-left {
+            width: 16px;
+            height: 16px;
+            /* margin-right: 12px; removed for grid */
+            justify-self: start;
+        }
+
+        .contact-text {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .text-muted {
+            color: #71717A;
+        }
+
+        .contact-actions-right {
+            display: flex;
+            gap: 8px;
+        }
+
+        .status-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            /* Fixed label width */
+            gap: 16px 24px;
+            font-size: 14px;
+        }
+
+        .info-label {
+            color: #71717A;
+        }
+
+        .info-value {
+            color: #111;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .person-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .person-avatar-xs {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #DDE1E6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 600;
+            color: #444F5C;
+        }
+
+        .person-avatar-img {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .section-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #111;
+        }
+
+        .trade-in-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .car-thumb {
+            width: 48px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .car-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .car-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #111;
+        }
+
+        .car-mileage {
+            font-size: 12px;
+            color: #71717A;
+        }
+
+        /* Lead Details Main Layout */
+        /* Lead Details Main Layout */
+        .lead-details-main {
+            flex: 1;
+            /* Make it fill remaining width */
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            min-width: 0;
+            /* Allow shrinking horizontally if needed */
+        }
+
+        .lead-journey-card,
+        .todos-section,
+        .activity-section {
+            background: white;
+            border-radius: 8px;
+            width: 100%;
+            /* overflow: hidden; <-- Removing to prevent clipping */
+            flex-shrink: 0;
+            /* Prevent sections from being squashed */
+        }
+
+        /* Initial placeholder heights or flex values */
+        /* Initial placeholder heights or flex values */
+        .lead-journey-section {
+            min-height: 120px;
+            /* changed from height to min-height */
+            box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .icons-section {
+            min-height: 48px;
+            /* changed from height to min-height */
+            padding: 0;
+            /* Remove padding as buttons are self-contained */
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            /* No background or border for the section itself */
+        }
+
+        .icon-btn-circle {
+            width: 48px;
+            /* Figma says 48px min width or similar? Screenshot shows larger. Re-checking Figma code: w-[24px] inside p-[8px] inside rounded-[20px] -> maybe 40px or 48px. Let's stick to 40-48. */
+            height: 48px;
+            border-radius: 50%;
+            background-color: #FFFFFF;
+            /* White background for the button */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            /* box-shadow: 0 1px 2px rgba(0,0,0,0.05); Optional: add subtle shadow if needed, or border? Figma code has border token. */
+            border: 1px solid transparent;
+        }
+
+        .icon-btn-circle:hover {
+            background-color: #EBF4FF;
+        }
+
+        .icon-separator {
+            width: 1px;
+            height: 24px;
+            background-color: #E0E0E0;
+        }
+
+        .todos-section {
+            /* Override height to auto for content */
+            height: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .todo-header {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #161616;
+            border-bottom: 1px solid #F4F5F6;
+        }
+
+        .todo-item {
+            padding: 16px 24px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            border-bottom: 1px solid #F4F5F6;
+        }
+
+        .todo-icon-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .todo-icon-circle.pink {
+            background-color: #FFE0EC;
+        }
+
+        .todo-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .todo-title-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .todo-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #161616;
+        }
+
+        .todo-meta-row {
+            font-size: 14px;
+            color: #444F5C;
+            display: flex;
+            align-items: center;
+        }
+
+        .text-green {
+            color: #4BA343;
+            font-weight: 600;
+        }
+
+        .bullet {
+            margin: 0 4px;
+            color: #969AA3;
+        }
+
+        .todo-description {
+            font-size: 14px;
+            color: #969AA3;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 400px;
+            /* Adjust as needed */
+            margin-top: 2px;
+        }
+
+        .todo-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-check-in {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            padding: 9px 12px;
+            background: #F4F5F6;
+            border-radius: 4px;
+            border: none;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            color: #444F5C;
+            cursor: pointer;
+        }
+
+        .action-kebab {
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .todo-footer {
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .footer-text {
+            font-size: 14px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .text-link {
+            color: #3373DD;
+            /* Accent blue */
+            font-weight: 600;
+        }
+
+        .activity-section {
+            /* flex: 1; <-- removing to prevent greedy growth pushing others */
+            min-height: 400px;
+            background: #FFFFFF;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .activity-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            border-bottom: 1px solid #EAEBEB;
+            height: 48px;
+        }
+
+        .activity-tabs {
+            display: flex;
+            gap: 24px;
+            height: 100%;
+        }
+
+        .activity-tab {
+            font-size: 16px;
+            font-weight: 600;
+            color: #969AA3;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .activity-tab.active {
+            color: #3373DD;
+        }
+
+        .activity-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #3373DD;
+        }
+
+        .activity-actions {
+            display: flex;
+            gap: 16px;
+        }
+
+        .icon-btn-sm {
+            cursor: pointer;
+            opacity: 0.7;
+        }
+
+        .icon-btn-sm:hover {
+            opacity: 1;
+        }
+
+        .activity-subfilters {
+            padding: 12px 24px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .subfilter-pill {
+            padding: 6px 12px;
+            background: #F4F5F6;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #444F5C;
+            cursor: pointer;
+        }
+
+        .subfilter-pill.active {
+            background: #EBF4FF;
+            color: #3373DD;
+        }
+
+        .lead-snapshot {
+            margin: 0 24px 24px 24px;
+            background: linear-gradient(59deg, rgba(35, 104, 248, 0.08) -11.48%, rgba(36, 119, 251, 0.08) 40.67%, rgba(94, 208, 215, 0.08) 100%);
+            border-radius: 12px;
+            padding: 16px;
+            position: relative;
+            border: 1px solid #2368F8;
+        }
+
+        .snapshot-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .snapshot-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #161616;
+        }
+
+        .snapshot-meta {
+            font-size: 12px;
+            color: #71717A;
+            display: flex;
+            align-items: center;
+        }
+
+        .refresh-link {
+            color: #3373DD;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .separator {
+            margin: 0 8px;
+            color: #D4D5D6;
+        }
+
+        .snapshot-content {
+            font-size: 14px;
+            color: #161616;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .snapshot-footer {
+            display: flex;
+            justify-content: flex-end;
+            /* Align right */
+            align-items: center;
+            gap: 12px;
+            position: absolute;
+            bottom: -14px;
+            right: 16px;
+        }
+
+        .btn-more {
+            background-color: #EEF5FE;
+            /* Light blue */
+            border: 1px solid rgba(51, 115, 221, 0.2);
+            border-radius: 14px;
+            padding: 7px 12px;
+            color: #444F5C;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-family: inherit;
+        }
+
+        .snapshot-eye {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid #B3D8FF;
+            background-color: #EEF5FE;
+            display: flex;
+            align-items: center;
+            /* Center horizontally */
+            justify-content: center;
+            /* Center vertically */
+            cursor: pointer;
+        }
+
+        .snapshot-eye img {
+            display: block;
+            /* Ensure image behaves as block for centering */
+        }
+
+        .timeline-container {
+            padding: 0 24px 24px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            /* Items connect vertically */
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 16px;
+            position: relative;
+            padding-bottom: 24px;
+            /* Space between items */
+        }
+
+        .timeline-icon-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 32px;
+            flex-shrink: 0;
+        }
+
+        .timeline-icon-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            /* On top of line */
+        }
+
+        .timeline-icon-circle.pink {
+            background: rgba(244, 81, 145, 0.12);
+        }
+
+        .timeline-icon-circle.blue {
+            background: rgba(79, 104, 241, 0.12);
+        }
+
+        .timeline-icon-circle.purple {
+            background: rgba(70, 202, 212, 0.12);
+        }
+
+        .timeline-icon-circle.green {
+            background-color: rgba(0, 191, 165, 0.12);
+        }
+
+        .timeline-line {
+            width: 2px;
+            background: #F4F5F6;
+            /* Connecting line color */
+            flex: 1;
+            margin-top: -4px;
+            /* Slight overlap */
+            margin-bottom: -24px;
+            /* Extend to next item */
+        }
+
+        .timeline-item:last-child .timeline-line {
+            display: none;
+            /* No line after last item */
+        }
+
+        .timeline-content {
+            flex: 1;
+            padding-top: 6px;
+            /* Align with icon center somewhat */
+        }
+
+        .timeline-header-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .timeline-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #161616;
+        }
+
+        .timeline-timestamp {
+            font-size: 13px;
+            color: #71717A;
+        }
+
+        .timeline-subtitle {
+            font-size: 13px;
+            color: #71717A;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .timeline-body {
+            font-size: 14px;
+            color: #444F5C;
+            line-height: 1.5;
+        }
+
+        .timeline-body p {
+            margin-bottom: 8px;
+        }
+
+        .timeline-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-body strong {
+            font-weight: 600;
+        }
+
+        .timeline-meta {
+            font-size: 13px;
+            color: #969AA3;
+            margin-top: 8px;
+        }
+
+        .text-dark {
+            color: #161616;
+            font-weight: 500;
+        }
+
+        /* Journey Section Styles */
+        /* Journey Section Styles */
+        .lead-journey-stack {
+            position: relative;
+            /* Container for the stack */
+            margin-bottom: 24px;
+            /* Space below the whole stack */
+            padding-bottom: 12px;
+            /* Space for the bottom card peeking out */
+        }
+
+        .lead-journey-card {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            padding: 24px;
+            background: white;
+            border-radius: 8px;
+            z-index: 2;
+            box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .lead-journey-card-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 12px;
+            right: 12px;
+            height: 48px;
+            /* Height of the peek */
+            background: white;
+            border-radius: 8px;
+            z-index: 1;
+        }
+
+        .journey-badge-corner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: #F97316;
+            /* Deep Orange */
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-top-left-radius: 8px;
+            /* Match card radius */
+            border-bottom-right-radius: 8px;
+            line-height: 1;
+        }
+
+        .journey-header-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 32px;
+            margin-bottom: 24px;
+            justify-content: space-between;
+        }
+
+        .j-user-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .j-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #3B82F6;
+            /* Blue */
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .j-user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .j-user-name-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 2px;
+        }
+
+        .j-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111;
+        }
+
+        .j-badge-el {
+            background-color: #ACD942;
+            /* Light Green */
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 4px;
+            border-radius: 4px;
+            line-height: normal;
+        }
+
+        .j-user-status {
+            font-size: 13px;
+            color: #4BA343;
+            /* Green text */
+            font-weight: 400;
+        }
+
+        .j-vehicle-group,
+        .j-deal-group {
+            display: flex;
+            flex-direction: column;
+            padding: 5px 0;
+        }
+
+        .j-title-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 2px;
+        }
+
+        .j-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #111;
+        }
+
+        .j-edit-icon {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            opacity: 0.6;
+            color: #444F5C;
+        }
+
+        .j-subtitle {
+            font-size: 13px;
+            color: #71717A;
+        }
+
+        .j-status-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .j-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #F97316;
+            /* Orange */
+        }
+
+        /* Pipeline Styles */
+        .journey-pipeline {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .pipeline-steps {
+            display: flex;
+            align-items: center;
+        }
+
+        .p-pill {
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            position: relative;
+            z-index: 2;
+        }
+
+        .p-pill.dark {
+            background: #3F4757;
+            color: white;
+        }
+
+        .p-pill.light {
+            background: #F4F5F6;
+            color: #161616;
+        }
+
+        /* The connector line */
+        .p-connector {
+            width: 24px;
+            height: 24px;
+            /* Create a shape that connects nicely */
+            margin: 0 -6px;
+            /* Overlap pills */
+            z-index: 1;
+            position: relative;
+        }
+
+        /* Implementation: Just a bar for now */
+        .p-connector::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            /* Thickness of connection */
+            transform: translateY(-50%);
+        }
+
+        .p-connector.dark::after {
+            background: #3F4757;
+        }
+
+        .p-connector.light::after {
+            background: #F4F5F6;
+        }
+
+        /* Special case: connect dark to light -> gradient or hard stop? Figma shows light connector starting from Test Drive */
+        /* We used separate divs for connectors. */
+        /* Refinement: The connectors in design are curved. Simplified to thick lines here. */
+
+        .pipeline-next {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #969AA3;
+            font-size: 14px;
+        }
+
+        .journey-floating-tag {
+            position: absolute;
+            bottom: -6px;
+            /* Halfway over the bottom edge of the bottom card? Or stack? */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+            border: 1px solid #EAEBEB;
+            border-radius: 20px;
+            padding: 5px 12px;
+            font-size: 12px;
+            font-weight: 400;
+            color: #444F5C;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        /* Collapsed State for Leads Panel */
+        .leads-panel.collapsed {
+            width: 54px;
+            /* transition handles formatting */
+        }
+
+        .leads-panel.collapsed .leads-panel-header {
+            padding: 16px 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 
+           Since .leads-menu-icon is absolute now, .leads-header-top only contains title row.
+           We need to adjust it or hide title row.
+           Actually in original collapsed CSS, we did flex-direction: column on header-top to stack arrow and icon.
+           Now icon is absolute. Arrow should just be centered.
+        */
+        .leads-panel.collapsed .leads-header-top {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 24px;
+            /* No need for gap or column as icon is gone from flow */
+        }
+
+        .leads-panel.collapsed .leads-title-row {
+            font-size: 0;
+            margin: 0;
+            padding: 0;
+            gap: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .leads-panel.collapsed .leads-external-link {
+            display: none;
+        }
+
+        /* Ensure Back Arrow stays visible and positioned */
+        .leads-panel.collapsed .leads-back-arrow {
+            display: block;
+            margin: 0;
+        }
+
+        .leads-panel.collapsed .leads-menu-icon {
+            /* Floating effect */
+            background-color: #FFFFFF;
+            border-radius: 50%;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
+            padding: 6px;
+            width: 36px;
+            height: 36px;
+            fill: #444F5C;
+            right: -18px;
+            top: 30px;
+        }
+
+        .leads-panel.collapsed .leads-stats-row {
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .leads-panel.collapsed .leads-stat-pill {
+            flex-direction: column;
+            background: transparent;
+            padding: 0;
+            border-radius: 0;
+            font-size: 13px;
+            gap: 8px;
+            text-align: center;
+        }
+
+        .leads-panel.collapsed .leads-stat-pill img {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Hide other elements */
+        .leads-panel.collapsed .leads-tools-row,
+        .leads-panel.collapsed .leads-search-row,
+        .leads-panel.collapsed .leads-count,
+        .leads-panel.collapsed .leads-list {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="header-left">
+            <!-- App Launcher (9 dots) -->
+            <div class="app-launcher">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g id="Icon Size">
+                        <path id="Icon Color"
+                            d="M5 17C6.10457 17 7 17.8954 7 19C7 20.1046 6.10457 21 5 21C3.89543 21 3 20.1046 3 19C3 17.8954 3.89543 17 5 17ZM12 17C13.1046 17 14 17.8954 14 19C14 20.1046 13.1046 21 12 21C10.8954 21 10 20.1046 10 19C10 17.8954 10.8954 17 12 17ZM19 17C20.1046 17 21 17.8954 21 19C21 20.1046 20.1046 21 19 21C17.8954 21 17 20.1046 17 19C17 17.8954 17.8954 17 19 17ZM5 10C6.10457 10 7 10.8954 7 12C7 13.1046 6.10457 14 5 14C3.89543 14 3 13.1046 3 12C3 10.8954 3.89543 10 5 10ZM12 10C13.1046 10 14 10.8954 14 12C14 13.1046 13.1046 14 12 14C10.8954 14 10 13.1046 10 12C10 10.8954 10.8954 10 12 10ZM19 10C20.1046 10 21 10.8954 21 12C21 13.1046 20.1046 14 19 14C17.8954 14 17 13.1046 17 12C17 10.8954 17.8954 10 19 10ZM5 3C6.10457 3 7 3.89543 7 5C7 6.10457 6.10457 7 5 7C3.89543 7 3 6.10457 3 5C3 3.89543 3.89543 3 5 3ZM12 3C13.1046 3 14 3.89543 14 5C14 6.10457 13.1046 7 12 7C10.8954 7 10 6.10457 10 5C10 3.89543 10.8954 3 12 3ZM19 3C20.1046 3 21 3.89543 21 5C21 6.10457 20.1046 7 19 7C17.8954 7 17 6.10457 17 5C17 3.89543 17.8954 3 19 3Z"
+                            fill="white" />
+                    </g>
+                </svg>
+            </div>
+
+            <!-- Logo (Tekion) -->
+            <div class="logo">
+                <img src="assets/TachyonMotors_bw.png" alt="Tachyon Motors" style="width: 100%; height: 100%;">
+            </div>
+        </div>
+
+        <div class="search-container">
+            <div class="search-input-wrapper">
+                <div class="search-icon">
+                    <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M6.5 1C9.53757 1 12 3.46243 12 6.5C12 7.83872 11.5206 9.06482 10.7256 10.0186L14.3535 13.6465C14.5488 13.8417 14.5488 14.1583 14.3535 14.3535C14.1583 14.5488 13.8417 14.5488 13.6465 14.3535L10.0186 10.7256C9.06482 11.5206 7.83872 12 6.5 12C3.46243 12 1 9.53757 1 6.5C1 3.46243 3.46243 1 6.5 1ZM6.5 2C4.01472 2 2 4.01472 2 6.5C2 8.98528 4.01472 11 6.5 11C8.98528 11 11 8.98528 11 6.5C11 4.01472 8.98528 2 6.5 2Z"
+                            fill="#969AA3" />
+                    </svg>
+                </div>
+                <input type="text" class="search-input" placeholder="Search">
+            </div>
+        </div>
+
+        <div class="header-right">
+            <!-- Get Help -->
+            <div class="get-help">
+                <svg class="icon-sm" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Headset -->
+                    <path
+                        d="M8 1.5C11.2216 1.5 13.8328 4.1115 13.833 7.33301V12.3057C13.833 13.5278 12.9496 14.5706 11.7441 14.7715L9.41602 15.1602C9.14367 15.2055 8.88529 15.0214 8.83984 14.749C8.79446 14.4767 8.97871 14.2193 9.25098 14.1738L11.5801 13.7852C12.2667 13.6706 12.779 13.1009 12.8291 12.416C12.6739 12.4704 12.5068 12.5 12.333 12.5H11.8096C10.9023 12.5 10.1671 11.7646 10.167 10.8574V8.66699C10.167 7.65447 10.9875 6.83301 12 6.83301H12.8076C12.5573 4.39873 10.5004 2.5 8 2.5C5.49957 2.5 3.44274 4.39873 3.19238 6.83301H4C5.01252 6.83301 5.83301 7.65447 5.83301 8.66699V10.8574C5.83286 11.7646 5.09766 12.5 4.19043 12.5H3.66699C2.83857 12.5 2.16699 11.8284 2.16699 11V7.33301C2.16717 4.1115 4.77845 1.5 8 1.5ZM3.16699 11C3.16699 11.2761 3.39085 11.5 3.66699 11.5H4.19043C4.54538 11.5 4.83286 11.2123 4.83301 10.8574V8.66699C4.83301 8.20675 4.46024 7.83301 4 7.83301H3.16699V11ZM12 7.83301C11.5398 7.83301 11.167 8.20675 11.167 8.66699V10.8574C11.1671 11.2123 11.4546 11.5 11.8096 11.5H12.333C12.6091 11.5 12.833 11.2761 12.833 11V7.83301H12Z"
+                        fill="white" />
+                </svg>
+                <span>Get Help</span>
+                <svg class="icon-sm" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                    style="opacity: 0.7;">
+                    <path
+                        d="M16.4698 8.46978C16.7627 8.17689 17.2374 8.17689 17.5303 8.46978C17.8232 8.76268 17.8232 9.23746 17.5303 9.53033L12.0001 15.0606L6.46978 9.53033C6.17689 9.23744 6.17689 8.76268 6.46978 8.46978C6.76268 8.17689 7.23744 8.17689 7.53033 8.46978L12.0001 12.9395L16.4698 8.46978Z"
+                        fill="white" />
+                </svg>
+            </div>
+
+            <!-- Bell -->
+            <div class="icon-btn">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M12.0001 3.25C15.728 3.25008 18.7501 6.27213 18.7501 10V13.7725L20.6242 16.584C20.7775 16.814 20.7916 17.1097 20.6613 17.3535C20.5308 17.5973 20.2767 17.7499 20.0001 17.75H15.675C15.3275 19.4616 13.8143 20.7499 12.0001 20.75C10.186 20.75 8.67282 19.4616 8.32534 17.75H4.00015C3.72355 17.75 3.46953 17.5974 3.33902 17.3535C3.20861 17.1097 3.22273 16.8141 3.37613 16.584L5.25015 13.7725V10C5.25015 6.27208 8.27223 3.25 12.0001 3.25ZM9.87808 17.75C10.187 18.6239 11.0205 19.25 12.0001 19.25C12.9797 19.2499 13.8134 18.6238 14.1222 17.75H9.87808ZM12.0001 4.75C9.10065 4.75 6.75015 7.10051 6.75015 10V14C6.75015 14.148 6.70628 14.2928 6.62417 14.416L5.40152 16.25H18.5988L17.3761 14.416C17.294 14.2928 17.2501 14.1481 17.2501 14V10C17.2501 7.10055 14.8996 4.75008 12.0001 4.75ZM12.0001 6.25C12.4143 6.25008 12.7501 6.58584 12.7501 7C12.7501 7.41416 12.4143 7.74992 12.0001 7.75C10.7575 7.75 9.75015 8.75736 9.75015 10C9.75015 10.4142 9.41429 10.7499 9.00015 10.75C8.58593 10.75 8.25015 10.4142 8.25015 10C8.25015 7.92893 9.92908 6.25 12.0001 6.25Z"
+                        fill="white" />
+                </svg>
+            </div>
+
+            <!-- Message (Chat) -->
+            <div class="icon-btn">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M12 3.25C16.7353 3.25 20.75 6.62885 20.75 11C20.75 15.3711 16.7353 18.75 12 18.75C10.798 18.75 9.75756 18.6469 8.78906 18.2803C8.77262 18.2928 8.75451 18.3068 8.73438 18.3223C8.70903 18.3417 8.68022 18.3639 8.64648 18.3896C8.54138 18.4698 8.41096 18.5666 8.25488 18.667C7.60186 19.0871 6.61914 19.4932 4.96094 19.4932C4.66187 19.4932 4.39123 19.3155 4.27246 19.041C4.15394 18.7667 4.20959 18.4484 4.41406 18.2305C4.83776 17.7793 5.0481 17.1101 5.09375 16.4551C5.11606 16.135 5.09661 15.8468 5.05762 15.6318C5.03808 15.5242 5.01523 15.4466 4.99707 15.3984C4.99446 15.3915 4.99223 15.3856 4.99023 15.3809C4.41478 14.7512 3.97188 14.1261 3.67773 13.4121C3.37711 12.6824 3.25 11.9044 3.25 11C3.25 6.62885 7.26471 3.25 12 3.25ZM12 4.75C7.89873 4.75 4.75 7.63916 4.75 11C4.75 11.7578 4.85625 12.3331 5.06543 12.8408C5.27587 13.3514 5.60863 13.8389 6.12402 14.3984C6.26281 14.5491 6.34713 14.7279 6.40039 14.8691C6.45797 15.0218 6.50174 15.1908 6.5332 15.3643C6.5962 15.7116 6.6201 16.1253 6.58984 16.5596C6.56164 16.964 6.48377 17.4128 6.33105 17.8574C6.85999 17.7377 7.20438 17.559 7.44336 17.4053C7.55091 17.3361 7.64547 17.2663 7.7373 17.1963C7.75489 17.1829 7.77397 17.1677 7.79395 17.1523C7.86584 17.097 7.95067 17.0321 8.02539 16.9805C8.20676 16.8552 8.63246 16.5885 9.15332 16.8105C9.9129 17.1344 10.7849 17.25 12 17.25C16.1013 17.25 19.25 14.3608 19.25 11C19.25 7.63916 16.1013 4.75 12 4.75ZM8 9.75C8.69036 9.75 9.25 10.3096 9.25 11C9.25 11.6904 8.69036 12.25 8 12.25C7.30964 12.25 6.75 11.6904 6.75 11C6.75 10.3096 7.30964 9.75 8 9.75ZM12 9.75C12.6904 9.75 13.25 10.3096 13.25 11C13.25 11.6904 12.6904 12.25 12 12.25C11.3096 12.25 10.75 11.6904 10.75 11C10.75 10.3096 11.3096 9.75 12 9.75ZM16 9.75C16.6904 9.75 17.25 10.3096 17.25 11C17.25 11.6904 16.6904 12.25 16 12.25C15.3096 12.25 14.75 11.6904 14.75 11C14.75 10.3096 15.3096 9.75 16 9.75ZM8 10.75C7.86193 10.75 7.75 10.8619 7.75 11C7.75 11.1381 7.86193 11.25 8 11.25C8.13807 11.25 8.25 11.1381 8.25 11C8.25 10.8619 8.13807 10.75 8 10.75ZM12 10.75C11.8619 10.75 11.75 10.8619 11.75 11C11.75 11.1381 11.8619 11.25 12 11.25C12.1381 11.25 12.25 11.1381 12.25 11C12.25 10.8619 12.1381 10.75 12 10.75ZM16 10.75C15.8619 10.75 15.75 10.8619 15.75 11C15.75 11.1381 15.8619 11.25 16 11.25C16.1381 11.25 16.25 11.1381 16.25 11C16.25 10.8619 16.1381 10.75 16 10.75Z"
+                        fill="white" />
+                </svg>
+            </div>
+
+            <!-- Mail -->
+            <div class="icon-btn">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M20 5.25C20.4142 5.25 20.75 5.58579 20.75 6V18C20.75 18.4142 20.4142 18.75 20 18.75H4C3.58579 18.75 3.25 18.4142 3.25 18V6C3.25 5.58579 3.58579 5.25 4 5.25H20ZM12.3975 13.6357C12.1543 13.7877 11.8457 13.7877 11.6025 13.6357L4.75 9.35352V17.25H19.25V9.35352L12.3975 13.6357ZM4.75 7.58398L12 12.1152L19.25 7.58398V6.75H4.75V7.58398Z"
+                        fill="white" />
+                </svg>
+            </div>
+
+            <!-- Profile (TM) -->
+            <div class="user-profile">
+                <div class="profile-initials-box">TM</div>
+                <div class="profile-info">
+                    <div class="profile-name">Tachyon Motors</div>
+                    <div class="profile-sub">Main site</div>
+                </div>
+                <!-- Small chevron -->
+                <div class="profile-arrow">
+                    <svg class="icon-sm" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M11.293 6.00006C11.4883 5.80485 11.8048 5.80481 12.0001 6.00006C12.1953 6.19531 12.1953 6.51184 12.0001 6.70709L7.85357 10.8536C7.65833 11.0488 7.34181 11.0488 7.14654 10.8536L3.00006 6.70709C2.80479 6.51183 2.80479 6.19532 3.00006 6.00006C3.19532 5.80479 3.51183 5.80479 3.70709 6.00006L7.50006 9.79303L11.293 6.00006Z"
+                            fill="white" />
+                    </svg>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <div class="workspace">
+        <aside class="sidebar">
+            <div class="nav-item">
+                <div class="nav-tile">DS</div>
+                <div class="nav-indicator indicator-pink"></div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-tile">OM</div>
+                <div class="nav-indicator indicator-teal"></div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-tile">A</div>
+                <div class="nav-indicator indicator-green"></div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-tile">CM</div>
+                <div class="nav-indicator indicator-purple"></div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-tile">CA</div>
+                <div class="nav-indicator indicator-purple"></div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-tile">SO</div>
+                <div class="nav-indicator indicator-pink"></div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-tile">PS</div>
+                <div class="nav-indicator indicator-yellow"></div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-tile">PO</div>
+                <div class="nav-indicator indicator-yellow"></div>
+            </div>
+
+            <div class="sidebar-bottom">
+                <div class="clock-widget">
+                    <div class="clock-tile">
+                        <svg class="icon" style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M12 3.25C16.8325 3.25 20.75 7.16751 20.75 12C20.75 16.8325 16.8325 20.75 12 20.75C7.16751 20.75 3.25 16.8325 3.25 12C3.25 7.16751 7.16751 3.25 12 3.25ZM12 4.75C7.99594 4.75 4.75 7.99594 4.75 12C4.75 16.0041 7.99594 19.25 12 19.25C16.0041 19.25 19.25 16.0041 19.25 12C19.25 7.99594 16.0041 4.75 12 4.75ZM12 6.25C12.4142 6.25 12.75 6.58579 12.75 7V12.5361L16.335 14.3291C16.7053 14.5143 16.8558 14.9646 16.6709 15.335C16.4857 15.7053 16.0354 15.8558 15.665 15.6709L11.665 13.6709C11.411 13.5439 11.25 13.2841 11.25 13V7C11.25 6.58579 11.5858 6.25 12 6.25Z"
+                                fill="white" />
+                        </svg>
+                    </div>
+                    <div class="clock-indicator"></div>
+                    <div>00.00 Hrs</div>
+                </div>
+
+                <div class="user-circle">AP</div>
+                <div class="time-display">12:50 PM</div>
+            </div>
+        </aside>
+
+        <aside class="leads-panel">
+            <div class="leads-panel-header">
+                <div class="leads-header-top">
+                    <div class="leads-title-row">
+                        <svg class="leads-back-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                        Leads
+                        <svg class="leads-external-link" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                            <polyline points="15 3 21 3 21 9"></polyline>
+                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                        </svg>
+                    </div>
+                    <!-- Menu Icon (Hamburger) -->
+                    <svg class="leads-menu-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M4 18h16c.55 0 1-.45 1-1s-.45-1-1-1H4c-.55 0-1 .45-1 1s.45 1 1 1zm0-5h16c.55 0 1-.45 1-1s-.45-1-1-1H4c-.55 0-1 .45-1 1s.45 1 1 1zM3 7c0 .55.45 1 1 1h16c.55 0 1-.45 1-1s-.45-1-1-1H4c-.55 0-1 .45-1 1z" />
+                    </svg>
+                </div>
+
+                <div class="leads-stats-row">
+                    <div class="leads-stat-pill">
+                        <img src="assets/hand.svg" alt="Hand">
+                        922
+                    </div>
+                    <div class="leads-stat-pill">
+                        <img src="assets/lightning.svg" alt="Lightning">
+                        45
+                    </div>
+                </div>
+
+                <div class="leads-tools-row">
+                    <!-- Filter -->
+                    <div class="filter-wrapper">
+                        <img src="assets/filter.svg" class="filter-icon" alt="Filter">
+                        <div class="filter-badge">9</div>
+                    </div>
+                    <!-- Sort -->
+                    <div class="sort-pill">
+                        <img src="assets/sort.svg" class="sort-icon" alt="Sort">
+                        1
+                    </div>
+                </div>
+
+                <div class="leads-search-row">
+                    <div class="leads-search-input-wrapper">
+                        <img src="assets/search.svg" class="leads-search-icon-left" alt="Search">
+                        <input type="text" class="leads-search-input" placeholder="Search">
+                        <div class="leads-info-section">
+                            <img src="assets/info.svg" class="leads-info-icon" alt="Info">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="leads-count">6,192 leads</div>
+
+            <div class="leads-list">
+                <!-- Item 1 -->
+                <div class="lead-item">
+                    <div class="lead-avatar avatar-purple">FF</div>
+                    <div class="lead-info">
+                        <div class="lead-name">Flora Fleisher</div>
+                        <div class="lead-status">Sold</div>
+                    </div>
+                    <div class="lead-time">12hr</div>
+                </div>
+                <!-- Item 2 -->
+                <div class="lead-item">
+                    <div class="lead-avatar avatar-teal">DW</div>
+                    <div class="lead-info">
+                        <div class="lead-name">Deshaun Williams</div>
+                        <div class="lead-status">Inactive</div>
+                    </div>
+                    <div class="lead-time">12hr</div>
+                </div>
+                <!-- Item 3 -->
+                <div class="lead-item">
+                    <div class="lead-avatar avatar-orange">SW</div>
+                    <div class="lead-info">
+                        <div class="lead-name">Samuel Wilson</div>
+                        <div class="lead-status">Sold</div>
+                    </div>
+                    <div class="lead-time">3days</div>
+                </div>
+                <!-- Item 4 -->
+                <div class="lead-item">
+                    <div class="lead-avatar avatar-pink">JH</div>
+                    <div class="lead-info">
+                        <div class="lead-name">Jerome Hendrix</div>
+                        <div class="lead-status">Active</div>
+                    </div>
+                    <div class="lead-time">2hr</div>
+                </div>
+                <!-- Item 5 (Selected) -->
+                <div class="lead-item selected">
+                    <div class="lead-avatar avatar-blue">BD</div>
+                    <div class="lead-info">
+                        <div class="lead-name">Brandon Davis</div>
+                        <div class="lead-status">Active</div>
+                    </div>
+                    <div class="lead-time">4days</div>
+                </div>
+                <!-- Item 6 -->
+                <div class="lead-item">
+                    <div class="lead-avatar avatar-teal">AD</div>
+                    <div class="lead-info">
+                        <div class="lead-name">Arista Delgato</div>
+                        <div class="lead-status">Active</div>
+                    </div>
+                    <div class="lead-time">12hr</div>
+                </div>
+                <!-- Item 7 -->
+                <div class="lead-item">
+                    <div class="lead-avatar avatar-purple">SO</div>
+                    <div class="lead-info">
+                        <div class="lead-name">Shakil Omar</div>
+                        <div class="lead-status">Inactive</div>
+                    </div>
+                    <div class="lead-time">3mo</div>
+                </div>
+                <!-- Item 8 -->
+                <div class="lead-item">
+                    <div class="lead-avatar avatar-red">VL</div>
+                    <div class="lead-info">
+                        <div class="lead-name">Vincent Lamar</div>
+                        <div class="lead-status">Active</div>
+                    </div>
+                    <div class="lead-time">3days</div>
+                </div>
+                <!-- Item 9 -->
+                <div class="lead-item">
+                    <div class="lead-avatar avatar-blue">CG</div>
+                    <div class="lead-info">
+                        <div class="lead-name">Curtis Gable</div>
+                        <div class="lead-status">Sold</div>
+                    </div>
+                    <div class="lead-time">3mo</div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="lead-details-main">
+                <div class="lead-journey-stack">
+                    <div class="lead-journey-card">
+                        <div class="journey-badge-corner">R</div>
+
+                        <div class="journey-header-row">
+                            <!-- User -->
+                            <div class="j-user-group">
+                                <div class="j-avatar">BD</div>
+                                <div class="j-user-details">
+                                    <div class="j-user-name-row">
+                                        <span class="j-name">Brandon Davis</span>
+                                        <span class="j-badge-el">EL</span>
+                                    </div>
+                                    <div class="j-user-status">Active • 1day 4hrs</div>
+                                </div>
+                            </div>
+
+                            <!-- Vehicle -->
+                            <div class="j-vehicle-group">
+                                <div class="j-title-row">
+                                    <span class="j-title">2023 Mercedes Benz C Class + 3</span>
+                                    <!-- Edit Icon -->
+                                    <img src="assets/edit.svg" class="j-edit-icon" alt="Edit" />
+                                </div>
+                                <div class="j-subtitle">PR148791 | New | Reserved | 80k mi</div>
+                            </div>
+
+                            <!-- Deal -->
+                            <div class="j-deal-group">
+                                <div class="j-title-row">
+                                    <span class="j-title">Deal#180760</span>
+                                    <img src="assets/edit.svg" class="j-edit-icon" alt="Edit" />
+                                </div>
+                                <div class="j-status-row">
+                                    <span class="j-status-dot"></span>
+                                    <span class="j-subtitle" style="color: #111;">In F&I</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pipeline -->
+                        <div class="journey-pipeline">
+                            <div class="pipeline-steps">
+                                <div class="p-pill dark">Engage</div>
+                                <div class="p-connector dark"></div>
+                                <div class="p-pill dark">Visit</div>
+                                <div class="p-connector dark"></div>
+                                <div class="p-pill dark">Test-drive</div>
+                                <div class="p-connector light"></div>
+                                <div class="p-pill light">Proposal</div>
+                            </div>
+                            <div class="pipeline-next">
+                                <!-- Arrow Right -->
+                                <img src="assets/arrow-right.svg" alt="Arrow Right" style="width: 16px; height: 16px;">
+                                <span>Custom Stage</span>
+                                <!-- Chevron Down -->
+                                <img src="assets/chevron-down.svg" alt="Chevron Down"
+                                    style="width: 16px; height: 16px;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom stack card -->
+                    <div class="lead-journey-card-bottom"></div>
+
+                    <!-- Floating Tag -->
+                    <div class="journey-floating-tag">
+                        6 Leads
+                        <img src="assets/chevron-down.svg" alt="Chevron Down" style="width: 12px; height: 12px;">
+                    </div>
+                </div>
+                <div class="icons-section">
+                    <!-- Group 1 -->
+                    <div class="icon-btn-circle" title="Notes">
+                        <img src="assets/notes.svg" alt="Notes">
+                    </div>
+                    <div class="icon-separator"></div>
+
+                    <!-- Group 2 -->
+                    <div class="icon-btn-circle" title="Call">
+                        <img src="assets/call-dark.svg" alt="Call">
+                    </div>
+                    <div class="icon-btn-circle" title="Message">
+                        <img src="assets/message.svg" alt="Message">
+                    </div>
+                    <div class="icon-btn-circle" title="Mail">
+                        <img src="assets/mail-dark.svg" alt="Mail">
+                    </div>
+                    <div class="icon-separator"></div>
+
+                    <!-- Group 3 -->
+                    <div class="icon-btn-circle" title="Calendar">
+                        <img src="assets/calendar.svg" alt="Calendar">
+                    </div>
+                    <div class="icon-btn-circle" title="Location">
+                        <img src="assets/location-dark.svg" alt="Location">
+                    </div>
+                    <div class="icon-btn-circle" title="Task">
+                        <img src="assets/task.svg" alt="Task">
+                    </div>
+                    <div class="icon-separator"></div>
+
+                    <!-- Group 4 -->
+                    <div class="icon-btn-circle" title="Print">
+                        <img src="assets/print.svg" alt="Print">
+                    </div>
+                    <div class="icon-btn-circle" title="Add">
+                        <img src="assets/add.svg" alt="Add">
+                    </div>
+                    <div class="icon-btn-circle" title="Concierge">
+                        <img src="assets/concierge.svg" alt="Concierge">
+                    </div>
+                    <div class="icon-separator"></div>
+
+                    <!-- Group 5 -->
+                    <div class="icon-btn-circle" title="More">
+                        <img src="assets/dots.svg" alt="More">
+                    </div>
+                </div>
+                <div class="todos-section">
+                    <div class="todo-header">To-Dos (4)</div>
+
+                    <div class="todo-item">
+                        <div class="todo-icon-wrapper">
+                            <div class="todo-icon-circle pink">
+                                <img src="assets/calendar-colored.svg" alt="Calendar" />
+                            </div>
+                        </div>
+                        <div class="todo-content">
+                            <div class="todo-title-row">
+                                <span class="todo-title">Test Drive</span>
+                                <img src="assets/tick.svg" alt="Tick" />
+                            </div>
+                            <div class="todo-meta-row">
+                                <span class="text-green">Today</span> <span class="bullet">•</span> 5:00 PM <span
+                                    class="bullet" style="margin-left: 8px;"></span> Assignee: William Butler
+                            </div>
+                            <div class="todo-description">
+                                Check the status from the lead and keep following until lead is re...
+                            </div>
+                        </div>
+                        <div class="todo-actions">
+                            <button class="btn-check-in">
+                                <img src="assets/location-dark.svg" alt="Location" />
+                                Check In
+                            </button>
+                            <div class="action-kebab">
+                                <img src="assets/kabab-menu.svg" alt="Kabab Menu" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="todo-footer">
+                        <div class="footer-text">
+                            <span class="text-link" style="font-size: 16px;">See all</span>
+                            <span class="text-muted">1 Upcoming Appointment</span>
+                        </div>
+                        <img src="assets/chevron-down.svg" alt="Chevron Down" />
+                    </div>
+                </div>
+                <div class="activity-section">
+                    <!-- Activity Tabs header -->
+                    <div class="activity-header">
+                        <div class="activity-tabs">
+                            <div class="activity-tab active">All</div>
+                            <div class="activity-tab">Communication (7)</div>
+                            <div class="activity-tab">Notes (6)</div>
+                            <div class="activity-tab">Quotes (1)</div>
+                            <div class="activity-tab">Concierge</div>
+                            <div class="activity-tab">Credit</div>
+                        </div>
+                        <div class="activity-actions">
+                            <div class="icon-btn-sm">
+                                <img src="assets/view.svg" alt="View">
+                            </div>
+                            <div class="icon-btn-sm">
+                                <img src="assets/gear.svg" alt="Gear">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sub-filters -->
+                    <div class="activity-subfilters">
+                        <div class="subfilter-pill active">All 16</div>
+                        <div class="subfilter-pill">Updates 4</div>
+                    </div>
+
+                    <!-- Lead Snapshot Panel -->
+                    <div class="lead-snapshot">
+                        <div class="snapshot-header">
+                            <span class="snapshot-title">Lead Snapshot</span>
+                            <div class="snapshot-meta">
+                                <span class="refresh-link">
+                                    Refresh <img src="assets/refresh.svg"
+                                        style="vertical-align: middle; margin-left: 4px;" alt="Refresh">
+                                </span>
+                                <span class="separator">|</span>
+                                <span class="text-muted">Just now</span>
+                            </div>
+                        </div>
+                        <div class="snapshot-content">
+                            <span style="font-weight: 600;">Latest Update:</span> Brandon requested a video or picture
+                            of vehicle. John
+                            responded with the video and confirmed the vehicle had just come in or picture of vehicle.
+                            John responded..
+                        </div>
+                        <div class="snapshot-footer">
+                            <button class="btn-more">More <img src="assets/chevron-down.svg"
+                                    style="margin-left: 4px; width: 12px;" alt="Down"></button>
+                            <div class="snapshot-eye">
+                                <img src="assets/eye-outline.svg" alt="View">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Timeline -->
+                    <div class="timeline-container">
+                        <!-- Item 1: Check-in -->
+                        <div class="timeline-item">
+                            <div class="timeline-icon-column">
+                                <div class="timeline-icon-circle pink">
+                                    <img src="assets/location-colored.svg" alt="Check-in">
+                                </div>
+                                <div class="timeline-line"></div>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-header-row">
+                                    <div class="timeline-title">Check-in</div>
+                                    <div class="timeline-timestamp">Christopher Wright • 02/12/2019, 7:00 PM</div>
+                                </div>
+                                <div class="timeline-body">
+                                    The customer was checked into the store
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 2: Mail Sent -->
+                        <div class="timeline-item">
+                            <div class="timeline-icon-column">
+                                <div class="timeline-icon-circle blue">
+                                    <img src="assets/mail-colored.svg" alt="Mail">
+                                </div>
+                                <div class="timeline-line"></div>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-header-row">
+                                    <div class="timeline-title">Mail Sent</div>
+                                    <div class="timeline-timestamp">Christopher Wright • 02/12/2019, 7:00 PM</div>
+                                </div>
+                                <div class="timeline-body">
+                                    <strong>Subject: Welcome to GMC Gilroy!</strong>
+                                    <p>Hello Adrian, It's Carlos this side from GMC Gilroy. Are you looking for a new
+                                        tire replacement? If you are, this might be just the right time! We have an
+                                        offer going that's going to benefit you a lot. All you need to do us is pop.
+                                        This might be just the right time! We have an offer going that's going to
+                                        benefit you a lot. All you need to do us is pop.</p>
+                                    <div class="timeline-meta">2 Opens, 0 Clicks</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 3: Mail to Customer -->
+                        <div class="timeline-item">
+                            <div class="timeline-icon-column">
+                                <div class="timeline-icon-circle blue">
+                                    <img src="assets/mail-colored.svg" alt="Mail">
+                                </div>
+                                <div class="timeline-line"></div>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-header-row">
+                                    <div class="timeline-title">Mail to Customer</div>
+                                    <div class="timeline-timestamp">Christopher Wright • 02/12/2019, 7:00 PM</div>
+                                </div>
+                                <div class="timeline-subtitle">To Adrian, Bill <img src="assets/chevron-down.svg"
+                                        style="width: 12px; vertical-align: middle;" alt="Down"></div>
+                                <div class="timeline-body">
+                                    <p>Hello Adrian,<br>It's Carlos this side from GMC Gilroy. Are you looking for new
+                                        2020 Buick Encore? Don't worry, we'll make sure you have the best car buying
+                                        experience.</p>
+                                    <p>Let's me know a good time to connect.</p>
+                                    <p>Regards,<br>Carlos</p>
+                                    <div class="timeline-meta">1 Open, 0 Clicks | Last opened yesterday at 5:30pm</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 4: Sales Person Assigned -->
+                        <div class="timeline-item">
+                            <div class="timeline-icon-column">
+                                <div class="timeline-icon-circle purple">
+                                    <img src="assets/assigned.svg" alt="Arrow">
+                                    <!-- Using arrow placeholder -->
+                                </div>
+                                <div class="timeline-line"></div>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-header-row">
+                                    <div class="timeline-title">Sales Person Assigned</div>
+                                    <div class="timeline-timestamp">Christopher Wright • 02/12/2019, 7:00 PM</div>
+                                </div>
+                                <div class="timeline-body">
+                                    Joe Batista got assigned as a sales person
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 5: Mail Sent (Repeated pattern) -->
+                        <div class="timeline-item">
+                            <div class="timeline-icon-column">
+                                <div class="timeline-icon-circle blue">
+                                    <img src="assets/mail-colored.svg" alt="Mail">
+                                </div>
+                                <div class="timeline-line"></div>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-header-row">
+                                    <div class="timeline-title">Mail Sent</div>
+                                    <div class="timeline-timestamp">Christopher Wright • 02/12/2019, 7:00 PM</div>
+                                </div>
+                                <div class="timeline-body">
+                                    <strong>Subject: Welcome to GMC Gilroy!</strong>
+                                    <p>Hello Adrian, It's Carlos this side from GMC Gilroy. Are you looking for a new
+                                        tire replacement? If you are, this might be just the right time! We have an
+                                        offer going that's going to benefit you a lot. All you need to do us is pop.
+                                        This might be just the right time! We have an offer going that's going to
+                                        benefit you a lot. All you need to do us is pop.</p>
+                                    <div class="timeline-meta">2 Opens, 0 Clicks</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 6: Lead Created -->
+                        <div class="timeline-item">
+                            <div class="timeline-icon-column">
+                                <div class="timeline-icon-circle green">
+                                    <img src="assets/lead.svg" alt="Star">
+                                </div>
+                                <!-- No line for last item if desired, or keep it to show continuity -->
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-header-row">
+                                    <div class="timeline-title">Lead Created</div>
+                                    <div class="timeline-timestamp">Christopher Wright • 02/12/2019, 7:00 PM</div>
+                                </div>
+                                <div class="timeline-body">
+                                    <div>Vehicle: <span class="text-dark">2020 Buick Encore</span></div>
+                                    <div>Source: <span class="text-dark">Internet (cars.com)</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Lead Info -->
+            <div class="lead-info-panel">
+                <div class="panel-tabs">
+                    <div class="panel-tab">Contact</div>
+                    <div class="panel-tab active">Lead</div>
+                </div>
+
+                <!-- Contact Section 1 -->
+                <div class="panel-section">
+                    <div class="section-header">
+                        <div class="contact-card">
+                            <div class="contact-avatar-lg avatar-blue">
+                                BD
+                                <div class="avatar-badge">Buyer</div>
+                            </div>
+                            <div class="contact-details">
+                                <div class="contact-name">Brandon Davis</div>
+                                <div class="contact-meta">
+                                    22 Leads • <strong>1 Active</strong><br>
+                                    Last visited on Feb 3, 2022
+                                </div>
+                            </div>
+                        </div>
+                        <img src="assets/edit.svg" class="action-icon" alt="Edit">
+                    </div>
+
+                    <div class="contact-row">
+                        <img src="assets/call.svg" class="contact-icon-left" alt="Phone">
+                        <div class="contact-text">+1 (308) 555-0125 <span class="text-muted">(M)</span></div>
+                        <div class="contact-actions-right">
+                            <img src="assets/star.svg" class="status-icon" alt="Star">
+                            <img src="assets/opt-in.svg" class="status-icon" alt="Verified">
+                        </div>
+                    </div>
+                    <div class="contact-row">
+                        <div></div> <!-- Indent -->
+                        <div class="contact-text">+1 (308) 555-0125 <span class="text-muted">(H)</span></div>
+                        <div class="contact-actions-right">
+                            <img src="assets/no-call.svg" class="status-icon" alt="Off">
+                            <img src="assets/opt-in-partial.svg" class="status-icon" alt="Check">
+                        </div>
+                    </div>
+                    <div class="contact-row">
+                        <div></div> <!-- Indent -->
+                        <div class="contact-text">+1 (308) 555-0125 <span class="text-muted">(W)</span></div>
+                        <div class="contact-actions-right">
+                            <img src="assets/opt-out.svg" class="status-icon" alt="Remove">
+                        </div>
+                    </div>
+                    <div class="contact-row">
+                        <img src="assets/mail.svg" class="contact-icon-left" alt="Mail">
+                        <div class="contact-text">brandon.d@mail.com</div>
+                        <div class="contact-actions-right">
+                            <img src="assets/opt-out-warn.svg" class="status-icon" alt="Warning">
+                            <img src="assets/opt-in.svg" class="status-icon" alt="Verified">
+                        </div>
+                    </div>
+                    <div class="contact-row">
+                        <img src="assets/icon-thumb-up.svg" class="contact-icon-left" alt="Thumb">
+                        <div class="contact-text">Call <span class="text-muted">(Preferred)</span></div>
+                        <div></div>
+                    </div>
+                    <div class="contact-row align-start">
+                        <img src="assets/icon-location.svg" class="contact-icon-left" style="margin-top: 2px;"
+                            alt="Location">
+                        <div class="contact-text" style="display: block; line-height: 1.4;">
+                            84 Federal Rd, New York City, New York - 10011 <span class="text-muted">(5.4 mi)</span>
+                        </div>
+                        <div class="contact-actions-right" style="margin-top: 2px;">
+                            <img src="assets/user-location.svg" class="status-icon" alt="User">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Section 2 (Co-Buyer) -->
+                <div class="panel-section">
+                    <div class="section-header">
+                        <div class="contact-card">
+                            <div class="contact-avatar-lg contact-avatar-lg orange">
+                                AD
+                                <div class="avatar-badge">Co-Buyer</div>
+                            </div>
+                            <div class="contact-details">
+                                <div class="contact-name">Ana Davis</div>
+                                <div class="contact-meta">
+                                    3 Leads • <strong>0 Active</strong><br>
+                                    Last visited on Jul 23, 2022
+                                </div>
+                            </div>
+                        </div>
+                        <img src="assets/edit.svg" class="action-icon" alt="Edit">
+                    </div>
+
+                    <div class="contact-row">
+                        <img src="assets/call.svg" class="contact-icon-left" alt="Phone">
+                        <div class="contact-text">+1 (308) 555-0125 <span class="text-muted">(M)</span></div>
+                        <div class="contact-actions-right">
+                            <img src="assets/no-call.svg" class="status-icon" alt="Off">
+                            <img src="assets/opt-in.svg" class="status-icon" alt="Verified">
+                        </div>
+                    </div>
+                    <div class="contact-row">
+                        <div></div>
+                        <div class="contact-text">+1 (308) 555-0125 <span class="text-muted">(H)</span></div>
+                        <div class="contact-actions-right">
+                            <img src="assets/opt-out.svg" class="status-icon" alt="Remove">
+                        </div>
+                    </div>
+                    <div class="contact-row">
+                        <div></div>
+                        <div class="contact-text">+1 (308) 555-0125 <span class="text-muted">(W)</span></div>
+                        <div class="contact-actions-right">
+                            <img src="assets/opt-in-partial.svg" class="status-icon" alt="Check">
+                        </div>
+                    </div>
+                    <div class="contact-row">
+                        <img src="assets/mail.svg" class="contact-icon-left" alt="Mail">
+                        <div class="contact-text">ana.davis@mail.com</div>
+                        <div class="contact-actions-right">
+                            <img src="assets/opt-in.svg" class="status-icon" alt="Verified">
+                        </div>
+                    </div>
+                    <div class="contact-row">
+                        <img src="assets/icon-thumb-up.svg" class="contact-icon-left" alt="Thumb">
+                        <div class="contact-text">Call <span class="text-muted">(Preferred)</span></div>
+                        <div></div>
+                    </div>
+                    <div class="contact-row align-start">
+                        <img src="assets/icon-location.svg" class="contact-icon-left" style="margin-top: 2px;"
+                            alt="Location">
+                        <div class="contact-text" style="display: block; line-height: 1.4;">
+                            84 Federal Rd, New York City, New York - 10011 <span class="text-muted">(5.4 mi)</span>
+                        </div>
+                        <div class="contact-actions-right" style="margin-top: 2px;">
+                            <img src="assets/user-location.svg" class="status-icon" alt="User">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lead Info Grid -->
+                <div class="panel-section">
+                    <div class="section-title-row">
+                        <div class="section-title">Lead Info</div>
+                        <img src="assets/edit.svg" class="action-icon" alt="Edit">
+                    </div>
+
+                    <div class="info-grid">
+                        <div class="info-label">Department</div>
+                        <div class="info-value">Retail</div>
+
+                        <div class="info-label">Type</div>
+                        <div class="info-value">Vehicle Purchase</div>
+
+                        <div class="info-label">Salesperson</div>
+                        <div class="info-value">
+                            <div class="person-pill">
+                                <div class="person-avatar-xs">WB</div>
+                                William Butler
+                            </div>
+                        </div>
+
+                        <div class="info-label">Salesperson 2</div>
+                        <div class="info-value text-muted">Select</div>
+
+                        <div class="info-label">BDC</div>
+                        <div class="info-value">
+                            <div class="person-pill">
+                                <img src="assets/avatar-chris.png" class="person-avatar-img" alt="Chris">
+                                Christopher Wright
+                            </div>
+                        </div>
+
+                        <div class="info-label">BDC 2</div>
+                        <div class="info-value text-muted">Select</div>
+
+                        <div class="info-label">Sales Manager</div>
+                        <div class="info-value">
+                            <div class="person-pill">
+                                <div class="person-avatar-xs">GA</div>
+                                Gary Anderson
+                            </div>
+                        </div>
+
+                        <div class="info-label">Source Type</div>
+                        <div class="info-value">Internet</div>
+
+                        <div class="info-label">Source</div>
+                        <div class="info-value">www.cars.com</div>
+
+                        <div class="info-label">Credit Score</div>
+                        <div class="info-value">723</div>
+
+                        <div class="info-label">Credit Category</div>
+                        <div class="info-value">Good</div>
+
+                        <div class="info-label">OEM Lead ID</div>
+                        <div class="info-value" style="word-break: break-all;">05fd2bf1-658f-11ed-ac8b-ffa2cc9d0641
+                        </div>
+
+                        <div class="info-label">OEM Lead Type</div>
+                        <div class="info-value">-</div>
+
+                        <div class="info-label">OEM Lead Score</div>
+                        <div class="info-value">-</div>
+
+                        <div class="info-label">Conversion Probability</div>
+                        <div class="info-value">79%</div>
+                    </div>
+                </div>
+
+                <!-- Trade-in -->
+                <div class="panel-section" style="border-bottom: none;">
+                    <div class="section-title-row">
+                        <div class="section-title">Trade-in (1)</div>
+                        <img src="assets/edit.svg" class="action-icon" alt="Edit">
+                    </div>
+
+                    <div class="trade-in-card">
+                        <img src="assets/buick.png" class="car-thumb" alt="Buick">
+                        <div class="car-info">
+                            <div class="car-name">2020 Buick Lacrose</div>
+                            <div class="car-mileage">80,000 mi</div>
+                        </div>
+                    </div>
+
+                    <div class="info-grid">
+                        <div class="info-label">VIN</div>
+                        <div class="info-value">3GKALYEG3PL127665</div>
+
+                        <div class="info-label">Allowance</div>
+                        <div class="info-value">$4,500</div>
+
+                        <div class="info-label">Allowance</div>
+                        <div class="info-value">$5,000</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Popover -->
+            <div id="userPopover" class="user-popover">
+                <svg class="popover-arrow" viewBox="0 0 24.2487 14.25">
+                    <path d="M12.1244 0L24.2487 14.25H0L12.1244 0Z" fill="white" />
+                </svg>
+
+                <div class="popover-header">
+                    <div class="popover-avatar">
+                        <img src="assets/avatar.png" alt="Avatar">
+                    </div>
+                    <div class="popover-user-info">
+                        <div class="popover-user-name">Alex Parker</div>
+                        <div class="popover-user-title">Service Director</div>
+                    </div>
+                </div>
+
+                <div class="popover-divider"></div>
+
+                <div class="popover-section">
+                    <div class="popover-item" id="roleItem">
+                        <div class="popover-item-text">
+                            <div class="popover-item-sub">Role</div>
+                            <div class="popover-item-label" id="currentRole">Service Director</div>
+                        </div>
+                        <div class="popover-chevron">
+                            <svg viewBox="0 0 16 16" fill="none">
+                                <path
+                                    d="M5.14645 1.14645C5.34171 0.951184 5.65829 0.951184 5.85355 1.14645L11.8536 7.14645C12.0488 7.34171 12.0488 7.65829 11.8536 7.85355L5.85355 13.8536C5.65829 14.0488 5.34171 14.0488 5.14645 13.8536C4.95118 13.6583 4.95118 13.3417 5.14645 13.1464L10.7929 7.5L5.14645 1.85355C4.95118 1.65829 4.95118 1.34171 5.14645 1.14645Z"
+                                    fill="#71717A" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Role Sub Popover -->
+                <div id="rolePopover" class="role-popover">
+                    <div class="role-search">
+                        <div class="role-search-input-wrapper">
+                            <svg class="role-search-icon" viewBox="0 0 16 16">
+                                <path
+                                    d="M6.5 1C9.53757 1 12 3.46243 12 6.5C12 7.83872 11.5206 9.06482 10.7256 10.0186L14.3535 13.6465C14.5488 13.8417 14.5488 14.1583 14.3535 14.3535C14.1583 14.5488 13.8417 14.5488 13.6465 14.3535L10.0186 10.7256C9.06482 11.5206 7.83872 12 6.5 12C3.46243 12 1 9.53757 1 6.5C1 3.46243 3.46243 1 6.5 1ZM6.5 2C4.01472 2 2 4.01472 2 6.5C2 8.98528 4.01472 11 6.5 11C8.98528 11 11 8.98528 11 6.5C11 4.01472 8.98528 2 6.5 2Z"
+                                    fill="#969AA3" />
+                            </svg>
+                            <input type="text" class="role-search-input" placeholder="Search">
+                        </div>
+                    </div>
+                    <div class="role-list" id="roleList">
+                        <div class="role-item">Controller <svg class="role-check" viewBox="0 0 16 16">
+                                <path
+                                    d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
+                            </svg></div>
+                        <div class="role-item">Salesperson <svg class="role-check" viewBox="0 0 16 16">
+                                <path
+                                    d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
+                            </svg></div>
+                        <div class="role-item">Service Advisor <svg class="role-check" viewBox="0 0 16 16">
+                                <path
+                                    d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
+                            </svg></div>
+                        <div class="role-item selected">Service Director <svg class="role-check" viewBox="0 0 16 16">
+                                <path
+                                    d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
+                            </svg></div>
+                        <div class="role-item">General Manager <svg class="role-check" viewBox="0 0 16 16">
+                                <path
+                                    d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
+                            </svg></div>
+                    </div>
+                </div>
+
+
+                <div class="popover-divider"></div>
+
+                <div class="popover-section">
+                    <div class="popover-item">
+                        <div class="popover-item-text">
+                            <div class="popover-item-sub">Printer Location</div>
+                            <div class="popover-item-label">Default Site</div>
+                        </div>
+                        <div class="popover-chevron">
+                            <svg viewBox="0 0 16 16" fill="none">
+                                <path
+                                    d="M5.14645 1.14645C5.34171 0.951184 5.65829 0.951184 5.85355 1.14645L11.8536 7.14645C12.0488 7.34171 12.0488 7.65829 11.8536 7.85355L5.85355 13.8536C5.65829 14.0488 5.34171 14.0488 5.14645 13.8536C4.95118 13.6583 4.95118 13.3417 5.14645 13.1464L10.7929 7.5L5.14645 1.85355C4.95118 1.65829 4.95118 1.34171 5.14645 1.14645Z"
+                                    fill="#71717A" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="popover-divider"></div>
+
+                <div class="popover-section">
+                    <div class="popover-item">
+                        <div class="popover-icon">
+                            <svg viewBox="0 0 16 16" fill="none">
+                                <path
+                                    d="M8 0.5C12.142 0.5 15.5 3.858 15.5 8C15.5 12.142 12.142 15.5 8 15.5C3.858 15.5 0.5 12.142 0.5 8C0.5 3.858 3.858 0.5 8 0.5ZM7.5 8.5L5.009 8.501C5.12 11.503 6.214 13.899 7.5 14.402V8.5ZM10.991 8.501L8.5 8.5L8.501 14.402C9.786 13.898 10.88 11.503 10.991 8.501V8.501ZM4.008 8.501H1.519C1.711 11.025 3.344 13.145 5.598 14.042C4.679 12.765 4.086 10.762 4.009 8.501H4.008ZM14.481 8.5H11.992C11.915 10.761 11.322 12.764 10.404 14.042C12.657 13.144 14.29 11.023 14.482 8.5H14.481ZM5.597 1.957L5.572 1.968C3.332 2.871 1.71 4.985 1.519 7.5H4.009C4.086 5.239 4.679 3.235 5.598 1.957H5.597ZM7.5 1.598C6.214 2.102 5.119 4.497 5.009 7.5H7.5V1.598ZM10.402 1.958L10.447 2.02C11.341 3.3 11.916 5.276 11.991 7.5H14.481C14.289 4.976 12.656 2.855 10.402 1.958V1.958ZM8.501 1.598L8.5 7.5H10.991C10.88 4.498 9.786 2.103 8.501 1.598V1.598Z"
+                                    fill="#444F5C" />
+                            </svg>
+                        </div>
+                        <div class="popover-item-text">
+                            <div class="popover-item-label">Download Centre</div>
+                        </div>
+                        <div class="popover-chevron">
+                            <svg viewBox="0 0 16 16" fill="none">
+                                <path
+                                    d="M5.14645 1.14645C5.34171 0.951184 5.65829 0.951184 5.85355 1.14645L11.8536 7.14645C12.0488 7.34171 12.0488 7.65829 11.8536 7.85355L5.85355 13.8536C5.65829 14.0488 5.34171 14.0488 5.14645 13.8536C4.95118 13.6583 4.95118 13.3417 5.14645 13.1464L10.7929 7.5L5.14645 1.85355C4.95118 1.65829 4.95118 1.34171 5.14645 1.14645Z"
+                                    fill="#71717A" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="popover-divider"></div>
+
+                <div class="popover-section">
+                    <div class="popover-item">
+                        <div class="popover-icon">
+                            <svg viewBox="0 0 16 16" fill="none">
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                    d="M1.5 9.5C1.77614 9.5 2 9.72386 2 10V12.5C2 12.7761 2.22386 13 2.5 13H12.5C12.7761 13 13 12.7761 13 12.5V10C13 9.72386 13.2239 9.5 13.5 9.5C13.7761 9.5 14 9.72386 14 10V12.5C14 13.3284 13.3284 14 12.5 14H2.5C1.67157 14 1 13.3284 12.5 14H2.5C1.67157 14 1 13.3284 1 12.5V10C1 9.72386 1.22386 9.5 1.5 9.5ZM7.5 2C7.77614 2 8 2.22386 8 2.5V9.5C8 9.77614 7.77614 10 7.5 10C7.22386 10 7 9.77614 7 9.5V2.5C7 2.22386 7.22386 2 7.5 2ZM4.14645 7.14645C4.34171 6.95118 4.65829 6.95118 4.85355 7.14645L7.5 9.79289L10.1464 7.14645C10.3417 6.95118 10.6583 6.95118 10.8536 7.14645C11.0488 7.34171 11.0488 7.65829 10.8536 7.85355L7.85355 10.8536C7.65829 11.0488 7.34171 11.0488 7.14645 10.8536L4.14645 7.85355C3.95118 7.65829 3.95118 7.34171 4.14645 7.14645Z"
+                                    fill="#444F5C" />
+                            </svg>
+                        </div>
+                        <div class="popover-item-text">
+                            <div class="popover-item-label">Download Centre</div>
+                        </div>
+                    </div>
+                    <div class="popover-item">
+                        <div class="popover-icon">
+                            <svg viewBox="0 0 16 16" fill="none">
+                                <path
+                                    d="M12 5.46V3.302C12 2.706 11.512 2.223 10.909 2.223H5.091C4.489 2.223 4 2.706 4 3.302V5.46H12V5.46ZM2.909 5.46V3.302C2.909 2.11 3.886 1.144 5.091 1.144H10.909C12.114 1.144 13.091 2.11 13.091 3.302V5.46H13.818C15.023 5.46 16 6.426 16 7.618V11.216C16 12.329 13.563 13.246 12.259 13.362C11.976 14.23 11.153 14.857 10.182 14.857H5.818C4.849 14.857 4.027 14.232 3.743 13.367C2.461 13.275 0 12.347 0 11.216V7.618C0 6.426 0.977 5.46 2.182 5.46H2.909V5.46ZM11.273 11.597V10.496H4.728V12.698C4.728 13.294 5.216 13.777 5.819 13.777H10.183C10.785 13.777 11.274 13.294 11.274 12.698V11.597H11.273ZM14.909 11.216V7.618C14.909 7.022 14.421 6.539 13.818 6.539H2.182C1.58 6.539 1.091 7.022 1.091 7.618V11.216C1.091 11.703 3.176 12.115 3.623 12.249L3.59 9.417H12.363V12.234C12.787 12.086 14.908 11.686 14.908 11.216H14.909ZM12 8.338C11.799 8.338 11.636 8.177 11.636 7.978C11.636 7.779 11.799 7.618 12 7.618C12.201 7.618 12.364 7.779 12.364 7.978C12.364 8.177 12.201 8.338 12 8.338Z"
+                                    fill="#444F5C" />
+                            </svg>
+                        </div>
+                        <div class="popover-item-text">
+                            <div class="popover-item-label">Print Status</div>
+                        </div>
+                    </div>
+                    <div class="popover-item">
+                        <div class="popover-icon">
+                            <svg viewBox="0 0 16 16" fill="none">
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                    d="M5.94655 0.867837C6.01279 0.37103 6.43657 0 6.93778 0H9.06226C9.56346 0 9.98725 0.371031 10.0535 0.867837L10.2633 2.4417C10.7751 2.65026 11.2513 2.9273 11.6807 3.26128L13.1499 2.65556C13.6133 2.46452 14.1465 2.64602 14.3971 3.08007L15.4593 4.91993C15.7099 5.35398 15.6005 5.90651 15.2034 6.21228L13.9446 7.1815C13.9811 7.44933 14 7.72258 14 8C14 8.27741 13.9811 8.55066 13.9446 8.81849L15.2034 9.78772C15.6005 10.0935 15.71 10.646 15.4594 11.0801L14.3971 12.9199C14.1465 13.354 13.6133 13.5355 13.1499 13.3444L11.6807 12.7387C11.2513 13.0727 10.7751 13.3497 10.2633 13.5583L10.0535 15.1322C9.98725 15.629 9.56346 16 9.06226 16H6.93778C6.43657 16 6.01279 15.629 5.94655 15.1322L5.7367 13.5583C5.22498 13.3498 4.74873 13.0727 4.3193 12.7387L2.85011 13.3444C2.38674 13.5355 1.85353 13.354 1.60293 12.9199L0.540687 11.0801C0.290086 10.646 0.399516 10.0935 0.796642 9.78772L2.05543 8.81852C2.01886 8.55069 2 8.27742 2 8C2 7.72257 2.01886 7.44931 2.05543 7.18147L0.796661 6.21228C0.399534 5.90651 0.290105 5.35398 0.540706 4.91993L1.60295 3.08007C1.85355 2.64602 2.38676 2.46452 2.85013 2.65556L4.31931 3.26127C4.74874 2.92728 5.22498 2.65024 5.7367 2.44168L5.94655 0.867837ZM9.06226 1L6.93778 1L6.64778 3.17495L6.35707 3.27604C5.75508 3.48538 5.20501 3.8068 4.73198 4.2157L4.49906 4.41704L2.46897 3.58007L1.40673 5.41993L3.14539 6.75861L3.08802 7.06059C3.03028 7.36448 3 7.67847 3 8C3 8.32152 3.03028 8.63551 3.03028 8.63551C3.03028 8.63551 3.08802 8.9394 3.08802 8.9394L3.14538 9.24137L1.40671 10.5801L2.46895 12.4199L4.49906 11.583L4.73198 11.7843C5.20501 12.1932 5.75508 12.5146 6.35707 12.724L6.64778 12.825L6.93778 15H9.06226L9.35226 12.825L9.64296 12.7239C10.2449 12.5146 10.795 12.1932 11.268 11.7843L11.501 11.5829L13.5311 12.4199L14.5933 10.5801L12.8546 9.24135L12.912 8.93938C12.9697 8.63549 13 8.32152 13 8C13 7.67848 12.9697 7.3645 12.912 7.06061L12.8546 6.75864L14.5933 5.41993L13.5311 3.58007L11.501 4.41705L11.268 4.21571C10.795 3.80682 10.2449 3.48539 9.64296 3.27606L9.35226 3.17496L9.06226 1ZM8 6C6.89543 6 6 6.89543 6 8C6 9.10457 6.89543 10 8 10C9.10457 10 10 9.10457 10 8C10 6.89543 9.10457 6 8 6ZM5 8C5 6.34315 6.34315 5 8 5C9.65685 5 11 6.34315 11 8C11 9.65685 9.65685 11 8 11C6.34315 11 5 9.65685 5 8Z"
+                                    fill="#444F5C" />
+                            </svg>
+                        </div>
+                        <div class="popover-item-text">
+                            <div class="popover-item-label">View Profile Setting</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="popover-divider"></div>
+
+                <div class="popover-section">
+                    <div class="popover-item">
+                        <div class="popover-icon">
+                            <svg viewBox="0 0 16 16" fill="none">
+                                <path
+                                    d="M9.658 3.969V1.922C9.658 1.495 9.296 1.143 8.843 1.143H1.959C1.505 1.143 1.144 1.495 1.144 1.922V14.078C1.144 14.505 1.506 14.857 1.959 14.857H8.843C9.297 14.857 9.658 14.505 9.658 14.078V12.06C9.658 11.744 9.914 11.489 10.229 11.489C10.544 11.489 10.8 11.745 10.8 12.06V14.078C10.8 15.143 9.92 16 8.842 16H1.958C0.88 16 -4.66825e-08 15.143 -4.66825e-08 14.078V1.922C-4.66825e-08 0.857 0.88 0 1.958 0H8.842C9.92 0 10.8 0.857 10.8 1.922V3.969C10.8 4.285 10.544 4.54 10.229 4.54C9.914 4.54 9.658 4.284 9.658 3.969V3.969ZM13.676 7.429L11.542 5.826C11.295 5.641 11.24 5.283 11.419 5.028C11.598 4.773 11.943 4.716 12.189 4.901L15.773 7.594C16.077 7.822 16.077 8.291 15.773 8.519L12.189 11.212C11.942 11.397 11.598 11.34 11.419 11.085C11.24 10.83 11.295 10.472 11.542 10.287L13.824 8.573H3.981C3.676 8.573 3.43 8.317 3.43 8.002C3.43 7.687 3.677 7.431 3.981 7.431H13.676V7.429Z"
+                                    fill="#444F5C" />
+                            </svg>
+                        </div>
+                        <div class="popover-item-text">
+                            <div class="popover-item-label">Logout</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const userCircle = document.querySelector('.user-circle');
+        const userPopover = document.getElementById('userPopover');
+        const roleItem = document.getElementById('roleItem');
+        const rolePopover = document.getElementById('rolePopover');
+        const roleList = document.getElementById('roleList');
+        const currentRoleLabel = document.getElementById('currentRole');
+        const searchInput = document.querySelector('.role-search-input');
+
+        // Toggle User Popover
+        userCircle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isVisible = userPopover.style.display === 'flex';
+            if (isVisible) {
+                userPopover.style.display = 'none';
+                rolePopover.style.display = 'none';
+                roleItem.classList.remove('active');
+            } else {
+                userPopover.style.display = 'flex';
+            }
+        });
+
+        // Toggle Role Sub-Popover
+        roleItem.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isVisible = rolePopover.style.display === 'flex';
+            if (isVisible) {
+                rolePopover.style.display = 'none';
+                roleItem.classList.remove('active');
+            } else {
+                rolePopover.style.display = 'flex';
+                roleItem.classList.add('active');
+            }
+        });
+
+        // Role Selection
+        roleList.addEventListener('click', (e) => {
+            const item = e.target.closest('.role-item');
+            if (item) {
+                // Update selected visual
+                document.querySelectorAll('.role-item').forEach(el => el.classList.remove('selected'));
+                item.classList.add('selected');
+
+                // Update label
+                const newRole = item.innerText; // or textContent to remove leading/trailing space if any
+                currentRoleLabel.textContent = newRole.trim();
+
+                // Close sub popover
+                rolePopover.style.display = 'none';
+                roleItem.classList.remove('active');
+                e.stopPropagation();
+            }
+        });
+
+        // Search Filter
+        searchInput.addEventListener('click', e => e.stopPropagation());
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const items = roleList.querySelectorAll('.role-item');
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(term) ? 'flex' : 'none';
+            });
+        });
+
+        // Outside Click
+        document.addEventListener('click', (e) => {
+            if (!userPopover.contains(e.target) && e.target !== userCircle) {
+                userPopover.style.display = 'none';
+                rolePopover.style.display = 'none';
+                roleItem.classList.remove('active');
+            }
+        });
+
+        // --- DYNAMIC DATA LOGIC ---
+
+        function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+        function randomItem(arr) { return arr && arr.length > 0 ? arr[Math.floor(Math.random() * arr.length)] : "Unknown"; }
+
+        const avatarColors = ["avatar-purple", "avatar-teal", "avatar-orange", "avatar-pink", "avatar-blue", "avatar-red"];
+        const statuses = ["Active", "Inactive", "Sold", "New", "Contacted"];
+
+        async function initLeadData() {
+            const customerNames = [];
+            const employeeNames = [];
+            const vehicles = [];
+
+            try {
+                const response = await fetch('mktng-data-formats.csv');
+                if (!response.ok) throw new Error('Network response was not ok');
+                const text = await response.text();
+
+                const lines = text.split('\n');
+                lines.forEach(line => {
+                    if (!line || line.trim().startsWith('#') || line.trim().startsWith('Section')) return;
+                    const columns = line.split(',').map(c => c.trim());
+                    if (columns.length < 3) return;
+
+                    const type = columns[0];
+                    const value = columns[2];
+
+                    if (type === 'Customer') {
+                        customerNames.push(value);
+                    } else if (type === 'Vehicle') {
+                        vehicles.push(value);
+                    } else if (type === 'Employee') {
+                        employeeNames.push(value);
+                    }
+                });
+
+            } catch (error) {
+                console.warn('Failed to load CSV data, using placeholders or empty data:', error);
+                customerNames.push("Brandon Davis", "Flora Fleisher", "Deshaun Williams", "Jerome Hendrix");
+                vehicles.push("2023 Mercedes Benz C Class");
+                employeeNames.push("William Florez", "Celine Morris");
+            }
+
+            if (customerNames.length === 0) customerNames.push("Generic Customer");
+            if (vehicles.length === 0) vehicles.push("Generic Vehicle");
+            if (employeeNames.length === 0) employeeNames.push("Generic Employee");
+
+            // --- REPLACE STATIC EMPLOYEE NAMES IN DOM ---
+            // We'll replace specific strings found in the HTML with random real employees
+            // Targets: "Christopher Wright", "Joe Batista", "William Butler", "Gary Anderson"
+
+            const targets = ["Christopher Wright", "Joe Batista", "William Butler", "Gary Anderson"];
+            // Map each target to a random employee from our fetched list
+            const replacements = {};
+            targets.forEach(t => {
+                replacements[t] = randomItem(employeeNames);
+            });
+
+            // 1. Update Timeline Timestamps and Bodies
+            document.querySelectorAll('.timeline-timestamp, .timeline-body, .info-value, .snapshot-content').forEach(el => {
+                let html = el.innerHTML;
+                let changed = false;
+                targets.forEach(target => {
+                    if (html.includes(target)) {
+                        const replacement = replacements[target];
+                        // Replace full name
+                        html = html.replace(new RegExp(target, 'g'), replacement);
+
+                        // Also update initials if it's a pill (e.g. <div class="person-avatar-xs">WB</div>)
+                        // Simple regex for initials inside person-avatar-xs just before the name
+                        // This is a bit specific, but let's try to capture cases where initials might match the target
+                        if (el.classList.contains('info-value')) {
+                            const initials = replacement.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                            // Look for something that looks like initials div
+                            html = html.replace(/<div class="person-avatar-xs">[A-Z]{2}<\/div>/, `<div class="person-avatar-xs">${initials}</div>`);
+                        }
+
+                        changed = true;
+                    }
+                });
+                if (changed) el.innerHTML = html;
+            });
+
+
+            // Populate Sidebar List
+            const leadsListContainer = document.querySelector('.leads-list');
+            leadsListContainer.innerHTML = ''; // Clear existing static items
+
+            // We'll pick a random "selected" index
+            const selectedIndex = Math.floor(Math.random() * Math.min(10, customerNames.length));
+
+            // Generate list items (limit to 10 for demo)
+            const listLimit = Math.min(15, customerNames.length);
+
+            for (let i = 0; i < listLimit; i++) {
+                const name = customerNames[i];
+                const status = randomItem(statuses);
+                const timeStr = `${randomInt(1, 12)}hr`; // Simplified time
+                const colorClass = randomItem(avatarColors);
+                const isSelected = (i === selectedIndex);
+
+                const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
+                const itemDiv = document.createElement('div');
+                itemDiv.className = `lead-item ${isSelected ? 'selected' : ''}`;
+                itemDiv.innerHTML = `
+                    <div class="lead-avatar ${colorClass}">${initials}</div>
+                    <div class="lead-info">
+                        <div class="lead-name">${name}</div>
+                        <div class="lead-status">${status}</div>
+                    </div>
+                    <div class="lead-time">${timeStr}</div>
+                `;
+
+                // Add click handler to switch selection (visual only for now, or minimal update)
+                itemDiv.addEventListener('click', () => {
+                    document.querySelectorAll('.lead-item').forEach(el => el.classList.remove('selected'));
+                    itemDiv.classList.add('selected');
+                    updateMainCard(name, status, isSelected ? vehicles[i % vehicles.length] : randomItem(vehicles));
+                });
+
+                leadsListContainer.appendChild(itemDiv);
+            }
+
+            // Initial Main Card Update with valid vehicle info
+            // Use the selected user's info
+            const selectedName = customerNames[selectedIndex];
+            const selectedVehicle = vehicles[selectedIndex % vehicles.length]; // Deterministic vehicle for the user
+            updateMainCard(selectedName, "Active", selectedVehicle);
+        }
+
+        function updateMainCard(name, status, vehicleName) {
+            const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
+            // --- Update Lead Journey Card ---
+            const jNameEl = document.querySelector('.j-name');
+            if (jNameEl) jNameEl.textContent = name;
+
+            const jAvatarEl = document.querySelector('.j-avatar');
+            if (jAvatarEl) jAvatarEl.textContent = initials;
+
+            // --- Update Lead Info Panel (Right Side) ---
+            // Only target the FIRST panel-section under lead-info-panel (Buyer section)
+            const infoPanel = document.querySelector('.lead-info-panel');
+            if (infoPanel) {
+                // Assuming the first section is the main lead
+                const firstSection = infoPanel.querySelector('.panel-section');
+                if (firstSection) {
+                    const contactNameEl = firstSection.querySelector('.contact-name');
+                    if (contactNameEl) contactNameEl.textContent = name;
+
+                    const contactAvatarEl = firstSection.querySelector('.contact-avatar-lg');
+                    if (contactAvatarEl) {
+                        // Preserve the badge span if it exists, update text node
+                        const badge = contactAvatarEl.querySelector('.avatar-badge');
+                        contactAvatarEl.innerHTML = `
+                            ${initials}
+                            ${badge ? badge.outerHTML : '<div class="avatar-badge">Buyer</div>'}
+                        `;
+                    }
+                }
+            }
+
+            // Update Vehicle Title (First j-title in j-vehicle-group)
+            const vehicleGroup = document.querySelector('.j-vehicle-group');
+            if (vehicleGroup) {
+                const titleEl = vehicleGroup.querySelector('.j-title');
+                if (titleEl) titleEl.textContent = vehicleName + " + 3"; // Adding +3 to match design nuance
+            }
+
+            // Randomize Deal ID for flavor
+            const dealGroup = document.querySelector('.j-deal-group');
+            if (dealGroup) {
+                const titleEl = dealGroup.querySelector('.j-title');
+                if (titleEl) titleEl.textContent = `Deal#${randomInt(100000, 999999)}`;
+            }
+        }
+
+        // Initialize Data
+        initLeadData();
+    </script>
+    <script>
+        const leadsPanel = document.querySelector('.leads-panel');
+        const menuIcon = document.querySelector('.leads-menu-icon');
+
+        // Toggle functionality
+        menuIcon.addEventListener('click', function () {
+            leadsPanel.classList.toggle('collapsed');
+        });
+
+        // Auto-collapse on small screens (media query)
+        const mediaQuery = window.matchMedia('(max-width: 1200px)');
+
+        function handleScreenChange(e) {
+            if (e.matches) {
+                leadsPanel.classList.add('collapsed');
+            } else {
+                leadsPanel.classList.remove('collapsed');
+            }
+        }
+
+        // Initial check and listener
+        handleScreenChange(mediaQuery);
+        mediaQuery.addEventListener('change', handleScreenChange);
+    </script>
+</body>
+
+</html>
