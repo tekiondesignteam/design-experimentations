@@ -1,0 +1,483 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Ops 2026 — Insights</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f7f6f3;
+    color: #1a1a1a;
+    min-height: 100vh;
+    padding: 2rem 1.5rem;
+  }
+  .page { max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 20px; font-weight: 500; color: #1a1a1a; margin-bottom: 4px; }
+  .subtitle { font-size: 13px; color: #888; margin-bottom: 1.25rem; }
+
+  .sum-row { display: flex; gap: 10px; margin-bottom: 1.25rem; }
+  .sum-card { flex: 1; background: #eeecea; border-radius: 10px; padding: .75rem 1rem; }
+  .sum-label { font-size: 11px; color: #888; margin-bottom: 3px; }
+  .sum-val { font-size: 22px; font-weight: 500; color: #1a1a1a; }
+  .sum-val.critical { color: #A32D2D; }
+  .sum-sub { font-size: 11px; color: #888; }
+
+  .sent-tabs { display: flex; gap: 8px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+  .sent-tab {
+    display: flex; align-items: center; gap: 7px;
+    padding: 7px 16px; border-radius: 99px; cursor: pointer;
+    font-size: 13px; font-weight: 500; border: 1.5px solid transparent;
+    transition: all .15s; user-select: none;
+  }
+  .sent-tab .tab-dot { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
+  .sent-tab .tab-count { font-size: 11px; font-weight: 400; opacity: .7; }
+
+  .sent-tab.critical-tab    { background: #fff0f0; color: #A32D2D; border-color: #f09595; }
+  .sent-tab.positive-tab    { background: #f0f7e6; color: #3B6D11; border-color: #97C459; }
+  .sent-tab.aspirational-tab { background: #e6f1fb; color: #185FA5; border-color: #85B7EB; }
+  .sent-tab.observational-tab { background: #f1efe8; color: #444441; border-color: #B4B2A9; }
+
+  .sent-tab.active.critical-tab     { background: #E24B4A; color: #fff; border-color: #E24B4A; }
+  .sent-tab.active.positive-tab     { background: #639922; color: #fff; border-color: #639922; }
+  .sent-tab.active.aspirational-tab { background: #378ADD; color: #fff; border-color: #378ADD; }
+  .sent-tab.active.observational-tab { background: #888780; color: #fff; border-color: #888780; }
+  .sent-tab.active .tab-count { opacity: .85; }
+
+  .section-label { font-size: 11px; font-weight: 500; color: #888; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 8px; }
+
+  .cards-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 14px; }
+  @media (max-width: 600px) { .cards-grid { grid-template-columns: 1fr; } .sum-row { flex-direction: column; } .sent-tabs { gap: 6px; } }
+
+  .card {
+    background: #fff; border: 0.5px solid rgba(0,0,0,0.12);
+    border-radius: 12px; padding: 1rem 1.25rem;
+    cursor: pointer; transition: border-color .15s, box-shadow .15s;
+  }
+  .card:hover { border-color: rgba(0,0,0,0.25); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .card.active { border: 1.5px solid #378ADD; }
+  .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+  .card-title { font-size: 13px; font-weight: 500; color: #1a1a1a; line-height: 1.4; max-width: 72%; }
+  .count-pill { font-size: 11px; color: #185FA5; background: #E6F1FB; border-radius: 99px; padding: 2px 10px; white-space: nowrap; font-weight: 500; }
+  .bar-row { display: flex; height: 5px; border-radius: 4px; overflow: hidden; margin-bottom: 8px; gap: 2px; }
+  .seg { border-radius: 2px; }
+  .card-summary { font-size: 12px; color: #666; line-height: 1.5; }
+
+  .panel {
+    background: #fff; border: 0.5px solid rgba(0,0,0,0.12);
+    border-radius: 12px; padding: 1.25rem;
+    display: none; margin-bottom: 1.5rem;
+  }
+  .panel-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 0.5px solid rgba(0,0,0,0.1); }
+  .panel-title { font-size: 14px; font-weight: 500; color: #1a1a1a; }
+  .panel-meta { font-size: 12px; color: #888; margin-top: 2px; }
+  .close-btn { font-size: 12px; color: #666; background: #f2f1ee; border: 0.5px solid rgba(0,0,0,0.12); border-radius: 99px; padding: 4px 14px; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+  .close-btn:hover { background: #e8e7e4; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 14px; }
+  .leg { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #888; }
+  .leg-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+
+  .insights-list { display: flex; flex-direction: column; gap: 6px; }
+  .i-row { display: flex; gap: 10px; align-items: flex-start; padding: 8px 10px; background: #f7f6f3; border-radius: 8px; }
+  .i-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; margin-top: 5px; }
+  .i-text { font-size: 13px; color: #1a1a1a; line-height: 1.6; }
+
+  .sent-group { margin-bottom: 1.25rem; }
+  .sent-group:last-child { margin-bottom: 0; }
+  .sent-group-label {
+    font-size: 11px; font-weight: 500; color: #888;
+    letter-spacing: .04em; text-transform: uppercase;
+    margin-bottom: 7px; padding-bottom: 5px;
+    border-bottom: 0.5px solid rgba(0,0,0,0.08);
+  }
+
+  .footer { text-align: center; font-size: 11px; color: #bbb; margin-top: 2rem; padding-top: 1rem; border-top: 0.5px solid rgba(0,0,0,0.08); }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Design Ops 2026 — Insights</h1>
+  <p class="subtitle">Click a sentiment tag to see all insights of that type &nbsp;·&nbsp; Click a theme card to drill into that theme &nbsp;·&nbsp; 162 insights across 10 themes</p>
+
+  <div class="sum-row">
+    <div class="sum-card"><div class="sum-label">Total insights</div><div class="sum-val">162</div><div class="sum-sub">synthesized statements</div></div>
+    <div class="sum-card"><div class="sum-label">Dominant sentiment</div><div class="sum-val critical">Critical</div><div class="sum-sub">~62% of all statements</div></div>
+    <div class="sum-card"><div class="sum-label">Themes identified</div><div class="sum-val">10</div><div class="sum-sub">org + practice areas</div></div>
+  </div>
+
+  <div class="section-label" style="margin-bottom:8px;">Filter by sentiment</div>
+  <div class="sent-tabs" id="sentTabs"></div>
+
+  <div class="panel" id="sentPanel">
+    <div class="panel-top">
+      <div>
+        <div class="panel-title" id="sentPanelTitle"></div>
+        <div class="panel-meta" id="sentPanelCount"></div>
+      </div>
+      <button class="close-btn" onclick="closeSentPanel()">Close</button>
+    </div>
+    <div id="sentInsightsList"></div>
+  </div>
+
+  <div class="section-label" style="margin-bottom:8px; margin-top: 4px;">Browse by theme</div>
+  <div class="cards-grid" id="cardsGrid"></div>
+
+  <div class="panel" id="themePanel">
+    <div class="panel-top">
+      <div>
+        <div class="panel-title" id="themePanelTitle"></div>
+        <div class="panel-meta" id="themePanelCount"></div>
+      </div>
+      <button class="close-btn" onclick="closeThemePanel()">Close</button>
+    </div>
+    <div class="legend">
+      <div class="leg"><div class="leg-dot" style="background:#E24B4A;"></div>Critical / pain</div>
+      <div class="leg"><div class="leg-dot" style="background:#639922;"></div>Positive / working</div>
+      <div class="leg"><div class="leg-dot" style="background:#378ADD;"></div>Aspirational / opportunity</div>
+      <div class="leg"><div class="leg-dot" style="background:#888780;"></div>Observational</div>
+    </div>
+    <div class="insights-list" id="themeInsightsList"></div>
+  </div>
+
+  <div class="footer">Design Ops 2026 &nbsp;·&nbsp; Internal research synthesis</div>
+</div>
+
+<script>
+const C='critical', P='positive', A='aspirational', O='observational';
+const COL = { critical:'#E24B4A', positive:'#639922', aspirational:'#378ADD', observational:'#888780' };
+const SENT_LABEL = { critical:'Critical / pain', positive:'Positive / working', aspirational:'Aspirational / opportunity', observational:'Observational' };
+const SENT_CLS   = { critical:'critical-tab', positive:'positive-tab', aspirational:'aspirational-tab', observational:'observational-tab' };
+
+const themes = [
+  { id:'sprint', title:'Sprint, capacity & planning',
+    seg:{critical:19,positive:0,aspirational:1,observational:2},
+    summary:'Ad-hoc work has inverted planned:unplanned ratios. Story points universally criticised. Sprints start underprepared.',
+    insights:[
+      [C,"Capacity concerns are raised but not always acted on."],
+      [C,"Sprints frequently start underprepared, with capacity and requirements both incomplete."],
+      [C,"Scope changes mid-sprint are a consistent source of rework and designer drain, that often go un-documented."],
+      [C,"Retrospectives are the primary process improvement mechanism, but are not followed or working as a feedback loop."],
+      [C,"An underlying consensus comes to believe that the sprint planning model borrowed from engineering does not reflect how design work actually functions."],
+      [C,"Sprint ceremonies exist in most teams but their effectiveness is inconsistent."],
+      [C,"Ad-hoc work is a persistent drain across nearly every team, and existing cadences are not protecting against it."],
+      [C,"Mid-sprint scope changes are a distinct and recurring problem, separate from ad-hoc work volume."],
+      [C,"Pushback on ad-hoc work exists in some teams but is inconsistent and constrained by seniority and urgency dynamics."],
+      [C,"The ratio of planned to ad-hoc work is inverted from what most teams consider healthy."],
+      [C,"Prioritization is almost entirely PM and client-driven across all teams, with design having limited input."],
+      [C,"Retrospectives are being deprioritized or ignored in teams where daily syncs feel sufficient."],
+      [C,"Current sprint alignment is pulling design into reactive timelines rather than enabling parallel progress."],
+      [C,"Designers are managing multiple concurrent PM contexts simultaneously, which creates difficulty to manage priorities."],
+      [C,"Teams are spending effort adapting to JIRA rather than being supported by it."],
+      [C,"Sprint spillovers are being tracked and interpreted as efficiency failures, which creates pressure without addressing root causes."],
+      [C,"Absence of clear requirements at sprint start further undermine the accuracy of the story points."],
+      [C,"Multiple teams have identified individually that story points are a poor fit for design workflows."],
+      [C,"Story points are universally used but inconsistent; applications for teams vary."],
+      [A,"Retrospectives could be used as a real feedback loop if action items were documented and tracked."],
+      [O,"The ratio of planned to ad-hoc work varies significantly by team, and reflects fundamentally different operating realities."],
+      [O,"The purpose of the story points was to give visibility on the bandwidth and managers understand that value."],
+    ]
+  },
+  { id:'ds', title:'Design system',
+    seg:{critical:10,positive:1,aspirational:6,observational:2},
+    summary:'Coverage is good but consistency of application is broken. DS team is isolated from product context. Unification via tokenisation is underway.',
+    insights:[
+      [C,"The gap between having a design system and having a design system that actively improves consistency across the org is a governance and process gap, not a tooling one."],
+      [C,"Unified component library is largely useful, however for separate teams, components are scattered across files."],
+      [C,"The design system team is perceived as disconnected from product context, which could limit the usefulness of its components across contexts."],
+      [C,"Design system adoption exists across all teams but consistency of application is a persistent challenge."],
+      [C,"AI features are creating new design system requirements that existing systems do not fully cover."],
+      [C,"Component coverage is substantial but application across teams remains inconsistent."],
+      [C,"Accessibility/suggesting changes is a recognized gap in the current design system with limited ability to address it in the existing ARC system."],
+      [C,"The team is learning a new architecture paradigm while simultaneously building for production."],
+      [C,"The DS team is experiencing significant prioritization pressure that is limiting their ability to think strategically and from a larger view point."],
+      [C,"The DS team's work intake is conversational and informal, with no structured requirements process."],
+      [A,"Teams are managing multiple separate design systems across clients, and are in the process of unifying them; the teams believe this to be extremely useful."],
+      [A,"The goal is to move from Figma-based design to a token-based, code-ready component approach."],
+      [A,"Cross-team component alignment could benefit with a formal process instead of relying entirely on individual outreach."],
+      [A,"Exploration with boundaries would reduce the churn that the team is currently facing."],
+      [A,"Prototype reviews are the primary feedback mechanism for the DS team; having more clarity could help them be more confident and reduce rework."],
+      [A,"The team recognizes AI-first design system as a new complexity to build towards."],
+      [P,"The team is actively trying to reduce Figma design time as a strategic efficiency goal."],
+      [O,"Both product designers and developers are involved in building the design system, but collaboration structure is still forming."],
+      [O,"The AI initiative is in an active exploratory phase with no settled approach yet."],
+    ]
+  },
+  { id:'influence', title:'Design influence & org position',
+    seg:{critical:11,positive:1,aspirational:4,observational:1},
+    summary:'Design is execution-first. Advocacy is manager-dependent. Recognition is low in an engineering-led culture.',
+    insights:[
+      [C,"While the designers understand that the business constraints are a non-negotiable, it is a source of recurring disappointment when innovative designs are not taken forward."],
+      [C,"Design influence exists but is not equal, and is dependent on the manager's advocacy rather than a structural seat at the table for the designer."],
+      [C,"The pull between planned and exploratory work creates ambiguity for the designers and PMs."],
+      [C,"The need for recognition of design work is felt across the team, acknowledging the product centricity."],
+      [C,"Flow of information creates a dependency problem within the projects."],
+      [C,"The majority of work is execution-driven, with limited space for design-led exploration."],
+      [C,"Design is predominantly execution-focused across most teams, with limited structural space for strategic contribution."],
+      [C,"Psychological safety to raise concerns exists broadly, depth varies in teams."],
+      [C,"Prioritization is almost entirely PM and client-driven across all teams, with design having limited input."],
+      [C,"Client facing teams work all-hands in nature, and support other functions when dormant."],
+      [C,"Designers find it difficult to advocate for tooling or AI access because design is not seen as a primary stakeholder in those decisions."],
+      [A,"There is a recognized aspiration for greater design influence, and some designers are already acting on it."],
+      [A,"Teams seek clarity on how design's contribution is measured at the executive level."],
+      [A,"Designers want a more proactive role in the product process, and see this as part of their growth."],
+      [A,"Having a shared understanding of how design contribution is measured at the executive level could fill the credibility gap."],
+      [P,"Designers find value to connect with the Leadership, for their direction and guidance."],
+      [O,"Design influences the vision setting in projects, highly dependent on the teams."],
+    ]
+  },
+  { id:'process', title:'Design process & workflows',
+    seg:{critical:11,positive:2,aspirational:3,observational:0},
+    summary:'PRD quality is the single biggest variable. Scope changes mid-sprint are undocumented drains. Exploratory work gets no structural support.',
+    insights:[
+      [C,"The burden of fixing PRD quality currently falls on designers, not on the process."],
+      [C,"PRD quality is the single biggest variable determining how smoothly design work goes and it varies enormously."],
+      [C,"PRDs are frequently incomplete, verbal, or arrive after design has already started."],
+      [C,"When the work is genuinely new and exploratory, the existing PRD process is least equipped to handle it, and design is left to navigate ambiguity without adequate support or clarity."],
+      [C,"AB testing exists in some teams but ownership is contested between design and PM."],
+      [C,"Decision documentation during exploration is weak, which causes downstream confusion."],
+      [C,"DR is highly client reactive hence they do not get time to explore multiple directions."],
+      [C,"Scope changes mid-sprint are a consistent source of rework and designer drain, that often go un-documented."],
+      [C,"Copy quality is dependent on individual designers' writing ability and the informal guidance of a single person."],
+      [C,"Exploration depth is calibrated to project size, but small tasks get almost no exploration at all."],
+      [C,"Validation with real users is possible in several teams but is consistently underutilized."],
+      [A,"Documentations of explorations and validations can inform consistency and learning amongst teams."],
+      [A,"Defining design readiness for setting up deadlines will improve quality, enabling exploration and validation."],
+      [A,"A team is evolving its working model toward more collaborative, discussion-based requirement-setting."],
+      [P,"CRM notes the most mature exploration and prototyping practice."],
+      [P,"Collaborative discussions with PMs and devs through prototypes and directions enable early alignment within the teams."],
+    ]
+  },
+  { id:'culture', title:'Team culture & collaboration',
+    seg:{critical:6,positive:3,aspirational:6,observational:1},
+    summary:'Collaborative in intent, scattered in practice. Cross-team visibility is broken. Buddy system is valued but bandwidth-constrained.',
+    insights:[
+      [C,"Team isolation could stunt design quality & growth."],
+      [C,"Cross-team visibility broken in all teams."],
+      [C,"Deeper knowledge of each other's work is a gap, even in close teams."],
+      [C,"The culture is described as collaborative in intent but scattered in practice."],
+      [C,"Unclear direction in shared projects."],
+      [C,"Informal resource sharing across programs reflects the team's supportive culture, rather than being predictable and formal."],
+      [A,"Fostering an interpersonal connection could aid collaboration."],
+      [A,"Teams recognize the importance of a knowledge sharing platform."],
+      [A,"Exploration can be aided with a shared/aligned mindset for better results."],
+      [A,"Cross team movement broadens capability; making it a frictionless and scalable process could unlock greater potential."],
+      [A,"Syncing team growth and directional scalability of the projects would reduce effort and repetitive work."],
+      [A,"Structured support from senior designers for new joinees will enable consistent output quality."],
+      [P,"Designers are genuinely energized by the nature of the work."],
+      [P,"New joinees find the buddy system useful for onboarding, given the assigned person has enough bandwidth to support them."],
+      [P,"Leaders value domain knowledge as a real differentiator."],
+      [O,"Some teams have strong, personal leadership while a few are actively trying to build a culture of accountability & ownership."],
+    ]
+  },
+  { id:'handoff', title:'Handoff & dev collaboration',
+    seg:{critical:12,positive:0,aspirational:1,observational:0},
+    summary:'Highest pain ratio in the board. Design QA runs backwards in several teams. Figma Dev Mode inaccessible. PM-mediated handoffs lose information.',
+    insights:[
+      [C,"Figma Dev Mode is not accessible to developers in some teams, creating a structural gap between design and implementation."],
+      [C,"Engineers are not involved early enough in the design process, and feasibility surprises are a recurring consequence."],
+      [C,"Handoff quality and agreement is highly dependent on individual designer preparation, not on a shared standard."],
+      [C,"Complex projects need designer presence in handoff calls but this is not consistently enforced."],
+      [C,"Decision documentation during and after handoff is poor, and blame follows."],
+      [C,"The teams that care most about implementation quality are spending disproportionate time correcting what should have been right at handoff. Design QA creating efficiency drain."],
+      [C,"PM-mediated handoffs are causing information loss and accountability gaps."],
+      [C,"Developers frequently implement from outdated designs or their own interpretation, creating post-build rework."],
+      [C,"Design QA is running backwards in several teams; designs are being modified to match what developers built, not the other way around."],
+      [C,"Handoff-related file practices vary significantly and can affect the implementation quality."],
+      [C,"Devs are not involved in early scoping, which creates technical surprises later."],
+      [C,"Validation is happening too late in the process — mostly at handoff or post-ship, not at the start."],
+      [A,"Collaborative discussions with PMs and devs through prototypes and directions enable early alignment within the teams."],
+    ]
+  },
+  { id:'research', title:'Research & personas',
+    seg:{critical:12,positive:2,aspirational:2,observational:1},
+    summary:'Personas exist but are scattered and individual, not systemic. Institutional knowledge leaves with people. Post-launch validation consistently underutilised.',
+    insights:[
+      [C,"Existing research and documentation is difficult to find and access, even when it exists."],
+      [C,"Institutional knowledge of users is held by individuals, not by systems; when those people leave, the work is lost or deprioritized."],
+      [C,"Persona documentation exists across teams but is scattered, inconsistently maintained, and rarely centralized."],
+      [C,"Personas are used as mental models more than as living reference documents."],
+      [C,"Research is valued and energizing when it happens, but access to real user data and insights is inconsistent."],
+      [C,"There is a recognized desire for better cross-team sharing of research and personas, but no structure to support it."],
+      [C,"Customer access is gated through PM in Core, which limits design's ability to self-initiate validation even when capacity exists."],
+      [C,"Competitive research is being used reactively to validate decisions already made."],
+      [C,"The depth of competitive research is directly constrained by timeline and urgency."],
+      [C,"Attempts at more structured design research have not gone well, which is discouraging further investment."],
+      [C,"Research is informal, specialist-dependent, and has no formal recruiting or budgeting process in most teams."],
+      [C,"Research process is structurally constrained by the requirement to have something to show before accessing customers."],
+      [A,"Enabling direct access to customer feedback would inform user signals at a much faster rate, improving NPS/SUS scores."],
+      [A,"Access to competitor products is indirect and mediated through specialists — a structural fix could unblock teams."],
+      [P,"Research runs in parallel with design which is a pragmatic agile adaptation."],
+      [P,"Competitive research carried out across teams, through various methods."],
+      [O,"Customer access exists across teams but the ease and directness of that access varies significantly."],
+    ]
+  },
+  { id:'feedback', title:'Feedback & critique',
+    seg:{critical:10,positive:1,aspirational:2,observational:2},
+    summary:'Peer critique has lapsed or never formally existed in most teams. CFT feedback is reactive and contradictory. CRM has the most mature cadence.',
+    insights:[
+      [C,"Five years of domain depth has shifted how the team validates design, but this shift is undocumented."],
+      [C,"Client feedback is unstructured, feeling-driven, and requires senior managers to constantly justify their work with data."],
+      [C,"The final design decision lies with the client and the PM; the team holds strong design principles internally but cannot fully apply them externally."],
+      [C,"The quality of feedback a designer receives is largely determined by which team they are on, not by a consistent standard."],
+      [C,"Documentation of feedback decisions is inconsistent and largely maintained personally rather than shared."],
+      [C,"Client feedback is often late, feeling-driven, and applied at scale making it labourious."],
+      [C,"Peer design critique has either lapsed or never been formally established across most teams."],
+      [C,"Unclear CFT feedback requires followup calls to interpret."],
+      [C,"Reactive feedback from the CFTs is often scattered, contradictory and undocumented across teams."],
+      [C,"Async feedback is a preferred mode in multiple teams but is not consistently enabled."],
+      [A,"Enabling direct access to customer feedback would improve NPS/SUS scores across the products."],
+      [A,"Structured team rituals for learning and connection are wanted but not in place in most teams."],
+      [P,"VariableOps has established the most structured and layered review cadence that works for them."],
+      [O,"One-on-ones with managers are the primary individual feedback channel across most teams."],
+      [O,"Designers value feedback from involved and proactive leaders and peers."],
+    ]
+  },
+  { id:'ai', title:'AI & tools',
+    seg:{critical:7,positive:2,aspirational:3,observational:1},
+    summary:'AI most consistently useful for research and exploration. Adoption is at exploration stage. Mindset shift is the underlying barrier.',
+    insights:[
+      [C,"AI design tools are being explored but are not yet reliable for production work."],
+      [C,"Tool access is inconsistent and in some cases depends on informal workarounds."],
+      [C,"Confluence is present across teams but consistently underutilized and poorly structured."],
+      [C,"Figma file organization is inconsistent across teams and finding older work is genuinely difficult."],
+      [C,"There are tensions between AI as an efficiency driver and AI as a potential risk to design craft, hindering openness to this new way of working."],
+      [C,"Designing truly AI systems is very new where the support from established systems are not keeping up to enable clarity for designers."],
+      [C,"The mindset shift required to work effectively with AI is an underlying barrier for designers to transition from their current ways of working."],
+      [A,"There is a shared aspiration for AI to shift design toward more thinking and less execution."],
+      [A,"Some teams have built structured file systems, but these have not propagated across the organization."],
+      [A,"Teams that rely on JIRA and standups are rendering inefficient for reviewing designs — better async tooling could help."],
+      [P,"AI is delivering the most consistent value in research, competitive analysis, and exploration across teams."],
+      [P,"Leadership is pointing toward AI and data-driven design as a direction; investing in the tools or training could make it real."],
+      [O,"AI adoption is at an exploration stage across all teams to be integrated in the workflow."],
+    ]
+  },
+  { id:'data', title:'Data, impact & learning',
+    seg:{critical:11,positive:1,aspirational:4,observational:0},
+    summary:'Post-launch loops are absent. Designers lack data literacy and access. Learning is self-driven and out-of-hours. Growth is unsupported structurally.',
+    insights:[
+      [C,"The absence of post-launch learning means teams cannot close the loop between design decisions and real-world outcomes."],
+      [C,"Designers lack the data literacy and bandwidth to make analytics tools useful even when access exists."],
+      [C,"Pendo exists across multiple teams but adoption is low and usage is shallow."],
+      [C,"Backend data exists and could inform prioritization, but the design team has not explored it."],
+      [C,"The connection between design work and business outcomes is recognized as important but not operationalized."],
+      [C,"Data access for measuring impact is limited for designers."],
+      [C,"Where measurement does happen, it is informal, undocumented, and PM-dependent."],
+      [C,"NPS and support ticket data sits with PMs; designers have no direct line to it. Feedback from users is irregular and incompletely passed on."],
+      [C,"Post-launch validation is not consistently practiced in any team."],
+      [C,"Learning is self-driven and happens outside work hours for most people."],
+      [C,"Execution-heavy work is limiting opportunities at work to build other skills which some designers find useful."],
+      [A,"Designers aspire to have pre-defined success metrics to measure good design."],
+      [A,"Having a shared understanding of how design contribution is measured at the executive level could fill the credibility gap."],
+      [A,"Designers want a more proactive role in the product process, and see this as part of their growth."],
+      [A,"Structured team rituals for learning and connection are wanted but not in place in most teams."],
+      [P,"Designers have a clear picture of where they want to grow, and it is consistent across teams."],
+    ]
+  },
+];
+
+function countBySentiment(sent) {
+  return themes.reduce((acc, t) => acc + t.insights.filter(([s]) => s === sent).length, 0);
+}
+
+let activeThemeId = null;
+let activeSent = null;
+
+function renderSentTabs() {
+  const tabs = document.getElementById('sentTabs');
+  const sentiments = [C, P, A, O];
+  tabs.innerHTML = sentiments.map(s => `
+    <div class="sent-tab ${SENT_CLS[s]}" id="tab-${s}" onclick="selectSentiment('${s}')">
+      <div class="tab-dot" style="background:${COL[s]};"></div>
+      ${SENT_LABEL[s]}
+      <span class="tab-count">${countBySentiment(s)}</span>
+    </div>
+  `).join('');
+}
+
+function renderCards() {
+  const grid = document.getElementById('cardsGrid');
+  grid.innerHTML = themes.map(t => {
+    const total = Object.values(t.seg).reduce((a, b) => a + b, 0);
+    const segs = Object.entries(t.seg).map(([k, v]) =>
+      v > 0 ? `<div class="seg" style="background:${COL[k]};flex:${v};"></div>` : ''
+    ).join('');
+    return `<div class="card" id="card-${t.id}" onclick="selectTheme('${t.id}')">
+      <div class="card-header">
+        <div class="card-title">${t.title}</div>
+        <div class="count-pill">${total} insights</div>
+      </div>
+      <div class="bar-row">${segs}</div>
+      <div class="card-summary">${t.summary}</div>
+    </div>`;
+  }).join('');
+}
+
+function selectTheme(id) {
+  closeSentPanel();
+  if (activeThemeId === id) { closeThemePanel(); return; }
+  if (activeThemeId) document.getElementById('card-' + activeThemeId).classList.remove('active');
+  activeThemeId = id;
+  document.getElementById('card-' + id).classList.add('active');
+  const t = themes.find(x => x.id === id);
+  document.getElementById('themePanelTitle').textContent = t.title;
+  document.getElementById('themePanelCount').textContent = t.insights.length + ' raw insights';
+  document.getElementById('themeInsightsList').innerHTML = t.insights.map(([s, txt]) =>
+    `<div class="i-row"><div class="i-dot" style="background:${COL[s]};"></div><div class="i-text">${txt}</div></div>`
+  ).join('');
+  const panel = document.getElementById('themePanel');
+  panel.style.display = 'block';
+  setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+}
+
+function closeThemePanel() {
+  if (activeThemeId) document.getElementById('card-' + activeThemeId).classList.remove('active');
+  activeThemeId = null;
+  document.getElementById('themePanel').style.display = 'none';
+}
+
+function selectSentiment(sent) {
+  closeThemePanel();
+  if (activeSent === sent) { closeSentPanel(); return; }
+  if (activeSent) document.getElementById('tab-' + activeSent).classList.remove('active');
+  activeSent = sent;
+  document.getElementById('tab-' + sent).classList.add('active');
+
+  const grouped = themes.map(t => ({
+    title: t.title,
+    items: t.insights.filter(([s]) => s === sent)
+  })).filter(g => g.items.length > 0);
+
+  const total = grouped.reduce((acc, g) => acc + g.items.length, 0);
+  document.getElementById('sentPanelTitle').textContent = SENT_LABEL[sent];
+  document.getElementById('sentPanelCount').textContent = total + ' insights across ' + grouped.length + ' themes';
+
+  document.getElementById('sentInsightsList').innerHTML = grouped.map(g => `
+    <div class="sent-group">
+      <div class="sent-group-label">${g.title}</div>
+      <div class="insights-list">
+        ${g.items.map(([s, txt]) =>
+          `<div class="i-row"><div class="i-dot" style="background:${COL[s]};"></div><div class="i-text">${txt}</div></div>`
+        ).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  const panel = document.getElementById('sentPanel');
+  panel.style.display = 'block';
+  setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+}
+
+function closeSentPanel() {
+  if (activeSent) document.getElementById('tab-' + activeSent).classList.remove('active');
+  activeSent = null;
+  document.getElementById('sentPanel').style.display = 'none';
+}
+
+renderSentTabs();
+renderCards();
+</script>
+</body>
+</html>
