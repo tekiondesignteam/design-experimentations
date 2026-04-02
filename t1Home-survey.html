@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>T1 Homepage — Stakeholder Survey</title>
   <style>
-    /* ─── DESIGN SYSTEM TOKENS ─────────────────────────────── */
     :root {
       --color-text-primary: #161616;
       --color-text-secondary: #444F5C;
@@ -14,6 +13,7 @@
       --color-background-white: #FFFFFF;
       --gradient-primary: linear-gradient(271deg, #7EFF9E 0.19%, #35FFD5 101.58%);
       --gradient-hover: linear-gradient(271deg, #44FF72 0.19%, #13F2C4 101.58%);
+      --color-cyan-light: #35FFD5;
       --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica', 'Arial', sans-serif;
       --font-size-3xl: 30px;
       --font-size-xl: 20px;
@@ -34,7 +34,6 @@
       --border-radius-lg: 8px;
     }
 
-    /* ─── BUTTONS ───────────────────────────────────────────── */
     .button-primary {
       background: var(--gradient-primary);
       border-radius: var(--border-radius-md);
@@ -64,7 +63,6 @@
     }
     .button-secondary:hover { opacity: 0.7; }
 
-    /* ─── CARDS ─────────────────────────────────────────────── */
     .card {
       background: var(--color-background-white);
       border: 1px solid var(--color-border);
@@ -72,7 +70,6 @@
       padding: var(--spacing-lg);
     }
 
-    /* ─── RESET & BASE ──────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
@@ -82,14 +79,13 @@
       color: var(--color-text-primary);
       min-height: 100vh;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
-      padding: 40px var(--spacing-lg);
+      padding: 48px var(--spacing-lg) 80px;
     }
 
-    .container { width: 100%; max-width: 560px; }
+    .container { width: 100%; max-width: 580px; }
 
-    /* ─── HEADER ────────────────────────────────────────────── */
     .header {
       margin-bottom: var(--spacing-xl);
       animation: fadeUp 0.4s ease both;
@@ -110,7 +106,7 @@
       font-weight: var(--font-weight-normal);
     }
 
-    /* ─── PROGRESS ──────────────────────────────────────────── */
+    /* Progress */
     .progress-wrap {
       margin-bottom: var(--spacing-lg);
       animation: fadeUp 0.4s 0.06s ease both;
@@ -128,31 +124,48 @@
       color: var(--color-text-secondary);
       letter-spacing: 0.08em;
       text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    .progress-count {
-      font-size: var(--font-size-xs);
-      color: var(--color-text-secondary);
+    .progress-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: linear-gradient(271deg, #7EFF9E 0.19%, #35FFD5 101.58%);
+      display: inline-block;
     }
 
+    .progress-count { font-size: var(--font-size-xs); color: var(--color-text-secondary); }
+
+    /* Segmented progress bar */
     .progress-bar {
-      height: 3px;
+      height: 6px;
+      display: flex;
+      gap: 3px;
+      align-items: center;
+    }
+
+    .progress-part-gap {
+      width: 8px;
+      flex-shrink: 0;
+    }
+
+    .progress-seg {
+      flex: 1;
+      height: 6px;
+      border-radius: 99px;
       background: var(--color-border);
-      border-radius: 99px;
-      overflow: hidden;
+      transition: background 0.3s ease;
     }
 
-    .progress-fill {
-      height: 100%;
-      background: var(--color-text-primary);
-      border-radius: 99px;
-      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    .progress-seg.filled {
+      background: #444F5C;
     }
 
-    /* ─── FORM CARD ─────────────────────────────────────────── */
+
     #formCard { animation: fadeUp 0.4s 0.1s ease both; }
 
-    /* ─── QUESTION ──────────────────────────────────────────── */
     .question-number {
       font-size: var(--font-size-xs);
       font-weight: var(--font-weight-medium);
@@ -170,14 +183,6 @@
       margin-bottom: var(--spacing-lg);
     }
 
-    .question-hint {
-      font-size: var(--font-size-xs);
-      color: var(--color-text-secondary);
-      margin-bottom: var(--spacing-md);
-      margin-top: calc(var(--spacing-sm) * -1);
-    }
-
-    /* ─── INPUTS ────────────────────────────────────────────── */
     .field-label {
       font-size: var(--font-size-xs);
       font-weight: var(--font-weight-medium);
@@ -185,7 +190,7 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
       display: block;
-      margin-bottom: var(--spacing-xs);
+      margin-bottom: var(--spacing-sm);
     }
 
     textarea, input[type="text"] {
@@ -205,11 +210,17 @@
     }
 
     textarea { min-height: 96px; }
-
     textarea:focus, input[type="text"]:focus { border-color: var(--color-text-primary); }
     textarea::placeholder, input::placeholder { color: var(--color-text-secondary); opacity: 0.6; }
 
-    /* ─── OPTIONS (single + multi) ──────────────────────────── */
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-md);
+      margin-top: var(--spacing-sm);
+    }
+
+    /* Options */
     .options { display: flex; flex-direction: column; gap: 10px; }
 
     .option {
@@ -225,14 +236,10 @@
       user-select: none;
     }
 
-    /* Options with sublabels need top alignment */
     .option.has-sublabel { align-items: flex-start; }
     .option.has-sublabel .option-indicator { margin-top: 2px; }
 
-    .option:hover {
-      border-color: #aaaaaa;
-      background: var(--color-background-gray);
-    }
+    .option:hover { border-color: #aaaaaa; background: var(--color-background-gray); }
 
     .option.selected {
       border-color: transparent;
@@ -240,55 +247,31 @@
       box-shadow: 0 0 0 1.5px #35FFD5;
     }
 
-    /* ─── RADIO DOT ─────────────────────────────────────────── */
     .option-indicator {
       width: 16px;
       height: 16px;
       min-width: 16px;
       border: 1.5px solid var(--color-border);
+      border-radius: 50%;
       transition: all 0.15s;
       position: relative;
       flex-shrink: 0;
     }
 
-    /* Radio = circle */
-    .option-indicator.radio { border-radius: 50%; }
+    .option.selected .option-indicator { border-color: #1db89a; background: #1db89a; }
 
-    /* Checkbox = rounded square */
-    .option-indicator.checkbox { border-radius: var(--border-radius-sm); }
-
-    .option.selected .option-indicator {
-      border-color: #1db89a;
-      background: #1db89a;
-    }
-
-    /* Radio inner dot */
-    .option-indicator.radio::after {
+    .option-indicator::after {
       content: '';
       position: absolute;
       top: 50%; left: 50%;
       transform: translate(-50%, -50%) scale(0);
       width: 6px; height: 6px;
       border-radius: 50%;
-      background: #1db89a;
+      background: #fff;
       transition: transform 0.15s;
     }
 
-    .option.selected .option-indicator.radio::after { transform: translate(-50%, -50%) scale(1); }
-
-    /* Checkbox checkmark */
-    .option-indicator.checkbox::after {
-      content: '';
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -55%) rotate(45deg) scale(0);
-      width: 4px; height: 7px;
-      border-right: 2px solid var(--color-text-primary);
-      border-bottom: 2px solid var(--color-text-primary);
-      transition: transform 0.15s;
-    }
-
-    .option.selected .option-indicator.checkbox::after { transform: translate(-50%, -55%) rotate(45deg) scale(1); }
+    .option.selected .option-indicator::after { transform: translate(-50%, -50%) scale(1); }
 
     .option-label {
       font-size: var(--font-size-sm);
@@ -308,40 +291,112 @@
     .option.selected .option-label { color: var(--color-text-primary); }
     .option.selected .option-sublabel { color: var(--color-text-secondary); }
 
-    /* ─── SCALE ─────────────────────────────────────────────── */
-    .scale-wrap { display: flex; flex-direction: column; gap: var(--spacing-sm); }
-
-    .scale-labels {
-      display: flex;
-      justify-content: space-between;
-      font-size: var(--font-size-xs);
-      color: var(--color-text-secondary);
+    /* Other input inside option */
+    .other-input-wrap { margin-top: var(--spacing-sm); }
+    .other-input-wrap input {
+      height: 36px;
+      padding: var(--spacing-xs) var(--spacing-sm);
     }
 
-    .scale-buttons { display: flex; gap: var(--spacing-xs); }
+    /* Direction cards */
+    .direction-cards { display: flex; flex-direction: column; gap: 10px; }
 
-    .scale-btn {
-      flex: 1;
-      height: 40px;
-      background: var(--color-background-white);
+    .dir-card {
       border: 1px solid var(--color-border);
       border-radius: var(--border-radius-md);
-      color: var(--color-text-secondary);
-      font-family: var(--font-family);
-      font-size: var(--font-size-sm);
-      font-weight: var(--font-weight-medium);
+      background: var(--color-background-white);
       cursor: pointer;
-      transition: all 0.15s;
+      transition: border-color 0.15s, background 0.15s;
+      overflow: hidden;
+      user-select: none;
     }
 
-    .scale-btn:hover { border-color: #aaaaaa; background: var(--color-background-gray); color: var(--color-text-primary); }
-    .scale-btn.selected { background: var(--color-text-primary); border-color: var(--color-text-primary); color: white; font-weight: var(--font-weight-bold); }
+    .dir-card:hover { border-color: #aaaaaa; background: var(--color-background-gray); }
 
-    /* ─── YES / NO ──────────────────────────────────────────── */
-    .yesno { display: flex; gap: var(--spacing-sm); }
-    .yesno .option { flex: 1; justify-content: flex-start; padding-left: var(--spacing-md); gap: var(--spacing-md); }
+    .dir-card.selected {
+      border-color: transparent;
+      box-shadow: 0 0 0 1.5px #35FFD5;
+      background: linear-gradient(271deg, rgba(126,255,158,0.06) 0.19%, rgba(53,255,213,0.06) 101.58%);
+    }
 
-    /* ─── NAV ───────────────────────────────────────────────── */
+    .dir-card-inner {
+      display: flex;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md);
+      align-items: flex-start;
+    }
+
+    .dir-indicator {
+      width: 16px;
+      height: 16px;
+      min-width: 16px;
+      border: 1.5px solid var(--color-border);
+      border-radius: 50%;
+      position: relative;
+      margin-top: 2px;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+
+    .dir-card.selected .dir-indicator { border-color: #1db89a; background: #1db89a; }
+
+    .dir-card.selected .dir-indicator::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #fff;
+    }
+
+    .skeleton-wrap {
+      flex-shrink: 0;
+      width: 110px;
+      height: 72px;
+      background: var(--color-background-gray);
+      border-radius: var(--border-radius-sm);
+      padding: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sk { background: #D4D5D6; border-radius: 2px; position: absolute; }
+
+    /* Home skeleton */
+    .sk-home-greeting { width: 60px; height: 7px; top: 8px; left: 8px; }
+    .sk-home-sub      { width: 40px; height: 5px; top: 18px; left: 8px; opacity: 0.5; }
+    .sk-home-c1       { width: 43px; height: 32px; top: 30px; left: 8px; border-radius: 3px; }
+    .sk-home-c2       { width: 43px; height: 32px; top: 30px; left: 59px; border-radius: 3px; }
+    .sk-home-c1-line1 { width: 28px; height: 4px; top: 37px; left: 14px; background: #bbbcbd; }
+    .sk-home-c1-line2 { width: 20px; height: 3px; top: 44px; left: 14px; background: #bbbcbd; opacity: 0.6; }
+    .sk-home-c2-line1 { width: 28px; height: 4px; top: 37px; left: 65px; background: #bbbcbd; }
+    .sk-home-c2-line2 { width: 20px; height: 3px; top: 44px; left: 65px; background: #bbbcbd; opacity: 0.6; }
+
+    /* Action Center skeleton */
+    .sk-ac-label { width: 50px; height: 6px; top: 8px; left: 8px; }
+    .sk-ac-row1  { width: 94px; height: 14px; top: 20px; left: 8px; border-radius: 2px; }
+    .sk-ac-row2  { width: 94px; height: 14px; top: 37px; left: 8px; border-radius: 2px; }
+    .sk-ac-row3  { width: 94px; height: 14px; top: 54px; left: 8px; border-radius: 2px; }
+    .sk-ac-dot1  { width: 6px; height: 6px; border-radius: 50%; top: 24px; left: 12px; background: #b0b1b2; }
+    .sk-ac-dot2  { width: 6px; height: 6px; border-radius: 50%; top: 41px; left: 12px; background: #b0b1b2; }
+    .sk-ac-dot3  { width: 6px; height: 6px; border-radius: 50%; top: 58px; left: 12px; background: #b0b1b2; }
+    .sk-ac-t1    { width: 55px; height: 4px; top: 24px; left: 23px; background: #b0b1b2; }
+    .sk-ac-t2    { width: 45px; height: 4px; top: 41px; left: 23px; background: #b0b1b2; }
+    .sk-ac-t3    { width: 60px; height: 4px; top: 58px; left: 23px; background: #b0b1b2; }
+
+    /* Conversational skeleton */
+    .sk-cv-chat  { width: 94px; height: 26px; top: 8px; left: 8px; border-radius: 3px; }
+    .sk-cv-line  { width: 70px; height: 4px; top: 20px; left: 17px; background: #b0b1b2; border-radius: 2px; }
+    .sk-cv-btn   { width: 30px; height: 8px; top: 42px; left: 8px; border-radius: 2px; }
+    .sk-cv-btn2  { width: 36px; height: 8px; top: 42px; left: 44px; border-radius: 2px; }
+    .sk-cv-mini  { width: 94px; height: 14px; top: 56px; left: 8px; border-radius: 2px; }
+
+    .dir-meta { flex: 1; padding-top: 2px; }
+    .dir-label { font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: var(--color-text-primary); margin-bottom: 3px; }
+    .dir-sublabel { font-size: var(--font-size-xs); color: var(--color-text-secondary); line-height: 1.5; }
+
+    /* Nav */
     .nav {
       display: flex;
       align-items: center;
@@ -350,52 +405,21 @@
       padding-top: var(--spacing-md);
     }
 
-    .error-msg {
-      font-size: var(--font-size-xs);
-      color: #c45c00;
-      margin-top: var(--spacing-sm);
-      display: none;
-    }
-
+    .error-msg { font-size: var(--font-size-xs); color: #c45c00; margin-top: var(--spacing-sm); display: none; }
     .error-msg.show { display: block; }
 
-    /* ─── STEPS ─────────────────────────────────────────────── */
     .step { display: none; }
     .step.active { display: block; animation: fadeUp 0.25s ease both; }
 
-    /* ─── SUCCESS ───────────────────────────────────────────── */
-    .success-screen {
-      text-align: center;
-      padding: 40px var(--spacing-lg);
-      animation: fadeUp 0.4s ease both;
-    }
-
+    .success-screen { text-align: center; padding: 40px var(--spacing-lg); animation: fadeUp 0.4s ease both; }
     .success-mark {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
+      width: 48px; height: 48px; border-radius: 50%;
       background: var(--gradient-primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto var(--spacing-lg);
-      font-size: 20px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto var(--spacing-lg); font-size: 20px;
     }
-
-    .success-screen h2 {
-      font-size: var(--font-size-xl);
-      font-weight: var(--font-weight-bold);
-      color: var(--color-text-primary);
-      margin-bottom: var(--spacing-sm);
-    }
-
-    .success-screen p {
-      font-size: var(--font-size-sm);
-      color: var(--color-text-secondary);
-      line-height: 1.6;
-      max-width: 340px;
-      margin: 0 auto;
-    }
+    .success-screen h2 { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); margin-bottom: var(--spacing-sm); }
+    .success-screen p { font-size: var(--font-size-sm); color: var(--color-text-secondary); line-height: 1.6; max-width: 340px; margin: 0 auto; }
 
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(10px); }
@@ -405,7 +429,7 @@
     @media (max-width: 480px) {
       body { padding: var(--spacing-lg) var(--spacing-md); }
       .card { padding: var(--spacing-md); }
-      .header h1 { font-size: var(--font-size-xl); }
+      .field-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -413,188 +437,254 @@
 <div class="container">
 
   <div class="header">
-    <h1>Help shape the homepage.</h1>
+    <img src="https://tekiondesignteam.github.io/design-experimentations/T1.svg" alt="T1" style="height:28px; margin-bottom: 20px; display:block;" />
+    <h1>Help shape the T1 Homepage.</h1>
     <p>A few questions to align on what the T1 homepage should feel like, how AI should behave, and where we're heading. Takes about 5 minutes.</p>
   </div>
 
   <div class="progress-wrap" id="progressWrap">
     <div class="progress-meta">
-      <span class="progress-label">Progress</span>
+      <span class="progress-label" id="progressLabel">Getting started</span>
       <span class="progress-count" id="progressCount">—</span>
     </div>
-    <div class="progress-bar">
-      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    <div class="progress-bar" id="progressBar">
+      <div class="progress-seg" id="seg-1"></div>
+      <div class="progress-seg" id="seg-2"></div>
+      <div class="progress-seg" id="seg-3"></div>
+      <div class="progress-seg" id="seg-4"></div>
+      <div class="progress-seg" id="seg-5"></div>
+      <div class="progress-part-gap"></div>
+      <div class="progress-seg" id="seg-6"></div>
+      <div class="progress-seg" id="seg-7"></div>
+      <div class="progress-seg" id="seg-8"></div>
+      <div class="progress-seg" id="seg-9"></div>
+      <div class="progress-seg" id="seg-10"></div>
     </div>
   </div>
 
   <div class="card" id="formCard">
 
-    <!-- Step 0: Name -->
+    <!-- Step 0 -->
     <div class="step active" id="step-0">
       <div class="question-text">Who are we hearing from?</div>
-      <input type="text" id="name" placeholder="Your name" />
-    </div>
-
-    <!-- Q1 -->
-    <div class="step" id="step-1">
-      <div class="question-number">Question 1 of 10</div>
-      <div class="question-text">When someone opens the homepage at the start of their day, what's the single most important thing they should walk away knowing?</div>
-      <textarea id="q1" placeholder="Share your thoughts..."></textarea>
-    </div>
-
-    <!-- Q2 — multiselect -->
-    <div class="step" id="step-2">
-      <div class="question-number">Question 2 of 10</div>
-      <div class="question-text">If the homepage were a person, how would you describe their personality?</div>
-      <div class="options">
-        <div class="option has-sublabel" data-value="The Coach" onclick="selectOption('q2', this)">
-          <div class="option-indicator radio"></div>
-          <div><div class="option-label">The Coach</div><div class="option-sublabel">Pushes you to act, keeps you accountable</div></div>
+      <div class="field-row">
+        <div>
+          <label class="field-label">Name</label>
+          <input type="text" id="name" placeholder="John" />
         </div>
-        <div class="option has-sublabel" data-value="The Navigator" onclick="selectOption('q2', this)">
-          <div class="option-indicator radio"></div>
-          <div><div class="option-label">The Navigator</div><div class="option-sublabel">Gives you the full picture, orients your day</div></div>
-        </div>
-        <div class="option has-sublabel" data-value="The Briefer" onclick="selectOption('q2', this)">
-          <div class="option-indicator radio"></div>
-          <div><div class="option-label">The Briefer</div><div class="option-sublabel">Synthesizes everything, delivers your daily story</div></div>
-        </div>
-        <div class="option has-sublabel" data-value="The Collaborator" onclick="selectOption('q2', this)">
-          <div class="option-indicator radio"></div>
-          <div><div class="option-label">The Collaborator</div><div class="option-sublabel">Works alongside you, thinks with you</div></div>
-        </div>
-        <div class="option has-sublabel" data-value="The Assistant" onclick="selectOption('q2', this)">
-          <div class="option-indicator radio"></div>
-          <div><div class="option-label">The Assistant</div><div class="option-sublabel">Hands you your to-do list, ready to execute</div></div>
+        <div>
+          <label class="field-label">Role</label>
+          <input type="text" id="role" placeholder="Product Manager" />
         </div>
       </div>
     </div>
 
+    <!-- Q1 -->
+    <div class="step" id="step-1">
+      <div class="question-number">Question 1 of 9</div>
+      <div class="question-text">If the homepage were a person, how would you describe their personality?</div>
+      <div class="options" id="q1-options">
+        <div class="option has-sublabel" data-value="The Coach" onclick="selectOption('q1', this)">
+          <div class="option-indicator"></div>
+          <div><div class="option-label">The Coach</div><div class="option-sublabel">Cuts through the noise. Tells you what to focus on and why.</div></div>
+        </div>
+        <div class="option has-sublabel" data-value="The Narrator" onclick="selectOption('q1', this)">
+          <div class="option-indicator"></div>
+          <div><div class="option-label">The Narrator</div><div class="option-sublabel">Reads the room before you do. Gives you the full picture in one glance.</div></div>
+        </div>
+        <div class="option has-sublabel" data-value="The Assistant" onclick="selectOption('q1', this)">
+          <div class="option-indicator"></div>
+          <div><div class="option-label">The Assistant</div><div class="option-sublabel">Always one step ahead. Your tasks, follow-ups, and next moves, ready to go.</div></div>
+        </div>
+        <div class="option has-sublabel" id="q1-other-option" data-value="Other" onclick="selectOption('q1', this)">
+          <div class="option-indicator"></div>
+          <div style="width:100%">
+            <div class="option-label">Other</div>
+            <div class="other-input-wrap" id="q1-other-wrap" style="display:none;">
+              <input type="text" id="q1-other-text" placeholder="Describe in your own words" onclick="event.stopPropagation()" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="step" id="step-2">
+      <div class="question-number">Question 2 of 9</div>
+      <div class="question-text">When someone opens the homepage at the start of their day, what's the single most important thing they should walk away knowing?</div>
+      <textarea id="q2" placeholder="Share your thoughts..."></textarea>
+    </div>
+
     <!-- Q3 -->
     <div class="step" id="step-3">
-      <div class="question-number">Question 3 of 10</div>
-      <div class="question-text">At the end of a workday, what would tell you the homepage genuinely helped someone?</div>
+      <div class="question-number">Question 3 of 9</div>
+      <div class="question-text">If you had to define one success metric for the homepage, what would it be?</div>
       <textarea id="q3" placeholder="Share your thoughts..."></textarea>
     </div>
 
     <!-- Q4 -->
     <div class="step" id="step-4">
-      <div class="question-number">Question 4 of 10</div>
-      <div class="question-text">How much should AI decide what a user sees versus the user controlling it themselves?</div>
-      <div class="scale-wrap">
-        <div class="scale-labels">
-          <span>Fully user-controlled</span>
-          <span>Fully AI-decided</span>
+      <div class="question-number">Question 4 of 9</div>
+      <div class="question-text">How should the homepage be shaped for each user?</div>
+      <div class="options">
+        <div class="option has-sublabel" data-value="Fixed for persona" onclick="selectOption('q4', this)">
+          <div class="option-indicator"></div>
+          <div><div class="option-label">Fixed for persona</div><div class="option-sublabel">Same layout and widgets per role, consistent for everyone in that role</div></div>
         </div>
-        <div class="scale-buttons" id="q4-scale">
-          <button class="scale-btn" onclick="selectScale('q4', 1, this)">1</button>
-          <button class="scale-btn" onclick="selectScale('q4', 2, this)">2</button>
-          <button class="scale-btn" onclick="selectScale('q4', 3, this)">3</button>
-          <button class="scale-btn" onclick="selectScale('q4', 4, this)">4</button>
-          <button class="scale-btn" onclick="selectScale('q4', 5, this)">5</button>
+        <div class="option has-sublabel" data-value="User customised" onclick="selectOption('q4', this)">
+          <div class="option-indicator"></div>
+          <div><div class="option-label">User customised</div><div class="option-sublabel">Each user sets up and arranges their own homepage</div></div>
+        </div>
+        <div class="option has-sublabel" data-value="Adaptive" onclick="selectOption('q4', this)">
+          <div class="option-indicator"></div>
+          <div><div class="option-label">Adaptive</div><div class="option-sublabel">AI reads your role, context, and patterns — and builds the page around you. No setup needed.</div></div>
+        </div>
+        <div class="option has-sublabel" id="q4-other-option" data-value="Other" onclick="selectOption('q4', this)">
+          <div class="option-indicator"></div>
+          <div style="width:100%">
+            <div class="option-label">Other</div>
+            <div class="other-input-wrap" id="q4-other-wrap" style="display:none;">
+              <input type="text" id="q4-other-text" placeholder="Describe your thinking" onclick="event.stopPropagation()" />
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Q5 -->
+    <!-- Q5 — Direction -->
     <div class="step" id="step-5">
-      <div class="question-number">Question 5 of 10</div>
-      <div class="question-text">A salesperson responding to something urgent and a GM starting their morning have very different needs. Should the homepage adapt to each moment?</div>
-      <div class="yesno">
-        <div class="option" data-value="Yes" onclick="selectOption('q5', this)">
-          <div class="option-indicator radio"></div>
-          <div class="option-label">Yes, adapt to the moment</div>
+      <div class="question-number">Question 5 of 9</div>
+      <div class="question-text">Which direction resonates most with where you see T1 heading?</div>
+      <div class="direction-cards">
+
+        <div class="dir-card" data-value="Home" onclick="selectDir(this)">
+          <div class="dir-card-inner">
+            <div class="dir-indicator"></div>
+            <div class="skeleton-wrap">
+              <div class="sk sk-home-greeting"></div>
+              <div class="sk sk-home-sub"></div>
+              <div class="sk sk-home-c1"></div>
+              <div class="sk sk-home-c2"></div>
+              <div class="sk sk-home-c1-line1"></div>
+              <div class="sk sk-home-c1-line2"></div>
+              <div class="sk sk-home-c2-line1"></div>
+              <div class="sk sk-home-c2-line2"></div>
+            </div>
+            <div class="dir-meta">
+              <div class="dir-label">Home</div>
+              <div class="dir-sublabel">You open the app and AI has already read your day. Contextual, calm, and ready.</div>
+            </div>
+          </div>
         </div>
-        <div class="option" data-value="No" onclick="selectOption('q5', this)">
-          <div class="option-indicator radio"></div>
-          <div class="option-label">No, keep it consistent</div>
+
+        <div class="dir-card" data-value="Action Center" onclick="selectDir(this)">
+          <div class="dir-card-inner">
+            <div class="dir-indicator"></div>
+            <div class="skeleton-wrap">
+              <div class="sk sk-ac-label"></div>
+              <div class="sk sk-ac-row1"></div>
+              <div class="sk sk-ac-row2"></div>
+              <div class="sk sk-ac-row3"></div>
+              <div class="sk sk-ac-dot1"></div>
+              <div class="sk sk-ac-dot2"></div>
+              <div class="sk sk-ac-dot3"></div>
+              <div class="sk sk-ac-t1"></div>
+              <div class="sk sk-ac-t2"></div>
+              <div class="sk sk-ac-t3"></div>
+            </div>
+            <div class="dir-meta">
+              <div class="dir-label">Action Center</div>
+              <div class="dir-sublabel">Open the app, know exactly what to do. AI has done the sorting.</div>
+            </div>
+          </div>
         </div>
-      </div>
-      <div style="margin-top: var(--spacing-md);">
-        <label class="field-label">Why?</label>
-        <textarea id="q5why" placeholder="Explain your thinking..." style="min-height:72px;"></textarea>
+
+        <div class="dir-card" data-value="Conversational Landing" onclick="selectDir(this)">
+          <div class="dir-card-inner">
+            <div class="dir-indicator"></div>
+            <div class="skeleton-wrap">
+              <div class="sk sk-cv-chat"></div>
+              <div class="sk sk-cv-line"></div>
+              <div class="sk sk-cv-btn"></div>
+              <div class="sk sk-cv-btn2"></div>
+              <div class="sk sk-cv-mini"></div>
+            </div>
+            <div class="dir-meta">
+              <div class="dir-label">Conversational Landing</div>
+              <div class="dir-sublabel">Start with a prompt, not a dashboard. AI assembles everything from there.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dir-card" id="q5-other-card" data-value="Other" onclick="selectDir(this)">
+          <div class="dir-card-inner">
+            <div class="dir-indicator"></div>
+            <div class="dir-meta" style="padding-top:0;">
+              <div class="dir-label">Other</div>
+              <div class="other-input-wrap" id="q5-other-wrap" style="display:none; margin-top: var(--spacing-xs);">
+                <input type="text" id="q5-other-text" placeholder="Describe your direction" onclick="event.stopPropagation()" />
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
-    <!-- Q6 -->
+    <!-- Q6 — Persona -->
     <div class="step" id="step-6">
-      <div class="question-number">Question 6 of 10</div>
-      <div class="question-text">AI agents will work on behalf of users in the background. How do you see their role?</div>
-      <div class="options">
-        <div class="option has-sublabel" data-value="Background worker" onclick="selectOption('q6', this)">
-          <div class="option-indicator radio"></div>
-          <div><div class="option-label">Background worker</div><div class="option-sublabel">Agents work quietly, user checks in occasionally</div></div>
-        </div>
-        <div class="option has-sublabel" data-value="Active collaborator" onclick="selectOption('q6', this)">
-          <div class="option-indicator radio"></div>
-          <div><div class="option-label">Active collaborator</div><div class="option-sublabel">Agents are visible and work alongside the user in real time</div></div>
-        </div>
-        <div class="option has-sublabel" data-value="Somewhere in between" onclick="selectOption('q6', this)">
-          <div class="option-indicator radio"></div>
-          <div><div class="option-label">Somewhere in between</div><div class="option-sublabel">Depends on the task and the user</div></div>
-        </div>
-      </div>
+      <div class="question-number">Question 6 of 9</div>
+      <div class="question-text">Which dealership persona do you primarily work with or build for?</div>
+      <textarea id="q6-text" placeholder="e.g. Salesperson, Service Advisor, GM..." style="min-height:72px;" oninput="handlePersonaInput(this)"></textarea>
     </div>
 
-    <!-- Q7 — multiselect -->
+    <!-- Q7 -->
     <div class="step" id="step-7">
-      <div class="question-number">Question 7 of 10</div>
-      <div class="question-text">When an agent completes something on a user's behalf, how should the homepage surface that?</div>
-      <div class="options">
-        <div class="option has-sublabel" data-value="Always notify me" onclick="selectOption('q7', this)">
-          <div class="option-indicator radio"></div>
-          <div><div class="option-label">Always notify me</div><div class="option-sublabel">I want visibility into everything the agent did</div></div>
-        </div>
-        <div class="option has-sublabel" data-value="Only when I need to act" onclick="selectOption('q7', this)">
-          <div class="option-indicator radio"></div>
-          <div><div class="option-label">Only when my input is needed</div><div class="option-sublabel">Surface it only when there's something to decide or approve</div></div>
-        </div>
-        <div class="option has-sublabel" data-value="Daily summary" onclick="selectOption('q7', this)">
-          <div class="option-indicator radio"></div>
-          <div><div class="option-label">A daily summary is enough</div><div class="option-sublabel">Bundle agent activity into one digest</div></div>
-        </div>
-        <div class="option has-sublabel" data-value="Let me ask" onclick="selectOption('q7', this)">
-          <div class="option-indicator radio"></div>
-          <div><div class="option-label">Let me ask when I want to know</div><div class="option-sublabel">Don't surface it unless I pull it up</div></div>
-        </div>
-      </div>
+      <div class="question-number">Question 7 of 9</div>
+      <div class="question-text">What's the most time-sensitive information for a <span class="persona-label">[ persona ]</span> when they first open the app?</div>
+      <textarea id="q7" placeholder="Share your thoughts..."></textarea>
     </div>
 
     <!-- Q8 -->
     <div class="step" id="step-8">
-      <div class="question-number">Question 8 of 10</div>
-      <div class="question-text">We're exploring three directions for this page. Which resonates most with where you see T1 heading?</div>
+      <div class="question-number">Question 8 of 9</div>
+      <div class="question-text">How should AI agents show up for a <span class="persona-label">[ persona ]</span> on the homepage?</div>
       <div class="options">
-        <div class="option has-sublabel" data-value="Home" onclick="selectOption('q8', this)">
-          <div class="option-indicator radio"></div>
-          <div><div class="option-label">Home</div><div class="option-sublabel">AI orients and narrates your day. Warm, contextual, ambient.</div></div>
+        <div class="option has-sublabel" data-value="Always visible" onclick="selectOption('q8', this)">
+          <div class="option-indicator"></div>
+          <div><div class="option-label">Always visible</div><div class="option-sublabel">I want to see what they're doing in real time</div></div>
         </div>
-        <div class="option has-sublabel" data-value="Action Center" onclick="selectOption('q8', this)">
-          <div class="option-indicator radio"></div>
-          <div><div class="option-label">Action Center</div><div class="option-sublabel">AI prioritizes and directs. Focused on what to do next.</div></div>
+        <div class="option has-sublabel" data-value="Surface when needed" onclick="selectOption('q8', this)">
+          <div class="option-indicator"></div>
+          <div><div class="option-label">Surface only when they need me</div><div class="option-sublabel">Show up when a decision or approval is needed</div></div>
         </div>
-        <div class="option has-sublabel" data-value="Conversational Landing" onclick="selectOption('q8', this)">
-          <div class="option-indicator radio"></div>
-          <div><div class="option-label">Conversational Landing</div><div class="option-sublabel">AI is the interface. The page assembles around what you ask.</div></div>
+        <div class="option has-sublabel" data-value="Daily summary" onclick="selectOption('q8', this)">
+          <div class="option-indicator"></div>
+          <div><div class="option-label">Show a summary</div><div class="option-sublabel">A digest of what they've done, once a day</div></div>
+        </div>
+        <div class="option has-sublabel" data-value="Stay invisible" onclick="selectOption('q8', this)">
+          <div class="option-indicator"></div>
+          <div><div class="option-label">Stay invisible</div><div class="option-sublabel">Just get it done, I'll ask when I want to know</div></div>
+        </div>
+        <div class="option has-sublabel" id="q8-other-option" data-value="Other" onclick="selectOption('q8', this)">
+          <div class="option-indicator"></div>
+          <div style="width:100%">
+            <div class="option-label">Other</div>
+            <div class="other-input-wrap" id="q8-other-wrap" style="display:none;">
+              <input type="text" id="q8-other-text" placeholder="Describe in your own words" onclick="event.stopPropagation()" />
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Q9 -->
     <div class="step" id="step-9">
-      <div class="question-number">Question 9 of 10</div>
-      <div class="question-text">Is there anything that should absolutely never be on this homepage -- something that would feel wrong or out of place?</div>
+      <div class="question-number">Question 9 of 9</div>
+      <div class="question-text">If a <span class="persona-label">[ persona ]</span> could only see three things on the homepage, what would they be?</div>
       <textarea id="q9" placeholder="Share your thoughts..."></textarea>
     </div>
 
-    <!-- Q10 -->
-    <div class="step" id="step-10">
-      <div class="question-number">Question 10 of 10</div>
-      <div class="question-text">What's one thing you're worried we might over-design or over-engineer?</div>
-      <textarea id="q10" placeholder="Share your thoughts..."></textarea>
-    </div>
-
-    <!-- Navigation -->
     <div class="nav" id="formNav">
       <button class="button-secondary" id="backBtn" onclick="goBack()" style="display:none;">← Back</button>
       <div style="margin-left:auto;">
@@ -605,7 +695,6 @@
     <div class="error-msg" id="errorMsg">Please answer this question to continue.</div>
   </div>
 
-  <!-- Success -->
   <div class="card success-screen" id="successScreen" style="display:none;">
     <div class="success-mark">✓</div>
     <h2>Thank you.</h2>
@@ -614,24 +703,38 @@
 
 </div>
 <script>
-  // ── Config ──────────────────────────────────────────────────
-  const AIRTABLE_TOKEN   = 'pathPeLhCSpUgOqno.1dca25b33feb74714793ddb868fda86ddd5c95c74c85025a3e222a81f1f03667';
-  const AIRTABLE_BASE_ID = 'app3Y2kfbJgbeEpYV';
-  const AIRTABLE_TABLE   = 'homepage survey base'; // CSV import table name — update if different
+  const PROXY_URL = 'https://script.google.com/macros/s/AKfycbwDA5371Fjz5KqomxHM8Z1gvPBlx9GUTOGVApi92AT1STLmru5Sf0TDLMAmdkjoeLDY/exec';
 
-  // ── State ────────────────────────────────────────────────────
-  const TOTAL_STEPS = 11;
+  const TOTAL_STEPS = 10;
   let currentStep = 0;
+  const answers = { q1: null, q4: null, q5: null, q6: null, q8: null };
+  let selectedPersona = '';
 
-  // single-select answers
-  const single = { q2: null, q4: null, q5: null, q6: null, q7: null, q8: null };
+  function updatePersonaLabels(name) {
+    document.querySelectorAll('.persona-label').forEach(el => el.textContent = name || '[ persona ]');
+  }
 
-  // ── Progress ─────────────────────────────────────────────────
   function updateProgress() {
-    const pct = (currentStep / (TOTAL_STEPS - 1)) * 100;
-    document.getElementById('progressFill').style.width = pct + '%';
-    document.getElementById('progressCount').textContent =
-      currentStep === 0 ? '—' : `${currentStep} of 10`;
+    const label = document.getElementById('progressLabel');
+    const count = document.getElementById('progressCount');
+    // Fill segments (steps 1-10 map to segments 1-10)
+    for (let i = 1; i <= 9; i++) {
+      const seg = document.getElementById('seg-' + i);
+      if (seg) seg.classList.toggle('filled', currentStep >= i);
+    }
+    if (currentStep === 0) {
+      label.textContent = 'Getting started';
+      count.textContent = '—';
+    } else if (currentStep === 1) {
+      label.textContent = 'Part 1 · Getting started';
+      count.textContent = '1 of 9';
+    } else if (currentStep <= 6) {
+      label.textContent = 'Part 2 · General';
+      count.textContent = `${currentStep - 1} of 9`;
+    } else {
+      label.textContent = 'Part 3 · Persona';
+      count.textContent = `${currentStep - 1} of 9`;
+    }
   }
 
   function showStep(n) {
@@ -643,25 +746,34 @@
     updateProgress();
   }
 
-  // ── Validation ───────────────────────────────────────────────
   function hasAnswer(step) {
     switch(step) {
-      case 0:  return document.getElementById('name').value.trim() !== '';
-      case 1:  return document.getElementById('q1').value.trim() !== '';
-      case 2:  return single.q2 !== null;
+      case 0:  return document.getElementById('name').value.trim() !== '' && document.getElementById('role').value.trim() !== '';
+      case 1:
+        if (!answers.q1) return false;
+        if (answers.q1 === 'Other') return document.getElementById('q1-other-text').value.trim() !== '';
+        return true;
+      case 2:  return document.getElementById('q2').value.trim() !== '';
       case 3:  return document.getElementById('q3').value.trim() !== '';
-      case 4:  return single.q4 !== null;
-      case 5:  return single.q5 !== null && document.getElementById('q5why').value.trim() !== '';
-      case 6:  return single.q6 !== null;
-      case 7:  return single.q7 !== null;
-      case 8:  return single.q8 !== null;
+      case 4:
+        if (!answers.q4) return false;
+        if (answers.q4 === 'Other') return document.getElementById('q4-other-text').value.trim() !== '';
+        return true;
+      case 5:
+        if (!answers.q5) return false;
+        if (answers.q5 === 'Other') return document.getElementById('q5-other-text').value.trim() !== '';
+        return true;
+      case 6:  return document.getElementById('q6-text').value.trim() !== '';
+      case 7:  return document.getElementById('q7').value.trim() !== '';
+      case 8:
+        if (!answers.q8) return false;
+        if (answers.q8 === 'Other') return document.getElementById('q8-other-text').value.trim() !== '';
+        return true;
       case 9:  return document.getElementById('q9').value.trim() !== '';
-      case 10: return document.getElementById('q10').value.trim() !== '';
       default: return true;
     }
   }
 
-  // ── Navigation ───────────────────────────────────────────────
   function goNext() {
     if (!hasAnswer(currentStep)) {
       document.getElementById('errorMsg').classList.add('show');
@@ -676,65 +788,87 @@
     if (currentStep > 0) { currentStep--; showStep(currentStep); }
   }
 
-  // ── Selection ────────────────────────────────────────────────
   function selectOption(key, el) {
-    el.closest('.options, .yesno').querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+    el.closest('.options').querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
     el.classList.add('selected');
-    single[key] = el.dataset.value;
+    answers[key] = el.dataset.value;
+    if (key === 'q1') {
+      const wrap = document.getElementById('q1-other-wrap');
+      wrap.style.display = el.dataset.value === 'Other' ? 'block' : 'none';
+    }
+    if (key === 'q4') {
+      const wrap = document.getElementById('q4-other-wrap');
+      wrap.style.display = el.dataset.value === 'Other' ? 'block' : 'none';
+    }
+    if (key === 'q8') {
+      const wrap = document.getElementById('q8-other-wrap');
+      if (wrap) wrap.style.display = el.dataset.value === 'Other' ? 'block' : 'none';
+    }
     document.getElementById('errorMsg').classList.remove('show');
   }
 
-  function selectScale(key, val, btn) {
-    document.querySelectorAll('#q4-scale .scale-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-    single[key] = val;
+  function handlePersonaInput(el) {
+    const val = el.value.trim();
+    answers.q6 = val || null;
+    selectedPersona = val;
+    updatePersonaLabels(val || '[ persona ]');
     document.getElementById('errorMsg').classList.remove('show');
   }
 
-  // ── Submit ───────────────────────────────────────────────────
+
+
+  function selectDir(el) {
+    document.querySelectorAll('.dir-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    answers.q5 = el.dataset.value;
+    const wrap = document.getElementById('q5-other-wrap');
+    if (wrap) wrap.style.display = el.dataset.value === 'Other' ? 'block' : 'none';
+    document.getElementById('errorMsg').classList.remove('show');
+  }
+
   async function submitForm() {
     const btn = document.getElementById('nextBtn');
     btn.textContent = 'Submitting...';
     btn.disabled = true;
 
+    const q1val = answers.q1 === 'Other'
+      ? (document.getElementById('q1-other-text').value.trim() || 'Other')
+      : answers.q1;
+
     const fields = {
       'Submitted At':             new Date().toISOString(),
       'Respondent Name':          document.getElementById('name').value.trim(),
-      'Q1 Most Important Thing':  document.getElementById('q1').value.trim(),
-      'Q2 Homepage Personality':  single.q2,
-      'Q3 Success Signal':        document.getElementById('q3').value.trim(),
-      'Q4 AI vs User Control':    String(single.q4),
-      'Q5 Adaptive Experience':   single.q5,
-      'Q5 Why':                   document.getElementById('q5why').value.trim(),
-      'Q6 Agent Role':            single.q6,
-      'Q7 Agent Surfacing':       single.q7,
-      'Q8 Homepage Direction':    single.q8,
-      'Q9 Never On Homepage':     document.getElementById('q9').value.trim(),
-      'Q10 Over Engineering Concern': document.getElementById('q10').value.trim(),
+      'Respondent Role':          document.getElementById('role').value.trim(),
+      'Q1 Homepage Personality':  q1val,
+      'Q2 Most Important Thing':  document.getElementById('q2').value.trim(),
+      'Q3 Success Metric':        document.getElementById('q3').value.trim(),
+      'Q4 Homepage Shape':        answers.q4 === 'Other'
+        ? (document.getElementById('q4-other-text').value.trim() || 'Other')
+        : answers.q4,
+      'Q5 Homepage Direction':    answers.q5 === 'Other'
+        ? (document.getElementById('q5-other-text').value.trim() || 'Other')
+        : answers.q5,
+      'Q6 Persona':               document.getElementById('q6-text').value.trim(),
+      'Q7 Time Sensitive Info':   document.getElementById('q7').value.trim(),
+      'Q8 Agent Visibility':      answers.q8 === 'Other'
+        ? (document.getElementById('q8-other-text').value.trim() || 'Other')
+        : answers.q8,
+      'Q9 Three Things':          document.getElementById('q9').value.trim(),
     };
 
+    const cleanFields = Object.fromEntries(
+      Object.entries(fields).filter(([_, v]) => v !== null && v !== '' && v !== undefined)
+    );
+
     try {
-      const res = await fetch(
-        `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE)}`,
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
-            'Content-Type':  'application/json'
-          },
-          body: JSON.stringify({ fields })
-        }
-      );
+      const encoded = encodeURIComponent(JSON.stringify({ fields: cleanFields }));
+      await fetch(`${PROXY_URL}?data=${encoded}`, {
+        method: 'GET',
+        mode: 'no-cors'
+      });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        const msg = data?.error?.message || data?.error?.type || JSON.stringify(data);
-        throw new Error(msg);
-      }
-
-      document.getElementById('formCard').style.display    = 'none';
-      document.getElementById('progressWrap').style.display = 'none';
+      document.getElementById('formCard').style.display      = 'none';
+      document.getElementById('progressWrap').style.display  = 'none';
       document.getElementById('successScreen').style.display = 'block';
 
     } catch (e) {
@@ -743,7 +877,7 @@
       const errEl = document.getElementById('errorMsg');
       errEl.textContent = `Error: ${e.message}`;
       errEl.classList.add('show');
-      console.error('Airtable error:', e);
+      console.error('Submit error:', e);
     }
   }
 
