@@ -1,49 +1,49 @@
-Title,Description,Icon,Tag,ID,Query
-Summarize Hot Leads,Identify high-intent customers from the current page and synthesize their needs into key action items.,⚡,Ask,summarize_leads,Summarize recent hot leads
-Focus Today,Get a prioritized list of tasks leads and actions for the day.,🎯,Decide,focus_today,What should I focus on today
-Customers Needing Quotes,Identify customers currently waiting for a price quote and prioritize follow-ups.,📋,Execute,quote_customers,Show me customers needing quotes
-Get Customer Brief,Get a comprehensive snapshot of any customer's recent activity deal status and communication history.,👤,Ask,sarah_brief,Brief me on Flora Fleisher
-Vehicle Inventory Search,Find vehicles matching specific criteria across all lots.,🔎,Ask,vehicle_inquiry,Check inventory for 2023 AeroVibe under $45k
-Trade-in Objection,Analyze customer objections regarding trade-in values and suggest strategies.,🧠,Decide,tradein_objection,"Spoke to the customer. She thinks her trade-in is worth $5k more than our appraisal. How do I handle this?"
-Find open deals for Ryan,Search across all Ryan contacts to find active and open deals.,🔍,Ask,ryan_deals,Show ryan's open deals
-Vehicle Feature Search,Ask about any features of a car from your inventory to get detailed specs and information.,🛡️,Ask,safety_tech_query,Tell me about safety and tech features in 2023 Nebula Nimbus
-Generate Reports on demand,Instantly create detailed performance sales or appointment reports tailored to your dealership requirements.,📊,Execute,appointment_report,Generate appointment performance report
-Inventory Stock Check,Real-time stock availability check across dealership locations.,📦,Ask,inventory_check,/inventory-check
-Credit Prequalification,Authorize soft credit inquiries to determine rate eligibility.,🏦,Decide,credit_prequal,/credit-prequal
-Trade-In Valuation,Estimate trade-in value using market data and conditions.,💎,Decide,trade_in_val,/trade-in-val
-High-Priority Test Drives,List today's high-priority test drive appointments.,📍,Decide,test_drive,List high-priority test drives
-Schedule Test Drive,Book and schedule test drive slots automatically.,🏁,Execute,schedule_drive,/schedule-drive
-Equity Analysis,Analyze customer equity for potential upgrade opportunities.,✨,Decide,equity_alert,Analyze Curtis Gables equity for Upgrade Opportunity
-Buy Back Strategy,Plan a buy-back strategy for high-demand pre-owned models.,🤝,Execute,buy_back,Plan buy back strategy for Tony Smehrik Lunar Blitz
-Create Deal & Test Drive,Automatically create a new deal and schedule a test drive concurrently for a customer.,✍️,Execute,create_deal_test_drive,Create a deal for Flora on the 2023 AeroVibe and schedule a test drive for Tuesday at 10 AM.
-Confirm Appointment SMS,Draft a tailored SMS to confirm an upcoming test drive or service appointment.,📱,Execute,confirm_sms,Draft a text to her confirming the appointment
-Lead Closure Probability,Predict the likelihood of a lead closing within the next 30 days based on behavioral data.,📈,Decide,lead_closure_probability,How likely is this lead to close in the next 30 days?
-Best Next Step Advice,Get AI-recommended next actions and follow-up timing for a specific lead.,💡,Decide,best_next_step,Suggest the best next step and when I should follow up.
-Deal Pricing Comparison,Compare a current deal's pricing and incentives against historical benchmarks.,⚖️,Decide,deal_pricing_comparison,Compare this vehicle's pricing and incentives to similar deals we've closed recently.
-Leads Interested in Aerovibe,Show a list of leads who have expressed interest in the Aerovibe model.,👥,Ask,leads_interested_aerovibe,Show leads interested in Aerovibe
-Last Activity Flora,Retrieve the most recent interaction history for Flora Fleisher.,🕒,Ask,last_activity_flora,What was the last activity with Flora Fleisher?
-White Aerovibes Check,Check for incoming inventory of White Aerovibe vehicles.,🚚,Ask,white_aerovibes_check,Any white Aerovibes arriving soon?
-Trade-in Reminder,Set a reminder to follow up on a trade-in evaluation or status.,⏰,Execute,tradein_reminder,Remind me to check trade-in status
-Automate Sales Opportunities,Set up automatic generation of sales opportunities report.,⚙️,Execute,automate_sales_opportunities,Automate sales opportunities report for me everyday
-Feedback - Thumbs Up,Provide positive feedback on AI response quality and helpfulness.,👍,Utility,feedback_thumbs_up,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=324-11021&t=WB4FQGepTCI06tEQ-4
-Feedback - Thumbs Down,Provide feedback to improve AI response quality and accuracy.,👎,Utility,feedback_thumbs_down,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=324-19700&t=WB4FQGepTCI06tEQ-4
-Regenerate AI Response,Generate a new AI response with updated context and refined outputs.,🔄,Execute,regenerate_response,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=310-16805&t=WB4FQGepTCI06tEQ-4
-Response Sources,View the data sources and references used to generate the AI response.,📚,Utility,response_sources,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=1281-44529&t=WB4FQGepTCI06tEQ-4
-No Result Found,Handle scenarios where no matching results are found for a query.,🚫,Error Handling,no_result_found,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=332-33797&t=WB4FQGepTCI06tEQ-4
-Similar Results Found,Display alternative or related results when exact matches are unavailable.,🔍,Ask,similar_results_found,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=1319-43913&t=WB4FQGepTCI06tEQ-4
-Missing Data,Identify and handle scenarios where required data is incomplete or unavailable.,⚠️,Error Handling,missing_data,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=332-37033&t=WB4FQGepTCI06tEQ-4
-Approval for Action,Request user approval before executing critical or sensitive actions.,✅,Decide,approval_for_action,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=974-27955&t=WB4FQGepTCI06tEQ-4
-Move Chat to Folder,Organize chat conversations by moving them to specific folders.,📁,Utility,move_chat_to_folder,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=1325-43915&t=WB4FQGepTCI06tEQ-4
-Reposition T1,Adjust the position and placement of the T1 assistant interface.,↔️,Utility,reposition_t1,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=1193-27231&t=WB4FQGepTCI06tEQ-4
-Context Limit Warning,Alert users when approaching or exceeding context size limitations.,⚡,Ask,context_limit_warning,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=1296-39080&t=WB4FQGepTCI06tEQ-4
-Batch Multi-Select Query,Execute queries across multiple selected items simultaneously.,☑️,Execute,batch_multi_select_query,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=1291-28102&t=WB4FQGepTCI06tEQ-4
-Share Chat Experience,Share chat conversations and insights with team members or stakeholders.,🔗,Utility,share_chat_experience,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=1291-29882&t=WB4FQGepTCI06tEQ-4
-Prompt Library,Access a curated collection of pre-built prompts and query templates.,📖,Utility,prompt_library,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=493-8299
-Content Policy Violation,Handle queries that violate content policies or usage guidelines.,🛑,Error Handling,content_policy_violation,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=1012-9732&t=WB4FQGepTCI06tEQ-4
-Query Outside Scope,Respond to queries that fall outside T1's intended functionality or expertise.,❌,Error Handling,query_outside_scope,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=439-3217&t=WB4FQGepTCI06tEQ-4
-Higher Plan Query,Handle queries requiring features available only in higher subscription tiers.,⬆️,Decide,higher_plan_query,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=439-3216&t=WB4FQGepTCI06tEQ-4
-Query Requires Permission,Manage queries that need additional user permissions or access rights.,🔐,Decide,query_requires_permission,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=1325-50884&t=WB4FQGepTCI06tEQ-4
-System Failures,Handle and communicate system errors or unexpected failures gracefully.,⚠️,Error Handling,system_failures,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=436-5325&t=WB4FQGepTCI06tEQ-4
-Confidence Signals,Display AI confidence levels and reliability indicators for responses.,📊,Utility,confidence_signals,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=1325-43917&t=WB4FQGepTCI06tEQ-4
-Prompt Input Designs,Explore various prompt input interface designs and interaction patterns.,✏️,Utility,prompt_input_designs,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=241-2425
-Long Response,Handle and display lengthy AI responses with proper formatting and readability.,📄,Ask,long_response,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=1246-30639&t=WB4FQGepTCI06tEQ-4
+Title,Description,Icon,Tag,ID,Query,Plan
+Summarize Hot Leads,Identify high-intent customers from the current page and synthesize their needs into key action items.,⚡,Ask,summarize_leads,Summarize recent hot leads,
+Focus Today,Get a prioritized list of tasks leads and actions for the day.,🎯,Decide,focus_today,What should I focus on today,
+Customers Needing Quotes,Identify customers currently waiting for a price quote and prioritize follow-ups.,📋,Execute,quote_customers,Show me customers needing quotes,
+Get Customer Brief,Get a comprehensive snapshot of any customer's recent activity deal status and communication history.,👤,Ask,sarah_brief,Brief me on Flora Fleisher,
+Vehicle Inventory Search,Find vehicles matching specific criteria across all lots.,🔎,Ask,vehicle_inquiry,Check inventory for 2023 AeroVibe under $45k,
+Trade-in Objection,Analyze customer objections regarding trade-in values and suggest strategies.,🧠,Decide,tradein_objection,Spoke to the customer. She thinks her trade-in is worth $5k more than our appraisal. How do I handle this?,
+Find open deals for Ryan,Search across all Ryan contacts to find active and open deals.,🔍,Ask,ryan_deals,Show ryan's open deals,Base
+Vehicle Feature Search,Ask about any features of a car from your inventory to get detailed specs and information.,🛡️,Ask,safety_tech_query,Tell me about safety and tech features in 2023 Nebula Nimbus,
+Generate Reports on demand,Instantly create detailed performance sales or appointment reports tailored to your dealership requirements.,📊,Execute,appointment_report,Generate appointment performance report,Base
+Inventory Stock Check,Real-time stock availability check across dealership locations.,📦,Ask,inventory_check,/inventory-check,
+Credit Prequalification,Authorize soft credit inquiries to determine rate eligibility.,🏦,Decide,credit_prequal,/credit-prequal,
+Trade-In Valuation,Estimate trade-in value using market data and conditions.,💎,Decide,trade_in_val,/trade-in-val,
+High-Priority Test Drives,List today's high-priority test drive appointments.,📍,Decide,test_drive,List high-priority test drives,
+Schedule Test Drive,Book and schedule test drive slots automatically.,🏁,Execute,schedule_drive,/schedule-drive,Base
+Equity Analysis,Analyze customer equity for potential upgrade opportunities.,✨,Decide,equity_alert,Analyze Curtis Gables equity for Upgrade Opportunity,
+Buy Back Strategy,Plan a buy-back strategy for high-demand pre-owned models.,🤝,Execute,buy_back,Plan buy back strategy for Tony Smehrik Lunar Blitz,
+Create Deal & Test Drive,Automatically create a new deal and schedule a test drive concurrently for a customer.,✍️,Execute,create_deal_test_drive,Create a deal for Flora on the 2023 AeroVibe and schedule a test drive for Tuesday at 10 AM.,
+Confirm Appointment SMS,Draft a tailored SMS to confirm an upcoming test drive or service appointment.,📱,Execute,confirm_sms,Draft a text to her confirming the appointment,Base
+Lead Closure Probability,Predict the likelihood of a lead closing within the next 30 days based on behavioral data.,📈,Decide,lead_closure_probability,How likely is this lead to close in the next 30 days?,
+Best Next Step Advice,Get AI-recommended next actions and follow-up timing for a specific lead.,💡,Decide,best_next_step,Suggest the best next step and when I should follow up.,
+Deal Pricing Comparison,Compare a current deal's pricing and incentives against historical benchmarks.,⚖️,Decide,deal_pricing_comparison,Compare this vehicle's pricing and incentives to similar deals we've closed recently.,
+Leads Interested in Aerovibe,Show a list of leads who have expressed interest in the Aerovibe model.,👥,Ask,leads_interested_aerovibe,Show leads interested in Aerovibe,Base
+Last Activity Flora,Retrieve the most recent interaction history for Flora Fleisher.,🕒,Ask,last_activity_flora,What was the last activity with Flora Fleisher?,Base
+White Aerovibes Check,Check for incoming inventory of White Aerovibe vehicles.,🚚,Ask,white_aerovibes_check,Any white Aerovibes arriving soon?,Base
+Trade-in Reminder,Set a reminder to follow up on a trade-in evaluation or status.,⏰,Execute,tradein_reminder,Remind me to check trade-in status,
+Automate Sales Opportunities,Set up automatic generation of sales opportunities report.,⚙️,Execute,automate_sales_opportunities,Automate sales opportunities report for me everyday,
+Feedback - Thumbs Up,Provide positive feedback on AI response quality and helpfulness.,👍,Utility,feedback_thumbs_up,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=324-11021&t=WB4FQGepTCI06tEQ-4,
+Feedback - Thumbs Down,Provide feedback to improve AI response quality and accuracy.,👎,Utility,feedback_thumbs_down,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=324-19700&t=WB4FQGepTCI06tEQ-4,
+Regenerate AI Response,Generate a new AI response with updated context and refined outputs.,🔄,Execute,regenerate_response,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=310-16805&t=WB4FQGepTCI06tEQ-4,
+Response Sources,View the data sources and references used to generate the AI response.,📚,Utility,response_sources,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=1281-44529&t=WB4FQGepTCI06tEQ-4,
+No Result Found,Handle scenarios where no matching results are found for a query.,🚫,Error Handling,no_result_found,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=332-33797&t=WB4FQGepTCI06tEQ-4,
+Similar Results Found,Display alternative or related results when exact matches are unavailable.,🔍,Ask,similar_results_found,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=1319-43913&t=WB4FQGepTCI06tEQ-4,
+Missing Data,Identify and handle scenarios where required data is incomplete or unavailable.,⚠️,Error Handling,missing_data,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=332-37033&t=WB4FQGepTCI06tEQ-4,
+Approval for Action,Request user approval before executing critical or sensitive actions.,✅,Decide,approval_for_action,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=974-27955&t=WB4FQGepTCI06tEQ-4,
+Move Chat to Folder,Organize chat conversations by moving them to specific folders.,📁,Utility,move_chat_to_folder,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=1325-43915&t=WB4FQGepTCI06tEQ-4,
+Reposition T1,Adjust the position and placement of the T1 assistant interface.,↔️,Utility,reposition_t1,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=1193-27231&t=WB4FQGepTCI06tEQ-4,
+Context Limit Warning,Alert users when approaching or exceeding context size limitations.,⚡,Ask,context_limit_warning,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=1296-39080&t=WB4FQGepTCI06tEQ-4,
+Batch Multi-Select Query,Execute queries across multiple selected items simultaneously.,☑️,Execute,batch_multi_select_query,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=1291-28102&t=WB4FQGepTCI06tEQ-4,
+Share Chat Experience,Share chat conversations and insights with team members or stakeholders.,🔗,Utility,share_chat_experience,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=1291-29882&t=WB4FQGepTCI06tEQ-4,
+Prompt Library,Access a curated collection of pre-built prompts and query templates.,📖,Utility,prompt_library,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=493-8299,
+Content Policy Violation,Handle queries that violate content policies or usage guidelines.,🛑,Error Handling,content_policy_violation,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=1012-9732&t=WB4FQGepTCI06tEQ-4,
+Query Outside Scope,Respond to queries that fall outside T1's intended functionality or expertise.,❌,Error Handling,query_outside_scope,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=439-3217&t=WB4FQGepTCI06tEQ-4,
+Higher Plan Query,Handle queries requiring features available only in higher subscription tiers.,⬆️,Decide,higher_plan_query,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=439-3216&t=WB4FQGepTCI06tEQ-4,
+Query Requires Permission,Manage queries that need additional user permissions or access rights.,🔐,Decide,query_requires_permission,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=1325-50884&t=WB4FQGepTCI06tEQ-4,
+System Failures,Handle and communicate system errors or unexpected failures gracefully.,⚠️,Error Handling,system_failures,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=436-5325&t=WB4FQGepTCI06tEQ-4,
+Confidence Signals,Display AI confidence levels and reliability indicators for responses.,📊,Utility,confidence_signals,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=1325-43917&t=WB4FQGepTCI06tEQ-4,
+Prompt Input Designs,Explore various prompt input interface designs and interaction patterns.,✏️,Utility,prompt_input_designs,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=241-2425,
+Long Response,Handle and display lengthy AI responses with proper formatting and readability.,📄,Ask,long_response,https://www.figma.com/design/4tDJVvONhEArD16wiGNYy4/T1-Components?node-id=1246-30639&t=WB4FQGepTCI06tEQ-4,

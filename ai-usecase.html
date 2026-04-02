@@ -367,6 +367,80 @@
             transform: translateX(4px);
         }
 
+        /* --- Plan Dropdown --- */
+        .plan-select-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .plan-select-wrapper::after {
+            content: '';
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 5px solid #444F5C;
+            pointer-events: none;
+        }
+
+        .plan-select {
+            appearance: none;
+            -webkit-appearance: none;
+            background: white;
+            border: 1px solid var(--color-border-muted);
+            border-radius: 8px;
+            padding: 9px 36px 9px 14px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-text-heading);
+            cursor: pointer;
+            outline: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+
+        .plan-select:hover {
+            border-color: #4285F4;
+            box-shadow: 0 2px 8px rgba(66,133,244,0.15);
+        }
+
+        .plan-select:focus {
+            border-color: #4285F4;
+            box-shadow: 0 0 0 3px rgba(66,133,244,0.12);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* --- Plan Badge on Card --- */
+        .card-icon-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .plan-badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            padding: 3px 9px;
+            border-radius: 20px;
+            background: #EEF3FF;
+            color: #4285F4;
+            border: 1px solid #C7D9FF;
+            white-space: nowrap;
+        }
+
         /* --- Responsive --- */
         @media (max-width: 768px) {
             .hero h1 {
@@ -388,7 +462,17 @@
             <img src="T1.svg" alt="T-One" style="height: 24px; width: auto;">
             <span>AI Assistant</span>
         </div>
-        <a href="ai-assistant.html?open=true" class="nav-btn" target="_blank">Launch Chat</a>
+        <div class="header-actions">
+            <div class="plan-select-wrapper">
+                <select class="plan-select" id="planSelect" onchange="onPlanChange()">
+                    <option value="all">All Plans</option>
+                    <option value="Base" selected>Base</option>
+                    <option value="Pro">Pro</option>
+                    <option value="Max">Max</option>
+                </select>
+            </div>
+            <a href="ai-assistant.html?open=true" class="nav-btn" target="_blank">Launch Chat</a>
+        </div>
     </header>
 
     <div class="hero">
@@ -430,6 +514,7 @@
     <script>
         let usecases = [];
         let activeFilter = 'all';
+        let activePlan = 'Base';
 
         async function loadUsecases() {
             try {
@@ -508,7 +593,8 @@
                 const searchString = (uc.title + uc.desc + uc.tag).toLowerCase();
                 const matchesSearch = searchString.includes(searchInput);
                 const matchesFilter = activeFilter === 'all' || uc.tag.includes(activeFilter);
-                return matchesSearch && matchesFilter;
+                const matchesPlan = activePlan === 'all' || (uc.plan || '') === activePlan;
+                return matchesSearch && matchesFilter && matchesPlan;
             });
 
             if (filtered.length === 0) {
@@ -520,7 +606,10 @@
                     card.className = 'usecase-card';
                     card.style.animationDelay = `${index * 0.05}s`;
                     card.innerHTML = `
-                        <div class="card-icon">${uc.icon}</div>
+                        <div class="card-icon-row">
+                            <div class="card-icon">${uc.icon}</div>
+                            ${uc.plan ? `<span class="plan-badge">${uc.plan}</span>` : ''}
+                        </div>
                         <div class="card-content">
                             <span class="card-tag tag-${uc.tag.split(' ')[0].toLowerCase()}">${uc.tag}</span>
                             <h3 class="card-title">${uc.title}</h3>
@@ -552,6 +641,11 @@
         }
 
         function filterCards() {
+            renderCards();
+        }
+
+        function onPlanChange() {
+            activePlan = document.getElementById('planSelect').value;
             renderCards();
         }
 
