@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>T1 Homepage — Stakeholder Survey</title>
+  <style>
+    /* ─── DESIGN SYSTEM TOKENS ─────────────────────────────── */
+    :root {
+      --color-text-primary: #161616;
+      --color-text-secondary: #444F5C;
+      --color-border: #D4D5D6;
+      --color-background-gray: #EDEEF0;
+      --color-background-white: #FFFFFF;
+      --gradient-primary: linear-gradient(271deg, #7EFF9E 0.19%, #35FFD5 101.58%);
+      --gradient-hover: linear-gradient(271deg, #44FF72 0.19%, #13F2C4 101.58%);
+      --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica', 'Arial', sans-serif;
+      --font-size-3xl: 30px;
+      --font-size-xl: 20px;
+      --font-size-lg: 18px;
+      --font-size-base: 16px;
+      --font-size-sm: 14px;
+      --font-size-xs: 12px;
+      --font-weight-normal: 400;
+      --font-weight-medium: 500;
+      --font-weight-bold: 700;
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      --border-radius-sm: 4px;
+      --border-radius-md: 6px;
+      --border-radius-lg: 8px;
+    }
+
+    /* ─── BUTTONS ───────────────────────────────────────────── */
+    .button-primary {
+      background: var(--gradient-primary);
+      border-radius: var(--border-radius-md);
+      color: var(--color-text-primary);
+      font-weight: var(--font-weight-medium);
+      font-family: var(--font-family);
+      font-size: var(--font-size-sm);
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .button-primary:hover { background: var(--gradient-hover); }
+    .button-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .button-secondary {
+      background: var(--color-background-white);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-md);
+      color: var(--color-text-primary);
+      font-weight: var(--font-weight-medium);
+      font-family: var(--font-family);
+      font-size: var(--font-size-sm);
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .button-secondary:hover { opacity: 0.7; }
+
+    /* ─── CARDS ─────────────────────────────────────────────── */
+    .card {
+      background: var(--color-background-white);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-lg);
+      padding: var(--spacing-lg);
+    }
+
+    /* ─── RESET & BASE ──────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-family);
+      font-size: var(--font-size-base);
+      background: var(--color-background-gray);
+      color: var(--color-text-primary);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px var(--spacing-lg);
+    }
+
+    .container { width: 100%; max-width: 560px; }
+
+    /* ─── HEADER ────────────────────────────────────────────── */
+    .header {
+      margin-bottom: var(--spacing-xl);
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .header h1 {
+      font-size: var(--font-size-3xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-text-primary);
+      line-height: 1.2;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .header p {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      line-height: 1.6;
+      font-weight: var(--font-weight-normal);
+    }
+
+    /* ─── PROGRESS ──────────────────────────────────────────── */
+    .progress-wrap {
+      margin-bottom: var(--spacing-lg);
+      animation: fadeUp 0.4s 0.06s ease both;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .progress-label {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .progress-count {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+    }
+
+    .progress-bar {
+      height: 3px;
+      background: var(--color-border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--color-text-primary);
+      border-radius: 99px;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ─── FORM CARD ─────────────────────────────────────────── */
+    #formCard { animation: fadeUp 0.4s 0.1s ease both; }
+
+    /* ─── QUESTION ──────────────────────────────────────────── */
+    .question-number {
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-medium);
+      color: var(--color-text-secondary);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .question-text {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-medium);
+      color: var(--color-text-primary);
+      line-height: 1.4;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .question-hint {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--spacing-md);
+      margin-top: calc(var(--spacing-sm) * -1);
+    }
+
+    /* ─── INPUTS ────────────────────────────────────────────── */
+    .field-label {
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-medium);
+      color: var(--color-text-secondary);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: var(--spacing-xs);
+    }
+
+    textarea, input[type="text"] {
+      width: 100%;
+      background: var(--color-background-white);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-md);
+      padding: var(--spacing-sm) var(--spacing-md);
+      font-family: var(--font-family);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-normal);
+      color: var(--color-text-primary);
+      resize: none;
+      outline: none;
+      transition: border-color 0.15s;
+      line-height: 1.6;
+    }
+
+    textarea { min-height: 96px; }
+
+    textarea:focus, input[type="text"]:focus { border-color: var(--color-text-primary); }
+    textarea::placeholder, input::placeholder { color: var(--color-text-secondary); opacity: 0.6; }
+
+    /* ─── OPTIONS (single + multi) ──────────────────────────── */
+    .options { display: flex; flex-direction: column; gap: 10px; }
+
+    .option {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      padding: var(--spacing-sm) var(--spacing-md);
+      background: var(--color-background-white);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-md);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      user-select: none;
+    }
+
+    /* Options with sublabels need top alignment */
+    .option.has-sublabel { align-items: flex-start; }
+    .option.has-sublabel .option-indicator { margin-top: 2px; }
+
+    .option:hover {
+      border-color: #aaaaaa;
+      background: var(--color-background-gray);
+    }
+
+    .option.selected {
+      border-color: transparent;
+      background: linear-gradient(271deg, rgba(126,255,158,0.1) 0.19%, rgba(53,255,213,0.1) 101.58%);
+      box-shadow: 0 0 0 1.5px #35FFD5;
+    }
+
+    /* ─── RADIO DOT ─────────────────────────────────────────── */
+    .option-indicator {
+      width: 16px;
+      height: 16px;
+      min-width: 16px;
+      border: 1.5px solid var(--color-border);
+      transition: all 0.15s;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    /* Radio = circle */
+    .option-indicator.radio { border-radius: 50%; }
+
+    /* Checkbox = rounded square */
+    .option-indicator.checkbox { border-radius: var(--border-radius-sm); }
+
+    .option.selected .option-indicator {
+      border-color: #1db89a;
+      background: #1db89a;
+    }
+
+    /* Radio inner dot */
+    .option-indicator.radio::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #1db89a;
+      transition: transform 0.15s;
+    }
+
+    .option.selected .option-indicator.radio::after { transform: translate(-50%, -50%) scale(1); }
+
+    /* Checkbox checkmark */
+    .option-indicator.checkbox::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -55%) rotate(45deg) scale(0);
+      width: 4px; height: 7px;
+      border-right: 2px solid var(--color-text-primary);
+      border-bottom: 2px solid var(--color-text-primary);
+      transition: transform 0.15s;
+    }
+
+    .option.selected .option-indicator.checkbox::after { transform: translate(-50%, -55%) rotate(45deg) scale(1); }
+
+    .option-label {
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+      color: var(--color-text-secondary);
+      line-height: 1.4;
+    }
+
+    .option-sublabel {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+      margin-top: 2px;
+      font-weight: var(--font-weight-normal);
+      line-height: 1.4;
+    }
+
+    .option.selected .option-label { color: var(--color-text-primary); }
+    .option.selected .option-sublabel { color: var(--color-text-secondary); }
+
+    /* ─── SCALE ─────────────────────────────────────────────── */
+    .scale-wrap { display: flex; flex-direction: column; gap: var(--spacing-sm); }
+
+    .scale-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+    }
+
+    .scale-buttons { display: flex; gap: var(--spacing-xs); }
+
+    .scale-btn {
+      flex: 1;
+      height: 40px;
+      background: var(--color-background-white);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-md);
+      color: var(--color-text-secondary);
+      font-family: var(--font-family);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .scale-btn:hover { border-color: #aaaaaa; background: var(--color-background-gray); color: var(--color-text-primary); }
+    .scale-btn.selected { background: var(--color-text-primary); border-color: var(--color-text-primary); color: white; font-weight: var(--font-weight-bold); }
+
+    /* ─── YES / NO ──────────────────────────────────────────── */
+    .yesno { display: flex; gap: var(--spacing-sm); }
+    .yesno .option { flex: 1; justify-content: flex-start; padding-left: var(--spacing-md); gap: var(--spacing-md); }
+
+    /* ─── NAV ───────────────────────────────────────────────── */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: var(--spacing-lg);
+      padding-top: var(--spacing-md);
+    }
+
+    .error-msg {
+      font-size: var(--font-size-xs);
+      color: #c45c00;
+      margin-top: var(--spacing-sm);
+      display: none;
+    }
+
+    .error-msg.show { display: block; }
+
+    /* ─── STEPS ─────────────────────────────────────────────── */
+    .step { display: none; }
+    .step.active { display: block; animation: fadeUp 0.25s ease both; }
+
+    /* ─── SUCCESS ───────────────────────────────────────────── */
+    .success-screen {
+      text-align: center;
+      padding: 40px var(--spacing-lg);
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .success-mark {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--spacing-lg);
+      font-size: 20px;
+    }
+
+    .success-screen h2 {
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-text-primary);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .success-screen p {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      line-height: 1.6;
+      max-width: 340px;
+      margin: 0 auto;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 480px) {
+      body { padding: var(--spacing-lg) var(--spacing-md); }
+      .card { padding: var(--spacing-md); }
+      .header h1 { font-size: var(--font-size-xl); }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>Help shape the homepage.</h1>
+    <p>A few questions to align on what the T1 homepage should feel like, how AI should behave, and where we're heading. Takes about 5 minutes.</p>
+  </div>
+
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-meta">
+      <span class="progress-label">Progress</span>
+      <span class="progress-count" id="progressCount">—</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="card" id="formCard">
+
+    <!-- Step 0: Name -->
+    <div class="step active" id="step-0">
+      <div class="question-text">Who are we hearing from?</div>
+      <input type="text" id="name" placeholder="Your name" />
+    </div>
+
+    <!-- Q1 -->
+    <div class="step" id="step-1">
+      <div class="question-number">Question 1 of 10</div>
+      <div class="question-text">When someone opens the homepage at the start of their day, what's the single most important thing they should walk away knowing?</div>
+      <textarea id="q1" placeholder="Share your thoughts..."></textarea>
+    </div>
+
+    <!-- Q2 — multiselect -->
+    <div class="step" id="step-2">
+      <div class="question-number">Question 2 of 10</div>
+      <div class="question-text">If the homepage were a person, how would you describe their personality?</div>
+      <div class="options">
+        <div class="option has-sublabel" data-value="The Coach" onclick="selectOption('q2', this)">
+          <div class="option-indicator radio"></div>
+          <div><div class="option-label">The Coach</div><div class="option-sublabel">Pushes you to act, keeps you accountable</div></div>
+        </div>
+        <div class="option has-sublabel" data-value="The Navigator" onclick="selectOption('q2', this)">
+          <div class="option-indicator radio"></div>
+          <div><div class="option-label">The Navigator</div><div class="option-sublabel">Gives you the full picture, orients your day</div></div>
+        </div>
+        <div class="option has-sublabel" data-value="The Briefer" onclick="selectOption('q2', this)">
+          <div class="option-indicator radio"></div>
+          <div><div class="option-label">The Briefer</div><div class="option-sublabel">Synthesizes everything, delivers your daily story</div></div>
+        </div>
+        <div class="option has-sublabel" data-value="The Collaborator" onclick="selectOption('q2', this)">
+          <div class="option-indicator radio"></div>
+          <div><div class="option-label">The Collaborator</div><div class="option-sublabel">Works alongside you, thinks with you</div></div>
+        </div>
+        <div class="option has-sublabel" data-value="The Assistant" onclick="selectOption('q2', this)">
+          <div class="option-indicator radio"></div>
+          <div><div class="option-label">The Assistant</div><div class="option-sublabel">Hands you your to-do list, ready to execute</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="step" id="step-3">
+      <div class="question-number">Question 3 of 10</div>
+      <div class="question-text">At the end of a workday, what would tell you the homepage genuinely helped someone?</div>
+      <textarea id="q3" placeholder="Share your thoughts..."></textarea>
+    </div>
+
+    <!-- Q4 -->
+    <div class="step" id="step-4">
+      <div class="question-number">Question 4 of 10</div>
+      <div class="question-text">How much should AI decide what a user sees versus the user controlling it themselves?</div>
+      <div class="scale-wrap">
+        <div class="scale-labels">
+          <span>Fully user-controlled</span>
+          <span>Fully AI-decided</span>
+        </div>
+        <div class="scale-buttons" id="q4-scale">
+          <button class="scale-btn" onclick="selectScale('q4', 1, this)">1</button>
+          <button class="scale-btn" onclick="selectScale('q4', 2, this)">2</button>
+          <button class="scale-btn" onclick="selectScale('q4', 3, this)">3</button>
+          <button class="scale-btn" onclick="selectScale('q4', 4, this)">4</button>
+          <button class="scale-btn" onclick="selectScale('q4', 5, this)">5</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="step" id="step-5">
+      <div class="question-number">Question 5 of 10</div>
+      <div class="question-text">A salesperson responding to something urgent and a GM starting their morning have very different needs. Should the homepage adapt to each moment?</div>
+      <div class="yesno">
+        <div class="option" data-value="Yes" onclick="selectOption('q5', this)">
+          <div class="option-indicator radio"></div>
+          <div class="option-label">Yes, adapt to the moment</div>
+        </div>
+        <div class="option" data-value="No" onclick="selectOption('q5', this)">
+          <div class="option-indicator radio"></div>
+          <div class="option-label">No, keep it consistent</div>
+        </div>
+      </div>
+      <div style="margin-top: var(--spacing-md);">
+        <label class="field-label">Why?</label>
+        <textarea id="q5why" placeholder="Explain your thinking..." style="min-height:72px;"></textarea>
+      </div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="step" id="step-6">
+      <div class="question-number">Question 6 of 10</div>
+      <div class="question-text">AI agents will work on behalf of users in the background. How do you see their role?</div>
+      <div class="options">
+        <div class="option has-sublabel" data-value="Background worker" onclick="selectOption('q6', this)">
+          <div class="option-indicator radio"></div>
+          <div><div class="option-label">Background worker</div><div class="option-sublabel">Agents work quietly, user checks in occasionally</div></div>
+        </div>
+        <div class="option has-sublabel" data-value="Active collaborator" onclick="selectOption('q6', this)">
+          <div class="option-indicator radio"></div>
+          <div><div class="option-label">Active collaborator</div><div class="option-sublabel">Agents are visible and work alongside the user in real time</div></div>
+        </div>
+        <div class="option has-sublabel" data-value="Somewhere in between" onclick="selectOption('q6', this)">
+          <div class="option-indicator radio"></div>
+          <div><div class="option-label">Somewhere in between</div><div class="option-sublabel">Depends on the task and the user</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q7 — multiselect -->
+    <div class="step" id="step-7">
+      <div class="question-number">Question 7 of 10</div>
+      <div class="question-text">When an agent completes something on a user's behalf, how should the homepage surface that?</div>
+      <div class="options">
+        <div class="option has-sublabel" data-value="Always notify me" onclick="selectOption('q7', this)">
+          <div class="option-indicator radio"></div>
+          <div><div class="option-label">Always notify me</div><div class="option-sublabel">I want visibility into everything the agent did</div></div>
+        </div>
+        <div class="option has-sublabel" data-value="Only when I need to act" onclick="selectOption('q7', this)">
+          <div class="option-indicator radio"></div>
+          <div><div class="option-label">Only when my input is needed</div><div class="option-sublabel">Surface it only when there's something to decide or approve</div></div>
+        </div>
+        <div class="option has-sublabel" data-value="Daily summary" onclick="selectOption('q7', this)">
+          <div class="option-indicator radio"></div>
+          <div><div class="option-label">A daily summary is enough</div><div class="option-sublabel">Bundle agent activity into one digest</div></div>
+        </div>
+        <div class="option has-sublabel" data-value="Let me ask" onclick="selectOption('q7', this)">
+          <div class="option-indicator radio"></div>
+          <div><div class="option-label">Let me ask when I want to know</div><div class="option-sublabel">Don't surface it unless I pull it up</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="step" id="step-8">
+      <div class="question-number">Question 8 of 10</div>
+      <div class="question-text">We're exploring three directions for this page. Which resonates most with where you see T1 heading?</div>
+      <div class="options">
+        <div class="option has-sublabel" data-value="Home" onclick="selectOption('q8', this)">
+          <div class="option-indicator radio"></div>
+          <div><div class="option-label">Home</div><div class="option-sublabel">AI orients and narrates your day. Warm, contextual, ambient.</div></div>
+        </div>
+        <div class="option has-sublabel" data-value="Action Center" onclick="selectOption('q8', this)">
+          <div class="option-indicator radio"></div>
+          <div><div class="option-label">Action Center</div><div class="option-sublabel">AI prioritizes and directs. Focused on what to do next.</div></div>
+        </div>
+        <div class="option has-sublabel" data-value="Conversational Landing" onclick="selectOption('q8', this)">
+          <div class="option-indicator radio"></div>
+          <div><div class="option-label">Conversational Landing</div><div class="option-sublabel">AI is the interface. The page assembles around what you ask.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="step" id="step-9">
+      <div class="question-number">Question 9 of 10</div>
+      <div class="question-text">Is there anything that should absolutely never be on this homepage -- something that would feel wrong or out of place?</div>
+      <textarea id="q9" placeholder="Share your thoughts..."></textarea>
+    </div>
+
+    <!-- Q10 -->
+    <div class="step" id="step-10">
+      <div class="question-number">Question 10 of 10</div>
+      <div class="question-text">What's one thing you're worried we might over-design or over-engineer?</div>
+      <textarea id="q10" placeholder="Share your thoughts..."></textarea>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav" id="formNav">
+      <button class="button-secondary" id="backBtn" onclick="goBack()" style="display:none;">← Back</button>
+      <div style="margin-left:auto;">
+        <button class="button-primary" id="nextBtn" onclick="goNext()">Continue</button>
+      </div>
+    </div>
+
+    <div class="error-msg" id="errorMsg">Please answer this question to continue.</div>
+  </div>
+
+  <!-- Success -->
+  <div class="card success-screen" id="successScreen" style="display:none;">
+    <div class="success-mark">✓</div>
+    <h2>Thank you.</h2>
+    <p>Your input will directly shape the direction of the T1 homepage. We'll share findings once we hear from everyone.</p>
+  </div>
+
+</div>
+<script>
+  // ── Config ──────────────────────────────────────────────────
+  const AIRTABLE_TOKEN   = 'pathPeLhCSpUgOqno.1dca25b33feb74714793ddb868fda86ddd5c95c74c85025a3e222a81f1f03667';
+  const AIRTABLE_BASE_ID = 'app3Y2kfbJgbeEpYV';
+  const AIRTABLE_TABLE   = 'homepage survey base'; // CSV import table name — update if different
+
+  // ── State ────────────────────────────────────────────────────
+  const TOTAL_STEPS = 11;
+  let currentStep = 0;
+
+  // single-select answers
+  const single = { q2: null, q4: null, q5: null, q6: null, q7: null, q8: null };
+
+  // ── Progress ─────────────────────────────────────────────────
+  function updateProgress() {
+    const pct = (currentStep / (TOTAL_STEPS - 1)) * 100;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressCount').textContent =
+      currentStep === 0 ? '—' : `${currentStep} of 10`;
+  }
+
+  function showStep(n) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById('step-' + n).classList.add('active');
+    document.getElementById('backBtn').style.display = n > 0 ? 'inline-block' : 'none';
+    document.getElementById('nextBtn').textContent = n === TOTAL_STEPS - 1 ? 'Submit' : 'Continue';
+    document.getElementById('errorMsg').classList.remove('show');
+    updateProgress();
+  }
+
+  // ── Validation ───────────────────────────────────────────────
+  function hasAnswer(step) {
+    switch(step) {
+      case 0:  return document.getElementById('name').value.trim() !== '';
+      case 1:  return document.getElementById('q1').value.trim() !== '';
+      case 2:  return single.q2 !== null;
+      case 3:  return document.getElementById('q3').value.trim() !== '';
+      case 4:  return single.q4 !== null;
+      case 5:  return single.q5 !== null && document.getElementById('q5why').value.trim() !== '';
+      case 6:  return single.q6 !== null;
+      case 7:  return single.q7 !== null;
+      case 8:  return single.q8 !== null;
+      case 9:  return document.getElementById('q9').value.trim() !== '';
+      case 10: return document.getElementById('q10').value.trim() !== '';
+      default: return true;
+    }
+  }
+
+  // ── Navigation ───────────────────────────────────────────────
+  function goNext() {
+    if (!hasAnswer(currentStep)) {
+      document.getElementById('errorMsg').classList.add('show');
+      return;
+    }
+    if (currentStep === TOTAL_STEPS - 1) { submitForm(); return; }
+    currentStep++;
+    showStep(currentStep);
+  }
+
+  function goBack() {
+    if (currentStep > 0) { currentStep--; showStep(currentStep); }
+  }
+
+  // ── Selection ────────────────────────────────────────────────
+  function selectOption(key, el) {
+    el.closest('.options, .yesno').querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    single[key] = el.dataset.value;
+    document.getElementById('errorMsg').classList.remove('show');
+  }
+
+  function selectScale(key, val, btn) {
+    document.querySelectorAll('#q4-scale .scale-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    single[key] = val;
+    document.getElementById('errorMsg').classList.remove('show');
+  }
+
+  // ── Submit ───────────────────────────────────────────────────
+  async function submitForm() {
+    const btn = document.getElementById('nextBtn');
+    btn.textContent = 'Submitting...';
+    btn.disabled = true;
+
+    const fields = {
+      'Submitted At':             new Date().toISOString(),
+      'Respondent Name':          document.getElementById('name').value.trim(),
+      'Q1 Most Important Thing':  document.getElementById('q1').value.trim(),
+      'Q2 Homepage Personality':  single.q2,
+      'Q3 Success Signal':        document.getElementById('q3').value.trim(),
+      'Q4 AI vs User Control':    String(single.q4),
+      'Q5 Adaptive Experience':   single.q5,
+      'Q5 Why':                   document.getElementById('q5why').value.trim(),
+      'Q6 Agent Role':            single.q6,
+      'Q7 Agent Surfacing':       single.q7,
+      'Q8 Homepage Direction':    single.q8,
+      'Q9 Never On Homepage':     document.getElementById('q9').value.trim(),
+      'Q10 Over Engineering Concern': document.getElementById('q10').value.trim(),
+    };
+
+    try {
+      const res = await fetch(
+        `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE)}`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+            'Content-Type':  'application/json'
+          },
+          body: JSON.stringify({ fields })
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        const msg = data?.error?.message || data?.error?.type || JSON.stringify(data);
+        throw new Error(msg);
+      }
+
+      document.getElementById('formCard').style.display    = 'none';
+      document.getElementById('progressWrap').style.display = 'none';
+      document.getElementById('successScreen').style.display = 'block';
+
+    } catch (e) {
+      btn.textContent = 'Submit';
+      btn.disabled = false;
+      const errEl = document.getElementById('errorMsg');
+      errEl.textContent = `Error: ${e.message}`;
+      errEl.classList.add('show');
+      console.error('Airtable error:', e);
+    }
+  }
+
+  showStep(0);
+</script>
+</body>
+</html>
