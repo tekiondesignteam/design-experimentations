@@ -1,0 +1,2846 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>T1 Home Widgets</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="tokens.css">
+  <style>
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      font-family: 'Manrope', -apple-system, sans-serif;
+      color: var(--color-text-main);
+      background: var(--shell-surface);
+      min-height: 100vh;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+    }
+
+    code {
+      font-family: monospace;
+      font-size: var(--font-xs);
+      background: var(--shell-surface-subtle);
+      padding: 1px 4px;
+      border-radius: var(--radius-sm);
+      color: var(--color-text-main);
+    }
+
+    /* ── NAV ── */
+    .global-top-nav {
+      height: var(--nav-height);
+      background: var(--color-bg-dark);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      border-bottom: 1px solid var(--color-bg-dark-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .tk-logo-badge {
+      background: var(--gradient-brand);
+      color: var(--color-bg-main);
+      font-weight: var(--fw-extrabold);
+      font-size: var(--font-sm);
+      padding: var(--spacing-xs) var(--spacing-lg);
+      border-radius: var(--radius-sm);
+      letter-spacing: .5px;
+      flex-shrink: 0;
+    }
+
+    .tk-page-title {
+      color: rgba(255, 255, 255, .85);
+      font-size: var(--font-sm);
+      font-weight: var(--fw-semibold);
+      margin-left: var(--spacing-lg);
+    }
+
+    /* ── PAGE ── */
+    .page-body {
+      padding: 40px 80px 80px;
+    }
+
+    .component-section {
+      margin-bottom: 64px;
+      scroll-margin-top: 80px;
+    }
+
+    .section-eyebrow {
+      font-size: var(--shell-eyebrow-size);
+      font-weight: var(--fw-bold);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .section-title {
+      font-size: var(--shell-title-size);
+      font-weight: var(--fw-extrabold);
+      color: var(--color-text-heading);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .section-desc {
+      font-size: var(--shell-desc-size);
+      color: var(--color-text-muted);
+      margin-bottom: 18px;
+      line-height: var(--lh-loose);
+      max-width: 720px;
+    }
+
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--color-border-muted);
+      margin: 0 0 40px;
+    }
+
+    /* ── STATE TOGGLE BAR ── */
+    .state-bar {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-8);
+      margin-bottom: 14px;
+    }
+
+    .state-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .state-lbl {
+      font-size: var(--shell-label-size);
+      font-weight: var(--fw-bold);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--color-text-muted);
+    }
+
+    .state-btn {
+      padding: var(--spacing-xs) var(--spacing-lg);
+      border-radius: var(--radius-full);
+      border: 1px solid var(--shell-state-btn-border);
+      background: var(--shell-state-btn-bg);
+      font-size: var(--shell-state-btn-size);
+      font-weight: var(--fw-semibold);
+      color: var(--color-text-muted);
+      cursor: pointer;
+      transition: all var(--transition-base);
+    }
+
+    .state-btn.active {
+      background: var(--shell-state-active-bg);
+      border-color: var(--shell-state-active-border);
+      color: var(--shell-state-active-color);
+    }
+
+    .state-btn:hover:not(.active) {
+      background: var(--shell-state-hover-bg);
+    }
+
+    /* ── SEGMENT CONTROL ── */
+    .seg-ctrl {
+      display: inline-flex;
+    }
+
+    .seg-ctrl .state-btn {
+      border-radius: 0;
+      margin-left: -1px;
+      position: relative;
+    }
+
+    .seg-ctrl .state-btn:first-child {
+      border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+      margin-left: 0;
+    }
+
+    .seg-ctrl .state-btn:last-child {
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+
+    .seg-ctrl .state-btn.active {
+      z-index: 1;
+    }
+
+    /* ── WIDGET SHELL ── */
+    .workspace-widget {
+      border-radius: var(--widget-radius);
+      background: var(--widget-shell-bg);
+      padding: var(--spacing-sm) var(--space-1) var(--space-1) var(--space-1);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .workspace-widget-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 8px 2px 8px;
+      min-height: 28px;
+    }
+
+    .workspace-widget-label {
+      font-size: var(--widget-header-font-size);
+      font-weight: var(--fw-bold);
+      color: var(--color-text-main);
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .workspace-widget-body {
+      background: var(--widget-body-bg);
+      border-radius: var(--widget-radius);
+      overflow: hidden;
+      min-height: 80px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+    }
+
+    .workspace-widget-body.ws-list {
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
+      gap: 0;
+      padding: 0;
+      min-height: 110px;
+    }
+
+    /* Shell rule: docked + mobile wrappers — body and list grow to content, no fixed height */
+    [id$="-docked-wrap"] .workspace-widget-body.ws-list,
+    [id$="-mobile-wrap"] .workspace-widget-body.ws-list {
+      height: auto;
+      min-height: 160px;
+    }
+
+    [id$="-docked-wrap"] .ac-rows-list,
+    [id$="-mobile-wrap"] .ac-rows-list {
+      height: auto !important;
+      min-height: 0;
+      overflow-y: visible;
+    }
+
+    .ws-resize-btn,
+    .ws-filter-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: var(--ctrl-btn-size);
+      height: var(--ctrl-btn-size);
+      border: none;
+      background: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      color: var(--color-text-muted);
+      flex-shrink: 0;
+      transition: background var(--transition-base);
+    }
+
+    .ws-resize-btn:hover,
+    .ws-filter-btn:hover {
+      background: var(--widget-header-hover-bg);
+      color: var(--color-text-main);
+    }
+
+    /* ── WIDGET ALERT STATE ── */
+    .workspace-widget--alert {
+      background: var(--widget-shell-alert-bg);
+    }
+
+    /* ── WIDGET SIZE CLASSES ── */
+    .workspace-widget.ws-half {
+      width: calc(50% - 8px);
+    }
+
+    .workspace-widget.ws-three-quarter {
+      width: calc(75% - 12px);
+    }
+
+    .workspace-widget.ws-kpi {
+      width: calc(25% - 12px);
+    }
+
+    /* ── RESIZE POPOVER (matches source) ── */
+    .ws-resize-popover {
+      position: fixed;
+      z-index: var(--z-popover);
+      background: var(--widget-shell-bg);
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      padding: var(--space-1);
+      display: none;
+      flex-direction: row;
+      gap: var(--space-1);
+    }
+
+    .ws-resize-popover.open {
+      display: flex;
+    }
+
+    .ws-resize-opt {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-1);
+      padding: var(--space-2) var(--space-3);
+      border: none;
+      background: none;
+      border-radius: var(--radius-3);
+      cursor: pointer;
+      font-family: inherit;
+      transition: background var(--duration-slow);
+      flex: 1;
+    }
+
+    .ws-resize-opt:hover {
+      background: rgba(255, 255, 255, .6);
+    }
+
+    .ws-resize-opt.active {
+      background: var(--color-bg-main);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .ws-seg-diagram {
+      display: flex;
+      gap: var(--space-1);
+      align-items: flex-end;
+      height: 16px;
+      width: 26px;
+    }
+
+    .ws-seg-diagram .ws-blk {
+      border-radius: var(--radius-1);
+      background: var(--widget-seg-inactive);
+      height: 100%;
+      flex: 1;
+    }
+
+    .ws-seg-diagram .ws-blk.active-blk {
+      background: var(--widget-seg-active);
+    }
+
+    .ws-resize-opt.active .ws-seg-diagram .ws-blk.active-blk {
+      background: var(--widget-seg-strong);
+    }
+
+    .ws-resize-opt.active .ws-seg-diagram .ws-blk {
+      background: var(--widget-seg-rest);
+    }
+
+    .ws-seg-label {
+      display: none;
+    }
+
+    /* ── PAGER ── */
+    .ws-header-pager {
+      display: flex;
+      align-items: center;
+      gap: var(--pager-gap);
+    }
+
+    .ws-pager-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: var(--pager-btn-size);
+      height: var(--pager-btn-size);
+      border-radius: var(--radius-sm);
+      border: none;
+      background: transparent;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      line-height: 1;
+      flex-shrink: 0;
+      transition: background var(--transition-base);
+    }
+
+    .ws-pager-btn svg {
+      width: var(--pager-icon-size);
+      height: var(--pager-icon-size);
+      display: block;
+    }
+
+    .ws-pager-btn:hover:not(:disabled) {
+      background: var(--widget-header-hover-bg);
+      color: var(--color-text-main);
+    }
+
+    .ws-pager-btn:disabled {
+      opacity: .3;
+      cursor: default;
+    }
+
+    /* Pagination text — "x – y of n" counter */
+    .ws-pager-text {
+      font-size: var(--pager-text-size);
+      font-weight: var(--pager-text-weight);
+      color: var(--pager-text-color);
+      min-width: var(--pager-info-min-width);
+      text-align: center;
+      white-space: nowrap;
+      line-height: var(--lh-tight);
+    }
+
+    .brief-dropdown-wrap {
+      position: relative;
+      display: inline-flex;
+    }
+
+    .brief-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      right: 0;
+      background: var(--color-bg-main);
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      min-width: 210px;
+      z-index: var(--z-dropdown);
+      overflow: hidden;
+    }
+
+    .brief-dropdown.hidden {
+      display: none;
+    }
+
+    .brief-dd-label {
+      font-size: var(--font-xs);
+      font-weight: var(--font-weight-heading);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      padding: var(--spacing-md) var(--space-6) var(--spacing-sm);
+      display: block;
+      border-bottom: 1px solid var(--color-bg-surface);
+    }
+
+    .brief-dd-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4) var(--space-6);
+      font-size: var(--font-sm);
+      font-weight: var(--font-weight-strong);
+      color: var(--color-text-heading);
+      cursor: pointer;
+      transition: background var(--transition-base);
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      width: 100%;
+      text-align: left;
+    }
+
+    .brief-dd-item:hover {
+      background: var(--color-bg-hover);
+    }
+
+    .brief-dd-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--font-base);
+      flex-shrink: 0;
+    }
+
+    /* ── BRIEF ── */
+    .brief-card {
+      background: linear-gradient(to bottom, #F9FBFF 0%, #F6F9FF 30%, #EEF3FF 65%, #E8F0FF 100%);
+      border-radius: 0;
+      /* overflow:hidden removed — it clips the Quick Actions dropdown */
+      width: 100%;
+      position: relative;
+    }
+
+    .brief-inner {
+      padding: 28px 28px var(--space-12);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-10);
+    }
+
+    .brief-text-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .brief-greeting-row {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      width: 100%;
+    }
+
+    .brief-greeting {
+      font-size: var(--font-xl);
+      font-weight: var(--font-weight-heading);
+      color: var(--color-text-heading);
+      margin: 0;
+      line-height: var(--line-height-heading);
+    }
+
+    .brief-narrative {
+      font-size: var(--font-sm);
+      font-weight: var(--font-weight-medium);
+      color: var(--color-text-main);
+      line-height: var(--line-height-body);
+      margin: 0;
+    }
+
+    /* Brief dropdown wrap — only push the QA trigger to the right */
+    .brief-dropdown-wrap {
+      margin-left: auto;
+    }
+
+    /* inline KPI in brief */
+    .home-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-6);
+    }
+
+    .home-kpi-card {
+      background: var(--color-bg-main);
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-md);
+      padding: var(--space-4) var(--space-6);
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      box-shadow: var(--shadow-sm);
+      transition: border-color var(--transition-base);
+      cursor: pointer;
+    }
+
+    .home-kpi-card:hover {
+      border-color: var(--blue-200);
+    }
+
+    .home-kpi-label {
+      font-size: var(--font-xs);
+      font-weight: var(--font-weight-heading);
+      color: var(--color-text-main);
+      margin-bottom: var(--space-4);
+    }
+
+    .home-kpi-value {
+      font-size: var(--font-xl);
+      font-weight: var(--fw-extrabold);
+      letter-spacing: -.04em;
+      line-height: var(--line-height-heading);
+      color: var(--color-text-heading);
+    }
+
+    .home-kpi-sub {
+      font-size: var(--font-xs);
+      font-weight: var(--font-weight-medium);
+      color: var(--color-text-muted);
+      margin-top: var(--space-2);
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      flex-wrap: wrap;
+    }
+
+    .home-kpi-badge {
+      font-size: var(--font-xs);
+      font-weight: var(--font-weight-heading);
+      padding: 1px var(--spacing-sm);
+      border-radius: var(--radius-1);
+    }
+
+    /* ── BRIEF MOBILE STATE ── */
+    .brief-mob-inner {
+      padding: var(--spacing-xl) var(--space-8) var(--space-10) !important;
+      gap: var(--space-8) !important;
+    }
+
+    .brief-mob-greeting {
+      font-size: var(--font-lg) !important;
+    }
+
+    .brief-mob-narrative {
+      font-size: var(--font-sm) !important;
+      line-height: var(--line-height-normal) !important;
+    }
+
+    .brief-mob-kpi-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: var(--space-4) !important;
+    }
+
+    .brief-mob-kpi-card {
+      padding: var(--space-4) var(--space-4) !important;
+    }
+
+    .brief-mob-kpi-value {
+      font-size: var(--font-lg) !important;
+    }
+
+    .brief-mob-qa-row {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .brief-mob-qa-wrap {
+      flex: 1;
+      display: flex;
+    }
+
+    .brief-mob-qa-btn {
+      width: 100% !important;
+      justify-content: space-between !important;
+    }
+
+    /* ── BRIEF MOBILE VIEWPORT — touch-specific overrides ── */
+    /* 44px tap targets on all buttons in mobile viewport */
+    #brief-mobile .t1-btn-secondary,
+    #brief-mobile-empty .t1-btn-secondary {
+      height: var(--tap-target-size) !important;
+      font-size: var(--tap-target-font) !important;
+      padding: var(--tap-target-padding) !important;
+    }
+
+    /* Icon-only button: 44×44 square */
+    #brief-mobile .t1-btn-secondary--icon,
+    #brief-mobile-empty .t1-btn-secondary--icon {
+      width: var(--tap-target-size) !important;
+      padding: 0 !important;
+    }
+
+    /* QA BOTTOM SHEET ── */
+    .qa-bottomsheet-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 10010;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .qa-bottomsheet-overlay.visible {
+      opacity: 1;
+    }
+
+    .qa-bottomsheet {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 10011;
+      background: var(--color-bg-main);
+      border-radius: 16px 16px 0 0;
+      box-shadow: var(--shadow-float);
+      padding: 0 0 env(safe-area-inset-bottom, 0);
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+      font-family: 'Manrope', sans-serif;
+    }
+
+    .qa-bottomsheet.visible {
+      transform: translateY(0);
+    }
+
+    .qa-bottomsheet-handle {
+      width: 36px;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--gray-300);
+      margin: 10px auto 6px;
+    }
+
+    .qa-bottomsheet-title {
+      padding: var(--space-4) var(--space-10) var(--space-6);
+      font-size: var(--font-base);
+      font-weight: var(--fw-bold);
+      color: var(--color-text-heading);
+    }
+
+    .qa-bottomsheet-items {
+      padding: 0 8px 16px;
+    }
+
+    .qa-bottomsheet-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-6);
+      width: 100%;
+      padding: var(--space-7) var(--space-8);
+      border: none;
+      background: transparent;
+      text-align: left;
+      font-size: var(--font-base);
+      font-weight: var(--fw-medium);
+      color: var(--color-text-heading);
+      cursor: pointer;
+      font-family: 'Manrope', sans-serif;
+      border-radius: var(--radius-5);
+      transition: background var(--duration-slow);
+    }
+
+    .qa-bottomsheet-item:hover,
+    .qa-bottomsheet-item:active {
+      background: var(--gray-100);
+    }
+
+    .qa-bs-icon {
+      font-size: 20px;
+      width: 28px;
+      text-align: center;
+    }
+
+    /* ── RESPONSIVE: Brief auto-adapts at breakpoints ── */
+
+    /* Desktop: show QA in greeting row, hide mobile row */
+    .qa-desktop {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+
+    .qa-mobile {
+      display: none;
+    }
+
+    /* ≤900px: KPI grid goes 2×2 */
+    @media (max-width: 900px) {
+      .home-kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-6);
+      }
+    }
+
+    /* ≤768px: tighten padding and text */
+    @media (max-width: 768px) {
+      .brief-inner {
+        padding: 20px;
+        gap: 16px;
+      }
+
+      .brief-greeting {
+        font-size: var(--font-md);
+      }
+
+      .brief-narrative {
+        font-size: var(--font-sm);
+      }
+    }
+
+    /* ≤640px: full mobile layout — swap QA button position */
+    @media (max-width: 640px) {
+      .brief-inner {
+        padding: 16px;
+        gap: 14px;
+      }
+
+      .brief-greeting {
+        font-size: var(--font-md);
+      }
+
+      .brief-narrative {
+        font-size: var(--font-sm);
+        line-height: 1.4;
+      }
+
+      .home-kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      .qa-desktop {
+        display: none !important;
+      }
+
+      .qa-mobile {
+        display: block !important;
+      }
+    }
+
+
+    /* Primary — blue accent */
+    .t1-btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 32px;
+      padding: 0 14px;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      background: #2563EB;
+      color: #fff;
+      font-size: var(--font-xs);
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      white-space: nowrap;
+      transition: background .12s, border-color .08s, transform .08s, box-shadow .08s;
+      transform-origin: center;
+      user-select: none;
+    }
+
+    /* Primary states */
+    .t1-btn-primary:hover {
+      background: #1D4ED8;
+    }
+
+    .t1-btn-primary:active,
+    .t1-btn-primary.is-active {
+      background: #1D52D6;
+      border-color: #60A5FA;
+      transform: scale(0.95) translateY(1px);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, .15);
+    }
+
+    .t1-btn-primary:disabled,
+    .t1-btn-primary.is-disabled {
+      background: #93C5FD;
+      border-color: transparent;
+      color: rgba(255, 255, 255, .6);
+      cursor: not-allowed;
+      pointer-events: none;
+      transform: none;
+    }
+
+    /* Secondary — border + white bg */
+    .t1-btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-3);
+      height: 32px;
+      padding: var(--alert-row-padding);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--btn-secondary-border);
+      background: var(--color-bg-main);
+      color: var(--color-text-heading);
+      font-size: var(--font-xs);
+      font-weight: var(--fw-bold);
+      cursor: pointer;
+      font-family: inherit;
+      white-space: nowrap;
+      transition: background var(--duration-slow), border-color var(--duration-slow), box-shadow var(--duration-fast), transform var(--duration-fast);
+      transform-origin: center;
+      user-select: none;
+    }
+
+    .t1-btn-secondary:hover {
+      background: var(--gray-250);
+      border-color: var(--gray-250);
+    }
+
+    .t1-btn-secondary:active,
+    .t1-btn-secondary.is-active {
+      background: var(--gray-200);
+      border-color: var(--gray-400);
+      transform: scale(0.95) translateY(1px);
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, .08);
+    }
+
+    .t1-btn-secondary:disabled,
+    .t1-btn-secondary.is-disabled {
+      background: var(--color-bg-surface);
+      border-color: var(--color-border-subtle);
+      color: var(--color-text-muted);
+      cursor: not-allowed;
+      pointer-events: none;
+      transform: none;
+    }
+
+    /* Done / confirmed state */
+    .t1-btn-secondary.done {
+      background: var(--alert-done-bg);
+      border-color: var(--alert-done-border);
+      color: var(--alert-done-color);
+      cursor: default;
+      pointer-events: none;
+      transform: none;
+    }
+
+    /* Icon-only variant — square */
+    .t1-btn-secondary--icon {
+      width: 32px;
+      padding: 0;
+      justify-content: center;
+    }
+
+    /* AI — gradient border + T1 logo */
+    .t1-btn-ai {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-3);
+      height: 32px;
+      padding: var(--alert-row-padding);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--btn-ai-border);
+      background: var(--btn-ai-gradient);
+      cursor: pointer;
+      font-family: inherit;
+      white-space: nowrap;
+      font-size: var(--font-xs);
+      font-weight: var(--fw-bold);
+      transition: filter var(--duration-slow), box-shadow var(--duration-fast), transform var(--duration-fast), border-color var(--duration-fast);
+      transform-origin: center;
+      user-select: none;
+    }
+
+    .t1-btn-ai:hover {
+      filter: brightness(0.94);
+    }
+
+    .t1-btn-ai:active,
+    .t1-btn-ai.is-active {
+      opacity: 1;
+      transform: scale(0.95) translateY(1px);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, .1);
+      border-color: var(--green-200);
+    }
+
+    .t1-btn-ai:disabled,
+    .t1-btn-ai.is-disabled {
+      opacity: .4;
+      cursor: not-allowed;
+      pointer-events: none;
+      transform: none;
+    }
+
+    /* Mobile: 44px tap targets for buttons */
+    @media (max-width: 640px) {
+
+      .t1-btn-primary,
+      .t1-btn-secondary,
+      .t1-btn-ai {
+        height: var(--tap-target-size) !important;
+        font-size: var(--tap-target-font) !important;
+        padding: var(--tap-target-padding) !important;
+      }
+
+      .t1-btn-secondary--icon {
+        width: var(--tap-target-size) !important;
+        padding: 0 !important;
+      }
+
+      .ws-hdr-act-btn {
+        width: var(--tap-target-size) !important;
+        height: var(--tap-target-size) !important;
+      }
+
+      .ws-pager-btn {
+        width: var(--tap-target-size) !important;
+        height: var(--tap-target-size) !important;
+      }
+    }
+
+    /* Button showcase grid */
+    /* ── Button state helper (simulates hover for static showcase) ── */
+    .t1-btn-primary.is-hover {
+      background: #1D4ED8;
+    }
+
+    .t1-btn-secondary.is-hover {
+      background: #E8EAED;
+      border-color: #E8EAED;
+    }
+
+    .t1-btn-secondary.is-active {
+      background: #E0E2E6;
+      border-color: #9CA3AF;
+    }
+
+    .t1-btn-ai.is-hover {
+      filter: brightness(0.94);
+    }
+
+    /* ── Button state grid ── */
+    .btn-state-grid {
+      display: grid;
+      grid-template-columns: 96px repeat(4, 1fr);
+      border: 1px solid #E5E7EB;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .btn-state-grid-header {
+      display: contents;
+    }
+
+    .btn-state-grid-header>div {
+      background: #F3F4F6;
+      padding: 10px 16px;
+      font-size: var(--font-xs);
+      font-weight: 700;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .btn-state-grid-header>div:not(:last-child),
+    .btn-state-grid-row>div:not(:last-child) {
+      border-right: 1px solid #E5E7EB;
+    }
+
+    .btn-state-grid-row {
+      display: contents;
+    }
+
+    .btn-state-grid-row>div {
+      padding: 16px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      border-bottom: 1px solid #E5E7EB;
+      /* prevent layout shift when button scales */
+      overflow: visible;
+    }
+
+    .btn-state-grid-row:last-child>div {
+      border-bottom: none;
+    }
+
+    .btn-state-grid-row>div.btn-state-label {
+      background: #FAFAFA;
+      font-size: var(--font-xs);
+      font-weight: 700;
+      color: var(--color-text-heading);
+    }
+
+    .btn-state-grid-row>div.btn-state-disabled-cell {
+      background: #FAFAFA;
+    }
+
+    /* Legacy showcase (kept for live variant strip) */
+    .btn-showcase {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 20px;
+      background: #F9FAFB;
+      border: 1px solid #E5E7EB;
+      border-radius: 10px;
+    }
+
+    .btn-showcase-label {
+      font-size: var(--font-xs);
+      font-weight: 700;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      width: 100%;
+      margin-bottom: 4px;
+    }
+
+    /* ── EMPTY STATE ── */
+    .ws-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-20) var(--space-10);
+      gap: var(--space-4);
+      min-height: 160px;
+      width: 100%;
+    }
+
+    .ws-empty-icon {
+      font-size: 28px;
+      opacity: .4;
+    }
+
+    .ws-empty-text {
+      font-size: var(--font-xs);
+      font-weight: var(--fw-semibold);
+      color: var(--gray-800);
+    }
+
+    .ws-empty-sub {
+      font-size: var(--font-xs);
+      color: var(--color-text-muted);
+      opacity: .75;
+      text-align: center;
+    }
+
+    /* ── MOBILE WIDGET SHELL — tappable controls ── */
+    #shell-mobile-wrap .workspace-widget {
+      padding-top: var(--widget-mob-padding-top);
+    }
+
+    #shell-mobile-wrap .workspace-widget-header {
+      min-height: var(--widget-mob-header-min-height);
+      padding: var(--widget-mob-header-padding);
+    }
+
+    #shell-mobile-wrap .workspace-widget-label {
+      font-size: var(--widget-mob-label-size);
+    }
+
+    #shell-mobile-wrap .ws-pager-btn {
+      width: var(--widget-mob-ctrl-size);
+      height: var(--widget-mob-ctrl-size);
+      border-radius: var(--widget-mob-ctrl-radius);
+    }
+
+    #shell-mobile-wrap .ws-pager-btn svg {
+      width: var(--widget-mob-ctrl-icon-size);
+      height: var(--widget-mob-ctrl-icon-size);
+    }
+
+    #shell-mobile-wrap .ws-pager-text {
+      font-size: var(--widget-mob-pager-info-size);
+    }
+
+    #shell-mobile-wrap .ws-filter-btn {
+      width: var(--widget-mob-ctrl-size);
+      height: var(--widget-mob-ctrl-size);
+      border-radius: var(--widget-mob-ctrl-radius);
+    }
+
+    #shell-mobile-wrap .ws-filter-btn svg {
+      width: var(--widget-mob-ctrl-icon-size);
+      height: var(--widget-mob-ctrl-icon-size);
+    }
+
+    /* ── ACTION NEEDED — fixed body height (stable across page sizes + empty) ── */
+    .ac-rows-list,
+    #ac-empty-web, #ac-empty-docked, #ac-empty-mobile {
+      height: var(--ac-body-height);
+      min-height: var(--ac-body-height);
+      flex: none;
+    }
+
+    .ac-rows-list {
+      overflow: hidden;
+    }
+
+    /* ── ACTION NEEDED — empty state: neutral grey shell, no alert tint ── */
+    #action-widget-web.is-empty,
+    #action-widget-docked.is-empty,
+    #action-widget-mobile.is-empty {
+      background: var(--widget-shell-bg);
+    }
+
+    /* ── ACTION NEEDED — empty icon circle ── */
+    .ws-empty-icon-wrap {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--gray-100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gray-500);
+    }
+
+    /* ── MOBILE WIDGET SHELL — ACTION NEEDED (mirrors #shell-mobile-wrap) ── */
+    #action-mobile-wrap .workspace-widget {
+      padding-top: var(--widget-mob-padding-top);
+    }
+
+    #action-mobile-wrap .workspace-widget-header {
+      min-height: var(--widget-mob-header-min-height);
+      padding: var(--widget-mob-header-padding);
+    }
+
+    #action-mobile-wrap .workspace-widget-label {
+      font-size: var(--widget-mob-label-size);
+    }
+
+    #action-mobile-wrap .ws-pager-btn {
+      width: var(--widget-mob-ctrl-size);
+      height: var(--widget-mob-ctrl-size);
+      border-radius: var(--widget-mob-ctrl-radius);
+    }
+
+    #action-mobile-wrap .ws-pager-btn svg {
+      width: var(--widget-mob-ctrl-icon-size);
+      height: var(--widget-mob-ctrl-icon-size);
+    }
+
+    #action-mobile-wrap .ws-pager-text {
+      font-size: var(--widget-mob-pager-info-size);
+    }
+
+    #action-mobile-wrap .ws-filter-btn {
+      width: var(--widget-mob-ctrl-size);
+      height: var(--widget-mob-ctrl-size);
+      border-radius: var(--widget-mob-ctrl-radius);
+    }
+
+    #action-mobile-wrap .ws-filter-btn svg {
+      width: var(--widget-mob-ctrl-icon-size);
+      height: var(--widget-mob-ctrl-icon-size);
+    }
+
+    /* ── ACTION NEEDED — CONTENT COMPONENTS ── */
+
+    /* Single alert row */
+    .ac-row {
+      display: flex;
+      align-items: center;
+      gap: var(--alert-row-gap);
+      padding: var(--alert-row-padding);
+      height: var(--alert-row-height);
+      flex-shrink: 0;
+      background: var(--alert-row-bg);
+      border-bottom: var(--alert-row-border);
+      cursor: pointer;
+      transition: background var(--transition-base);
+    }
+
+
+    .ac-row:hover {
+      background: var(--alert-row-hover-bg);
+    }
+
+    /* Icon square */
+    .ac-row-icon {
+      width: var(--alert-icon-size);
+      height: var(--alert-icon-size);
+      border-radius: var(--alert-icon-radius);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ac-row-icon.high {
+      background: var(--alert-icon-high-bg);
+      color: var(--color-danger);
+    }
+
+    .ac-row-icon.medium {
+      background: var(--alert-icon-medium-bg);
+      color: var(--amber-600);
+    }
+
+    .ac-row-icon.low {
+      background: var(--alert-icon-low-bg);
+      color: var(--blue-600);
+    }
+
+    /* Text content */
+    .ac-row-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .ac-row-title {
+      font-size: var(--font-sm);
+      font-weight: var(--fw-semibold);
+      color: var(--color-text-heading);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: var(--lh-snug);
+      margin-bottom: var(--space-1);
+    }
+
+    .ac-row-meta {
+      font-size: var(--font-xs);
+      font-weight: var(--fw-regular);
+      color: var(--color-text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: var(--lh-normal);
+    }
+
+    .ac-row-meta strong {
+      font-weight: var(--fw-semibold);
+      color: var(--color-text-main);
+    }
+
+    .ac-dot {
+      color: var(--gray-300);
+      margin: 0 var(--space-2);
+    }
+
+    /* Right button cluster */
+    .ac-row-right {
+      display: flex;
+      align-items: center;
+      gap: var(--alert-row-right-gap);
+      flex-shrink: 0;
+    }
+
+    /* Ask T1 button */
+    /* Gradient text inside the Ask T1 button */
+    .ac-btn-ai-text {
+      background: var(--btn-ai-text-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── t1-quick-filters — chip bar ── */
+    .t1-chip-bar {
+      display: flex;
+      align-items: center;
+      gap: var(--qf-bar-gap);
+      padding: var(--qf-bar-padding);
+      border-bottom: var(--qf-bar-border);
+      overflow-x: auto;
+      scrollbar-width: none;
+      flex-wrap: nowrap;
+      flex-shrink: 0;
+    }
+    .t1-chip-bar::-webkit-scrollbar { display: none; }
+
+    .t1-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: var(--qf-chip-padding);
+      border-radius: var(--qf-chip-radius);
+      border: 1px solid var(--qf-chip-border);
+      background: var(--qf-chip-bg);
+      color: var(--qf-chip-color);
+      font-size: var(--qf-chip-font);
+      font-weight: var(--qf-chip-fw);
+      font-family: inherit;
+      white-space: nowrap;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: all var(--duration-slow);
+    }
+    .t1-chip:hover { background: var(--qf-chip-hover-bg); }
+    .t1-chip.active {
+      background: var(--qf-chip-active-bg);
+      border-color: var(--qf-chip-active-border);
+      color: var(--qf-chip-active-color);
+    }
+    .chip-count {
+      font-size: var(--qf-chip-count-font);
+      font-weight: var(--qf-chip-count-fw);
+    }
+
+    /* Actions dropdown panel */
+    #ac-act-dropdown {
+      position: fixed;
+      z-index: var(--z-popover);
+      background: var(--color-bg-main);
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      min-width: 180px;
+      padding: var(--space-2) 0;
+      display: none;
+    }
+
+    #ac-act-dropdown.open {
+      display: block;
+    }
+
+    .ac-dd-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      width: 100%;
+      padding: var(--space-4) var(--space-7);
+      border: none;
+      background: none;
+      font-family: inherit;
+      font-size: var(--font-xs);
+      font-weight: var(--fw-semibold);
+      color: var(--color-text-heading);
+      cursor: pointer;
+      text-align: left;
+      transition: background var(--transition-base);
+      white-space: nowrap;
+    }
+
+    .ac-dd-item:hover {
+      background: var(--color-bg-hover);
+    }
+
+    .ac-dd-item.complete {
+      color: var(--green-600);
+    }
+
+    /* Action Needed mobile bottomsheet items */
+    .ac-bs-item-complete {
+      color: var(--green-600);
+    }
+
+    .ac-dd-divider {
+      height: 1px;
+      background: var(--color-border-subtle);
+      margin: var(--space-1) 0;
+    }
+
+    /* ── QUARTER WIDTH WRAPPER ── */
+    .quarter-wrap {
+      width: 25%;
+    }
+
+    /* ── ACTION NEEDED — Docked & Mobile: buttons move to full-width bottom row (50/50) ── */
+
+    #action-docked-wrap .ac-row,
+    #action-mobile-wrap .ac-row {
+      flex-wrap: wrap;
+      height: auto;
+      align-items: flex-start;
+      padding: var(--space-7) var(--space-6);
+      row-gap: var(--space-3);
+    }
+
+    /* Slightly taller rows on mobile */
+    #action-mobile-wrap .ac-row {
+      padding: var(--space-8) var(--space-6);
+    }
+
+    #action-docked-wrap .ac-row-icon {
+      margin-top: 2px;
+    }
+
+    #action-mobile-wrap .ac-row-icon {
+      display: none;
+    }
+
+    #action-docked-wrap .ac-row-right,
+    #action-mobile-wrap .ac-row-right {
+      width: 100%;
+      gap: var(--alert-row-right-gap); /* 16px */
+    }
+
+    #action-docked-wrap .t1-btn-ai,
+    #action-docked-wrap .t1-btn-secondary,
+    #action-mobile-wrap .t1-btn-ai,
+    #action-mobile-wrap .t1-btn-secondary {
+      flex: 1;
+      justify-content: center;
+    }
+
+    /* 44px tap targets for action buttons on mobile */
+    #action-mobile-wrap .t1-btn-ai,
+    #action-mobile-wrap .t1-btn-secondary {
+      height: var(--tap-target-size) !important;
+      font-size: var(--tap-target-font) !important;
+    }
+
+    /* Slightly taller quick-filter bar + chips on mobile */
+    #action-mobile-wrap .t1-chip-bar {
+      padding: var(--space-6) var(--space-6);
+    }
+
+    #action-mobile-wrap .t1-chip {
+      padding: var(--space-3) var(--space-6);
+    }
+
+    /* Allow title + meta to wrap naturally — no truncation in compact viewports */
+    #action-docked-wrap .ac-row-title,
+    #action-mobile-wrap .ac-row-title,
+    #action-docked-wrap .ac-row-meta,
+    #action-mobile-wrap .ac-row-meta {
+      white-space: normal;
+      overflow: visible;
+      text-overflow: unset;
+    }
+
+    /* ── MOBILE FONT SIZE BUMPS (platform guidelines: ≥16px body, ≥13px secondary) ── */
+
+    /* Action Needed — row text (+1 from base) */
+    #action-mobile-wrap .ac-row-title {
+      font-size: var(--font-base); /* 0.95rem ≈ 15px, up from --font-sm */
+    }
+
+    #action-mobile-wrap .ac-row-meta {
+      font-size: var(--font-sm); /* 0.85rem ≈ 13.6px, up from --font-xs */
+    }
+
+    /* Action Needed — quick filter chips */
+    #action-mobile-wrap .t1-chip {
+      font-size: var(--font-sm); /* 0.85rem ≈ 13.6px */
+    }
+
+    /* Brief — KPI labels + sub text */
+    #brief-mobile .home-kpi-label,
+    #brief-mobile .home-kpi-sub {
+      font-size: var(--font-sm); /* 0.85rem ≈ 13.6px */
+    }
+
+    /* Brief — narrative */
+    #brief-mobile .brief-mob-narrative {
+      font-size: var(--font-md) !important; /* 1rem ≈ 16px */
+    }
+
+    /* Brief — greeting (scoped for higher specificity) */
+    #brief-mobile .brief-mob-greeting,
+    #brief-docked-wrap .brief-mob-greeting {
+      font-size: var(--font-lg) !important; /* 1.1rem ≈ 17.6px */
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Global SVG defs — always in DOM so gradient IDs resolve across all viewport containers -->
+  <svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true">
+    <defs>
+      <linearGradient id="acAiG" x1="2.75" y1="5.5" x2="46.39" y2="14.08" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#25C8A5"/>
+        <stop offset="0.5" stop-color="#1B90B4"/>
+        <stop offset="1" stop-color="#1A6CC4"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <nav class="global-top-nav">
+    <div style="display:flex;align-items:center;gap:12px;flex:1;">
+      <div class="tk-logo-badge">T1</div>
+      <span class="tk-page-title">T1 Home Widgets</span>
+    </div>
+    <a href="https://tekiondesignteam.github.io/design-experimentations/home/aihome.html" target="_blank" rel="noopener"
+      style="display:inline-flex;align-items:center;gap:7px;padding:7px 16px;border-radius:8px;background:var(--gradient-brand);color:#fff;font-size:12px;font-weight:700;letter-spacing:.02em;text-decoration:none;white-space:nowrap;flex-shrink:0;transition:opacity .15s;"
+      onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"
+        stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="5 3 19 12 5 21 5 3" />
+      </svg>
+      View Demo
+    </a>
+  </nav>
+
+  <div class="page-body">
+    <main>
+
+      <!-- ═══════════════════════════════════ 1. WIDGET SHELL ═══ -->
+      <section class="component-section" id="s9">
+        <div class="section-eyebrow">Component</div>
+        <div class="section-title">Widget Shell</div>
+        <div class="section-desc">The universal container for all workspace widgets. Includes standard structural
+          elements: a header with a label and optional top-right actions (filter, resize, pagination). The default state
+          shows all elements, but pagination and filter are optional and users can hide them if they don't need them.
+          Uses <code>.workspace-widget</code>, <code>.workspace-widget-header</code>, and
+          <code>.workspace-widget-body</code> classes.
+        </div>
+        <div class="state-bar">
+          <div class="state-group">
+            <span class="state-lbl">State</span>
+            <div class="seg-ctrl">
+              <button class="state-btn active" data-group="shell-state"
+                onclick="setShellState('default',this)">Default</button>
+              <button class="state-btn" data-group="shell-state" onclick="setShellState('alert',this)">Alert</button>
+            </div>
+          </div>
+          <div class="state-group">
+            <span class="state-lbl">Viewport</span>
+            <div class="seg-ctrl">
+              <button class="state-btn active" data-group="shell-device"
+                onclick="setShellDevice('web',this)">Web</button>
+              <button class="state-btn" data-group="shell-device"
+                onclick="setShellDevice('docked',this)">Docked</button>
+              <button class="state-btn" data-group="shell-device"
+                onclick="setShellDevice('mobile',this)">Mobile</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Web device view -->
+        <div id="shell-web">
+          <div class="workspace-widget" id="shell-widget-web">
+            <div class="workspace-widget-header">
+              <span class="workspace-widget-label">Widget Title</span>
+              <t1-pager for="shell" info="1 - 5 of 10" onprev="null" onnext="null"></t1-pager>
+              <t1-filter-btn></t1-filter-btn>
+              <t1-resize-btn></t1-resize-btn>
+            </div>
+            <div class="workspace-widget-body" style="padding: 0;">
+              <div class="ws-empty" style="opacity: 0.6; min-height: 140px;">
+                <div class="ws-empty-icon">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7" />
+                    <rect x="14" y="3" width="7" height="7" />
+                    <rect x="14" y="14" width="7" height="7" />
+                    <rect x="3" y="14" width="7" height="7" />
+                  </svg>
+                </div>
+                <div class="ws-empty-text">Widget Content Area</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Docked viewport view (420px framed web panel) -->
+        <div id="shell-docked-wrap" style="display:none;">
+          <div style="max-width:var(--widget-viewport-docked);">
+            <div class="workspace-widget" id="shell-widget-docked">
+              <div class="workspace-widget-header">
+                <span class="workspace-widget-label">Widget Title</span>
+                <t1-pager for="shell-docked" info="1 - 5 of 10" onprev="null" onnext="null"></t1-pager>
+                <t1-filter-btn></t1-filter-btn>
+              </div>
+              <div class="workspace-widget-body" style="padding: 0;">
+                <div class="ws-empty" style="opacity: 0.6; min-height: 140px;">
+                  <div class="ws-empty-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="3" width="7" height="7" />
+                      <rect x="14" y="3" width="7" height="7" />
+                      <rect x="14" y="14" width="7" height="7" />
+                      <rect x="3" y="14" width="7" height="7" />
+                    </svg>
+                  </div>
+                  <div class="ws-empty-text">Widget Content Area</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile viewport view (360px touch-friendly) -->
+        <div id="shell-mobile-wrap" style="display:none;">
+          <div style="max-width:var(--widget-viewport-mobile);">
+            <div class="workspace-widget" id="shell-widget-mobile">
+              <div class="workspace-widget-header">
+                <span class="workspace-widget-label">Widget Title</span>
+                <t1-pager for="shell-mob" info="1 - 5 of 10" onprev="null" onnext="null"></t1-pager>
+                <t1-filter-btn></t1-filter-btn>
+              </div>
+              <div class="workspace-widget-body" style="padding: 0;">
+                <div class="ws-empty" style="opacity: 0.6; min-height: 140px;">
+                  <div class="ws-empty-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="3" width="7" height="7" />
+                      <rect x="14" y="3" width="7" height="7" />
+                      <rect x="14" y="14" width="7" height="7" />
+                      <rect x="3" y="14" width="7" height="7" />
+                    </svg>
+                  </div>
+                  <div class="ws-empty-text">Widget Content Area</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════ 2. BRIEF ═══ -->
+      <section class="component-section" id="s1">
+        <div class="section-eyebrow">Widget Type 1</div>
+        <div class="section-title">Brief</div>
+        <div class="section-desc">Full-width gradient card at the top of the home screen. Contains a personalised
+          greeting, an AI-generated narrative, and 4 inline KPI cards.</div>
+        <div class="state-bar">
+          <div class="state-group">
+            <span class="state-lbl">State</span>
+            <div class="seg-ctrl">
+              <button class="state-btn active" data-group="brief-state"
+                onclick="setBriefState('default',this)">Default</button>
+              <button class="state-btn" data-group="brief-state" onclick="setBriefState('empty',this)">Empty</button>
+            </div>
+          </div>
+          <div class="state-group">
+            <span class="state-lbl">Viewport</span>
+            <div class="seg-ctrl">
+              <button class="state-btn active" data-group="brief-vp" onclick="setBriefViewport('web',this)">Web</button>
+              <button class="state-btn" data-group="brief-vp" onclick="setBriefViewport('docked',this)">Docked</button>
+              <button class="state-btn" data-group="brief-vp" onclick="setBriefViewport('mobile',this)">Mobile</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="brief-web">
+          <div class="brief-card">
+            <div class="brief-inner">
+              <div class="brief-text-section">
+                <div class="brief-greeting-row">
+                  <span style="font-size:20px;line-height:1;">☀️</span>
+                  <h1 class="brief-greeting">Good morning, Jana!</h1>
+                  <!-- Desktop: QA button in greeting row -->
+                  <div class="qa-desktop" style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+                    <t1-btn-secondary icon="settings" title="Customize" action="alert('Customize')"></t1-btn-secondary>
+                    <div class="brief-dropdown-wrap">
+                      <t1-btn-secondary icon="lightning" label="Quick Actions" trail="chevron"
+                        action="toggleBriefDropdown(this)"></t1-btn-secondary>
+                      <div class="brief-dropdown hidden" id="brief-qa-dropdown">
+                        <span class="brief-dd-label">Actions</span>
+                        <button class="brief-dd-item" onclick="briefDdAct(this)"><span
+                            class="brief-dd-icon">📞</span>Log a Call</button>
+                        <button class="brief-dd-item" onclick="briefDdAct(this)"><span
+                            class="brief-dd-icon">📝</span>Create Task</button>
+                        <button class="brief-dd-item" onclick="briefDdAct(this)"><span
+                            class="brief-dd-icon">📅</span>Schedule Appt</button>
+                        <button class="brief-dd-item" onclick="briefDdAct(this)"><span
+                            class="brief-dd-icon">✉️</span>Send Message</button>
+                        <button class="brief-dd-item" onclick="briefDdAct(this)"><span
+                            class="brief-dd-icon">🔔</span>Set Reminder</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <p class="brief-narrative">Looks like a full day ahead, Jana — new leads are in, a few conversations are
+                  waiting on your reply, and some tasks are overdue. A handful of deals are right on the edge, so it's a
+                  good day to push.</p>
+              </div>
+              <div class="home-kpi-grid">
+                <div class="home-kpi-card">
+                  <div class="home-kpi-label">New Leads</div>
+                  <div class="home-kpi-value">12</div>
+                  <div class="home-kpi-sub"><span class="home-kpi-badge"
+                      style="background:#EFF6FF;color:#2563EB;">+18%</span> vs last week</div>
+                </div>
+                <div class="home-kpi-card">
+                  <div class="home-kpi-label">Communications</div>
+                  <div class="home-kpi-value">8</div>
+                  <div class="home-kpi-sub"><span class="home-kpi-badge" style="background:#FEF3C7;color:#D97706;">3
+                      need reply</span></div>
+                </div>
+                <div class="home-kpi-card">
+                  <div class="home-kpi-label">Appointments</div>
+                  <div class="home-kpi-value">4</div>
+                  <div class="home-kpi-sub"><span class="home-kpi-badge"
+                      style="background:#EFF6FF;color:#2563EB;">47%</span> show rate</div>
+                </div>
+                <div class="home-kpi-card">
+                  <div class="home-kpi-label">Tasks</div>
+                  <div class="home-kpi-value">6</div>
+                  <div class="home-kpi-sub"><span class="home-kpi-badge" style="background:#FEE2E2;color:#DC2626;">2
+                      overdue</span></div>
+                </div>
+              </div>
+              <!-- Mobile: settings + QA row below KPIs -->
+              <div class="qa-mobile">
+                <div class="brief-mob-qa-row">
+                  <t1-btn-secondary icon="settings" title="Customize" action="alert('Customize')"></t1-btn-secondary>
+                  <div class="brief-mob-qa-wrap">
+                    <t1-btn-secondary icon="lightning" label="Quick Actions" trail="chevron"
+                      extra-class="brief-mob-qa-btn" action="openQaBottomSheet()"></t1-btn-secondary>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="brief-web-empty" style="display:none;">
+          <div class="brief-card" style="opacity:.55;">
+            <div class="brief-inner">
+              <div class="brief-text-section">
+                <div class="brief-greeting-row">
+                  <span style="font-size:20px;line-height:1;">👋</span>
+                  <h1 class="brief-greeting">Good morning!</h1>
+                </div>
+                <p class="brief-narrative" style="color:rgba(0,0,0,.3);">Your brief is being prepared…</p>
+              </div>
+              <div class="home-kpi-grid">
+                <div class="home-kpi-card" style="opacity:.45;">
+                  <div class="home-kpi-label">New Leads</div>
+                  <div class="home-kpi-value" style="color:#D1D5DB;">—</div>
+                </div>
+                <div class="home-kpi-card" style="opacity:.45;">
+                  <div class="home-kpi-label">Communications</div>
+                  <div class="home-kpi-value" style="color:#D1D5DB;">—</div>
+                </div>
+                <div class="home-kpi-card" style="opacity:.45;">
+                  <div class="home-kpi-label">Appointments</div>
+                  <div class="home-kpi-value" style="color:#D1D5DB;">—</div>
+                </div>
+                <div class="home-kpi-card" style="opacity:.45;">
+                  <div class="home-kpi-label">Tasks</div>
+                  <div class="home-kpi-value" style="color:#D1D5DB;">—</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── DOCKED STATE ── -->
+        <div id="brief-docked" style="display:none;max-width:var(--widget-viewport-docked);">
+          <div class="brief-card brief-mob-card">
+            <div class="brief-inner brief-mob-inner">
+              <div class="brief-text-section">
+                <div class="brief-greeting-row">
+                  <span style="font-size:18px;line-height:1;">☀️</span>
+                  <h1 class="brief-greeting brief-mob-greeting">Good morning, Jana!</h1>
+                </div>
+                <p class="brief-narrative brief-mob-narrative">Looks like a full day ahead, Jana — new leads are in, a
+                  few conversations are waiting on your reply, and some tasks are overdue.</p>
+              </div>
+              <!-- 2×2 KPI grid -->
+              <div class="home-kpi-grid brief-mob-kpi-grid">
+                <div class="home-kpi-card brief-mob-kpi-card">
+                  <div class="home-kpi-label">New Leads</div>
+                  <div class="home-kpi-value brief-mob-kpi-value">12</div>
+                  <div class="home-kpi-sub"><span class="home-kpi-badge"
+                      style="background:#EFF6FF;color:#2563EB;">+18%</span> vs last week</div>
+                </div>
+                <div class="home-kpi-card brief-mob-kpi-card">
+                  <div class="home-kpi-label">Communications</div>
+                  <div class="home-kpi-value brief-mob-kpi-value">8</div>
+                  <div class="home-kpi-sub"><span class="home-kpi-badge" style="background:#FEF3C7;color:#D97706;">3
+                      need reply</span></div>
+                </div>
+                <div class="home-kpi-card brief-mob-kpi-card">
+                  <div class="home-kpi-label">Appointments</div>
+                  <div class="home-kpi-value brief-mob-kpi-value">4</div>
+                  <div class="home-kpi-sub"><span class="home-kpi-badge"
+                      style="background:#EFF6FF;color:#2563EB;">47%</span> show rate</div>
+                </div>
+                <div class="home-kpi-card brief-mob-kpi-card">
+                  <div class="home-kpi-label">Tasks</div>
+                  <div class="home-kpi-value brief-mob-kpi-value">6</div>
+                  <div class="home-kpi-sub"><span class="home-kpi-badge" style="background:#FEE2E2;color:#DC2626;">2
+                      overdue</span></div>
+                </div>
+              </div>
+              <!-- Docked: settings + Quick Actions opens dropdown (not bottom sheet) -->
+              <div class="brief-mob-qa-row">
+                <t1-btn-secondary icon="settings" title="Customize" action="alert('Customize')"></t1-btn-secondary>
+                <div class="brief-mob-qa-wrap brief-dropdown-wrap">
+                  <t1-btn-secondary icon="lightning" label="Quick Actions" trail="chevron"
+                    extra-class="brief-mob-qa-btn" action="toggleBriefDropdown(this)"></t1-btn-secondary>
+                  <div class="brief-dropdown hidden" id="brief-docked-qa-dropdown">
+                    <span class="brief-dd-label">Actions</span>
+                    <button class="brief-dd-item" onclick="briefDdAct(this)"><span class="brief-dd-icon">📞</span>Log a
+                      Call</button>
+                    <button class="brief-dd-item" onclick="briefDdAct(this)"><span class="brief-dd-icon">📝</span>Create
+                      Task</button>
+                    <button class="brief-dd-item" onclick="briefDdAct(this)"><span
+                        class="brief-dd-icon">📅</span>Schedule Appt</button>
+                    <button class="brief-dd-item" onclick="briefDdAct(this)"><span class="brief-dd-icon">✉️</span>Send
+                      Message</button>
+                    <button class="brief-dd-item" onclick="briefDdAct(this)"><span class="brief-dd-icon">🔔</span>Set
+                      Reminder</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="brief-docked-empty" style="display:none;max-width:var(--widget-viewport-docked);">
+          <div class="brief-card brief-mob-card" style="opacity:.55;">
+            <div class="brief-inner brief-mob-inner">
+              <div class="brief-text-section">
+                <div class="brief-greeting-row">
+                  <span style="font-size:18px;line-height:1;">👋</span>
+                  <h1 class="brief-greeting brief-mob-greeting">Good morning!</h1>
+                </div>
+                <p class="brief-narrative brief-mob-narrative" style="color:rgba(0,0,0,.3);">Your brief is being
+                  prepared…</p>
+              </div>
+              <div class="home-kpi-grid brief-mob-kpi-grid">
+                <div class="home-kpi-card brief-mob-kpi-card" style="opacity:.45;">
+                  <div class="home-kpi-label">New Leads</div>
+                  <div class="home-kpi-value brief-mob-kpi-value" style="color:#D1D5DB;">—</div>
+                </div>
+                <div class="home-kpi-card brief-mob-kpi-card" style="opacity:.45;">
+                  <div class="home-kpi-label">Communications</div>
+                  <div class="home-kpi-value brief-mob-kpi-value" style="color:#D1D5DB;">—</div>
+                </div>
+                <div class="home-kpi-card brief-mob-kpi-card" style="opacity:.45;">
+                  <div class="home-kpi-label">Appointments</div>
+                  <div class="home-kpi-value brief-mob-kpi-value" style="color:#D1D5DB;">—</div>
+                </div>
+                <div class="home-kpi-card brief-mob-kpi-card" style="opacity:.45;">
+                  <div class="home-kpi-label">Tasks</div>
+                  <div class="home-kpi-value brief-mob-kpi-value" style="color:#D1D5DB;">—</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── MOBILE STATE ── -->
+        <div id="brief-mobile" style="display:none;max-width:var(--widget-viewport-mobile);">
+          <div class="brief-card brief-mob-card">
+            <div class="brief-inner brief-mob-inner">
+              <div class="brief-text-section">
+                <div class="brief-greeting-row">
+                  <span style="font-size:18px;line-height:1;">☀️</span>
+                  <h1 class="brief-greeting brief-mob-greeting">Good morning, Jana!</h1>
+                </div>
+                <p class="brief-narrative brief-mob-narrative">Looks like a full day ahead, Jana — new leads are in, a
+                  few conversations are waiting on your reply, and some tasks are overdue.</p>
+              </div>
+              <!-- 2×2 KPI grid on mobile -->
+              <div class="home-kpi-grid brief-mob-kpi-grid">
+                <div class="home-kpi-card brief-mob-kpi-card">
+                  <div class="home-kpi-label">New Leads</div>
+                  <div class="home-kpi-value brief-mob-kpi-value">12</div>
+                  <div class="home-kpi-sub"><span class="home-kpi-badge"
+                      style="background:#EFF6FF;color:#2563EB;">+18%</span> vs last week</div>
+                </div>
+                <div class="home-kpi-card brief-mob-kpi-card">
+                  <div class="home-kpi-label">Communications</div>
+                  <div class="home-kpi-value brief-mob-kpi-value">8</div>
+                  <div class="home-kpi-sub"><span class="home-kpi-badge" style="background:#FEF3C7;color:#D97706;">3
+                      need reply</span></div>
+                </div>
+                <div class="home-kpi-card brief-mob-kpi-card">
+                  <div class="home-kpi-label">Appointments</div>
+                  <div class="home-kpi-value brief-mob-kpi-value">4</div>
+                  <div class="home-kpi-sub"><span class="home-kpi-badge"
+                      style="background:#EFF6FF;color:#2563EB;">47%</span> show rate</div>
+                </div>
+                <div class="home-kpi-card brief-mob-kpi-card">
+                  <div class="home-kpi-label">Tasks</div>
+                  <div class="home-kpi-value brief-mob-kpi-value">6</div>
+                  <div class="home-kpi-sub"><span class="home-kpi-badge" style="background:#FEE2E2;color:#DC2626;">2
+                      overdue</span></div>
+                </div>
+              </div>
+              <!-- Settings + Quick Actions on same row (mobile) -->
+              <div class="brief-mob-qa-row">
+                <t1-btn-secondary icon="settings" title="Customize" action="alert('Customize')"></t1-btn-secondary>
+                <div class="brief-mob-qa-wrap">
+                  <t1-btn-secondary icon="lightning" label="Quick Actions" trail="chevron"
+                    extra-class="brief-mob-qa-btn" action="openQaBottomSheet()"></t1-btn-secondary>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── MOBILE EMPTY ── -->
+        <div id="brief-mobile-empty" style="display:none;max-width:var(--widget-viewport-mobile);">
+          <div class="brief-card brief-mob-card" style="opacity:.55;">
+            <div class="brief-inner brief-mob-inner">
+              <div class="brief-text-section">
+                <div class="brief-greeting-row">
+                  <span style="font-size:18px;line-height:1;">👋</span>
+                  <h1 class="brief-greeting brief-mob-greeting">Good morning!</h1>
+                </div>
+                <p class="brief-narrative brief-mob-narrative" style="color:rgba(0,0,0,.3);">Your brief is being
+                  prepared…</p>
+              </div>
+              <div class="home-kpi-grid brief-mob-kpi-grid">
+                <div class="home-kpi-card brief-mob-kpi-card" style="opacity:.45;">
+                  <div class="home-kpi-label">New Leads</div>
+                  <div class="home-kpi-value brief-mob-kpi-value" style="color:#D1D5DB;">—</div>
+                </div>
+                <div class="home-kpi-card brief-mob-kpi-card" style="opacity:.45;">
+                  <div class="home-kpi-label">Communications</div>
+                  <div class="home-kpi-value brief-mob-kpi-value" style="color:#D1D5DB;">—</div>
+                </div>
+                <div class="home-kpi-card brief-mob-kpi-card" style="opacity:.45;">
+                  <div class="home-kpi-label">Appointments</div>
+                  <div class="home-kpi-value brief-mob-kpi-value" style="color:#D1D5DB;">—</div>
+                </div>
+                <div class="home-kpi-card brief-mob-kpi-card" style="opacity:.45;">
+                  <div class="home-kpi-label">Tasks</div>
+                  <div class="home-kpi-value brief-mob-kpi-value" style="color:#D1D5DB;">—</div>
+                </div>
+              </div>
+              <div class="brief-mob-qa-row">
+                <t1-btn-secondary icon="settings" title="Customize" action="alert('Customize')"></t1-btn-secondary>
+                <div class="brief-mob-qa-wrap">
+                  <t1-btn-secondary icon="lightning" label="Quick Actions" trail="chevron"
+                    extra-class="brief-mob-qa-btn" action="openQaBottomSheet()"></t1-btn-secondary>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════ 3. ACTION NEEDED ═══ -->
+      <section class="component-section" id="s2">
+        <div class="section-eyebrow">Widget Type 2</div>
+        <div class="section-title">Action Needed</div>
+        <div class="section-desc">Alert-state widget that surfaces items requiring the user's immediate attention.
+          Always uses the <code>.workspace-widget--alert</code> shell variant.</div>
+        <div class="state-bar">
+          <div class="state-group">
+            <span class="state-lbl">State</span>
+            <div class="seg-ctrl">
+              <button class="state-btn active" data-group="action-state"
+                onclick="setActionState('default',this)">Default</button>
+              <button class="state-btn" data-group="action-state"
+                onclick="setActionState('empty',this)">Empty</button>
+            </div>
+          </div>
+          <div class="state-group">
+            <span class="state-lbl">Viewport</span>
+            <div class="seg-ctrl">
+              <button class="state-btn active" data-group="action-vp"
+                onclick="setActionViewport('web',this)">Web</button>
+              <button class="state-btn" data-group="action-vp"
+                onclick="setActionViewport('docked',this)">Docked</button>
+              <button class="state-btn" data-group="action-vp"
+                onclick="setActionViewport('mobile',this)">Mobile</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Web viewport view -->
+        <div id="action-web">
+          <div class="workspace-widget workspace-widget--alert" id="action-widget-web">
+            <div class="workspace-widget-header">
+              <span class="workspace-widget-label">Action Needed</span>
+              <t1-pager for="action" onprev="acPrev()" onnext="acNext()"></t1-pager>
+            </div>
+            <!-- Default: filter bar + rendered rows -->
+            <div class="workspace-widget-body ws-list" id="ac-body-web">
+              <t1-quick-filters type="ac" onfilter="acFilter"></t1-quick-filters>
+              <div class="ac-rows-list" id="ac-rows-web"></div>
+            </div>
+            <!-- Empty state -->
+            <div class="workspace-widget-body" id="ac-empty-web" style="display:none;">
+              <div class="ws-empty">
+                <div class="ws-empty-icon-wrap">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="ws-empty-text">You're all caught up</div>
+                <div class="ws-empty-sub">No pending actions — enjoy the quiet.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Docked viewport view (420px framed web panel) -->
+        <div id="action-docked-wrap" style="display:none;">
+          <div style="max-width:var(--widget-viewport-docked);">
+            <div class="workspace-widget workspace-widget--alert" id="action-widget-docked">
+              <div class="workspace-widget-header">
+                <span class="workspace-widget-label">Action Needed</span>
+                <t1-pager for="action-dk" onprev="acPrev()" onnext="acNext()"></t1-pager>
+              </div>
+              <!-- Default: filter bar + rendered rows -->
+              <div class="workspace-widget-body ws-list" id="ac-body-docked">
+                <t1-quick-filters type="ac" onfilter="acFilter"></t1-quick-filters>
+                <div class="ac-rows-list" id="ac-rows-docked"></div>
+              </div>
+              <!-- Empty state -->
+              <div class="workspace-widget-body" id="ac-empty-docked" style="display:none;">
+                <div class="ws-empty">
+                  <div class="ws-empty-icon-wrap">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <div class="ws-empty-text">You're all caught up</div>
+                  <div class="ws-empty-sub">No pending actions — enjoy the quiet.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile viewport view (360px touch-friendly) -->
+        <div id="action-mobile-wrap" style="display:none;">
+          <div style="max-width:var(--widget-viewport-mobile);">
+            <div class="workspace-widget workspace-widget--alert" id="action-widget-mobile">
+              <div class="workspace-widget-header">
+                <span class="workspace-widget-label">Action Needed</span>
+                <t1-pager for="action-mob" onprev="acPrev()" onnext="acNext()"></t1-pager>
+              </div>
+              <!-- Default: filter bar + rendered rows -->
+              <div class="workspace-widget-body ws-list" id="ac-body-mobile">
+                <t1-quick-filters type="ac" onfilter="acFilter"></t1-quick-filters>
+                <div class="ac-rows-list" id="ac-rows-mobile"></div>
+              </div>
+              <!-- Empty state -->
+              <div class="workspace-widget-body" id="ac-empty-mobile" style="display:none;">
+                <div class="ws-empty">
+                  <div class="ws-empty-icon-wrap">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <div class="ws-empty-text">You're all caught up</div>
+                  <div class="ws-empty-sub">No pending actions — enjoy the quiet.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ── ACTION NEEDED: Actions dropdown (fixed, body-level to escape overflow clipping) ── -->
+  <div id="ac-act-dropdown"></div>
+
+  <script>
+    /* ── CUSTOM WEB COMPONENTS ── */
+    /* All use display:contents so the wrapper is invisible in layout
+       and the child participates in parent flex/grid directly.        */
+
+    /* ── BASE BUTTON COMPONENTS (page-level, shared by all widgets) ── */
+
+    /* t1-btn-primary : blue accent, white text */
+    customElements.define('t1-btn-primary', class extends HTMLElement {
+      connectedCallback() {
+        if (this.firstChild) return;
+        this.style.display = 'contents';
+        const btn = document.createElement('button');
+        btn.className = 't1-btn-primary';
+        btn.textContent = this.getAttribute('label') || 'Button';
+        const action = this.getAttribute('action');
+        if (action) btn.onclick = () => eval(action);
+        this.appendChild(btn);
+      }
+    });
+
+    /* t1-btn-secondary : bordered white, same as Confirm / Reply
+       Attrs: label, icon (settings|lightning), trail (chevron),
+              action (onclick string, `this` = button), extra-class, title   */
+    customElements.define('t1-btn-secondary', class extends HTMLElement {
+      connectedCallback() {
+        if (this.firstChild) return;
+        this.style.display = 'contents';
+        const btn = document.createElement('button');
+        const extraClass = this.getAttribute('extra-class') || '';
+        btn.className = 't1-btn-secondary' + (extraClass ? ' ' + extraClass : '');
+
+        const icon = this.getAttribute('icon');
+        const label = this.getAttribute('label');
+        const trail = this.getAttribute('trail');
+        const title = this.getAttribute('title');
+        const action = this.getAttribute('action');
+
+        if (title) btn.title = title;
+
+        // Icon-only → square sizing
+        if (icon && !label) btn.classList.add('t1-btn-secondary--icon');
+
+        const ICONS = {
+          settings: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
+          lightning: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#4A7CF7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>`,
+          chevron: `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>`,
+        };
+
+        let html = '';
+        if (icon && ICONS[icon]) html += ICONS[icon];
+        if (label) html += label;
+        if (trail === 'chevron') html += ICONS.chevron;
+        btn.innerHTML = html || (label || 'Button');
+
+        // setAttribute keeps `this` bound to the button in the event handler
+        if (action) btn.setAttribute('onclick', action);
+        this.appendChild(btn);
+      }
+    });
+
+    /* t1-btn-ai : gradient teal bg + T1 logo, same as Ask T1 */
+    customElements.define('t1-btn-ai', class extends HTMLElement {
+      connectedCallback() {
+        if (this.firstChild) return;
+        this.style.display = 'contents';
+        const btn = document.createElement('button');
+        btn.className = 't1-btn-ai';
+        const label = this.getAttribute('label') || 'Ask T1';
+        const action = this.getAttribute('action');
+        btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><path d="M10.7314 33.3897C11.9876 31.2145 14.7702 30.4689 16.9458 31.7246C19.1201 32.9808 19.8654 35.761 18.6108 37.9363C17.3546 40.1121 14.5722 40.8576 12.3965 39.6014C10.2214 38.3449 9.47587 35.565 10.7314 33.3897Z" fill="url(#t1aig)"/><path d="M27.0944 31.7246C29.2699 30.4687 32.0523 31.2145 33.3088 33.3897C34.5639 35.565 33.8184 38.3449 31.6437 39.6014C29.4679 40.8576 26.6856 40.1121 25.4294 37.9363C24.1746 35.7608 24.9195 32.9805 27.0944 31.7246Z" fill="url(#t1aig)"/><path d="M5.02464 18.9172C7.19994 17.6613 9.98242 18.4076 11.239 20.5823C12.4952 22.758 11.7497 25.5404 9.57396 26.7966C7.39819 28.0528 4.61577 27.3073 3.35959 25.1316C2.10453 22.9561 2.84947 20.1732 5.02464 18.9172Z" fill="url(#t1aig)"/><path d="M27.0784 6.10981C29.2537 4.85399 32.0361 5.60023 33.2926 7.77482C33.7458 8.55959 33.9405 9.42455 33.8995 10.267C33.811 12.0854 33.396 14.0987 34.3052 15.6757C35.2157 17.2528 37.1679 17.9019 38.7874 18.7346C39.5373 19.1202 40.1899 19.7197 40.6431 20.5043C41.8993 22.68 41.1535 25.4624 38.978 26.7187C36.8022 27.9749 34.02 27.2294 32.7638 25.0536C32.3109 24.2689 32.1184 23.4039 32.1593 22.5615C32.2482 20.7429 32.6612 18.7296 31.7512 17.1528C30.8404 15.5759 28.8885 14.9267 27.269 14.0939C26.5192 13.7081 25.8663 13.1087 25.4133 12.3241C24.1584 10.1488 24.9035 7.3659 27.0784 6.10981Z" fill="url(#t1aig)"/><path d="M12.3965 6.26558C14.572 5.00971 17.3545 5.75549 18.6108 7.9306C19.8662 10.1062 19.121 12.8888 16.9458 14.145C14.7703 15.401 11.9879 14.655 10.7314 12.4799C9.47584 10.3042 10.2209 7.52162 12.3965 6.26558Z" fill="url(#t1aig)"/><defs><linearGradient id="t1aig" x1="2.75" y1="5.5" x2="46.39" y2="14.08" gradientUnits="userSpaceOnUse"><stop stop-color="#25C8A5"/><stop offset="0.5" stop-color="#1B90B4"/><stop offset="1" stop-color="#1A6CC4"/></linearGradient></defs></svg><span class="ask-t1-text">${label}</span>`;
+        if (action) btn.onclick = () => eval(action);
+        this.appendChild(btn);
+      }
+    });
+
+    /* 1. t1-resize-btn
+         Attrs:
+           onclick — expression called on click (optional)
+                     defaults to shared wsResize(btn) handler         */
+    customElements.define('t1-resize-btn', class extends HTMLElement {
+      connectedCallback() {
+        if (this.firstChild) return;
+        this.style.display = 'contents';
+        const onclickAttr = this.getAttribute('onclick');
+        const btn = document.createElement('button');
+        btn.className = 'ws-resize-btn';
+        btn.title = 'Resize widget';
+        btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>';
+        btn.onclick = onclickAttr ? () => eval(onclickAttr) : () => wsResize(btn);
+        this.appendChild(btn);
+      }
+    });
+
+    /* 2. t1-filter-btn
+         Attrs:
+           onclick — expression called on click, e.g. "acFilter()"
+                     omit for demo/placeholder buttons                */
+    customElements.define('t1-filter-btn', class extends HTMLElement {
+      connectedCallback() {
+        if (this.firstChild) return;
+        this.style.display = 'contents';
+        const onclickAttr = this.getAttribute('onclick');
+        const btn = document.createElement('button');
+        btn.className = 'ws-filter-btn';
+        btn.title = 'Filter';
+        btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>';
+        if (onclickAttr) btn.onclick = () => eval(onclickAttr);
+        this.appendChild(btn);
+      }
+    });
+
+    /* 3. t1-ask-t1 */
+    customElements.define('t1-ask-t1', class extends HTMLElement {
+      connectedCallback() {
+        if (this.firstChild) return;
+        this.style.display = 'contents';
+        const btn = document.createElement('button');
+        btn.className = 't1-btn-ai';
+        btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><path d="M10.7314 33.3897C11.9876 31.2145 14.7702 30.4689 16.9458 31.7246C19.1201 32.9808 19.8654 35.761 18.6108 37.9363C17.3546 40.1121 14.5722 40.8576 12.3965 39.6014C10.2214 38.3449 9.47587 35.565 10.7314 33.3897Z" fill="url(#at1g)"/><path d="M27.0944 31.7246C29.2699 30.4687 32.0523 31.2145 33.3088 33.3897C34.5639 35.565 33.8184 38.3449 31.6437 39.6014C29.4679 40.8576 26.6856 40.1121 25.4294 37.9363C24.1746 35.7608 24.9195 32.9805 27.0944 31.7246Z" fill="url(#at1g)"/><path d="M5.02464 18.9172C7.19994 17.6613 9.98242 18.4076 11.239 20.5823C12.4952 22.758 11.7497 25.5404 9.57396 26.7966C7.39819 28.0528 4.61577 27.3073 3.35959 25.1316C2.10453 22.9561 2.84947 20.1732 5.02464 18.9172Z" fill="url(#at1g)"/><path d="M27.0784 6.10981C29.2537 4.85399 32.0361 5.60023 33.2926 7.77482C33.7458 8.55959 33.9405 9.42455 33.8995 10.267C33.811 12.0854 33.396 14.0987 34.3052 15.6757C35.2157 17.2528 37.1679 17.9019 38.7874 18.7346C39.5373 19.1202 40.1899 19.7197 40.6431 20.5043C41.8993 22.68 41.1535 25.4624 38.978 26.7187C36.8022 27.9749 34.02 27.2294 32.7638 25.0536C32.3109 24.2689 32.1184 23.4039 32.1593 22.5615C32.2482 20.7429 32.6612 18.7296 31.7512 17.1528C30.8404 15.5759 28.8885 14.9267 27.269 14.0939C26.5192 13.7081 25.8663 13.1087 25.4133 12.3241C24.1584 10.1488 24.9035 7.3659 27.0784 6.10981Z" fill="url(#at1g)"/><path d="M12.3965 6.26558C14.572 5.00971 17.3545 5.75549 18.6108 7.9306C19.8662 10.1062 19.121 12.8888 16.9458 14.145C14.7703 15.401 11.9879 14.655 10.7314 12.4799C9.47584 10.3042 10.2209 7.52162 12.3965 6.26558Z" fill="url(#at1g)"/><defs><linearGradient id="at1g" x1="2.75" y1="5.5" x2="46.39" y2="14.08" gradientUnits="userSpaceOnUse"><stop stop-color="#25C8A5"/><stop offset="0.5" stop-color="#1B90B4"/><stop offset="1" stop-color="#1A6CC4"/></linearGradient></defs></svg><span class="ask-t1-text">Ask T1</span>';
+        this.appendChild(btn);
+      }
+    });
+
+    /* 4. t1-pager
+         Attrs:
+           for     — id prefix; produces #[for]-prev, #[for]-next, #[for]-text
+           info    — default pagination text, e.g. "1 – 5 of 24" (optional)
+           onprev  — expression called on prev click
+           onnext  — expression called on next click
+         Renders: < [pagination text] >
+         Classes: .ws-header-pager > .ws-pager-btn + .ws-pager-text + .ws-pager-btn
+    */
+    customElements.define('t1-pager', class extends HTMLElement {
+      connectedCallback() {
+        if (this.firstChild) return;
+        this.style.display = 'contents';
+        const forAttr   = this.getAttribute('for');
+        const infoAttr  = this.getAttribute('info') || '';
+        const onprevAttr = this.getAttribute('onprev');
+        const onnextAttr = this.getAttribute('onnext');
+
+        const div = document.createElement('div');
+        div.className = 'ws-header-pager';
+
+        /* ‹ prev button */
+        const prevBtn = document.createElement('button');
+        prevBtn.className = 'ws-pager-btn';
+        prevBtn.id = forAttr + '-prev';
+        prevBtn.setAttribute('aria-label', 'Previous page');
+        prevBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>';
+        prevBtn.disabled = true;
+        prevBtn.onclick = () => eval(onprevAttr);
+
+        /* pagination text — "x – y of n" */
+        const text = document.createElement('span');
+        text.className = 'ws-pager-text';
+        text.id = forAttr + '-text';
+        text.textContent = infoAttr;
+
+        /* › next button */
+        const nextBtn = document.createElement('button');
+        nextBtn.className = 'ws-pager-btn';
+        nextBtn.id = forAttr + '-next';
+        nextBtn.setAttribute('aria-label', 'Next page');
+        nextBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>';
+        nextBtn.onclick = () => eval(onnextAttr);
+
+        div.appendChild(prevBtn);
+        div.appendChild(text);
+        div.appendChild(nextBtn);
+        this.appendChild(div);
+      }
+    });
+
+    /* t1-pager helper — shared by all widgets
+       Call after each page change to sync text + button states.
+       forId    — the `for` attribute value on <t1-pager>
+       start    — 0-based index of first visible item
+       end      — 1-based index of last visible item
+       total    — total item count                               */
+    function _pagerUpdate(forId, start, end, total) {
+      var textEl = document.getElementById(forId + '-text');
+      var prevEl = document.getElementById(forId + '-prev');
+      var nextEl = document.getElementById(forId + '-next');
+      if (textEl) textEl.textContent = (start + 1) + ' - ' + end + ' of ' + total;
+      if (prevEl) prevEl.disabled = (start === 0);
+      if (nextEl) nextEl.disabled = (end >= total);
+    }
+
+    /* 5. t1-action-btn */
+    customElements.define('t1-action-btn', class extends HTMLElement {
+      connectedCallback() {
+        if (this.firstChild) return;
+        this.style.display = 'contents';
+        const label = this.getAttribute('label');
+        const done = this.getAttribute('done');
+        const btn = document.createElement('button');
+        btn.className = 't1-btn-secondary';
+        btn.textContent = label;
+        btn.onclick = function () { acAct(btn, done); };
+        this.appendChild(btn);
+      }
+    });
+
+    /* 6. t1-quick-filters — reusable filter chip bar
+         Attrs:
+           type      — data namespace; looks up window._[type]ChipDefs + window._[type]ChipCount
+           onfilter  — global function name called as fn(key) on chip click
+         Produces:  .qf-bar > .qf-chip[data-key] + .qf-chip-count
+         Active state managed internally; call el.setActive(key) to sync from outside  */
+    customElements.define('t1-quick-filters', class extends HTMLElement {
+      connectedCallback() {
+        this.style.display = 'contents';
+        /* Defer so all global data vars (_acChipDefs etc.) are defined by the
+           time we render — customElements fires connectedCallback synchronously
+           during customElements.define() which is before the data blocks below */
+        setTimeout(() => this._render(), 0);
+      }
+
+      _render() {
+        if (this.querySelector('.t1-chip-bar')) return; /* already built */
+        const type     = this.getAttribute('type');
+        const onfilter = this.getAttribute('onfilter');
+        const defs     = window['_' + type + 'ChipDefs'] || [];
+        const countFn  = window['_' + type + 'ChipCount'];
+
+        const bar = document.createElement('div');
+        bar.className = 't1-chip-bar';
+
+        defs.forEach((def) => {
+          const btn = document.createElement('button');
+          btn.className = 't1-chip' + (def.key === 'all' ? ' active' : '');
+          btn.dataset.key = def.key;
+          const count = countFn ? countFn(def.key) : '';
+          btn.innerHTML = def.label +
+            (count !== '' ? ' <span class="chip-count">' + count + '</span>' : '');
+          btn.onclick = () => {
+            bar.querySelectorAll('.t1-chip').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const fn = window[onfilter];
+            if (fn) fn(def.key);
+          };
+          bar.appendChild(btn);
+        });
+
+        this.appendChild(bar);
+      }
+
+      /* Call after external state changes to keep chips in sync */
+      setActive(key) {
+        const bar = this.querySelector('.t1-chip-bar');
+        if (!bar) return;
+        bar.querySelectorAll('.t1-chip').forEach(b => {
+          b.classList.toggle('active', b.dataset.key === key);
+        });
+      }
+    });
+
+    /* ── STATE TOGGLE ── */
+    /* ── WIDGET SHELL: independent State + Device axes ── */
+    function setShellState(state, btn) {
+      btn.closest('.component-section').querySelectorAll('[data-group="shell-state"]')
+        .forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const isAlert = state === 'alert';
+      ['shell-widget-web', 'shell-widget-docked', 'shell-widget-mobile'].forEach(id => {
+        const w = document.getElementById(id);
+        if (w) w.classList.toggle('workspace-widget--alert', isAlert);
+      });
+    }
+
+    function setShellDevice(device, btn) {
+      btn.closest('.component-section').querySelectorAll('[data-group="shell-device"]')
+        .forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('shell-web').style.display = device === 'web' ? '' : 'none';
+      document.getElementById('shell-docked-wrap').style.display = device === 'docked' ? '' : 'none';
+      document.getElementById('shell-mobile-wrap').style.display = device === 'mobile' ? '' : 'none';
+    }
+
+    /* ── BRIEF STATE + VIEWPORT ── */
+    var briefCurState = 'default', briefCurVP = 'web';
+
+    function setBriefState(state, btn) {
+      btn.closest('.component-section').querySelectorAll('[data-group="brief-state"]')
+        .forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      briefCurState = state;
+      _updateBrief();
+    }
+
+    function setBriefViewport(vp, btn) {
+      btn.closest('.component-section').querySelectorAll('[data-group="brief-vp"]')
+        .forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      briefCurVP = vp;
+      _updateBrief();
+    }
+
+    function _updateBrief() {
+      const vp = briefCurVP;
+      const empty = briefCurState === 'empty';
+      const map = {
+        'brief-web': vp === 'web' && !empty,
+        'brief-web-empty': vp === 'web' && empty,
+        'brief-docked': vp === 'docked' && !empty,
+        'brief-docked-empty': vp === 'docked' && empty,
+        'brief-mobile': vp === 'mobile' && !empty,
+        'brief-mobile-empty': vp === 'mobile' && empty,
+      };
+      Object.entries(map).forEach(([id, show]) => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = show ? '' : 'none';
+      });
+    }
+
+    function toggleBriefDropdown(btn) {
+      const wrap = btn.closest('.brief-dropdown-wrap');
+      const dd = wrap.querySelector('.brief-dropdown');
+      dd.classList.toggle('hidden');
+      // close when clicking outside
+      if (!dd.classList.contains('hidden')) {
+        setTimeout(() => {
+          document.addEventListener('click', function close(e) {
+            if (!wrap.contains(e.target)) {
+              dd.classList.add('hidden');
+              document.removeEventListener('click', close);
+            }
+          });
+        }, 0);
+      }
+    }
+    function briefDdAct(btn) {
+      btn.closest('.brief-dropdown-wrap').querySelector('.brief-dropdown').classList.add('hidden');
+    }
+
+    /* ── ACTION NEEDED STATE + VIEWPORT ── */
+    var actionCurState = 'default', actionCurVP = 'web';
+
+    function setActionState(state, btn) {
+      btn.closest('.component-section').querySelectorAll('[data-group="action-state"]')
+        .forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      actionCurState = state;
+      _updateAction();
+    }
+
+    function setActionViewport(vp, btn) {
+      btn.closest('.component-section').querySelectorAll('[data-group="action-vp"]')
+        .forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      actionCurVP = vp;
+      _updateAction();
+    }
+
+    function _updateAction() {
+      var vp = actionCurVP;
+      var empty = actionCurState === 'empty';
+      document.getElementById('action-web').style.display = vp === 'web' ? '' : 'none';
+      document.getElementById('action-docked-wrap').style.display = vp === 'docked' ? '' : 'none';
+      document.getElementById('action-mobile-wrap').style.display = vp === 'mobile' ? '' : 'none';
+      ['web', 'docked', 'mobile'].forEach(function(v) {
+        var bodyEl   = document.getElementById('ac-body-'        + v);
+        var emptyEl  = document.getElementById('ac-empty-'       + v);
+        var widgetEl = document.getElementById('action-widget-'  + v);
+        if (bodyEl)   bodyEl.style.display   = empty ? 'none' : '';
+        if (emptyEl)  emptyEl.style.display  = empty ? ''     : 'none';
+        // grey shell + hide pager in empty state
+        if (widgetEl) {
+          widgetEl.classList.toggle('is-empty', empty);
+          var pager = widgetEl.querySelector('.ws-header-pager');
+          if (pager) pager.style.visibility = empty ? 'hidden' : '';
+        }
+      });
+    }
+
+    /* ── ACTION NEEDED — ROW DATA + RENDER ── */
+    var _acIcons = {
+      calendarX: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="10" y1="15" x2="14" y2="19"/><line x1="14" y1="15" x2="10" y2="19"/></svg>',
+      calendar:  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+      zap:       '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>',
+      userClock: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3z"/><path d="M2 21v-1a4 4 0 0 1 4-4h4"/><circle cx="20" cy="19" r="3"/><polyline points="20 17 20 19 21.5 19"/></svg>',
+      message:   '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+    };
+
+    var _acData = [
+      { sev: 'high',   icon: 'calendarX', title: 'Appointment unconfirmed \u2013 2 hrs to go',        name: 'James Okafor',   meta: 'Test Drive \u00b7 Today 2:00 PM \u00b7 2025 RAV4 XSE' },
+      { sev: 'medium', icon: 'calendar',  title: 'No-show \u2014 reschedule before lead goes cold',   name: 'Diana Ruiz',     meta: 'Missed 10:00 AM \u00b7 2025 Camry SE \u00b7 2nd missed visit' },
+      { sev: 'high',   icon: 'zap',       title: 'High-intent lead \u2014 no contact in 22 min',      name: 'Priya Nair',     meta: 'Internet lead \u00b7 2025 Highlander XLE \u00b7 Submitted 22 min ago' },
+      { sev: 'high',   icon: 'userClock', title: 'Lead going cold \u2014 4 days no response',         name: 'Mark Henderson', meta: '2024 Tacoma SR5 \u00b7 Finance approved \u00b7 Last contact 4 days ago' },
+      { sev: 'high',   icon: 'message',   title: 'Payment quote replied to \u2014 awaiting response', name: 'Tom Ellison',    meta: 'Inbound text \u00b7 Replied 3 hrs ago \u00b7 Payment quote thread' },
+      { sev: 'high',   icon: 'calendarX', title: 'Test drive overdue \u2014 vehicle not returned',    name: 'Carlos Mendez',  meta: 'Test Drive \u00b7 Started 11:00 AM \u00b7 2024 4Runner TRD' },
+      { sev: 'medium', icon: 'userClock', title: 'Follow-up overdue \u2014 3 days past due',          name: 'Sarah Kim',      meta: 'Task \u00b7 Created 3 days ago \u00b7 New lead follow-up' },
+      { sev: 'high',   icon: 'zap',       title: 'Finance offer expiring \u2014 valid until today',   name: 'Robert Chen',    meta: 'Finance \u00b7 Approved 2 days ago \u00b7 2024 Camry XSE' },
+    ];
+
+    /* ── Chip defs for t1-quick-filters type="ac" ── */
+    var _acChipDefs = [
+      { key: 'all',   label: 'All' },
+      { key: 'appts', label: 'Appts', icons: ['calendarX', 'calendar'] },
+      { key: 'leads', label: 'Leads', icons: ['zap'] },
+      { key: 'comms', label: 'Comms', icons: ['message'] },
+      { key: 'tasks', label: 'Tasks', icons: ['userClock'] },
+    ];
+
+    /* Count fn — called by t1-quick-filters to populate each chip's number */
+    function _acChipCount(key) {
+      if (key === 'all') return _acData.length;
+      var def = _acChipDefs.find(function(d) { return d.key === key; });
+      var icons = def && def.icons ? def.icons : [];
+      return _acData.filter(function(r) { return icons.indexOf(r.icon) !== -1; }).length;
+    }
+
+    /* Active filter state + filtered view */
+    var _acActiveFilter = 'all';
+
+    function _acFilteredData() {
+      if (_acActiveFilter === 'all') return _acData;
+      var def = _acChipDefs.find(function(d) { return d.key === _acActiveFilter; });
+      var icons = def && def.icons ? def.icons : [];
+      return _acData.filter(function(r) { return icons.indexOf(r.icon) !== -1; });
+    }
+
+    function acFilter(key) {
+      _acActiveFilter = key;
+      acPage = 0;
+      /* Sync all t1-quick-filters instances on the page */
+      document.querySelectorAll('t1-quick-filters[type="ac"]').forEach(function(el) {
+        if (el.setActive) el.setActive(key);
+      });
+      _renderAcRows();
+    }
+
+    var _t1LogoSvg = '<svg width="13" height="13" viewBox="0 0 44 44" fill="none" style="flex-shrink:0"><path d="M10.73 33.39C11.99 31.21 14.77 30.47 16.95 31.72C19.12 32.98 19.87 35.76 18.61 37.94C17.35 40.11 14.57 40.86 12.4 39.6C10.22 38.34 9.48 35.57 10.73 33.39Z" fill="url(#acAiG)"/><path d="M27.09 31.72C29.27 30.47 32.05 31.21 33.31 33.39C34.56 35.57 33.82 38.34 31.64 39.6C29.47 40.86 26.69 40.11 25.43 37.94C24.17 35.76 24.92 32.98 27.09 31.72Z" fill="url(#acAiG)"/><path d="M5.02 18.92C7.2 17.66 9.98 18.41 11.24 20.58C12.5 22.76 11.75 25.54 9.57 26.8C7.4 28.05 4.62 27.31 3.36 25.13C2.1 22.96 2.85 20.17 5.02 18.92Z" fill="url(#acAiG)"/><path d="M27.08 6.11C29.25 4.85 32.04 5.6 33.29 7.77C33.75 8.56 33.94 9.42 33.9 10.27C33.81 12.09 33.4 14.1 34.31 15.68C35.22 17.25 37.17 17.9 38.79 18.73C39.54 19.12 40.19 19.72 40.64 20.5C41.9 22.68 41.15 25.46 38.98 26.72C36.8 27.97 34.02 27.23 32.76 25.05C32.31 24.27 32.12 23.4 32.16 22.56C32.25 20.74 32.66 18.73 31.75 17.15C30.84 15.58 28.89 14.93 27.27 14.09C26.52 13.71 25.87 13.11 25.41 12.32C24.16 10.15 24.9 7.37 27.08 6.11Z" fill="url(#acAiG)"/><path d="M12.4 6.27C14.57 5.01 17.35 5.76 18.61 7.93C19.87 10.11 19.12 12.89 16.95 14.14C14.77 15.4 11.99 14.66 10.73 12.48C9.48 10.3 10.22 7.52 12.4 6.27Z" fill="url(#acAiG)"/></svg>';
+
+    var _chevronSvg = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><polyline points="6 9 12 15 18 9"/></svg>';
+
+    function _buildAcRow(r, idx) {
+      return '<div class="ac-row" onclick="_acRowClick(' + idx + ')">' +
+        '<div class="ac-row-icon ' + r.sev + '">' + _acIcons[r.icon] + '</div>' +
+        '<div class="ac-row-content">' +
+          '<div class="ac-row-title">' + r.title + '</div>' +
+          '<div class="ac-row-meta"><strong>' + r.name + '</strong><span class="ac-dot">\u00b7</span>' + r.meta + '</div>' +
+        '</div>' +
+        '<div class="ac-row-right">' +
+          '<button class="t1-btn-ai" onclick="event.stopPropagation();_acAskT1(' + idx + ')">' + _t1LogoSvg + '<span class="ac-btn-ai-text">Ask T1</span></button>' +
+          '<button class="t1-btn-secondary" onclick="event.stopPropagation();_acToggleDropdown(this,' + idx + ')">' +
+            'Actions ' + _chevronSvg +
+          '</button>' +
+        '</div>' +
+      '</div>';
+    }
+
+    var acPage = 0;
+    var AC_PER_PAGE = 5;
+
+    function _renderAcRows() {
+      var data  = _acFilteredData();
+      var total = data.length;
+      var totalPages = Math.ceil(total / AC_PER_PAGE) || 1;
+      if (acPage >= totalPages) acPage = Math.max(0, totalPages - 1);
+      var start = acPage * AC_PER_PAGE;
+      var end   = Math.min(start + AC_PER_PAGE, total);
+      /* Use original _acData index so action handlers target the right item */
+      var html = data.slice(start, end).map(function(r) {
+        return _buildAcRow(r, _acData.indexOf(r));
+      }).join('');
+      ['ac-rows-web', 'ac-rows-docked', 'ac-rows-mobile'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.innerHTML = html;
+      });
+      // Sync all three pager instances via shared component helper
+      ['action', 'action-dk', 'action-mob'].forEach(function(f) { _pagerUpdate(f, start, end, total); });
+    }
+
+    function acPrev() { if (acPage > 0) { acPage--; _renderAcRows(); } }
+    function acNext() {
+      var pages = Math.ceil(_acFilteredData().length / AC_PER_PAGE) || 1;
+      if (acPage < pages - 1) { acPage++; _renderAcRows(); }
+    }
+
+    function _acRowClick(idx) { /* open detail — wired up in production */ }
+    function _acAskT1(idx)    { /* launch T1 chat context — wired up in production */ }
+
+    /* Actions dropdown */
+    var _acDdActiveIdx = null;
+
+    /* ── AC ACTIONS BOTTOMSHEET (mobile) ── */
+    var _acBsActiveIdx = null;
+
+    function _acOpenBottomSheet(idx) {
+      _acBsActiveIdx = idx;
+      var overlay = document.getElementById('acBsOverlay');
+      var sheet   = document.getElementById('acBs');
+      overlay.style.display = 'block';
+      sheet.style.display   = 'block';
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          overlay.classList.add('visible');
+          sheet.classList.add('visible');
+        });
+      });
+    }
+
+    function _acCloseBottomSheet() {
+      var overlay = document.getElementById('acBsOverlay');
+      var sheet   = document.getElementById('acBs');
+      overlay.classList.remove('visible');
+      sheet.classList.remove('visible');
+      setTimeout(function() {
+        overlay.style.display = 'none';
+        sheet.style.display   = 'none';
+      }, 300);
+      _acBsActiveIdx = null;
+    }
+
+    function _acBsMarkComplete() {
+      var idx = _acBsActiveIdx;
+      _acCloseBottomSheet();
+      if (idx === null || idx < 0 || idx >= _acData.length) return;
+      _acData.splice(idx, 1);
+      _renderAcRows();
+      if (_acData.length === 0) {
+        var emptyBtn = document.querySelector('[data-group="action-state"][onclick*="empty"]');
+        if (emptyBtn) emptyBtn.click();
+      }
+    }
+
+    function _acToggleDropdown(btn, idx) {
+      /* Mobile container → open bottomsheet instead of dropdown */
+      if (btn.closest('#action-mobile-wrap')) {
+        _acOpenBottomSheet(idx);
+        return;
+      }
+      var dd = document.getElementById('ac-act-dropdown');
+      if (!dd) return;
+      var isOpen = _acDdActiveIdx === idx;
+      _acCloseDropdown();
+      if (!isOpen) {
+        dd.innerHTML =
+          '<button class="ac-dd-item complete" onclick="_acMarkComplete()">' +
+            '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Mark as Complete' +
+          '</button>' +
+          '<div class="ac-dd-divider"></div>' +
+          '<button class="ac-dd-item" onclick="_acCloseDropdown()">' +
+            '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg> View Record' +
+          '</button>';
+        var rect = btn.getBoundingClientRect();
+        dd.style.display = 'block';
+        dd.classList.add('open');
+        var ddW = dd.offsetWidth;
+        dd.style.top  = (rect.bottom + 4) + 'px';
+        dd.style.left = (rect.right - ddW) + 'px';
+        _acDdActiveIdx = idx;
+        setTimeout(function() {
+          document.addEventListener('click', _acOutsideClose);
+        }, 0);
+      }
+    }
+
+    function _acCloseDropdown() {
+      var dd = document.getElementById('ac-act-dropdown');
+      if (dd) { dd.classList.remove('open'); dd.style.display = 'none'; }
+      _acDdActiveIdx = null;
+      document.removeEventListener('click', _acOutsideClose);
+    }
+
+    function _acOutsideClose(e) {
+      var dd = document.getElementById('ac-act-dropdown');
+      if (dd && !dd.contains(e.target)) _acCloseDropdown();
+    }
+
+    function _acMarkComplete() {
+      var idx = _acDdActiveIdx;
+      _acCloseDropdown();
+      if (idx === null || idx < 0 || idx >= _acData.length) return;
+      _acData.splice(idx, 1);
+      _renderAcRows();
+      /* Auto-switch to empty state when all items are resolved */
+      if (_acData.length === 0) {
+        var emptyBtn = document.querySelector('[data-group="action-state"][onclick*="empty"]');
+        if (emptyBtn) { emptyBtn.click(); }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', _renderAcRows);
+
+    /* ── QA BOTTOM SHEET ── */
+    function openQaBottomSheet() {
+      var overlay = document.getElementById('qaBsOverlay');
+      var sheet = document.getElementById('qaBs');
+      overlay.style.display = 'block';
+      sheet.style.display = 'block';
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          overlay.classList.add('visible');
+          sheet.classList.add('visible');
+        });
+      });
+    }
+    function closeQaBottomSheet() {
+      var overlay = document.getElementById('qaBsOverlay');
+      var sheet = document.getElementById('qaBs');
+      overlay.classList.remove('visible');
+      sheet.classList.remove('visible');
+      setTimeout(function () {
+        overlay.style.display = 'none';
+        sheet.style.display = 'none';
+      }, 300);
+    }
+
+    /* ── WIDGET RESIZE (matches source implementation) ── */
+    var _wsActiveId = null;
+    var _wsCurrentSize = {};
+    var _wsAutoIdSeq = 0;
+
+    function wsResize(btn) {
+      event.stopPropagation();
+      var widget = btn.closest('.workspace-widget');
+      if (!widget) return;
+      /* Assign a stable auto-ID if the widget has none */
+      if (!widget.id) widget.id = 'ws-auto-' + (_wsAutoIdSeq++);
+      openWsResize(btn, widget.id);
+    }
+
+    function openWsResize(btn, widgetId) {
+      var pop = document.getElementById('wsResizePopover');
+      var isOpen = pop.classList.contains('open') && _wsActiveId === widgetId;
+      closeWsResize();
+      if (!isOpen) {
+        _wsActiveId = widgetId;
+        var widget = document.getElementById(widgetId);
+        var cur = _wsCurrentSize[widgetId] ||
+          (widget.classList.contains('ws-kpi') ? 'ws-kpi' :
+            widget.classList.contains('ws-half') ? 'ws-half' :
+              widget.classList.contains('ws-three-quarter') ? 'ws-three-quarter' : 'ws-full');
+        pop.querySelectorAll('.ws-resize-opt').forEach(function (o) {
+          o.classList.toggle('active', o.getAttribute('onclick').indexOf("'" + cur + "'") !== -1);
+        });
+        pop.classList.add('open');
+        var rect = btn.getBoundingClientRect();
+        pop.style.top = (rect.bottom + 4) + 'px';
+        pop.style.left = 'auto';
+        pop.style.right = (window.innerWidth - rect.right) + 'px';
+      }
+    }
+
+    function closeWsResize() {
+      document.getElementById('wsResizePopover').classList.remove('open');
+      _wsActiveId = null;
+    }
+
+    function applyWsSize(size) {
+      if (!_wsActiveId) return;
+      var widget = document.getElementById(_wsActiveId);
+      if (!widget) return;
+      widget.classList.remove('ws-half', 'ws-three-quarter', 'ws-kpi');
+      if (size !== 'ws-full') widget.classList.add(size);
+      _wsCurrentSize[_wsActiveId] = size;
+      /* Hide pagination at ¼ width — no room in header */
+      var pager = widget.querySelector('.ws-header-pager');
+      if (pager) pager.style.display = (size === 'ws-kpi') ? 'none' : '';
+      closeWsResize();
+    }
+
+    document.addEventListener('click', closeWsResize);
+
+    /* Run once after all static HTML (list/tbl already rendered above) */
+    document.addEventListener('DOMContentLoaded', () => {
+      initAvatarColors();
+      const shellInfo = document.getElementById('shell-info');
+      if (shellInfo) shellInfo.textContent = '1 – 5 of 10';
+
+      // Initialize AC pager info text for all viewport instances
+      ['ac-web', 'ac-docked', 'ac-mobile'].forEach(vp => {
+        const info = document.getElementById(vp + '-info');
+        const prev = document.getElementById(vp + '-prev');
+        if (info) info.textContent = '1 – 5 of 10';
+        if (prev) prev.disabled = true;
+      });
+    });
+  </script>
+
+  <!-- ── RESIZE POPOVER (global shared, matches source) ── -->
+  <div class="ws-resize-popover" id="wsResizePopover">
+    <!-- ¼ -->
+    <button class="ws-resize-opt" onclick="applyWsSize('ws-kpi')" title="¼ width">
+      <div class="ws-seg-diagram">
+        <div class="ws-blk active-blk" style="flex:1"></div>
+        <div class="ws-blk" style="flex:1;opacity:0.35"></div>
+        <div class="ws-blk" style="flex:1;opacity:0.35"></div>
+        <div class="ws-blk" style="flex:1;opacity:0.35"></div>
+      </div>
+      <span class="ws-seg-label">¼</span>
+    </button>
+    <!-- ½ -->
+    <button class="ws-resize-opt" onclick="applyWsSize('ws-half')" title="½ width">
+      <div class="ws-seg-diagram">
+        <div class="ws-blk active-blk" style="flex:1"></div>
+        <div class="ws-blk" style="flex:1;opacity:0.35"></div>
+      </div>
+      <span class="ws-seg-label">½</span>
+    </button>
+    <!-- ¾ -->
+    <button class="ws-resize-opt" onclick="applyWsSize('ws-three-quarter')" title="¾ width">
+      <div class="ws-seg-diagram">
+        <div class="ws-blk active-blk" style="flex:3"></div>
+        <div class="ws-blk" style="flex:1;opacity:0.35"></div>
+      </div>
+      <span class="ws-seg-label">¾</span>
+    </button>
+    <!-- Full -->
+    <button class="ws-resize-opt" onclick="applyWsSize('ws-full')" title="Full width">
+      <div class="ws-seg-diagram">
+        <div class="ws-blk active-blk"></div>
+      </div>
+      <span class="ws-seg-label">Full</span>
+    </button>
+  </div>
+
+  <!-- ── ACTION NEEDED: Actions bottomsheet (mobile) ── -->
+  <div class="qa-bottomsheet-overlay" id="acBsOverlay" style="display:none;" onclick="_acCloseBottomSheet()"></div>
+  <div class="qa-bottomsheet" id="acBs" style="display:none;">
+    <div class="qa-bottomsheet-handle"></div>
+    <div class="qa-bottomsheet-title">Actions</div>
+    <div class="qa-bottomsheet-items">
+      <button class="qa-bottomsheet-item ac-bs-item-complete" onclick="_acBsMarkComplete()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Mark as Complete
+      </button>
+      <div style="height:1px;background:var(--color-border-subtle);margin:2px 8px;"></div>
+      <button class="qa-bottomsheet-item" onclick="_acCloseBottomSheet()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        View Record
+      </button>
+    </div>
+  </div>
+
+  <!-- ── QA BOTTOM SHEET ── -->
+  <div class="qa-bottomsheet-overlay" id="qaBsOverlay" style="display:none;" onclick="closeQaBottomSheet()"></div>
+  <div class="qa-bottomsheet" id="qaBs" style="display:none;">
+    <div class="qa-bottomsheet-handle"></div>
+    <div class="qa-bottomsheet-title">Quick Actions</div>
+    <div class="qa-bottomsheet-items">
+      <button class="qa-bottomsheet-item" onclick="closeQaBottomSheet()"><span class="qa-bs-icon">📞</span> Log a
+        Call</button>
+      <button class="qa-bottomsheet-item" onclick="closeQaBottomSheet()"><span class="qa-bs-icon">📝</span> Create
+        Task</button>
+      <button class="qa-bottomsheet-item" onclick="closeQaBottomSheet()"><span class="qa-bs-icon">📅</span> Schedule
+        Appointment</button>
+      <button class="qa-bottomsheet-item" onclick="closeQaBottomSheet()"><span class="qa-bs-icon">✉️</span> Send
+        Message</button>
+      <button class="qa-bottomsheet-item" onclick="closeQaBottomSheet()"><span class="qa-bs-icon">🔔</span> Set
+        Reminder</button>
+      <button class="qa-bottomsheet-item" onclick="closeQaBottomSheet()"><span class="qa-bs-icon">🚗</span> Check
+        Inventory</button>
+    </div>
+  </div>
+
+</body>
+
+</html>
