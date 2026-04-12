@@ -1,0 +1,354 @@
+/* ==========================================================================
+   T1 TOKENS ARCHITECTURE
+   ========================================================================== */
+
+:root {
+  /* ═══════════════════════════════════
+     1. PRIMITIVE TOKENS
+     Raw values without context.
+     ═══════════════════════════════════ */
+  
+  /* Colors: Gray Scale */
+  --gray-0:   #ffffff;
+  --gray-50:  #FAFBFF;
+  --gray-100: #F3F4F6;
+  --gray-200: #E5E7EB;
+  --gray-250: #E8E9EB;
+  --gray-300: #D1D5DB;
+  --gray-400: #969AA3;
+  --gray-500: #6B7280;
+  --gray-600: #444F5C;
+  --gray-700: #3F4757;
+  --gray-750: #374151;
+  --gray-800: #161616;
+  --gray-900: #111827;
+  --gray-1000: #152532;
+
+  /* Colors: Red Scale */
+  --red-50:  #FEF2F2;
+  --red-100: #FEE2E2;
+  --red-500: #EF4444;
+  --red-600: #DC2626;
+
+  /* Colors: Indigo Scale */
+  --indigo-50:  #EEF2FF;
+  --indigo-200: #C7D2FE;
+  --indigo-700: #4338CA;
+
+  /* Colors: Amber Scale */
+  --amber-100: #FEF3C7;
+  --amber-500: #F59E0B;
+  --amber-600: #D97706;
+
+  /* Colors: Green Scale */
+  --green-50:  #F0FDF4;
+  --green-100: #D1FAE5;
+  --green-200: #A7F3D0;
+  --green-600: #059669;
+
+  /* Colors: Teal Scale */
+  --teal-100: #CFF5EB;
+
+  /* Colors: Blue Scale */
+  --blue-50:  #EEF6FF;
+  --blue-100: #EFF6FF;
+  --blue-200: #BFDBFE;
+  --blue-300: #93C5FD;
+  --blue-400: #60A5FA;
+  --blue-500: #4285F4;
+  --blue-600: #2563EB;
+  --blue-700: #1D4ED8;
+  --blue-800: #1D52D6;
+
+  /* Gradients */
+  --gradient-brand: linear-gradient(38deg, #2157F5 0%, #3C6DFF 50%, #47FF97 100%);
+
+  /* Typography Scale */
+  --font-size-1: 0.75rem; /* xs */
+  --font-size-2: 0.85rem; /* sm */
+  --font-size-3: 0.95rem; /* base */
+  --font-size-4: 1rem;    /* md */
+  --font-size-5: 1.1rem;  /* lg */
+  --font-size-6: 1.6rem;  /* xl */
+
+  /* Font Weights */
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --fw-extrabold: 800;
+
+  /* Spacing Scale */
+  --space-1: 2px;
+  --space-2: 4px;
+  --space-3: 6px;
+  --space-4: 8px;
+  --space-6: 12px;
+  --space-7: 14px;
+  --space-8: 16px;
+  --space-10: 20px;
+  --space-12: 24px;
+  --space-16: 32px;
+  --space-20: 40px;
+  --space-40: 80px;
+
+  /* Border Radius (Shape scale) */
+  --radius-1: 2px;
+  --radius-2: 4px;
+  --radius-3: 6px;
+  --radius-4: 8px;
+  --radius-5: 12px;
+  --radius-6: 20px;
+  --radius-pill: 9999px;
+
+  /* Transitions */
+  --duration-fast: 0.08s;
+  --duration-normal: 0.1s;
+  --duration-slow: 0.12s;
+
+  /* Line Heights */
+  --lh-tight: 1;
+  --lh-snug: 1.2;
+  --lh-normal: 1.4;
+  --lh-relaxed: 1.5;
+  --lh-loose: 1.65;
+  --lh-spread: 1.8;
+
+  /* Shadows (Primitive) */
+  --box-shadow-1: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --box-shadow-2: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --box-shadow-3: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --box-shadow-top: 0 -8px 32px rgba(0, 0, 0, 0.18);
+
+  /* Z-Index Scale */
+  --z-0: 0;
+  --z-10: 10;
+  --z-50: 50;
+  --z-100: 100;
+  --z-200: 200;
+  --z-999: 999;
+  --z-max: 99999;
+
+  /* ═══════════════════════════════════
+     2. SEMANTIC TOKENS
+     Intent-based meaning assigning primitive values to standard roles.
+     ═══════════════════════════════════ */
+
+  /* Brand / Accents */
+  --color-primary: var(--blue-500);
+  --color-primary-subtle: var(--blue-100);
+  --color-primary-border: var(--blue-200);
+  --color-primary-dark: var(--blue-600);
+
+  /* Danger / Alert */
+  --color-danger: var(--red-600);
+  --color-danger-subtle: var(--red-50);
+  --color-danger-surface: var(--red-100);
+
+  /* Backgrounds */
+  --color-bg-main: var(--gray-0);
+  --color-bg-dark: var(--gray-700);
+  --color-bg-surface: var(--gray-100);
+  --color-bg-hover: var(--gray-50);
+
+  /* Text Elements */
+  --color-text-main: var(--gray-600);
+  --color-text-heading: var(--gray-800);
+  --color-text-muted: var(--gray-400);
+
+  /* Borders */
+  --color-border-subtle: var(--gray-200);
+  --color-border-muted: var(--gray-250);
+  --color-bg-dark-border: var(--gray-1000);
+
+  /* Semantic Typography */
+  --font-xs: var(--font-size-1);
+  --font-sm: var(--font-size-2);
+  --font-base: var(--font-size-3);
+  --font-md: var(--font-size-4);
+  --font-lg: var(--font-size-5);
+  --font-xl: var(--font-size-6);
+
+  /* Semantic Font Weights */
+  --font-weight-regular: var(--fw-regular);
+  --font-weight-medium: var(--fw-medium);
+  --font-weight-strong: var(--fw-semibold);
+  --font-weight-heading: var(--fw-bold);
+
+  /* Semantic Spacing */
+  --spacing-xs: var(--space-2);
+  --spacing-sm: var(--space-4);
+  --spacing-md: var(--space-8);
+  --spacing-lg: var(--space-12);
+  --spacing-xl: var(--space-16);
+
+  /* Semantic Border Radii */
+  --radius-sm: var(--radius-2);
+  --radius-md: var(--radius-4);
+  --radius-lg: var(--radius-5);
+  --radius-xl: var(--radius-6);
+  --radius-full: var(--radius-pill);
+
+  /* Semantic Transitions */
+  --transition-fast: var(--duration-fast);
+  --transition-base: var(--duration-normal);
+
+  /* Semantic Typography (Line Heights) */
+  --line-height-heading: var(--lh-tight);
+  --line-height-body: var(--lh-normal);
+  --line-height-desc: var(--lh-relaxed);
+
+  /* Semantic Shadows */
+  --shadow-sm: var(--box-shadow-1);
+  --shadow-md: var(--box-shadow-2);
+  --shadow-lg: var(--box-shadow-3);
+  --shadow-float: var(--box-shadow-top);
+
+  /* Semantic Z-Index */
+  --z-base: var(--z-0);
+  --z-raised: var(--z-10);
+  --z-overlay: var(--z-50);
+  --z-sticky: var(--z-100);
+  --z-dropdown: var(--z-200);
+  --z-modal: var(--z-999);
+  --z-popover: var(--z-max);
+
+  /* ═══════════════════════════════════
+     3. COMPONENT TOKENS
+     Component-specific aliases encapsulating component design intent.
+     ═══════════════════════════════════ */
+
+  /* Global Navigation */
+  --nav-height: 56px;
+
+  /* Widget Shell — Desktop */
+  --widget-shell-bg: var(--color-bg-surface);
+  --widget-shell-alert-bg: var(--color-danger-surface);
+  --widget-body-bg: var(--color-bg-main);
+  --widget-radius: var(--radius-lg);
+  --widget-header-font-size: var(--font-xs);
+  --widget-header-hover-bg: var(--color-border-subtle);
+  --widget-item-border: var(--color-bg-surface);
+  --widget-item-hover-bg: var(--color-bg-hover);
+  --widget-item-selected-bg: var(--blue-50);
+  --widget-seg-inactive: var(--gray-400);
+  --widget-seg-active: var(--gray-750);
+  --widget-seg-strong: var(--gray-900);
+  --widget-seg-rest: var(--gray-300);
+
+  /* Widget Shell — Viewport widths */
+  --widget-viewport-docked: 420px;   /* framed web panel, desktop chrome */
+  --widget-viewport-mobile: 360px;   /* touch-friendly, WCAG tap targets */
+
+  /* Widget Shell — Mobile */
+  --widget-mob-padding-top: var(--space-2);        /* 4px balanced top gap */
+  --widget-mob-header-min-height: 40px;            /* 4px top + 40px = 44px touch zone */
+  --widget-mob-header-padding: 0 var(--space-6);   /* 12px side padding */
+  --widget-mob-label-size: var(--font-sm);         /* 14px label on mobile */
+  --widget-mob-ctrl-size: 36px;                    /* pager / filter tap target */
+  --widget-mob-ctrl-radius: var(--radius-3);       /* 6px */
+  --widget-mob-ctrl-icon-size: 16px;               /* svg icon inside control */
+  --widget-mob-pager-info-size: var(--font-xs);    /* pager counter text */
+
+  /* Widget Controls — Dimensions (web desktop) */
+  --ctrl-btn-size: 22px;           /* filter-btn & resize-btn icon button (web) */
+  --pager-btn-size: 20px;          /* pager prev / next button (web)            */
+  --pager-info-min-width: 68px;    /* "x – y of n" counter column width         */
+  --pager-icon-size: 12px;         /* chevron svg icon inside pager btn         */
+  --pager-gap: var(--space-1);     /* gap between items in .ws-header-pager (2px) */
+  --pager-text-size: var(--font-xs);      /* "x – y of n" text size            */
+  --pager-text-weight: var(--fw-semibold); /* "x – y of n" text weight         */
+  --pager-text-color: var(--color-text-muted); /* "x – y of n" text color      */
+
+  /* Base Buttons — Dimensions */
+  --btn-height: 32px;              /* standard interactive button height         */
+  --btn-padding-x: var(--space-7); /* primary button horizontal padding (14px)   */
+  --btn-padding-x-sm: var(--space-6); /* secondary / ai button h-padding (12px)  */
+
+  /* Tap Targets (WCAG 2.5.5 — 44×44 minimum) */
+  --tap-target-size: 44px;
+  --tap-target-font: var(--font-sm);
+  --tap-target-padding: 0 var(--space-8);
+
+  /* Page Scaffold */
+  --shell-surface: var(--color-bg-main);
+  --shell-surface-subtle: var(--color-bg-surface);
+  --shell-eyebrow-size: var(--font-xs);
+  --shell-title-size: var(--font-xl);
+  --shell-desc-size: var(--font-sm);
+  --shell-label-size: var(--font-xs);
+  --shell-state-btn-bg: var(--color-bg-main);
+  --shell-state-btn-border: var(--color-border-subtle);
+  --shell-state-btn-size: var(--font-xs);
+  --shell-state-active-bg: var(--color-primary-subtle);
+  --shell-state-active-border: var(--color-primary-border);
+  --shell-state-active-color: var(--color-primary-dark);
+  --shell-state-hover-bg: var(--color-bg-surface);
+
+  /* Base Buttons */
+  --btn-primary-bg: var(--blue-600);
+  --btn-primary-hover: var(--blue-700);
+  --btn-secondary-border: var(--gray-300);
+
+  /* Quick-filter chips (t1-quick-filters) */
+  --qf-bar-gap:            var(--space-2);            /* 4px between chips */
+  --qf-bar-padding:        var(--space-4) var(--space-6); /* 8px 12px */
+  --qf-bar-border:         1px solid var(--color-border-subtle);
+  --qf-chip-radius:        var(--radius-full);
+  --qf-chip-padding:       var(--space-2) var(--space-6); /* 4px 12px */
+  --qf-chip-font:          11px;
+  --qf-chip-fw:            var(--fw-semibold);
+  --qf-chip-bg:            var(--color-bg-main);
+  --qf-chip-border:        var(--color-border-subtle);
+  --qf-chip-color:         var(--color-text-muted);
+  --qf-chip-hover-bg:      var(--gray-200);
+  --qf-chip-active-bg:     var(--color-primary-subtle);
+  --qf-chip-active-border: var(--color-primary-border);
+  --qf-chip-active-color:  var(--color-primary-dark);
+  --qf-chip-count-font:    10px;
+  --qf-chip-count-fw:      var(--fw-bold);
+
+  /* Alert Rows */
+  --alert-row-height: 56px;
+  --ac-rows-per-page: 5;
+  --ac-body-height: calc(var(--ac-rows-per-page) * var(--alert-row-height)); /* 280px */
+  --alert-row-gap: var(--space-7);          /* 14px */
+  --alert-row-padding: 0 var(--space-6);    /* 0 12px */
+  --alert-row-bg: var(--widget-body-bg);
+  --alert-row-border: 1px solid var(--widget-item-border);
+  --alert-row-hover-bg: var(--widget-item-hover-bg);
+  --alert-icon-size: 34px;
+  --alert-icon-radius: var(--radius-md);    /* 8px */
+  --alert-icon-font: var(--font-size-4);    /* ~1rem ≈ 15-16px */
+  --alert-icon-high-bg: var(--color-danger-surface);   /* --red-100 */
+  --alert-icon-medium-bg: var(--amber-100);
+  --alert-icon-low-bg: var(--blue-200);
+  --alert-tag-font: 10px;                   /* sub-xs; no token at this size */
+  --alert-tag-radius: var(--radius-sm);
+  --alert-tag-high-bg: var(--red-500);
+  --alert-tag-medium-bg: var(--amber-500);
+  --alert-tag-low-bg: var(--blue-500);
+  --alert-row-right-gap: var(--space-8);    /* 16px */
+  --alert-done-bg: var(--green-50);
+  --alert-done-border: var(--green-200);
+  --alert-done-color: var(--green-600);
+  --alert-ai-border: var(--teal-100);
+
+  /* AI Button */
+  --btn-ai-border: var(--teal-100);
+  --btn-ai-gradient: linear-gradient(99deg, #E7F7F9 0%, #FBF8F2 100%);
+  --btn-ai-text-gradient: linear-gradient(99deg, #25C8A5 0%, #1A6CC4 100%);
+}
+
+/* ── RESPONSIVE PRIMITIVES ── */
+@media (max-width: 640px) {
+  :root {
+    /* Scaled down typography for mobile viewports */
+    --font-size-1: 0.7rem;
+    --font-size-2: 0.8rem;
+    --font-size-3: 0.9rem;
+    --font-size-4: 0.95rem;
+    --font-size-5: 1rem;
+    --font-size-6: 1.35rem;
+  }
+}
