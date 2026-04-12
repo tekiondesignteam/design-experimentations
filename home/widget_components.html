@@ -1499,6 +1499,148 @@
     #brief-docked-wrap .brief-mob-greeting {
       font-size: var(--font-lg) !important; /* 1.1rem ≈ 17.6px */
     }
+
+    /* ══════════════════════════════════════════════════════════
+       WEB-MODE WIDGET RESPONSIVENESS
+       Makes the default "web" viewport of each widget adapt
+       as the page narrows, matching docked/mobile behaviour.
+    ══════════════════════════════════════════════════════════ */
+
+    /* ── Action Needed web: wrap buttons into a second row at ≤640px ── */
+    @media (max-width: 640px) {
+      #action-web .ac-row {
+        flex-wrap: wrap;
+        height: auto;
+        align-items: flex-start;
+        padding: var(--space-7) var(--space-6);
+        row-gap: var(--space-3);
+      }
+
+      #action-web .ac-row-icon {
+        margin-top: 2px;
+      }
+
+      #action-web .ac-row-right {
+        width: 100%;
+        gap: var(--alert-row-right-gap); /* 16px */
+      }
+
+      #action-web .t1-btn-ai,
+      #action-web .t1-btn-secondary {
+        flex: 1;
+        justify-content: center;
+      }
+
+      /* allow title + meta to wrap instead of truncating */
+      #action-web .ac-row-title,
+      #action-web .ac-row-meta {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: unset;
+      }
+    }
+
+    /* ── Action Needed web: hide icon + Actions → bottomsheet at ≤480px ── */
+    @media (max-width: 480px) {
+      #action-web .ac-row-icon {
+        display: none;
+      }
+
+      #action-web .ac-row {
+        padding: var(--space-8) var(--space-6);
+      }
+
+      #action-web .ac-row-title {
+        font-size: var(--font-base);
+      }
+
+      #action-web .ac-row-meta {
+        font-size: var(--font-sm);
+      }
+
+      #action-web .t1-chip {
+        font-size: var(--font-sm);
+      }
+    }
+
+    /* ── Brief web: single-column KPI at ≤480px ── */
+    @media (max-width: 480px) {
+      #brief-web .home-kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      #brief-web .brief-greeting {
+        font-size: var(--font-lg);
+      }
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       PAGE-LEVEL RESPONSIVENESS
+       Breakpoints: 1024 → tablet  |  768 → portrait  |  480 → phone
+    ══════════════════════════════════════════════════════════ */
+
+    /* ── Tablet (≤1024px) ── */
+    @media (max-width: 1024px) {
+      .page-body {
+        padding: 32px 40px 60px;
+      }
+    }
+
+    /* ── Portrait tablet / large phone (≤768px) ── */
+    @media (max-width: 768px) {
+      .page-body {
+        padding: 24px 20px 48px;
+      }
+
+      .component-section {
+        margin-bottom: 48px;
+      }
+
+      .section-title {
+        font-size: var(--font-lg); /* step down from --font-xl */
+      }
+
+      /* State bar: let State + Viewport groups stack */
+      .state-bar {
+        flex-wrap: wrap;
+        gap: var(--space-6);
+      }
+
+      /* Button state grid: enable horizontal scroll instead of overflow-clip */
+      .btn-state-grid {
+        overflow-x: auto;
+        overflow-y: hidden;
+      }
+    }
+
+    /* ── Phone (≤480px) ── */
+    @media (max-width: 480px) {
+      .page-body {
+        padding: 16px 16px 40px;
+      }
+
+      .component-section {
+        margin-bottom: 36px;
+      }
+
+      .global-top-nav {
+        padding: 0 16px;
+      }
+
+      /* Hide "T1 Home Widgets" label so nav doesn't crowd */
+      .tk-page-title {
+        display: none;
+      }
+
+      .section-title {
+        font-size: var(--font-md);
+      }
+
+      /* Segment buttons: slightly smaller padding on small phones */
+      .state-btn {
+        padding: var(--spacing-xs) var(--spacing-sm);
+      }
+    }
   </style>
 </head>
 
@@ -2611,8 +2753,9 @@
     }
 
     function _acToggleDropdown(btn, idx) {
-      /* Mobile container → open bottomsheet instead of dropdown */
-      if (btn.closest('#action-mobile-wrap')) {
+      /* Mobile container OR narrow web view → open bottomsheet instead of dropdown */
+      if (btn.closest('#action-mobile-wrap') ||
+          (btn.closest('#action-web') && window.matchMedia('(max-width: 480px)').matches)) {
         _acOpenBottomSheet(idx);
         return;
       }
@@ -2762,6 +2905,17 @@
         if (info) info.textContent = '1 – 5 of 10';
         if (prev) prev.disabled = true;
       });
+
+      // ── Auto-switch all widgets to Mobile viewport on small screens ──
+      if (window.matchMedia('(max-width: 768px)').matches) {
+        [
+          '[data-group="shell-device"][onclick*="\'mobile\'"]',
+          '[data-group="brief-vp"][onclick*="\'mobile\'"]',
+          '[data-group="action-vp"][onclick*="\'mobile\'"]',
+        ].forEach(sel => {
+          document.querySelectorAll(sel).forEach(btn => btn.click());
+        });
+      }
     });
   </script>
 
