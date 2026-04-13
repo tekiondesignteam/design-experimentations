@@ -2139,6 +2139,14 @@
 
         // Initialize
         initTableData();
+
+        // When embedded inside an iframe, hide header and sidebar
+        if (window !== window.top) {
+            document.querySelector('header').style.display = 'none';
+            document.querySelector('.sidebar').style.display = 'none';
+            document.querySelector('.main-content').style.position = 'absolute';
+            document.querySelector('.main-content').style.inset = '0';
+        }
     </script>
 </body>
 
